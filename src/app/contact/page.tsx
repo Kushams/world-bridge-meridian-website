@@ -38,11 +38,12 @@ export default function ContactPage() {
               </div>
               <div>
                 <p className="eyebrow mb-3">Phone</p>
-                <p className="text-stone-dim">{company.phone ?? "[PHONE NUMBER TO BE PROVIDED]"}</p>
-              </div>
-              <div>
-                <p className="eyebrow mb-3">WhatsApp</p>
-                <p className="text-stone-dim">{company.whatsapp ?? "[WHATSAPP NUMBER TO BE PROVIDED]"}</p>
+                <a
+                  href={`tel:${company.phone?.replace(/[^+\d]/g, "")}`}
+                  className="font-display text-xl text-ivory hover:text-gold transition-colors"
+                >
+                  {company.phone ?? "[PHONE NUMBER TO BE PROVIDED]"}
+                </a>
               </div>
               <div>
                 <p className="eyebrow mb-3">Address</p>

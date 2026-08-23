@@ -49,6 +49,7 @@ const organizationJsonLd = {
   logo: `${SITE_URL}/icon.svg`,
   image: `${SITE_URL}/opengraph-image`,
   email: company.email,
+  telephone: company.phone ?? undefined,
   foundingDate: String(company.foundedYear),
   founder: {
     "@type": "Person",

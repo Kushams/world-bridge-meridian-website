@@ -13,8 +13,7 @@ export const company = {
   founderName: "Earl Anderson",
   founderTitle: "Founder & CEO",
   email: "info@worldbridgemeridian.group",
-  phone: null as string | null, // "[PHONE NUMBER TO BE PROVIDED]"
-  whatsapp: null as string | null, // "[WHATSAPP NUMBER TO BE PROVIDED]"
+  phone: "+1 (302) 627-3325" as string | null,
   address: null as string | null, // "[ADDRESS TO BE PROVIDED]"
   cooName: "Justin Warkovsky" as string | null,
   cryptoAcceptedSince: 2015,

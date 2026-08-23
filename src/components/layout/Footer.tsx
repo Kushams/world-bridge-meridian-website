@@ -66,11 +66,13 @@ export function Footer() {
                 {company.email}
               </a>
             </li>
-            <li className="text-stone-dim">
-              {company.phone ?? "[PHONE NUMBER TO BE PROVIDED]"}
-            </li>
-            <li className="text-stone-dim">
-              {company.whatsapp ?? "[WHATSAPP NUMBER TO BE PROVIDED]"}
+            <li>
+              <a
+                href={`tel:${company.phone?.replace(/[^+\d]/g, "")}`}
+                className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors"
+              >
+                {company.phone ?? "[PHONE NUMBER TO BE PROVIDED]"}
+              </a>
             </li>
           </ul>
         </div>
