@@ -122,7 +122,10 @@ export interface TeamMember {
   slug: string;
   name: string | null;
   title: string;
+  department: string;
+  reportsToSlug?: string;
   bio: string[] | null;
+  focusAreas?: string[];
   photo?: string;
   placeholder?: boolean;
 }

@@ -5,6 +5,7 @@ import { packages } from "@/data/packages";
 import { cruises } from "@/data/cruises";
 import { experiences } from "@/data/experiences";
 import { journal } from "@/data/journal";
+import { team } from "@/data/team";
 
 export const dynamic = "force-static";
 
@@ -60,6 +61,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
   for (const a of journal) {
     entries.push({ url: `${SITE_URL}/journal/${a.slug}`, lastModified: new Date(a.date) });
+  }
+  for (const t of team) {
+    entries.push({ url: `${SITE_URL}/leadership/${t.slug}`, lastModified: now });
   }
 
   return entries;

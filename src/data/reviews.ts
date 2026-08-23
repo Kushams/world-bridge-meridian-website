@@ -1126,3 +1126,26 @@ export function averageRating(): number {
     ) / 10
   );
 }
+
+/**
+ * Some sample reviews are labeled with a broader or differently-worded trip
+ * name than the matching destination's page title (e.g. an "Italy" review
+ * fairly applies to Rome, Florence or Venice). This maps those cases to the
+ * destination slug(s) they should surface on; everything else is matched by
+ * a direct name comparison in `reviewsForDestinationSlug`.
+ */
+const DESTINATION_ALIASES: Record<string, string[]> = {
+  Italy: ["rome", "florence", "venice"],
+  "Kenya & Tanzania": ["nairobi", "zanzibar"],
+  "Provence & Tuscany": ["florence"],
+  "Corporate Retreat, Lisbon": ["lisbon"],
+};
+
+export function reviewsForDestinationSlug(slug: string, destinationName: string, limit = 3): Review[] {
+  return reviews
+    .filter((r) => {
+      if (DESTINATION_ALIASES[r.destination]?.includes(slug)) return true;
+      return r.destination.toLowerCase() === destinationName.toLowerCase();
+    })
+    .slice(0, limit);
+}

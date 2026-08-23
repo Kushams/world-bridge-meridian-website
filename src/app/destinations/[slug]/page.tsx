@@ -15,6 +15,8 @@ import { ItineraryTimeline } from "@/components/detail/ItineraryTimeline";
 import { PricingBlock } from "@/components/detail/PricingBlock";
 import { PackageCard } from "@/components/cards/PackageCard";
 import { ExperienceCard } from "@/components/cards/ExperienceCard";
+import { ReviewCard } from "@/components/cards/ReviewCard";
+import { reviewsForDestinationSlug } from "@/data/reviews";
 
 export function generateStaticParams() {
   return destinations.map((d) => ({ slug: d.slug }));
@@ -47,6 +49,7 @@ export default async function DestinationPage({
   const relatedPackages = packages.filter((p) => p.destinationSlugs.includes(slug));
   const relatedExperiences = experiences.filter((e) => e.destinationSlug === slug);
   const relatedStays = staysForDestination(slug);
+  const relatedReviews = reviewsForDestinationSlug(slug, destination.name);
 
   return (
     <>
@@ -186,6 +189,25 @@ export default async function DestinationPage({
               </div>
             </div>
           </div>
+
+          {relatedReviews.length > 0 ? (
+            <div className="mt-20">
+              <SectionHeading
+                eyebrow="Client Reviews"
+                title={`What Clients Say About ${destination.name}`}
+              />
+              <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                {relatedReviews.map((review) => (
+                  <ReviewCard key={review.id} review={review} />
+                ))}
+              </div>
+              <div className="mt-8">
+                <Button href="/reviews" variant="outline">
+                  Read All Reviews
+                </Button>
+              </div>
+            </div>
+          ) : null}
 
           <div className="mt-24 rounded-card border hairline bg-charcoal p-10 text-center md:p-16">
             <h2 className="font-display text-3xl md:text-4xl text-ivory">
