@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { ArtListing, LAST_VERIFIED } from "@/data/exhibitions";
+import { ArtListing } from "@/data/exhibitions";
 import { Button } from "@/components/ui/Button";
 
-function formatDate(iso: string) {
+export function formatDate(iso: string) {
   return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
@@ -18,36 +18,47 @@ function daysBetween(a: string, b: string) {
   );
 }
 
-function statusFor(listing: ArtListing): { label: string; tone: "open" | "soon" | "upcoming" } {
-  if (listing.startDate > LAST_VERIFIED) {
+export type ArtListingTone = "open" | "soon" | "upcoming" | "past";
+
+export function statusFor(listing: ArtListing, today: string): { label: string; tone: ArtListingTone } {
+  if (listing.endDate < today) {
+    return { label: `Closed ${formatDate(listing.endDate)}`, tone: "past" };
+  }
+  if (listing.startDate > today) {
     return { label: `Opens ${formatDate(listing.startDate)}`, tone: "upcoming" };
   }
-  if (daysBetween(LAST_VERIFIED, listing.endDate) <= 14) {
+  if (daysBetween(today, listing.endDate) <= 14) {
     return { label: `Closing soon — through ${formatDate(listing.endDate)}`, tone: "soon" };
   }
   return { label: `On view through ${formatDate(listing.endDate)}`, tone: "open" };
 }
 
-export function ArtListingCard({ listing }: { listing: ArtListing }) {
-  const status = statusFor(listing);
+const badgeTone: Record<ArtListingTone, string> = {
+  open: "bg-ink/80 text-ivory backdrop-blur",
+  soon: "bg-gold text-ink",
+  upcoming: "bg-ink/80 text-ivory backdrop-blur",
+  past: "bg-charcoal/90 text-stone-dim backdrop-blur border border-line",
+};
+
+export function ArtListingCard({ listing, today }: { listing: ArtListing; today: string }) {
+  const status = statusFor(listing, today);
+  const isPast = status.tone === "past";
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-card border hairline bg-charcoal">
+    <div
+      className={`flex h-full flex-col overflow-hidden rounded-card border hairline bg-charcoal ${
+        isPast ? "opacity-70" : ""
+      }`}
+    >
       <div className="relative h-48 w-full shrink-0">
         <Image
           src={listing.heroImage}
           alt="Gallery interior"
           fill
           sizes="(min-width: 768px) 400px, 90vw"
-          className="object-cover"
+          className={`object-cover ${isPast ? "grayscale" : ""}`}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/10 to-transparent" />
-        <span
-          className={`absolute left-4 top-4 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${
-            status.tone === "soon"
-              ? "bg-gold text-ink"
-              : "bg-ink/80 text-ivory backdrop-blur"
-          }`}
-        >
+        <span className={`absolute left-4 top-4 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${badgeTone[status.tone]}`}>
           {status.label}
         </span>
       </div>
@@ -70,11 +81,13 @@ export function ArtListingCard({ listing }: { listing: ArtListing }) {
           >
             Verify on {listing.sourceLabel} ↗
           </a>
-          <div className="ml-auto">
-            <Button href="/plan-your-journey" variant="outline" size="md">
-              Plan This Trip
-            </Button>
-          </div>
+          {!isPast ? (
+            <div className="ml-auto">
+              <Button href="/plan-your-journey" variant="outline" size="md">
+                Plan This Trip
+              </Button>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>
