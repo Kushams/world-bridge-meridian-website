@@ -1,4 +1,5 @@
 import { TeamMember } from "./types";
+import { stockPortrait } from "./images";
 
 /**
  * Illustrative staff roster.
@@ -45,6 +46,7 @@ export const team: TeamMember[] = [
     title: "Director of Travel Design",
     department: "Travel Design & Experience",
     reportsToSlug: "justin-warkovsky",
+    photo: stockPortrait("1685760259914-ee8d2c92d2e0"),
     bio: [
       "Amara leads the team that turns a client's first conversation with World Bridge Meridian into an actual itinerary — destinations, pacing, accommodation style and the experiences woven through each day.",
       "She sets the standard every journey is designed against before it reaches a client: nothing goes out that the design team wouldn't book for their own family.",
@@ -57,6 +59,7 @@ export const team: TeamMember[] = [
     title: "Director of Operations & Supplier Relations",
     department: "Operations",
     reportsToSlug: "justin-warkovsky",
+    photo: stockPortrait("1652471943570-f3590a4e52ed"),
     bio: [
       "Lucas runs the operational side of the business — the flight and ground logistics, supplier contracts, and documentation processes that have to work correctly every single time.",
       "He negotiates and maintains the working relationships with the hotels, ground handlers and transport partners that World Bridge Meridian's journeys depend on.",
@@ -69,6 +72,7 @@ export const team: TeamMember[] = [
     title: "Director of Client Experience",
     department: "Client Experience",
     reportsToSlug: "justin-warkovsky",
+    photo: stockPortrait("1573496359142-b8d87734a5a2"),
     bio: [
       "Priya owns the relationship with every client from the moment a journey is confirmed through to the day they're back home — the point of contact if a flight changes, a plan shifts, or something simply needs handling.",
       "She built the client experience team around a single rule: a traveler should never have to solve a problem on their own mid-trip.",
@@ -81,6 +85,7 @@ export const team: TeamMember[] = [
     title: "Finance Director",
     department: "Finance",
     reportsToSlug: "earl-anderson",
+    photo: stockPortrait("1519085360753-af0119f7cbe7"),
     bio: [
       "Daniel oversees World Bridge Meridian's finances — from indicative pricing on new itineraries to supplier payments and client billing.",
       "He works closely with the travel design team to keep pricing honest: what a client is quoted is what the finance team can actually stand behind once every cost is accounted for.",
@@ -93,6 +98,7 @@ export const team: TeamMember[] = [
     title: "Marketing & Partnerships Manager",
     department: "Marketing & Partnerships",
     reportsToSlug: "earl-anderson",
+    photo: stockPortrait("1651684215020-f7a5b6610f23"),
     bio: [
       "Oliver leads how World Bridge Meridian tells its own story — the journal, destination content, and the evaluation of new hospitality and travel partners before they're brought into any itinerary.",
       "He and his team vet every potential partner directly before a recommendation is ever made to a client.",
@@ -107,6 +113,7 @@ export const team: TeamMember[] = [
     title: "Travel Coordination Manager",
     department: "Travel Design & Experience",
     reportsToSlug: "amara-okonkwo",
+    photo: stockPortrait("1699899657680-421c2c2d5064"),
     bio: [
       "Sofia manages the regional coordinating officers who turn a confirmed itinerary into a working travel plan — bookings, timing, and the hundred small details that sit between a plan on paper and a plan that actually runs.",
       "She reviews every itinerary before it's finalized for a client, checking that pacing, connections and logistics genuinely hold together.",
@@ -119,6 +126,7 @@ export const team: TeamMember[] = [
     title: "Cruise & Group Travel Manager",
     department: "Travel Design & Experience",
     reportsToSlug: "amara-okonkwo",
+    photo: stockPortrait("1627161684458-a62da52b51c3"),
     bio: [
       "Ethan manages cruise itinerary building and group travel logistics — cabin categories, shared departures, and the coordination that group trips need beyond a standard individual journey.",
       "He works directly with cruise operators' booking desks to hold cabin allocations and manage group-rate logistics.",
@@ -131,6 +139,7 @@ export const team: TeamMember[] = [
     title: "Air & Itinerary Planning Manager",
     department: "Operations",
     reportsToSlug: "lucas-ferreira",
+    photo: stockPortrait("1580489944761-15a19d654956"),
     bio: [
       "Hana manages flight itinerary planning — routing, connection timing, and the kind of contingency planning that keeps a long multi-city journey from unraveling over one missed connection.",
       "Her team is the first call if a flight schedule changes mid-journey and a route needs to be rebuilt on short notice.",
@@ -143,6 +152,7 @@ export const team: TeamMember[] = [
     title: "Corporate Travel Manager",
     department: "Travel Design & Experience",
     reportsToSlug: "amara-okonkwo",
+    photo: stockPortrait("1642257859842-c95f9fa8121d"),
     bio: [
       "Marcus leads corporate and delegation travel — group logistics, approval workflows, and the reporting that institutional clients need alongside a well-run itinerary.",
       "He's usually the first point of contact for a company or organization booking travel for a team rather than a single traveler.",
@@ -155,6 +165,7 @@ export const team: TeamMember[] = [
     title: "Client Experience Manager",
     department: "Client Experience",
     reportsToSlug: "priya-nair",
+    photo: stockPortrait("1494790108377-be9c29b29330"),
     bio: [
       "Isabel manages the associates and guest relations officers who support clients before, during and after their journey — the team a client actually talks to day to day.",
       "She sets response-time standards for the team and reviews how every enquiry and in-trip request is handled.",
@@ -169,6 +180,7 @@ export const team: TeamMember[] = [
     title: "Travel Coordinating Officer — Europe",
     department: "Travel Design & Experience",
     reportsToSlug: "sofia-marchetti",
+    photo: stockPortrait("1573497019940-1c28c88b4f3e"),
     bio: [
       "Camille coordinates travel packages and flight itineraries across World Bridge Meridian's European destinations — matching hotels, transport and local experiences to a confirmed itinerary and locking in the bookings behind it.",
       "She's the coordinating officer clients traveling through Europe are most likely to hear from directly while a trip is being built.",
@@ -181,6 +193,7 @@ export const team: TeamMember[] = [
     title: "Travel Coordinating Officer — Asia-Pacific",
     department: "Travel Design & Experience",
     reportsToSlug: "sofia-marchetti",
+    photo: stockPortrait("1629425733761-caae3b5f2e50"),
     bio: [
       "Ravi coordinates travel packages and flight itineraries across Asia-Pacific destinations, from city stopovers to multi-country journeys spanning several time zones.",
       "He handles the booking confirmations and day-by-day logistics once a client's Asia-Pacific itinerary has been designed and approved.",
@@ -193,6 +206,7 @@ export const team: TeamMember[] = [
     title: "Travel Coordinating Officer — Americas",
     department: "Travel Design & Experience",
     reportsToSlug: "sofia-marchetti",
+    photo: stockPortrait("1627161683077-e34782c24d81"),
     bio: [
       "Natalia coordinates travel packages and flight itineraries across North and South America, working closely with local ground partners to keep transfers and excursions running on schedule.",
       "She manages the logistics for many of the company's multi-city North American itineraries.",
@@ -205,6 +219,7 @@ export const team: TeamMember[] = [
     title: "Travel Coordinating Officer — Middle East & Africa",
     department: "Travel Design & Experience",
     reportsToSlug: "sofia-marchetti",
+    photo: stockPortrait("1595211877493-41a4e5f236b3"),
     bio: [
       "Kwame coordinates travel packages and flight itineraries across the Middle East and Africa, including the bush-flight and lodge logistics that safari itineraries depend on.",
       "He works directly with regional ground handlers to keep safari and desert-extension logistics tightly scheduled.",
@@ -217,6 +232,7 @@ export const team: TeamMember[] = [
     title: "Flight & Itinerary Coordinator",
     department: "Operations",
     reportsToSlug: "hana-kobayashi",
+    photo: stockPortrait("1701096374092-bb70915fdc5c"),
     bio: [
       "Grace builds and confirms flight itineraries for individual and family journeys, checking connection times, layover length and routing against each traveler's actual plans.",
       "She flags anything that looks tight or risky before it ever reaches a client's confirmed itinerary.",
@@ -229,6 +245,7 @@ export const team: TeamMember[] = [
     title: "Flight & Itinerary Coordinator",
     department: "Operations",
     reportsToSlug: "hana-kobayashi",
+    photo: stockPortrait("1500648767791-00dcc994a43e"),
     bio: [
       "Tomas builds and confirms flight itineraries with a focus on multi-city and round-the-world routings, where a single change can affect every leg that follows.",
       "He's usually the one rebuilding a routing from scratch when a client's plans shift midway through booking.",
@@ -241,6 +258,7 @@ export const team: TeamMember[] = [
     title: "Cruise Booking Coordinator",
     department: "Travel Design & Experience",
     reportsToSlug: "ethan-walsh",
+    photo: stockPortrait("1573496358961-3c82861ab8f4"),
     bio: [
       "Leilani manages cabin bookings, deck and category selection, and the shore-excursion planning that rounds out a cruise itinerary.",
       "She works directly with clients to match cabin category and location on the ship to how they actually plan to spend their days at sea.",
@@ -253,6 +271,7 @@ export const team: TeamMember[] = [
     title: "Group Travel Coordinator",
     department: "Travel Design & Experience",
     reportsToSlug: "ethan-walsh",
+    photo: stockPortrait("1507003211169-0a1dd7228f2d"),
     bio: [
       "Youssef coordinates group departures — matching individual travelers' preferences within a shared itinerary, and managing the logistics that scale differently once a trip involves ten or more people.",
       "He handles rooming lists, group transport and the communication that keeps a group itinerary running smoothly for everyone in it.",
@@ -265,6 +284,7 @@ export const team: TeamMember[] = [
     title: "Client Experience Associate",
     department: "Client Experience",
     reportsToSlug: "isabel-rojas",
+    photo: stockPortrait("1580894732444-8ecded7900cd"),
     bio: [
       "Megan is a first point of contact for client enquiries — questions about an itinerary, a change request, or simply what to expect before departure.",
       "She routes anything that needs specialist attention to the right coordinating officer or manager, and follows up to make sure it actually gets resolved.",
@@ -277,6 +297,7 @@ export const team: TeamMember[] = [
     title: "Guest Relations Officer",
     department: "Client Experience",
     reportsToSlug: "isabel-rojas",
+    photo: stockPortrait("1556157382-97eda2d62296"),
     bio: [
       "Diego supports clients while they're actually traveling — the contact point if a flight is delayed, a hotel booking needs adjusting, or a plan needs to change mid-trip.",
       "He works outside standard office hours when a journey is in progress, since travel problems rarely happen on a convenient schedule.",
@@ -289,6 +310,7 @@ export const team: TeamMember[] = [
     title: "Visa & Travel Documentation Officer",
     department: "Operations",
     reportsToSlug: "lucas-ferreira",
+    photo: stockPortrait("1611432579699-484f7990b127"),
     bio: [
       "Anastasia tracks visa requirements, passport validity rules and entry documentation for every destination on a client's itinerary, and flags what each traveler needs to arrange before departure.",
       "She keeps the documentation requirements behind every destination page current as entry rules change.",
@@ -301,6 +323,7 @@ export const team: TeamMember[] = [
     title: "Finance & Billing Officer",
     department: "Finance",
     reportsToSlug: "daniel-hoffmann",
+    photo: stockPortrait("1560250097-0b93528c311a"),
     bio: [
       "Benjamin manages client billing, payment schedules and supplier invoices, making sure every itinerary's finances stay accurate from initial quote through to final payment.",
       "He's the point of contact for any billing question once a journey is confirmed.",
@@ -313,6 +336,7 @@ export const team: TeamMember[] = [
     title: "Marketing Coordinator",
     department: "Marketing & Partnerships",
     reportsToSlug: "oliver-bennett",
+    photo: stockPortrait("1573497161161-c3e73707e25c"),
     bio: [
       "Chloe coordinates World Bridge Meridian's journal content and destination updates, working with the travel design team to keep destination information accurate and genuinely useful.",
       "She manages the editorial calendar behind the journal's destination guides and travel planning articles.",
@@ -325,6 +349,7 @@ export const team: TeamMember[] = [
     title: "Partnerships & Supplier Relations Coordinator",
     department: "Operations",
     reportsToSlug: "lucas-ferreira",
+    photo: stockPortrait("1568602471122-7832951cc4c5"),
     bio: [
       "Arjun coordinates day-to-day communication with hotel, ground transport and activity partners, and helps evaluate new suppliers before they're added to any itinerary.",
       "He tracks supplier performance so recommendations stay based on what actually works well for clients, not just what's contracted.",

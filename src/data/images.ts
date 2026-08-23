@@ -15,6 +15,16 @@ function unsplash(id: string, w = 1600, q = 80) {
   return `https://images.unsplash.com/photo-${id}?w=${w}&q=${q}&auto=format&fit=crop`;
 }
 
+/**
+ * Stock professional headshots standing in for staff photos below Earl and
+ * Justin (our real founder and COO). Each ID was fetched and visually
+ * reviewed. Replace with real staff photography as real hires join —
+ * see src/data/team.ts.
+ */
+export function stockPortrait(id: string, w = 800) {
+  return `${unsplash(id, w, 80)}&crop=faces`;
+}
+
 export const IMAGE_BANK = {
   cityscape: [
     "1502602898657-3e91760cbb34", // Eiffel Tower at sunset
