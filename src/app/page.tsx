@@ -1,5 +1,6 @@
 import { Hero } from "@/components/home/Hero";
 import { CorePaths } from "@/components/home/CorePaths";
+import { StatsBand } from "@/components/home/StatsBand";
 import { JourneyPanel } from "@/components/home/JourneyPanel";
 import { CardSection } from "@/components/home/CardSection";
 import { TravelStyles } from "@/components/home/TravelStyles";
@@ -30,6 +31,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <StatsBand />
       <CorePaths />
 
       <CardSection
