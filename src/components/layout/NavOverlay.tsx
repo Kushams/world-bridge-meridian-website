@@ -74,7 +74,7 @@ export function NavOverlay({
                       <Link
                         href={link.href}
                         onClick={onClose}
-                        className="font-display text-base text-ivory-dim hover:text-gold transition-colors"
+                        className="inline-block -my-1.5 py-1.5 font-display text-base text-ivory-dim hover:text-gold transition-colors"
                       >
                         {link.label}
                       </Link>
@@ -92,13 +92,13 @@ export function NavOverlay({
                   key={link.href}
                   href={link.href}
                   onClick={onClose}
-                  className="hover:text-ivory transition-colors"
+                  className="inline-block -my-1.5 py-1.5 hover:text-ivory transition-colors"
                 >
                   {link.label}
                 </Link>
               ))}
             </div>
-            <a href={`mailto:${company.email}`} className="hover:text-ivory transition-colors">
+            <a href={`mailto:${company.email}`} className="inline-block -my-1.5 py-1.5 hover:text-ivory transition-colors">
               {company.email}
             </a>
           </div>

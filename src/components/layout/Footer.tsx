@@ -32,7 +32,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-sm text-ivory-dim hover:text-gold transition-colors"
+                      className="inline-block -my-1.5 py-1.5 text-sm text-ivory-dim hover:text-gold transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -47,22 +47,22 @@ export function Footer() {
           <p className="eyebrow mb-4">Contact</p>
           <ul className="space-y-2.5 text-sm text-ivory-dim">
             <li>
-              <Link href="/contact" className="hover:text-gold transition-colors">
+              <Link href="/contact" className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors">
                 Contact Us
               </Link>
             </li>
             <li>
-              <Link href="/plan-your-journey" className="hover:text-gold transition-colors">
+              <Link href="/plan-your-journey" className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors">
                 Plan Your Journey
               </Link>
             </li>
             <li>
-              <Link href="/payments" className="hover:text-gold transition-colors">
+              <Link href="/payments" className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors">
                 Payment Options
               </Link>
             </li>
             <li>
-              <a href={`mailto:${company.email}`} className="hover:text-gold transition-colors">
+              <a href={`mailto:${company.email}`} className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors">
                 {company.email}
               </a>
             </li>
@@ -79,7 +79,7 @@ export function Footer() {
           <p>{company.copyrightLine(year)}</p>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             {legalLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="hover:text-ivory transition-colors">
+              <Link key={link.href} href={link.href} className="inline-block -my-1.5 py-1.5 hover:text-ivory transition-colors">
                 {link.label}
               </Link>
             ))}

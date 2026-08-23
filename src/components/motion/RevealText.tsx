@@ -19,7 +19,7 @@ export function RevealText({
   }
 
   return (
-    <span className={className} aria-label={text}>
+    <span className={className} role="text" aria-label={text}>
       <span aria-hidden="true">
         {words.map((word, i) => (
           <span key={i} className="inline-block overflow-hidden align-bottom pb-[0.08em]">

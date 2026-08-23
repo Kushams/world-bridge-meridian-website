@@ -29,6 +29,7 @@ const staticRoutes = [
   "/art-fairs",
   "/about",
   "/leadership",
+  "/careers",
   "/partners",
   "/reviews",
   "/journal",

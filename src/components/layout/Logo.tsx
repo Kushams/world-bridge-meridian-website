@@ -4,7 +4,6 @@ export function Logo({ className = "" }: { className?: string }) {
   return (
     <Link
       href="/"
-      aria-label="World Bridge Meridian — Home"
       className={`group inline-flex flex-col leading-none ${className}`}
     >
       <span className="font-display text-lg md:text-xl tracking-[0.02em] text-ivory">

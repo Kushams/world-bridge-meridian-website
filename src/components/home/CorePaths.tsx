@@ -49,9 +49,9 @@ export function CorePaths() {
                 />
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 p-8 md:p-10">
                   <p className="eyebrow mb-3">{path.eyebrow}</p>
-                  <h3 className="font-display text-2xl md:text-3xl text-ivory">
+                  <h2 className="font-display text-2xl md:text-3xl text-ivory">
                     {path.title}
-                  </h3>
+                  </h2>
                   <p className="mt-3 max-w-sm text-sm text-ivory-dim leading-relaxed">
                     {path.description}
                   </p>

@@ -42,10 +42,12 @@ export const metadata: Metadata = {
 
 const organizationJsonLd = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": "TravelAgency",
   name: company.name,
   description: company.tagline,
   url: SITE_URL,
+  logo: `${SITE_URL}/icon.svg`,
+  image: `${SITE_URL}/opengraph-image`,
   email: company.email,
   foundingDate: String(company.foundedYear),
   founder: {

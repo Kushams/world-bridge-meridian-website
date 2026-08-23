@@ -52,6 +52,7 @@ export const menuGroups: NavGroup[] = [
     links: [
       { label: "About World Bridge Meridian", href: "/about" },
       { label: "Leadership", href: "/leadership" },
+      { label: "Careers", href: "/careers" },
       { label: "Partners", href: "/partners" },
       { label: "Reviews", href: "/reviews" },
     ],
@@ -115,6 +116,7 @@ export const footerColumns: NavGroup[] = [
     links: [
       { label: "About Us", href: "/about" },
       { label: "Leadership", href: "/leadership" },
+      { label: "Careers", href: "/careers" },
       { label: "Partners", href: "/partners" },
       { label: "Reviews", href: "/reviews" },
       { label: "FAQs", href: "/faq" },
