@@ -17,6 +17,8 @@ export const company = {
   whatsapp: null as string | null, // "[WHATSAPP NUMBER TO BE PROVIDED]"
   address: null as string | null, // "[ADDRESS TO BE PROVIDED]"
   cooName: "Justin Warkovsky" as string | null,
+  cryptoAcceptedSince: 2015,
+  cryptoCurrencies: ["Bitcoin (BTC)", "Tether (USDT)", "Solana (SOL)"],
 
   tagline:
     "World Bridge Meridian designs and organizes thoughtful journeys, curated travel experiences, group departures, cruises, cultural adventures and bespoke escapes around the world.",

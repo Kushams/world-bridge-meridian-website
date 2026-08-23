@@ -35,6 +35,7 @@ const staticRoutes = [
   "/faq",
   "/contact",
   "/plan-your-journey",
+  "/payments",
   "/my-world-bridge",
   "/stays",
   "/privacy",

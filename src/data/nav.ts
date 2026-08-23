@@ -68,6 +68,7 @@ export const menuGroups: NavGroup[] = [
     links: [
       { label: "Contact Us", href: "/contact" },
       { label: "Plan Your Journey", href: "/plan-your-journey" },
+      { label: "Payment Options", href: "/payments" },
     ],
   },
   {

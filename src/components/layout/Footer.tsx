@@ -57,6 +57,11 @@ export function Footer() {
               </Link>
             </li>
             <li>
+              <Link href="/payments" className="hover:text-gold transition-colors">
+                Payment Options
+              </Link>
+            </li>
+            <li>
               <a href={`mailto:${company.email}`} className="hover:text-gold transition-colors">
                 {company.email}
               </a>
