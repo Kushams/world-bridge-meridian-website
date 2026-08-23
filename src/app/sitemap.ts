@@ -6,6 +6,8 @@ import { cruises } from "@/data/cruises";
 import { experiences } from "@/data/experiences";
 import { journal } from "@/data/journal";
 
+export const dynamic = "force-static";
+
 const staticRoutes = [
   "",
   "/explore",
