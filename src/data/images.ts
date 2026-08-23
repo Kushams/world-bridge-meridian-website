@@ -20,7 +20,7 @@ export const IMAGE_BANK = {
     "1502602898657-3e91760cbb34", // Eiffel Tower at sunset
     "1499856871958-5b9627545d1a", // Paris bridge, night
     "1533929736458-ca588d08c8be", // Tower Bridge, London
-    "1508009603885-50cf7c579365", // neon city street, night
+    "1519501025264-65ba15a82390", // rain-lit city street, night (generic Western downtown)
     "1512453979798-5ea266f8880c", // Dubai skyline, sunset
     "1546412414-8035e1776c9a", // Dubai, contemporary architecture
     "1496442226666-8d4d0e62e6e9", // Times Square, night

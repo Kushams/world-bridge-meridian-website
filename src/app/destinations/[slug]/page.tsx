@@ -93,7 +93,7 @@ export default async function DestinationPage({
               </div>
 
               <div className="mt-10">
-                <p className="eyebrow mb-4">Experience {destination.name}</p>
+                <p className="eyebrow mb-4">Things To Do &amp; Adventures</p>
                 <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {destination.highlights.map((h, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-stone">
@@ -133,7 +133,7 @@ export default async function DestinationPage({
           </div>
 
           <div className="mt-16">
-            <p className="eyebrow mb-4">Gallery</p>
+            <p className="eyebrow mb-4">{destination.name} in Pictures</p>
             <GalleryStrip images={destination.gallery} alt={destination.name} />
           </div>
 

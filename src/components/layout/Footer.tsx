@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { NewsletterForm } from "./NewsletterForm";
-import { company, socialLinks } from "@/data/company";
+import { company } from "@/data/company";
 import { footerColumns, legalLinks } from "@/data/nav";
 
 export function Footer() {
@@ -43,50 +43,31 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-8 border-t hairline pt-10 md:grid-cols-2">
-          <div>
-            <p className="eyebrow mb-4">Contact</p>
-            <ul className="space-y-2.5 text-sm text-ivory-dim">
-              <li>
-                <Link href="/contact" className="hover:text-gold transition-colors">
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/plan-your-journey" className="hover:text-gold transition-colors">
-                  Plan Your Journey
-                </Link>
-              </li>
-              <li>
-                <a href={`mailto:${company.email}`} className="hover:text-gold transition-colors">
-                  {company.email}
-                </a>
-              </li>
-              <li className="text-stone-dim">
-                {company.phone ?? "[PHONE NUMBER TO BE PROVIDED]"}
-              </li>
-              <li className="text-stone-dim">
-                {company.whatsapp ?? "[WHATSAPP NUMBER TO BE PROVIDED]"}
-              </li>
-            </ul>
-          </div>
-
-          <div className="md:text-right">
-            <p className="eyebrow mb-4 md:justify-end md:flex">Follow</p>
-            <ul className="flex flex-wrap gap-4 text-sm text-stone-dim md:justify-end">
-              {socialLinks.map((s) => (
-                <li key={s.label}>
-                  {s.href ? (
-                    <a href={s.href} className="hover:text-gold transition-colors">
-                      {s.label}
-                    </a>
-                  ) : (
-                    <span title="Account coming soon">{s.label}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
+        <div className="mt-14 border-t hairline pt-10">
+          <p className="eyebrow mb-4">Contact</p>
+          <ul className="space-y-2.5 text-sm text-ivory-dim">
+            <li>
+              <Link href="/contact" className="hover:text-gold transition-colors">
+                Contact Us
+              </Link>
+            </li>
+            <li>
+              <Link href="/plan-your-journey" className="hover:text-gold transition-colors">
+                Plan Your Journey
+              </Link>
+            </li>
+            <li>
+              <a href={`mailto:${company.email}`} className="hover:text-gold transition-colors">
+                {company.email}
+              </a>
+            </li>
+            <li className="text-stone-dim">
+              {company.phone ?? "[PHONE NUMBER TO BE PROVIDED]"}
+            </li>
+            <li className="text-stone-dim">
+              {company.whatsapp ?? "[WHATSAPP NUMBER TO BE PROVIDED]"}
+            </li>
+          </ul>
         </div>
 
         <div className="mt-10 flex flex-col-reverse items-start gap-4 border-t hairline pt-8 text-xs text-stone-dim md:flex-row md:items-center md:justify-between">

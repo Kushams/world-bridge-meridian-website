@@ -9,7 +9,7 @@ export const destinations: Destination[] = [
     country: "United States",
     region: "North America",
     heroImage: themeImage("cityscape", 5),
-    gallery: themeGallery("cityscape", 4, 5),
+    gallery: themeGallery("cityscape", 6, 5),
     shortDescription: "Museums, skyline and the energy of the world's most-quoted city.",
     description: [
       "New York rewards a well-organized journey — the museums alone could fill a week, and the neighborhoods each read like a different city stitched into one grid.",
@@ -45,7 +45,7 @@ export const destinations: Destination[] = [
     country: "United States",
     region: "North America",
     heroImage: themeImage("cityscape", 6),
-    gallery: themeGallery("cityscape", 3, 6),
+    gallery: themeGallery("cityscape", 6, 6),
     shortDescription: "Coastline, canyons and culture across a famously spread-out city.",
     description: [
       "Los Angeles works best with a plan — the city's best moments are spread across the coast, the hills and the studios, and getting between them well is half the experience.",
@@ -80,7 +80,7 @@ export const destinations: Destination[] = [
     country: "United States",
     region: "North America",
     heroImage: themeImage("coastal", 2),
-    gallery: themeGallery("coastal", 3, 2),
+    gallery: themeGallery("coastal", 6, 2),
     shortDescription: "Art Deco, beach clubs and a gateway to the Caribbean.",
     description: [
       "Miami suits both a stand-alone beach escape and a stopover before a Caribbean cruise — the city has enough of its own art, food and nightlife to earn a few days on its own.",
@@ -115,7 +115,7 @@ export const destinations: Destination[] = [
     country: "Canada",
     region: "North America",
     heroImage: themeImage("cityscape", 12),
-    gallery: themeGallery("cityscape", 3, 12),
+    gallery: themeGallery("cityscape", 6, 12),
     shortDescription: "A layered, multicultural city on the edge of Ontario's lakes.",
     description: [
       "Toronto is an easy city to like — walkable neighborhoods, a serious food scene shaped by the world, and quick access to Ontario's wine country and lakes.",
@@ -150,7 +150,7 @@ export const destinations: Destination[] = [
     country: "Canada",
     region: "North America",
     heroImage: themeImage("mountainNature", 4),
-    gallery: themeGallery("mountainNature", 3, 4),
+    gallery: themeGallery("mountainNature", 6, 4),
     shortDescription: "Mountains and ocean meet on Canada's west coast.",
     description: [
       "Vancouver sits between the mountains and the Pacific, which makes it a natural base for a journey that mixes a real city with genuine wilderness.",
@@ -187,7 +187,7 @@ export const destinations: Destination[] = [
     country: "United Kingdom",
     region: "Europe",
     heroImage: themeImage("cityscape", 0),
-    gallery: themeGallery("cityscape", 4, 0),
+    gallery: themeGallery("cityscape", 6, 0),
     shortDescription: "Theatre, museums and history layered across a global capital.",
     description: [
       "London is a city that improves the deeper you go — beyond the well-known sights, we build in the neighborhoods, the small museums and the theatre bookings that make a trip feel considered rather than checked off a list.",
@@ -223,7 +223,7 @@ export const destinations: Destination[] = [
     country: "France",
     region: "Europe",
     heroImage: themeImage("cityscape", 1),
-    gallery: themeGallery("cityscape", 4, 1),
+    gallery: themeGallery("cityscape", 6, 1),
     shortDescription: "Art, architecture and a very particular way of living well.",
     description: [
       "Paris is the arts-and-culture journey many clients ask for first — the Louvre and the Musée d'Orsay, but also the smaller galleries, the neighborhood markets, and evenings arranged around a specific exhibition or performance.",
@@ -259,7 +259,7 @@ export const destinations: Destination[] = [
     country: "Italy",
     region: "Europe",
     heroImage: themeImage("culturalHeritage", 0),
-    gallery: themeGallery("culturalHeritage", 3, 0),
+    gallery: themeGallery("culturalHeritage", 6, 0),
     shortDescription: "Three thousand years of history arranged around excellent food.",
     description: [
       "Rome is dense with history in a way that rewards a well-paced itinerary — the Colosseum and Vatican Museums, yes, but also the quieter piazzas and trattorias that make the city livable rather than exhausting.",
@@ -296,7 +296,7 @@ export const destinations: Destination[] = [
     country: "Italy",
     region: "Europe",
     heroImage: themeImage("culturalHeritage", 6),
-    gallery: themeGallery("culturalHeritage", 3, 6),
+    gallery: themeGallery("culturalHeritage", 6, 6),
     shortDescription: "The Renaissance city, best explored on foot and unhurried.",
     description: [
       "Florence is compact enough to walk end to end, which makes it one of the more forgiving cities to organize a journey around — the Uffizi and the Duomo in the morning, Tuscan hills by afternoon.",
@@ -331,7 +331,7 @@ export const destinations: Destination[] = [
     country: "Italy",
     region: "Europe",
     heroImage: themeImage("cityscape", 2),
-    gallery: themeGallery("cityscape", 3, 2),
+    gallery: themeGallery("cityscape", 6, 2),
     shortDescription: "Canals, glasswork and a city unlike anywhere else.",
     description: [
       "Venice rewards slowing down — early mornings before the crowds, a private boat rather than the crowded vaporetto, and evenings spent away from San Marco.",
@@ -367,7 +367,7 @@ export const destinations: Destination[] = [
     country: "Spain",
     region: "Europe",
     heroImage: themeImage("cityscape", 10),
-    gallery: themeGallery("cityscape", 3, 10),
+    gallery: themeGallery("cityscape", 6, 10),
     shortDescription: "Art, architecture and Mediterranean living.",
     description: [
       "Barcelona balances Gaudí's architecture with a genuinely good beach city underneath it — mornings at the Sagrada Família, afternoons along the Mediterranean.",
@@ -403,7 +403,7 @@ export const destinations: Destination[] = [
     country: "Portugal",
     region: "Europe",
     heroImage: themeImage("coastal", 3),
-    gallery: themeGallery("coastal", 3, 3),
+    gallery: themeGallery("coastal", 6, 3),
     shortDescription: "Hillside streets, fado music and the Atlantic coast.",
     description: [
       "Lisbon has become one of our most-requested city breaks — good value, genuinely walkable, and close enough to the coast for an easy day trip to Sintra or Cascais.",
@@ -438,7 +438,7 @@ export const destinations: Destination[] = [
     country: "Netherlands",
     region: "Europe",
     heroImage: themeImage("cityscape", 18),
-    gallery: themeGallery("cityscape", 3, 18),
+    gallery: themeGallery("cityscape", 6, 18),
     shortDescription: "Canals, world-class museums and an easy cycling pace.",
     description: [
       "Amsterdam's museums — the Rijksmuseum, the Van Gogh Museum — are reason enough to visit, and the canal-side neighborhoods make it one of the more pleasant European cities to simply walk through.",
@@ -474,7 +474,7 @@ export const destinations: Destination[] = [
     country: "Austria",
     region: "Europe",
     heroImage: themeImage("culturalHeritage", 7),
-    gallery: themeGallery("culturalHeritage", 3, 7),
+    gallery: themeGallery("culturalHeritage", 6, 7),
     shortDescription: "Imperial architecture, coffeehouses and classical music.",
     description: [
       "Vienna is built for an arts-and-culture journey — the State Opera, the Kunsthistorisches Museum, and a coffeehouse culture that rewards slowing down between them.",
@@ -510,7 +510,7 @@ export const destinations: Destination[] = [
     country: "Czech Republic",
     region: "Europe",
     heroImage: themeImage("cityscape", 9),
-    gallery: themeGallery("cityscape", 3, 9),
+    gallery: themeGallery("cityscape", 6, 9),
     shortDescription: "A fairy-tale skyline and one of Europe's best-preserved old towns.",
     description: [
       "Prague's old town survived the twentieth century largely intact, which gives the city a density of well-preserved architecture that's rare in Europe.",
@@ -545,7 +545,7 @@ export const destinations: Destination[] = [
     country: "Greece",
     region: "Europe",
     heroImage: themeImage("culturalHeritage", 1),
-    gallery: themeGallery("culturalHeritage", 3, 1),
+    gallery: themeGallery("culturalHeritage", 6, 1),
     shortDescription: "Antiquity underfoot, and the gateway to the Greek islands.",
     description: [
       "Athens is best treated as both a destination and a gateway — a few days among the Acropolis and its museum, then onward to the islands by ferry or a short flight.",
@@ -581,7 +581,7 @@ export const destinations: Destination[] = [
     country: "Greece",
     region: "Europe",
     heroImage: themeImage("coastal", 0),
-    gallery: themeGallery("coastal", 3, 0),
+    gallery: themeGallery("coastal", 6, 0),
     shortDescription: "Caldera views, white-washed villages and unhurried evenings.",
     description: [
       "Santorini is one of our most-requested honeymoon destinations — caldera-view suites, long dinners at sunset, and a pace that's naturally slow.",
@@ -620,7 +620,7 @@ export const destinations: Destination[] = [
     country: "Türkiye",
     region: "Middle East & Africa",
     heroImage: themeImage("culturalHeritage", 8),
-    gallery: themeGallery("culturalHeritage", 3, 8),
+    gallery: themeGallery("culturalHeritage", 6, 8),
     shortDescription: "Two continents, layered history and one of the world's great bazaars.",
     description: [
       "Istanbul sits across two continents and several empires' worth of history — the Hagia Sophia, the Blue Mosque and the Grand Bazaar are just the beginning.",
@@ -655,7 +655,7 @@ export const destinations: Destination[] = [
     country: "United Arab Emirates",
     region: "Middle East & Africa",
     heroImage: themeImage("cityscape", 3),
-    gallery: themeGallery("cityscape", 3, 3),
+    gallery: themeGallery("cityscape", 6, 3),
     shortDescription: "Contemporary luxury and a gateway to the wider Emirates.",
     description: [
       "Dubai has become a strong fit for clients who want luxury without complication — excellent hotels, straightforward logistics, and easy extensions into the desert or Abu Dhabi.",
@@ -690,7 +690,7 @@ export const destinations: Destination[] = [
     country: "United Arab Emirates",
     region: "Middle East & Africa",
     heroImage: themeImage("desertArchitecture", 0),
-    gallery: themeGallery("cityscape", 2, 4),
+    gallery: themeGallery("cityscape", 6, 4),
     shortDescription: "Grand architecture, museums and a quieter counterpoint to Dubai.",
     description: [
       "Abu Dhabi moves at a slightly slower pace than Dubai, with the Sheikh Zayed Grand Mosque and the Louvre Abu Dhabi as anchor experiences.",
@@ -725,7 +725,7 @@ export const destinations: Destination[] = [
     country: "South Africa",
     region: "Middle East & Africa",
     heroImage: themeImage("mountainNature", 8),
-    gallery: themeGallery("coastal", 2, 4),
+    gallery: themeGallery("coastal", 6, 4),
     shortDescription: "Table Mountain, wine country and a gateway to safari.",
     description: [
       "Cape Town pairs a genuinely world-class city with the Cape Winelands and, further afield, safari country — it's one of our most complete single-country journeys.",
@@ -733,7 +733,7 @@ export const destinations: Destination[] = [
     ],
     travelStyles: ["luxury", "adventure", "food-wine"],
     highlights: [
-      "Table Mountain and the V&A Waterfront",
+      "Table Mountain — cable car or a guided hiking trail to the top",
       "Cape Winelands — Stellenbosch and Franschhoek",
       "Cape Point and penguin colonies",
       "Safari extensions into the Eastern Cape",
@@ -744,7 +744,7 @@ export const destinations: Destination[] = [
       "Family-friendly waterfront apartment",
     ],
     sampleItinerary: [
-      { day: "Day 1–2", title: "City & Table Mountain", description: "Waterfront, Table Mountain cable car, city touring." },
+      { day: "Day 1–2", title: "City & Table Mountain", description: "Waterfront, Table Mountain by cable car or hiking trail, city touring." },
       { day: "Day 3", title: "Cape Winelands", description: "Stellenbosch and Franschhoek wine estates." },
       { day: "Day 4", title: "Cape Point", description: "Peninsula drive and penguin colony visit." },
     ],
@@ -760,7 +760,7 @@ export const destinations: Destination[] = [
     country: "Morocco",
     region: "Middle East & Africa",
     heroImage: themeImage("desertArchitecture", 0),
-    gallery: themeGallery("culturalHeritage", 2, 2),
+    gallery: themeGallery("culturalHeritage", 6, 2),
     shortDescription: "Riads, souks and the edge of the Sahara.",
     description: [
       "Marrakech's medina is one of the most atmospheric city centers we send clients to — riad courtyards, souk alleys, and a pace that shifts entirely once you're behind a riad's walls.",
@@ -795,7 +795,7 @@ export const destinations: Destination[] = [
     country: "Egypt",
     region: "Middle East & Africa",
     heroImage: themeImage("desertArchitecture", 0),
-    gallery: themeGallery("culturalHeritage", 2, 3),
+    gallery: themeGallery("culturalHeritage", 6, 3),
     shortDescription: "The pyramids, the Nile, and one of the world's deepest histories.",
     description: [
       "Cairo is a history journey first — the Pyramids of Giza and the Egyptian Museum are unlike anywhere else — and we pair it naturally with a Nile river cruise for clients who want to go further into ancient Egypt.",
@@ -866,7 +866,7 @@ export const destinations: Destination[] = [
     country: "Tanzania",
     region: "Middle East & Africa",
     heroImage: themeImage("tropicalBeach", 0),
-    gallery: themeGallery("tropicalBeach", 3, 0),
+    gallery: themeGallery("tropicalBeach", 5, 0),
     shortDescription: "Spice-island beaches and Stone Town's old streets.",
     description: [
       "Zanzibar is a natural close to a safari — a shift from dust and game drives to white sand and the Indian Ocean, with Stone Town's history in between.",
@@ -903,7 +903,7 @@ export const destinations: Destination[] = [
     country: "Japan",
     region: "Asia-Pacific",
     heroImage: themeImage("cityscape", 13),
-    gallery: themeGallery("cityscape", 3, 13),
+    gallery: themeGallery("cityscape", 6, 13),
     shortDescription: "Precision, tradition and a city that rewards close attention.",
     description: [
       "Tokyo is a city of neighborhoods rather than a single center, and we build itineraries that move between them deliberately — old Tokyo in Asakusa, contemporary design in Shibuya, and the kind of restaurant reservations that require advance planning.",
@@ -939,7 +939,7 @@ export const destinations: Destination[] = [
     country: "Japan",
     region: "Asia-Pacific",
     heroImage: themeImage("culturalHeritage", 4),
-    gallery: themeGallery("culturalHeritage", 3, 4),
+    gallery: themeGallery("culturalHeritage", 6, 4),
     shortDescription: "Temples, gardens and Japan's former imperial capital.",
     description: [
       "Kyoto moves at a different pace than Tokyo — temple gardens, traditional tea ceremonies, and streets in Gion where the old city is still visible.",
@@ -974,7 +974,7 @@ export const destinations: Destination[] = [
     country: "Indonesia",
     region: "Asia-Pacific",
     heroImage: themeImage("tropicalBeach", 2),
-    gallery: themeGallery("mountainNature", 3, 5),
+    gallery: themeGallery("mountainNature", 6, 5),
     shortDescription: "Rice terraces, temples and a well-earned rest.",
     description: [
       "Bali covers a lot of ground for one island — surf beaches in the south, rice terraces and temples inland, and a wellness scene around Ubud that's become a destination in its own right.",
@@ -1009,7 +1009,7 @@ export const destinations: Destination[] = [
     country: "Singapore",
     region: "Asia-Pacific",
     heroImage: themeImage("cityscape", 4),
-    gallery: themeGallery("cityscape", 3, 4),
+    gallery: themeGallery("cityscape", 6, 4),
     shortDescription: "A polished, efficient city and a strong Southeast Asia gateway.",
     description: [
       "Singapore works well as a stand-alone city break and as a launching point for wider Southeast Asia journeys — the connections are excellent and the city rewards even a short stay.",
@@ -1044,7 +1044,7 @@ export const destinations: Destination[] = [
     country: "Thailand",
     region: "Asia-Pacific",
     heroImage: themeImage("cityscape", 2),
-    gallery: themeGallery("cityscape", 3, 8),
+    gallery: themeGallery("cityscape", 6, 8),
     shortDescription: "Temples, canals and one of Asia's great food cities.",
     description: [
       "Bangkok's temples and river life sit right alongside a genuinely world-class food scene, and we build in both the formal sights — the Grand Palace, Wat Arun — and the street-level experiences that make the city memorable.",
@@ -1079,7 +1079,7 @@ export const destinations: Destination[] = [
     country: "Hong Kong SAR",
     region: "Asia-Pacific",
     heroImage: themeImage("cityscape", 7),
-    gallery: themeGallery("cityscape", 3, 7),
+    gallery: themeGallery("cityscape", 6, 7),
     shortDescription: "Harbor skyline, dim sum and a compact, vertical city.",
     description: [
       "Hong Kong packs an enormous amount into a small footprint — harbor views, hiking trails within reach of downtown, and a dim sum culture worth building a morning around.",
@@ -1114,7 +1114,7 @@ export const destinations: Destination[] = [
     country: "Australia",
     region: "Asia-Pacific",
     heroImage: themeImage("culturalHeritage", 2),
-    gallery: themeGallery("cityscape", 3, 11),
+    gallery: themeGallery("cityscape", 6, 11),
     shortDescription: "Harbor, opera and easy access to wine country and the coast.",
     description: [
       "Sydney's harbor is the city's organizing feature — the Opera House, the Harbour Bridge, and beaches within a short drive that feel worlds away from downtown.",
@@ -1149,7 +1149,7 @@ export const destinations: Destination[] = [
     country: "Australia",
     region: "Asia-Pacific",
     heroImage: themeImage("cityscape", 14),
-    gallery: themeGallery("cityscape", 2, 14),
+    gallery: themeGallery("cityscape", 6, 14),
     shortDescription: "Laneway culture, coffee and the Great Ocean Road.",
     description: [
       "Melbourne is the city we send food-and-culture-focused clients — laneway cafés, a strong arts scene, and easy access to the Great Ocean Road for clients with an extra day or two.",
@@ -1184,7 +1184,7 @@ export const destinations: Destination[] = [
     country: "New Zealand",
     region: "Asia-Pacific",
     heroImage: themeImage("mountainNature", 9),
-    gallery: themeGallery("coastal", 2, 5),
+    gallery: themeGallery("coastal", 6, 5),
     shortDescription: "The City of Sails, and a gateway to New Zealand's landscapes.",
     description: [
       "Auckland is rarely the whole trip — it's the arrival point for journeys into New Zealand's fjords, wine country and Maori cultural sites.",
@@ -1193,6 +1193,7 @@ export const destinations: Destination[] = [
     travelStyles: ["adventure", "family", "food-wine"],
     highlights: [
       "Waitemata Harbour and Auckland's islands",
+      "Hiking the volcanic cones — Rangitoto and One Tree Hill",
       "Waiheke Island wine country",
       "Maori cultural experiences",
       "Gateway to Rotorua and the fjords",
@@ -1221,7 +1222,7 @@ export const destinations: Destination[] = [
     country: "Maldives",
     region: "Indian Ocean & Islands",
     heroImage: themeImage("tropicalBeach", 1),
-    gallery: themeGallery("luxuryResort", 2, 0),
+    gallery: themeGallery("luxuryResort", 6, 0),
     shortDescription: "Overwater villas and some of the world's clearest water.",
     description: [
       "The Maldives is our most-requested honeymoon and anniversary destination — overwater villas, private house reefs, and a level of seclusion that's hard to find elsewhere.",
@@ -1257,7 +1258,7 @@ export const destinations: Destination[] = [
     country: "Seychelles",
     region: "Indian Ocean & Islands",
     heroImage: themeImage("tropicalBeach", 2),
-    gallery: themeGallery("coastal", 2, 1),
+    gallery: themeGallery("coastal", 6, 1),
     shortDescription: "Granite boulders, palm-lined beaches and a multi-island pace.",
     description: [
       "The Seychelles suits a slower, multi-island journey — Mahé, Praslin and La Digue each have a distinct character, and moving between them by boat is part of the experience.",
@@ -1292,7 +1293,7 @@ export const destinations: Destination[] = [
     country: "Mauritius",
     region: "Indian Ocean & Islands",
     heroImage: themeImage("tropicalBeach", 0),
-    gallery: themeGallery("luxuryResort", 2, 1),
+    gallery: themeGallery("luxuryResort", 6, 1),
     shortDescription: "Lagoons, mountains and a genuinely multicultural island.",
     description: [
       "Mauritius combines beach-resort ease with more to do than most Indian Ocean islands — hiking in the interior, a strong food culture shaped by its mixed heritage, and lagoon-side resorts along the coast.",
@@ -1329,7 +1330,7 @@ export const destinations: Destination[] = [
     country: "United States",
     region: "North America",
     heroImage: themeImage("cityscape", 15),
-    gallery: themeGallery("cityscape", 3, 15),
+    gallery: themeGallery("cityscape", 6, 15),
     shortDescription: "Architecture, lakefront and a serious food scene in the Midwest's great city.",
     description: [
       "Chicago's architecture river cruise is one of the best introductions to any American city, and the food scene underneath the skyline holds up to the reputation.",
@@ -1364,7 +1365,7 @@ export const destinations: Destination[] = [
     country: "United States",
     region: "North America",
     heroImage: themeImage("cityscape", 9),
-    gallery: themeGallery("cityscape", 3, 9),
+    gallery: themeGallery("cityscape", 6, 9),
     shortDescription: "Fog, hills and a gateway to California's wine country.",
     description: [
       "San Francisco is compact enough to walk between neighborhoods that feel like different cities, and close enough to Napa and Sonoma for an easy wine-country day.",
@@ -1399,7 +1400,7 @@ export const destinations: Destination[] = [
     country: "Mexico",
     region: "North America",
     heroImage: themeImage("culturalHeritage", 9),
-    gallery: themeGallery("culturalHeritage", 3, 9),
+    gallery: themeGallery("culturalHeritage", 6, 9),
     shortDescription: "Museums, murals and one of the world's great food cities.",
     description: [
       "Mexico City rarely gets enough credit — world-class museums, a genuinely serious restaurant scene, and neighborhoods like Roma and Condesa that reward slow mornings.",
@@ -1436,7 +1437,7 @@ export const destinations: Destination[] = [
     country: "Spain",
     region: "Europe",
     heroImage: themeImage("cityscape", 2),
-    gallery: themeGallery("cityscape", 3, 2),
+    gallery: themeGallery("cityscape", 6, 2),
     shortDescription: "World-class museums and a late-night dining culture.",
     description: [
       "Madrid's museum trio — the Prado, Reina Sofía, and Thyssen — rivals any city in Europe, and the tapas culture rewards moving between neighborhoods rather than settling into one.",
@@ -1471,7 +1472,7 @@ export const destinations: Destination[] = [
     country: "Germany",
     region: "Europe",
     heroImage: themeImage("cityscape", 17),
-    gallery: themeGallery("cityscape", 3, 17),
+    gallery: themeGallery("cityscape", 6, 17),
     shortDescription: "History, art and a city that rewards curiosity.",
     description: [
       "Berlin's twentieth-century history is genuinely present in the city rather than confined to museums, and the contemporary art and food scenes have caught up with that weight.",
@@ -1506,7 +1507,7 @@ export const destinations: Destination[] = [
     country: "Denmark",
     region: "Europe",
     heroImage: themeImage("coastal", 3),
-    gallery: themeGallery("cityscape", 3, 3),
+    gallery: themeGallery("cityscape", 6, 3),
     shortDescription: "Design, canals and one of Europe's best food cities.",
     description: [
       "Copenhagen's harbor-side neighborhoods and design culture make it one of our most-requested Scandinavian city breaks, and the dining scene has become a destination in its own right.",
@@ -1541,7 +1542,7 @@ export const destinations: Destination[] = [
     country: "United Kingdom",
     region: "Europe",
     heroImage: themeImage("mountainNature", 5),
-    gallery: themeGallery("cityscape", 2, 20),
+    gallery: themeGallery("cityscape", 6, 20),
     shortDescription: "A dramatic castle skyline and easy access to the Scottish Highlands.",
     description: [
       "Edinburgh's old town is genuinely dramatic — a castle on a volcanic hill above a medieval street plan — and the city works well as either a stand-alone break or the start of a wider Highlands journey.",
@@ -1576,7 +1577,7 @@ export const destinations: Destination[] = [
     country: "Ireland",
     region: "Europe",
     heroImage: themeImage("cityscape", 6),
-    gallery: themeGallery("cityscape", 2, 6),
+    gallery: themeGallery("cityscape", 6, 6),
     shortDescription: "Literary history, live music and a gateway to the Irish countryside.",
     description: [
       "Dublin's pub culture and literary history reward a slower pace, and the city sits close enough to the coast and countryside for an easy day trip beyond it.",
@@ -1611,7 +1612,7 @@ export const destinations: Destination[] = [
     country: "Hungary",
     region: "Europe",
     heroImage: themeImage("culturalHeritage", 12),
-    gallery: themeGallery("cityscape", 2, 17),
+    gallery: themeGallery("cityscape", 6, 17),
     shortDescription: "Thermal baths, grand architecture and the Danube.",
     description: [
       "Budapest's thermal bath culture is unlike anywhere else in Europe, and the Danube views from Buda's castle hill are some of the best skyline moments on the continent.",
@@ -1648,7 +1649,7 @@ export const destinations: Destination[] = [
     country: "Qatar",
     region: "Middle East & Africa",
     heroImage: themeImage("desertArchitecture", 0),
-    gallery: themeGallery("cityscape", 2, 15),
+    gallery: themeGallery("cityscape", 6, 15),
     shortDescription: "Contemporary architecture and a rapidly growing museum scene.",
     description: [
       "Doha has developed a genuinely serious museum scene alongside its skyline, and works well as a short, comfortable stopover for longer Asia or Africa journeys.",
@@ -1683,7 +1684,7 @@ export const destinations: Destination[] = [
     country: "Zambia & Zimbabwe",
     region: "Middle East & Africa",
     heroImage: themeImage("mountainNature", 3),
-    gallery: themeGallery("mountainNature", 2, 3),
+    gallery: themeGallery("mountainNature", 6, 3),
     shortDescription: "One of the world's great waterfalls, and a natural safari pairing.",
     description: [
       "Victoria Falls is dramatic enough to anchor a journey on its own, and its location makes it a natural extension for clients already building a safari itinerary through southern Africa.",
@@ -1718,7 +1719,7 @@ export const destinations: Destination[] = [
     country: "Jordan",
     region: "Middle East & Africa",
     heroImage: themeImage("culturalHeritage", 3),
-    gallery: themeGallery("desertArchitecture", 1, 0),
+    gallery: themeGallery("culturalHeritage", 6, 3),
     shortDescription: "A rose-red city carved into stone, and one of the world's great ruins.",
     description: [
       "Petra rewards more than the single famous approach through the Siq — the wider site takes a full day to appreciate properly, and we build in enough time for that along with Jordan's other historic sites.",
@@ -1755,7 +1756,7 @@ export const destinations: Destination[] = [
     country: "South Korea",
     region: "Asia-Pacific",
     heroImage: themeImage("cityscape", 8),
-    gallery: themeGallery("cityscape", 2, 8),
+    gallery: themeGallery("cityscape", 6, 8),
     shortDescription: "Palaces, contemporary design and one of Asia's great food cities.",
     description: [
       "Seoul balances centuries-old palaces with a genuinely cutting-edge design and food scene, and the city rewards moving between traditional Bukchon and contemporary Gangnam.",
@@ -1790,7 +1791,7 @@ export const destinations: Destination[] = [
     country: "Vietnam",
     region: "Asia-Pacific",
     heroImage: themeImage("coastal", 6),
-    gallery: themeGallery("coastal", 2, 6),
+    gallery: themeGallery("coastal", 6, 6),
     shortDescription: "A layered old quarter and the gateway to Ha Long Bay.",
     description: [
       "Hanoi's old quarter is dense with history and street life, and the city is the natural starting point for a Ha Long Bay cruise extension.",
@@ -1826,7 +1827,7 @@ export const destinations: Destination[] = [
     country: "Malaysia",
     region: "Asia-Pacific",
     heroImage: themeImage("cityscape", 4),
-    gallery: themeGallery("cityscape", 2, 4),
+    gallery: themeGallery("cityscape", 6, 4),
     shortDescription: "Twin Towers skyline and a genuinely multicultural food scene.",
     description: [
       "Kuala Lumpur's food scene reflects its Malay, Chinese and Indian communities in a way that rewards a guided introduction, and the city is a comfortable, well-connected stopover for wider Southeast Asia journeys.",
@@ -1861,7 +1862,7 @@ export const destinations: Destination[] = [
     country: "New Zealand",
     region: "Asia-Pacific",
     heroImage: themeImage("mountainNature", 6),
-    gallery: themeGallery("mountainNature", 2, 6),
+    gallery: themeGallery("mountainNature", 6, 6),
     shortDescription: "New Zealand's adventure capital, set on a dramatic alpine lake.",
     description: [
       "Queenstown anchors most of our South Island itineraries — genuinely dramatic scenery paired with as much or as little adventure as clients want.",
@@ -1896,7 +1897,7 @@ export const destinations: Destination[] = [
     country: "French Polynesia",
     region: "Asia-Pacific",
     heroImage: themeImage("tropicalBeach", 4),
-    gallery: themeGallery("luxuryResort", 2, 0),
+    gallery: themeGallery("luxuryResort", 6, 0),
     shortDescription: "Overwater bungalows around a volcanic lagoon.",
     description: [
       "Bora Bora is the benchmark for overwater-bungalow travel — a volcanic peak surrounded by one of the most photographed lagoons in the world.",
@@ -1934,7 +1935,7 @@ export const destinations: Destination[] = [
     country: "Sri Lanka",
     region: "Indian Ocean & Islands",
     heroImage: themeImage("tropicalBeach", 2),
-    gallery: themeGallery("culturalHeritage", 2, 9),
+    gallery: themeGallery("culturalHeritage", 6, 9),
     shortDescription: "Tea country, ancient cities and beaches, all within a compact island.",
     description: [
       "Sri Lanka packs an unusual amount of variety into a small island — ancient rock fortresses, hill-country tea plantations, wildlife safaris and beaches, often within a few hours' drive of each other.",
