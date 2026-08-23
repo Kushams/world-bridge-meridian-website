@@ -18,7 +18,7 @@ export function JourneyPanel() {
           </p>
           <div className="mt-9">
             <Button href="/plan-your-journey" size="lg">
-              Start Planning
+              Begin a Private Consultation
             </Button>
           </div>
         </Reveal>

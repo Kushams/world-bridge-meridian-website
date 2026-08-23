@@ -14,7 +14,7 @@ export function PricingBlock({
 }) {
   return (
     <div className="rounded-card border hairline bg-charcoal p-6 md:p-8">
-      <p className="eyebrow mb-4">Indicative Pricing</p>
+      <p className="eyebrow mb-4">Journey Investment</p>
       <ul className="space-y-2">
         {tiers.map((tier, i) => (
           <li key={i} className="font-display text-2xl text-ivory">

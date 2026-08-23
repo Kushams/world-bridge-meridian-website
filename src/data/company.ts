@@ -21,13 +21,12 @@ export const company = {
   cryptoCurrencies: ["Bitcoin (BTC)", "Tether (USDT)", "Solana (SOL)"],
 
   tagline:
-    "World Bridge Meridian designs and organizes thoughtful journeys, curated travel experiences, group departures, cruises, cultural adventures and bespoke escapes around the world.",
+    "World Bridge Meridian designs journeys around the people taking them — private escapes, cultural discoveries, family adventures, group departures and extraordinary cruises, curated rather than catalogued.",
 
-  heroEyebrow: "Bespoke Travel · Organised Journeys",
-  heroHeadlineLines: [
-    "The world feels different",
-    "when it is yours to explore.",
-  ],
+  philosophyLine: ["Some journeys are planned.", "Others are composed."],
+
+  heroEyebrow: "Bespoke Journeys, Designed Around You",
+  heroHeadlineLines: ["Journeys beyond", "the ordinary."],
 
   footerTagline: "Bespoke travel group. Thoughtfully organized.",
 

@@ -38,7 +38,7 @@ export function Hero() {
         <div className="mt-9 flex flex-wrap gap-4">
           <Magnetic>
             <Button href="/plan-your-journey" size="lg">
-              Plan Your Journey
+              Design Your Journey
             </Button>
           </Magnetic>
           <Magnetic>

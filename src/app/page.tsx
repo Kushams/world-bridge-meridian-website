@@ -1,6 +1,9 @@
 import { Hero } from "@/components/home/Hero";
+import { Philosophy } from "@/components/home/Philosophy";
 import { CorePaths } from "@/components/home/CorePaths";
 import { StatsBand } from "@/components/home/StatsBand";
+import { Concierge } from "@/components/home/Concierge";
+import { Standard } from "@/components/home/Standard";
 import { JourneyPanel } from "@/components/home/JourneyPanel";
 import { CardSection } from "@/components/home/CardSection";
 import { TravelStyles } from "@/components/home/TravelStyles";
@@ -31,6 +34,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <Philosophy />
       <StatsBand />
       <CorePaths />
 
@@ -97,10 +101,12 @@ export default function Home() {
         reverse
       />
 
+      <Concierge />
       <JourneyPanel />
 
       <FamilyCouplesGroup />
       <WhyWorldBridge />
+      <Standard />
       <PartnersStrip />
 
       <CardSection
