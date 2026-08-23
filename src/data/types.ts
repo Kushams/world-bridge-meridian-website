@@ -122,6 +122,7 @@ export interface TeamMember {
   name: string | null;
   title: string;
   bio: string[] | null;
+  photo?: string;
   placeholder?: boolean;
 }
 

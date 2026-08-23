@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -106,11 +107,24 @@ export default function AboutPage() {
           </div>
 
           {founder ? (
-            <div className="mt-24 rounded-card border hairline bg-charcoal p-8 md:p-12">
-              <p className="eyebrow mb-4">{founder.title}</p>
-              <h2 className="font-display text-2xl md:text-3xl text-ivory">{founder.name}</h2>
-              <div className="mt-6 max-w-2xl space-y-4 text-stone leading-relaxed">
-                {founder.bio?.map((p, i) => <p key={i}>{p}</p>)}
+            <div className="mt-24 grid grid-cols-1 gap-8 rounded-card border hairline bg-charcoal p-8 sm:grid-cols-[auto_1fr] md:p-12">
+              {founder.photo ? (
+                <div className="relative h-40 w-40 shrink-0 overflow-hidden rounded-full sm:h-32 sm:w-32">
+                  <Image
+                    src={founder.photo}
+                    alt={founder.name ?? founder.title}
+                    fill
+                    sizes="160px"
+                    className="object-cover"
+                  />
+                </div>
+              ) : null}
+              <div>
+                <p className="eyebrow mb-4">{founder.title}</p>
+                <h2 className="font-display text-2xl md:text-3xl text-ivory">{founder.name}</h2>
+                <div className="mt-6 max-w-2xl space-y-4 text-stone leading-relaxed">
+                  {founder.bio?.map((p, i) => <p key={i}>{p}</p>)}
+                </div>
               </div>
             </div>
           ) : null}

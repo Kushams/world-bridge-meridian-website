@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { team } from "@/data/team";
@@ -25,10 +26,22 @@ export default function LeadershipPage() {
           <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
             {team.map((member) => (
               <div key={member.slug}>
-                <div className="aspect-[4/5] w-full max-w-xs rounded-card bg-charcoal border hairline flex items-center justify-center">
-                  <span className="text-xs uppercase tracking-wide text-stone-dim">
-                    {member.placeholder ? "Portrait to be provided" : "Portrait"}
-                  </span>
+                <div className="relative aspect-[4/5] w-full max-w-xs overflow-hidden rounded-card bg-charcoal border hairline">
+                  {member.photo ? (
+                    <Image
+                      src={member.photo}
+                      alt={member.name ?? member.title}
+                      fill
+                      sizes="320px"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                      <span className="text-xs uppercase tracking-wide text-stone-dim">
+                        Portrait to be provided
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <p className="eyebrow mt-6 mb-2">{member.title}</p>
                 <h2 className="font-display text-2xl text-ivory">
