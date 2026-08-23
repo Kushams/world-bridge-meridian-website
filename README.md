@@ -83,11 +83,11 @@ page code.
 Add an entry to `src/data/destinations.ts` following the existing `Destination` type
 (slug, country, region, images, description, travel styles, indicative pricing,
 etc.). The route `/destinations/[slug]` renders automatically from the `slug` field —
-no new page file is needed. The site currently ships with 35 destinations across
-five regions as a realistic starting set demonstrating the pattern at scale; adding
-the remaining destinations to reach the eventual 50–100+ target is purely a content
-task — the architecture, filtering and detail-page template already support it
-without any code changes.
+no new page file is needed. The site currently ships with 55 destinations across
+five regions — past the 50-destination starting target — with real, distinct
+content for each; growing further toward 100+ is purely a content task — the
+architecture, filtering, search index and detail-page template already support
+it without any code changes.
 
 Placeholder imagery is organized by visual theme in `src/data/images.ts`
 (`IMAGE_BANK`) — every image ID in that file was fetched and visually reviewed
