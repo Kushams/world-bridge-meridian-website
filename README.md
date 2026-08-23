@@ -12,6 +12,31 @@ reflects that positioning throughout: it favors "plan your journey" / "request t
 journey" language over transactional "book now" language, and never claims live
 inventory, availability, or partnerships that have not been verified.
 
+## Routes
+
+- `/` — homepage
+- `/explore`, `/destinations`, `/destinations/[slug]`
+- `/travel-packages`, `/travel-packages/[slug]`
+- `/cruises`, `/cruises/[slug]`
+- `/experiences`, `/experiences/[slug]`
+- `/current-journeys`, `/stays`
+- `/bespoke`, `/arts-culture`, `/luxury-travel`, `/family-travel`, `/couples-travel`,
+  `/group-travel`, `/corporate-travel`
+- `/about`, `/leadership`, `/partners`, `/reviews`
+- `/journal`, `/journal/[slug]`, `/faq`, `/contact`
+- `/plan-your-journey`, `/my-world-bridge`
+- `/privacy`, `/terms`, `/cookies`
+- `/sitemap.xml`, `/robots.txt` (generated from `src/app/sitemap.ts` / `robots.ts`)
+
+## Design system
+
+The visual identity is a fixed dark, editorial-luxury palette (charcoal/ink
+background, ivory type, a restrained gold accent) — see the design tokens in
+`src/app/globals.css` (`@theme` block) and the shared primitives in
+`src/components/ui/` (`Button`, `Container`, `SectionHeading`, `Reveal`,
+`Breadcrumbs`). Display type is Fraunces (serif); body/UI type is Inter — both
+loaded via `next/font/google` in `src/app/layout.tsx`.
+
 ## Technology stack
 
 - [Next.js](https://nextjs.org) (App Router) + TypeScript
@@ -58,7 +83,17 @@ page code.
 Add an entry to `src/data/destinations.ts` following the existing `Destination` type
 (slug, country, region, images, description, travel styles, indicative pricing,
 etc.). The route `/destinations/[slug]` renders automatically from the `slug` field —
-no new page file is needed.
+no new page file is needed. The site currently ships with 35 destinations across
+five regions as a realistic starting set demonstrating the pattern at scale; adding
+the remaining destinations to reach the eventual 50–100+ target is purely a content
+task — the architecture, filtering and detail-page template already support it
+without any code changes.
+
+Placeholder imagery is organized by visual theme in `src/data/images.ts`
+(`IMAGE_BANK`) — every image ID in that file was fetched and visually reviewed
+before being categorized, so pulling from a theme (e.g. `themeImage("coastal", 2)`)
+reliably returns an on-theme photo. Swap entries there, or a destination's own
+`heroImage`/`gallery` fields, for official photography before launch.
 
 ### Adding a travel package, cruise, or experience
 

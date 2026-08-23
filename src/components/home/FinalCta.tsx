@@ -23,7 +23,7 @@ export function FinalCta() {
             The world feels different when it is yours to explore.
           </h2>
           <p className="mt-6 text-base md:text-lg text-ivory-dim leading-relaxed">
-            Wherever you're imagining, we can help organize the journey around it.
+            Wherever you&apos;re imagining, we can help organize the journey around it.
           </p>
           <div className="mt-9 flex flex-wrap justify-center gap-4">
             <Button href="/plan-your-journey" size="lg">

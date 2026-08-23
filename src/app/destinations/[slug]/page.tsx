@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { destinations, getDestination } from "@/data/destinations";
 import { packages } from "@/data/packages";
 import { experiences } from "@/data/experiences";

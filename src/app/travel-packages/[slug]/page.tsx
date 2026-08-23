@@ -7,7 +7,6 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Button } from "@/components/ui/Button";
 import { GalleryStrip } from "@/components/detail/GalleryStrip";
 import { ItineraryTimeline } from "@/components/detail/ItineraryTimeline";
 import { PricingBlock } from "@/components/detail/PricingBlock";

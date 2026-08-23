@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { journal, getArticle } from "@/data/journal";
 import { destinations } from "@/data/destinations";
 import { PageHero } from "@/components/layout/PageHero";

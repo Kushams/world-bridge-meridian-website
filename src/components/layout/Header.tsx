@@ -43,9 +43,9 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-4">
-            <Button href="/plan-your-journey" className="hidden md:inline-flex">
-              Plan Your Journey
-            </Button>
+            <div className="hidden md:block">
+              <Button href="/plan-your-journey">Plan Your Journey</Button>
+            </div>
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
