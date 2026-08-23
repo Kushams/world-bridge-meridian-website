@@ -3,11 +3,12 @@ import Link from "next/link";
 import { TravelPackage } from "@/data/types";
 import { travelStyleLabel } from "@/data/travel-styles";
 import { formatPrice } from "@/lib/format";
+import { TiltCard } from "@/components/motion/TiltCard";
 
 export function PackageCard({ pkg }: { pkg: TravelPackage }) {
   return (
-    <Link href={`/travel-packages/${pkg.slug}`} className="group block">
-      <div className="relative aspect-[16/11] overflow-hidden rounded-card bg-charcoal">
+    <Link href={`/travel-packages/${pkg.slug}`} className="group block tap-shrink">
+      <TiltCard className="relative aspect-[16/11] overflow-hidden rounded-card bg-charcoal">
         <Image
           src={pkg.heroImage}
           alt={pkg.title}
@@ -18,7 +19,7 @@ export function PackageCard({ pkg }: { pkg: TravelPackage }) {
         <div className="absolute left-4 top-4 rounded-full bg-ink/70 backdrop-blur px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-wide text-ivory">
           {pkg.duration}
         </div>
-      </div>
+      </TiltCard>
       <div className="mt-4">
         <p className="eyebrow !text-[0.65rem] mb-1">
           {pkg.travelStyles.map(travelStyleLabel).join(" · ")}

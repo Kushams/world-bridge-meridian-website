@@ -140,6 +140,22 @@ body {
   transform: scale(1.06);
 }
 
+/* Custom cursor — native cursor hidden only once the JS cursor is confirmed
+   active (fine pointer, motion allowed), so nothing goes missing on touch,
+   keyboard-only, or reduced-motion visits. */
+.custom-cursor-active,
+.custom-cursor-active * {
+  cursor: none !important;
+}
+
+/* Tactile press feedback for buttons/cards — works for mouse and touch alike */
+.tap-shrink {
+  transition: transform 0.15s ease;
+}
+.tap-shrink:active {
+  transform: scale(0.96);
+}
+
 /* Slow cinematic zoom-in for hero imagery */
 .hero-zoom {
   animation: hero-zoom 20s ease-out forwards;

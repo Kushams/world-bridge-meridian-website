@@ -4,6 +4,9 @@ import "./globals.css";
 import { SITE_URL, company } from "@/data/company";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { CustomCursor } from "@/components/motion/CustomCursor";
+import { ScrollProgressBar } from "@/components/motion/ScrollProgressBar";
+import { PageTransition } from "@/components/motion/PageTransition";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -62,8 +65,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
+        <ScrollProgressBar />
+        <CustomCursor />
         <Header />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          <PageTransition>{children}</PageTransition>
+        </main>
         <Footer />
       </body>
     </html>

@@ -1,14 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Destination } from "@/data/types";
+import { TiltCard } from "@/components/motion/TiltCard";
 
 export function DestinationCard({ destination }: { destination: Destination }) {
   return (
     <Link
       href={`/destinations/${destination.slug}`}
-      className="group block"
+      className="group block tap-shrink"
     >
-      <div className="relative aspect-[4/5] overflow-hidden rounded-card bg-charcoal">
+      <TiltCard className="relative aspect-[4/5] overflow-hidden rounded-card bg-charcoal">
         <Image
           src={destination.heroImage}
           alt={`${destination.name}, ${destination.country}`}
@@ -21,7 +22,7 @@ export function DestinationCard({ destination }: { destination: Destination }) {
           <p className="eyebrow !text-[0.65rem] mb-1">{destination.country}</p>
           <h3 className="font-display text-xl text-ivory">{destination.name}</h3>
         </div>
-      </div>
+      </TiltCard>
       <p className="mt-3 text-sm text-stone leading-relaxed">
         {destination.shortDescription}
       </p>

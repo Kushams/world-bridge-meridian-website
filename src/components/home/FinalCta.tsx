@@ -3,18 +3,22 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { themeImage } from "@/data/images";
+import { Parallax } from "@/components/motion/Parallax";
+import { Magnetic } from "@/components/motion/Magnetic";
 
 export function FinalCta() {
   return (
     <section className="relative overflow-hidden py-28 md:py-36">
-      <div className="absolute inset-0">
-        <Image
-          src={themeImage("mountainNature", 0, 1800)}
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover"
-        />
+      <div className="absolute inset-0 overflow-hidden">
+        <Parallax offset={50} className="absolute -top-[10%] -bottom-[10%] left-0 right-0">
+          <Image
+            src={themeImage("mountainNature", 0, 1800)}
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+        </Parallax>
         <div className="absolute inset-0 bg-ink/80" />
       </div>
       <Container className="relative">
@@ -26,12 +30,16 @@ export function FinalCta() {
             Wherever you&apos;re imagining, we can help organize the journey around it.
           </p>
           <div className="mt-9 flex flex-wrap justify-center gap-4">
-            <Button href="/plan-your-journey" size="lg">
-              Plan Your Journey
-            </Button>
-            <Button href="/explore" variant="outline" size="lg">
-              Explore Journeys
-            </Button>
+            <Magnetic>
+              <Button href="/plan-your-journey" size="lg">
+                Plan Your Journey
+              </Button>
+            </Magnetic>
+            <Magnetic>
+              <Button href="/explore" variant="outline" size="lg">
+                Explore Journeys
+              </Button>
+            </Magnetic>
           </div>
         </Reveal>
       </Container>

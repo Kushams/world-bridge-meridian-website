@@ -4,7 +4,7 @@ import { Experience } from "@/data/types";
 
 export function ExperienceCard({ experience }: { experience: Experience }) {
   return (
-    <Link href={`/experiences/${experience.slug}`} className="group block">
+    <Link href={`/experiences/${experience.slug}`} className="group block tap-shrink">
       <div className="relative aspect-[4/5] overflow-hidden rounded-card bg-charcoal">
         <Image
           src={experience.heroImage}

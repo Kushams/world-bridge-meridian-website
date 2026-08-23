@@ -5,7 +5,7 @@ import { formatDate } from "@/lib/format";
 
 export function JournalCard({ article }: { article: JournalArticle }) {
   return (
-    <Link href={`/journal/${article.slug}`} className="group block">
+    <Link href={`/journal/${article.slug}`} className="group block tap-shrink">
       <div className="relative aspect-[16/10] overflow-hidden rounded-card bg-charcoal">
         <Image
           src={article.heroImage}

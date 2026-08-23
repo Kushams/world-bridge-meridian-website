@@ -5,7 +5,7 @@ type Variant = "primary" | "outline" | "ghost";
 type Size = "md" | "lg";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-full font-sans text-sm font-semibold tracking-wide uppercase transition-colors duration-300 focus-visible:outline-offset-4";
+  "tap-shrink inline-flex items-center justify-center gap-2 rounded-full font-sans text-sm font-semibold tracking-wide uppercase transition-colors duration-300 focus-visible:outline-offset-4";
 
 const variants: Record<Variant, string> = {
   primary: "bg-ivory text-ink hover:bg-white",

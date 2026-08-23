@@ -5,7 +5,7 @@ import { formatPrice } from "@/lib/format";
 
 export function CruiseCard({ cruise }: { cruise: Cruise }) {
   return (
-    <Link href={`/cruises/${cruise.slug}`} className="group block">
+    <Link href={`/cruises/${cruise.slug}`} className="group block tap-shrink">
       <div className="relative aspect-[16/11] overflow-hidden rounded-card bg-charcoal">
         <Image
           src={cruise.heroImage}

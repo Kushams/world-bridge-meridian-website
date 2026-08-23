@@ -41,7 +41,7 @@ export function FamilyCouplesGroup() {
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
           {tiles.map((tile, i) => (
             <Reveal key={tile.href} delay={i * 100}>
-              <Link href={tile.href} className="group block">
+              <Link href={tile.href} className="group block tap-shrink">
                 <div className="relative aspect-[4/5] overflow-hidden rounded-card">
                   <Image
                     src={tile.image}
