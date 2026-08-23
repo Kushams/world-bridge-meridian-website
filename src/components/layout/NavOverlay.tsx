@@ -43,8 +43,8 @@ export function NavOverlay({
       <div className="relative h-full overflow-y-auto">
         <div className="mx-auto w-full max-w-[1400px] px-6 md:px-10 pt-8 pb-16">
           <div className="flex items-center justify-between">
-            <span className="font-display text-lg text-ivory">
-              World Bridge <span className="italic text-gold">Meridian</span>
+            <span className="font-display text-lg tracking-[0.06em] uppercase text-ivory">
+              World Bridge Meridian
             </span>
             <button
               type="button"

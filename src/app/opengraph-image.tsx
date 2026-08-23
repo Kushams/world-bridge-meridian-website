@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { company } from "@/data/company";
 
 export const dynamic = "force-static";
-export const alt = `${company.name} — Independent Global Travel Company`;
+export const alt = `${company.name} — ${company.legalPositioning}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -54,13 +54,13 @@ export default async function OpengraphImage() {
           style={{
             display: "flex",
             fontFamily: "Georgia, 'Times New Roman', serif",
-            fontSize: 68,
+            fontSize: 60,
+            letterSpacing: 3,
+            textTransform: "uppercase",
             color: "#f4efe4",
-            letterSpacing: 1,
           }}
         >
-          <span style={{ marginRight: 16 }}>World Bridge</span>
-          <span style={{ fontStyle: "italic", color: "#c8a668" }}>Meridian</span>
+          World Bridge Meridian
         </div>
         <div
           style={{
@@ -73,7 +73,7 @@ export default async function OpengraphImage() {
             color: "#a89d87",
           }}
         >
-          Independent Global Travel
+          Bespoke Travel Group
         </div>
       </div>
     ),

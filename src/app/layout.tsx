@@ -23,19 +23,19 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${company.name} — Independent Global Travel Company`,
+    default: `${company.name} — ${company.legalPositioning}`,
     template: `%s — ${company.name}`,
   },
   description: company.tagline,
   openGraph: {
     type: "website",
     siteName: company.name,
-    title: `${company.name} — Independent Global Travel Company`,
+    title: `${company.name} — ${company.legalPositioning}`,
     description: company.tagline,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${company.name} — Independent Global Travel Company`,
+    title: `${company.name} — ${company.legalPositioning}`,
     description: company.tagline,
   },
 };

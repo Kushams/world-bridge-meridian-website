@@ -12,8 +12,8 @@ export function Footer() {
       <Container className="py-16 md:py-20">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.3fr_repeat(3,1fr)]">
           <div>
-            <span className="font-display text-xl text-ivory">
-              World Bridge <span className="italic text-gold">Meridian</span>
+            <span className="font-display text-xl tracking-[0.06em] uppercase text-ivory">
+              World Bridge Meridian
             </span>
             <p className="mt-4 max-w-xs text-sm text-stone leading-relaxed">
               {company.footerTagline}

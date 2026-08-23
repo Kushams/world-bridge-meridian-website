@@ -8,7 +8,7 @@ export const SITE_URL = "https://worldbridgemeridian.group";
 
 export const company = {
   name: "World Bridge Meridian",
-  legalPositioning: "An Independent Global Travel Company",
+  legalPositioning: "A Bespoke Travel Group",
   foundedYear: 2012,
   founderName: "Earl Anderson",
   founderTitle: "Founder & CEO",
@@ -29,7 +29,7 @@ export const company = {
     "when it is yours to explore.",
   ],
 
-  footerTagline: "Independent global travel. Thoughtfully organized.",
+  footerTagline: "Bespoke travel group. Thoughtfully organized.",
 
   pricingDisclaimer:
     "Prices shown are indicative starting prices and may vary based on travel dates, availability, accommodation selection, number of travelers, supplier pricing, seasonal demand, activities, transportation and requested upgrades. Final pricing is confirmed after consultation and availability checks.",
