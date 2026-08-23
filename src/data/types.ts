@@ -109,6 +109,7 @@ export interface Review {
   year: number;
   rating: 1 | 2 | 3 | 4 | 5;
   quote: string;
+  image: string;
   sample: true;
 }
 

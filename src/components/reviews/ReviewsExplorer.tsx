@@ -5,23 +5,11 @@ import { Review, TravelStyleSlug } from "@/data/types";
 import { ReviewCard } from "@/components/cards/ReviewCard";
 import { travelStyleLabel } from "@/data/travel-styles";
 
-const filterStyles: TravelStyleSlug[] = [
-  "family",
-  "romance",
-  "luxury",
-  "bespoke",
-  "arts-culture",
-  "cruise",
-  "adventure",
-  "wellness",
-  "business",
-];
-
 export function ReviewsExplorer({ reviews }: { reviews: Review[] }) {
   const [style, setStyle] = useState<TravelStyleSlug | "all">("all");
 
   const available = useMemo(
-    () => filterStyles.filter((s) => reviews.some((r) => r.tripType === s)),
+    () => Array.from(new Set(reviews.map((r) => r.tripType))).sort(),
     [reviews],
   );
 
