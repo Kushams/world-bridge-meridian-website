@@ -1,0 +1,117 @@
+# World Bridge Meridian — Website & Digital Travel Platform
+
+**World Bridge Meridian** is an independent global travel company, founded in 2012 by
+Earl Anderson. This repository contains its marketing website and digital travel
+platform: a premium, editorial, multi-page site covering destinations, travel
+packages, cruises, experiences, and a bespoke journey-planning flow.
+
+World Bridge Meridian is not a conventional travel agency — the company designs,
+curates, and coordinates journeys around the traveler, working with external
+airlines, hotels, cruise operators, and cultural organizations as needed. This site
+reflects that positioning throughout: it favors "plan your journey" / "request this
+journey" language over transactional "book now" language, and never claims live
+inventory, availability, or partnerships that have not been verified.
+
+## Technology stack
+
+- [Next.js](https://nextjs.org) (App Router) + TypeScript
+- [Tailwind CSS v4](https://tailwindcss.com)
+- Structured TypeScript data collections under `src/data` (no CMS/database yet —
+  see [Content architecture](#content-architecture) below)
+
+## Getting started
+
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+Other scripts:
+
+```bash
+npm run build   # production build
+npm run start   # run the production build locally
+npm run lint     # eslint
+```
+
+## Environment variables
+
+The site currently has no required environment variables — there is no live backend,
+booking, or payment integration yet. `.env.example` documents variables that future
+integrations (email delivery, CRM, payment providers) will need; copy it to `.env.local`
+and fill in real values only when wiring up that integration. Never commit `.env*`
+files with real secrets — they are excluded via `.gitignore`.
+
+## Content architecture
+
+All editorial content — destinations, travel packages, cruises, experiences, travel
+styles, current journeys, stays, reviews, partners, team members, and journal
+articles — lives as structured TypeScript objects in `src/data/`, one module per
+collection, exporting a typed array. Pages read from these collections rather than
+hard-coding content, so the site can scale to hundreds of entries without changing
+page code.
+
+### Adding a destination
+
+Add an entry to `src/data/destinations.ts` following the existing `Destination` type
+(slug, country, region, images, description, travel styles, indicative pricing,
+etc.). The route `/destinations/[slug]` renders automatically from the `slug` field —
+no new page file is needed.
+
+### Adding a travel package, cruise, or experience
+
+Same pattern: add an entry to `src/data/packages.ts`, `src/data/cruises.ts`, or
+`src/data/experiences.ts`. Each collection's detail route reads the matching `slug`.
+
+### Updating reviews, partners, journal articles, or company information
+
+- Reviews: `src/data/reviews.ts` — every sample entry is explicitly labeled as a
+  sample testimonial. Replace with verified client reviews before launch, keeping the
+  same shape.
+- Partners: `src/data/partners.ts` — until real partners are confirmed, entries stay
+  generic ("Selected hospitality and travel partners"). Do not add named partners
+  without written confirmation.
+- Journal articles: `src/data/journal.ts`.
+- Company-wide facts (founding year, founder, contact email, etc.) live in
+  `src/data/company.ts` as a single source of truth — update there rather than
+  hard-coding strings across pages.
+
+### Sample / indicative data
+
+Cruise departures and current-journey listings are **sample data** pending live
+supplier integration, and are labeled as such in the UI (`Sample Journey`,
+`Indicative Journey`, etc.). Do not remove those labels without connecting real,
+verified supplier data.
+
+## Pricing
+
+All prices shown on the site are indicative starting prices, not guaranteed booking
+prices. See `src/data/company.ts` for the shared pricing disclaimer text used
+across package, cruise, and destination pages.
+
+## Deployment
+
+The project builds as a standard Next.js app and can be deployed to any Next.js-
+compatible host (e.g. Vercel). No deployment pipeline is configured in this
+repository yet.
+
+## Future integrations
+
+The codebase is structured so the following can be added later without a rewrite:
+
+- Live hotel / airline / cruise supplier data (replacing `src/data/cruises.ts` and
+  the current-journeys sample data)
+- A CRM / email pipeline behind the "Plan Your Journey" enquiry form
+  (`/plan-your-journey`), which currently only validates and confirms client-side
+- Customer accounts / authentication behind `/my-world-bridge`
+- Payment processing (cards, bank transfer, and — once a compliant provider is
+  selected — cryptocurrency), via a legitimate, PCI-compliant, server-side payment
+  processor. No payment form or checkout exists yet; do not fake one.
+
+## Git workflow
+
+Work happens on feature branches; the default branch is `main`. Commit at each
+meaningful checkpoint and push to GitHub — GitHub is the primary backup for this
+project.
