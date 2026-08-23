@@ -6,10 +6,12 @@ import { Logo } from "./Logo";
 import { NavOverlay } from "./NavOverlay";
 import { Button } from "@/components/ui/Button";
 import { primaryNav } from "@/data/nav";
+import { SearchOverlay } from "@/components/search/SearchOverlay";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -42,7 +44,19 @@ export function Header() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              aria-haspopup="dialog"
+              aria-label="Search the site"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-ivory hover:border-gold hover:text-gold transition-colors"
+            >
+              <svg width="17" height="17" viewBox="0 0 20 20" fill="none" aria-hidden>
+                <circle cx="9" cy="9" r="6.5" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M18 18L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+              </svg>
+            </button>
             <div className="hidden md:block">
               <Button href="/plan-your-journey">Plan Your Journey</Button>
             </div>
@@ -66,6 +80,7 @@ export function Header() {
       </header>
 
       <NavOverlay open={menuOpen} onClose={() => setMenuOpen(false)} />
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 }
