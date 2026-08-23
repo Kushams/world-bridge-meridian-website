@@ -3,6 +3,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { themeImage } from "@/data/images";
+import { SavedJourneysPanel } from "@/components/account/SavedJourneysPanel";
 
 export const metadata: Metadata = {
   title: "My World Bridge",
@@ -10,18 +11,6 @@ export const metadata: Metadata = {
 };
 
 const features = [
-  {
-    title: "Saved Journeys",
-    description: "Keep track of travel packages and itineraries you're considering.",
-  },
-  {
-    title: "Saved Destinations",
-    description: "Build a shortlist of destinations you'd like to explore.",
-  },
-  {
-    title: "Saved Cruises",
-    description: "Bookmark cruise sailings to compare later.",
-  },
   {
     title: "My Enquiries",
     description: "Track the status of journey requests you've submitted.",
@@ -42,7 +31,7 @@ export default function MyWorldBridgePage() {
       <PageHero
         eyebrow="My World Bridge"
         title="Your World Bridge Meridian account"
-        description="Accounts are not yet active on the website. Here's what My World Bridge will include once sign-in is available."
+        description="Account sign-in isn't connected yet, but saved journeys work right now — stored in this browser, no account required."
         image={themeImage("business", 3)}
         imageAlt="A desk with a notebook"
         size="sm"
@@ -56,8 +45,8 @@ export default function MyWorldBridgePage() {
               Account sign-in isn&apos;t connected yet
             </h2>
             <p className="mt-4 text-stone leading-relaxed">
-              We&apos;re building customer accounts so you can save journeys, track enquiries and
-              revisit past itineraries. In the meantime, every journey request is tracked
+              We&apos;re building customer accounts so you can track enquiries and revisit past
+              itineraries across devices. In the meantime, every journey request is tracked
               directly by our team — reach out any time to check on yours.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
@@ -66,6 +55,10 @@ export default function MyWorldBridgePage() {
                 Contact Us
               </Button>
             </div>
+          </div>
+
+          <div className="mt-20">
+            <SavedJourneysPanel />
           </div>
 
           <div className="mt-20">

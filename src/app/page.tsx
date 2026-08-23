@@ -17,11 +17,13 @@ import { DestinationCard } from "@/components/cards/DestinationCard";
 import { CruiseCard } from "@/components/cards/CruiseCard";
 import { ReviewCard } from "@/components/cards/ReviewCard";
 import { JournalCard } from "@/components/cards/JournalCard";
+import { JourneyStoryCard } from "@/components/cards/JourneyStoryCard";
 import { getFeaturedPackages, packages } from "@/data/packages";
 import { getFeaturedDestinations, destinations } from "@/data/destinations";
 import { cruises } from "@/data/cruises";
 import { reviews } from "@/data/reviews";
 import { journal } from "@/data/journal";
+import { journeyStories } from "@/data/journey-stories";
 import { themeImage } from "@/data/images";
 
 export default function Home() {
@@ -30,6 +32,7 @@ export default function Home() {
   const featuredCruises = cruises.slice(0, 3);
   const featuredReviews = reviews.slice(0, 3);
   const latestJournal = journal.slice(0, 3);
+  const featuredJourneyStories = journeyStories.slice(0, 3);
 
   return (
     <>
@@ -68,6 +71,20 @@ export default function Home() {
       <TravelStyles />
 
       <CardSection
+        eyebrow="Journey Stories"
+        title="Journeys, told properly."
+        description="Not a catalog listing — the reasoning behind a route, and what the journey actually feels like."
+        viewAllHref="/journey-stories"
+        tone="charcoal"
+      >
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+          {featuredJourneyStories.map((story) => (
+            <JourneyStoryCard key={story.slug} story={story} />
+          ))}
+        </div>
+      </CardSection>
+
+      <CardSection
         eyebrow="Cruise Collection"
         title="Ocean and river journeys, organized end to end."
         description="Sample sailings across our cruise categories — confirmed availability at enquiry."
@@ -86,8 +103,8 @@ export default function Home() {
         description="Museums, opera, galleries and heritage sites — journeys built for clients who travel to go deeper into a place, not just to see it."
         cta="Plan a Cultural Journey"
         href="/arts-culture"
-        image={themeImage("culturalHeritage", 5)}
-        imageAlt="A museum gallery interior"
+        image={themeImage("culturalHeritage", 8)}
+        imageAlt="A white-walled museum gallery interior"
       />
 
       <FeatureBanner
@@ -99,6 +116,16 @@ export default function Home() {
         image={themeImage("mountainNature", 7)}
         imageAlt="A remote, dramatic mountain landscape"
         reverse
+      />
+
+      <FeatureBanner
+        eyebrow="Private Journeys"
+        title="Entirely yours, from the first night to the last."
+        description="No shared itinerary, no group pace — a private journey designed around one traveler, couple, family or group."
+        cta="Enquire Privately"
+        href="/private-journeys"
+        image={themeImage("luxuryResort", 1)}
+        imageAlt="A private villa terrace overlooking the coast"
       />
 
       <Concierge />

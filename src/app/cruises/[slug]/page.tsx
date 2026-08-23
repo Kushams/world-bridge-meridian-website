@@ -146,7 +146,17 @@ export default async function CruisePage({
             </div>
 
             <div className="lg:sticky lg:top-28 space-y-6">
-              <PricingBlock tiers={cruise.indicativePricing} ctaLabel="Request This Cruise" />
+              <PricingBlock
+                tiers={cruise.indicativePricing}
+                ctaLabel="Request This Cruise"
+                saveItem={{
+                  type: "cruise",
+                  slug: cruise.slug,
+                  title: cruise.title,
+                  image: cruise.heroImage,
+                  href: `/cruises/${cruise.slug}`,
+                }}
+              />
             </div>
           </div>
         </Container>

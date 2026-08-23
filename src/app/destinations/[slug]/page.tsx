@@ -117,6 +117,13 @@ export default async function DestinationPage({
               <PricingBlock
                 tiers={destination.indicativePricing}
                 ctaLabel="Plan This Journey"
+                saveItem={{
+                  type: "destination",
+                  slug: destination.slug,
+                  title: destination.name,
+                  image: destination.heroImage,
+                  href: `/destinations/${destination.slug}`,
+                }}
               />
               {destination.cruiseAvailable ? (
                 <div className="rounded-card border hairline p-6">

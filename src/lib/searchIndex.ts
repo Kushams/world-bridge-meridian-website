@@ -4,12 +4,13 @@ import { cruises } from "@/data/cruises";
 import { experiences } from "@/data/experiences";
 import { journal } from "@/data/journal";
 import { artListings } from "@/data/exhibitions";
+import { journeyStories } from "@/data/journey-stories";
 
 const artHrefByCategory = { gallery: "/exhibitions", museum: "/museums", fair: "/art-fairs" } as const;
 const artTypeByCategory = { gallery: "Exhibition", museum: "Museum Exhibition", fair: "Art Fair" } as const;
 
 export interface SearchItem {
-  type: "Destination" | "Travel Package" | "Cruise" | "Experience" | "Journal" | "Exhibition" | "Museum Exhibition" | "Art Fair";
+  type: "Destination" | "Travel Package" | "Cruise" | "Experience" | "Journal" | "Exhibition" | "Museum Exhibition" | "Art Fair" | "Journey Story";
   title: string;
   subtitle: string;
   href: string;
@@ -72,6 +73,17 @@ function buildIndex(): SearchItem[] {
       href: `/journal/${a.slug}`,
       image: a.heroImage,
       keywords: `${a.title} ${a.category} ${a.excerpt}`.toLowerCase(),
+    });
+  }
+
+  for (const s of journeyStories) {
+    items.push({
+      type: "Journey Story",
+      title: s.title,
+      subtitle: `${s.subtitle} · ${s.duration}`,
+      href: `/journey-stories/${s.slug}`,
+      image: s.heroImage,
+      keywords: `${s.title} ${s.subtitle} ${s.whyThisJourney}`.toLowerCase(),
     });
   }
 

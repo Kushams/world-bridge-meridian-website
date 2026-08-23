@@ -155,6 +155,31 @@ export interface CurrentJourney {
   status: "Sample Journey" | "Indicative Journey" | "Enquiry-Based Journey";
 }
 
+export interface RouteStop {
+  city: string;
+  nights: number;
+}
+
+export interface JourneyStory {
+  slug: string;
+  title: string;
+  subtitle: string; // e.g. "Rome → Florence → Venice"
+  duration: string;
+  travelerType: string;
+  travelStyles: TravelStyleSlug[];
+  heroImage: string;
+  gallery: string[];
+  overview: string[];
+  whyThisJourney: string;
+  route: RouteStop[];
+  itinerary: ItineraryDay[];
+  experiences: string[];
+  accommodationStyle: string;
+  culturalHighlights: string[];
+  indicativePricing: PriceTier[];
+  destinationSlugs: string[];
+}
+
 export interface Stay {
   slug: string;
   name: string; // generic descriptive name, not a real hotel brand

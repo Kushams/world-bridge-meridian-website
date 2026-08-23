@@ -8,6 +8,7 @@ import { themeImage } from "@/data/images";
 const styles = [
   { label: "Luxury Travel", href: "/luxury-travel", image: themeImage("luxuryResort", 0) },
   { label: "Bespoke Journeys", href: "/bespoke", image: themeImage("mountainNature", 1) },
+  { label: "Private Journeys", href: "/private-journeys", image: themeImage("luxuryResort", 2) },
   { label: "Arts & Culture", href: "/arts-culture", image: themeImage("culturalHeritage", 3) },
   { label: "Family Travel", href: "/family-travel", image: themeImage("peopleTravel", 1) },
   { label: "Couples Travel", href: "/couples-travel", image: themeImage("peopleTravel", 0) },

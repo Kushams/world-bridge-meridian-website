@@ -6,6 +6,7 @@ import { cruises } from "@/data/cruises";
 import { experiences } from "@/data/experiences";
 import { journal } from "@/data/journal";
 import { team } from "@/data/team";
+import { journeyStories } from "@/data/journey-stories";
 
 export const dynamic = "force-static";
 
@@ -27,6 +28,11 @@ const staticRoutes = [
   "/exhibitions",
   "/museums",
   "/art-fairs",
+  "/calendar",
+  "/journey-stories",
+  "/private-journeys",
+  "/institutional",
+  "/compare",
   "/about",
   "/leadership",
   "/careers",
@@ -69,6 +75,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
   for (const t of team) {
     entries.push({ url: `${SITE_URL}/leadership/${t.slug}`, lastModified: now });
+  }
+  for (const s of journeyStories) {
+    entries.push({ url: `${SITE_URL}/journey-stories/${s.slug}`, lastModified: now });
   }
 
   return entries;

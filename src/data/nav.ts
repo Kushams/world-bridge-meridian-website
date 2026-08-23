@@ -10,6 +10,7 @@ export interface NavGroup {
 
 export const primaryNav: NavLink[] = [
   { label: "Explore", href: "/explore" },
+  { label: "Journey Stories", href: "/journey-stories" },
   { label: "Journal", href: "/journal" },
   { label: "About Us", href: "/about" },
   { label: "My World Bridge", href: "/my-world-bridge" },
@@ -17,13 +18,14 @@ export const primaryNav: NavLink[] = [
 
 export const menuGroups: NavGroup[] = [
   {
-    heading: "Explore",
+    heading: "Journeys",
     links: [
       { label: "Destinations", href: "/destinations" },
       { label: "Travel Packages", href: "/travel-packages" },
+      { label: "Journey Stories", href: "/journey-stories" },
+      { label: "Current Journeys", href: "/current-journeys" },
       { label: "Cruises", href: "/cruises" },
       { label: "Experiences", href: "/experiences" },
-      { label: "Current Journeys", href: "/current-journeys" },
       { label: "Stays", href: "/stays" },
     ],
   },
@@ -31,11 +33,13 @@ export const menuGroups: NavGroup[] = [
     heading: "Our Expertise",
     links: [
       { label: "Bespoke Journeys", href: "/bespoke" },
+      { label: "Private Journeys", href: "/private-journeys" },
       { label: "Luxury Travel", href: "/luxury-travel" },
       { label: "Arts & Culture", href: "/arts-culture" },
       { label: "Family Travel", href: "/family-travel" },
       { label: "Couples Travel", href: "/couples-travel" },
       { label: "Group Travel", href: "/group-travel" },
+      { label: "Institutional Travel", href: "/institutional" },
       { label: "Corporate Travel", href: "/corporate-travel" },
     ],
   },
@@ -45,6 +49,7 @@ export const menuGroups: NavGroup[] = [
       { label: "Gallery Exhibitions", href: "/exhibitions" },
       { label: "Museum Exhibitions", href: "/museums" },
       { label: "Art Fairs", href: "/art-fairs" },
+      { label: "Travel Calendar", href: "/calendar" },
     ],
   },
   {
@@ -74,7 +79,10 @@ export const menuGroups: NavGroup[] = [
   },
   {
     heading: "My World Bridge",
-    links: [{ label: "My Account", href: "/my-world-bridge" }],
+    links: [
+      { label: "My Account", href: "/my-world-bridge" },
+      { label: "Compare Journeys", href: "/compare" },
+    ],
   },
 ];
 
@@ -90,24 +98,23 @@ export const footerColumns: NavGroup[] = [
     links: [
       { label: "Destinations", href: "/destinations" },
       { label: "Travel Packages", href: "/travel-packages" },
+      { label: "Journey Stories", href: "/journey-stories" },
       { label: "Cruises", href: "/cruises" },
-      { label: "Experiences", href: "/experiences" },
       { label: "Current Journeys", href: "/current-journeys" },
+      { label: "Travel Calendar", href: "/calendar" },
       { label: "Journal", href: "/journal" },
     ],
   },
   {
-    heading: "Our Expertise",
+    heading: "Journey Services",
     links: [
       { label: "Bespoke Journeys", href: "/bespoke" },
-      { label: "Luxury Travel", href: "/luxury-travel" },
+      { label: "Private Journeys", href: "/private-journeys" },
+      { label: "Arts & Culture", href: "/arts-culture" },
       { label: "Family Travel", href: "/family-travel" },
       { label: "Couples Travel", href: "/couples-travel" },
       { label: "Group Travel", href: "/group-travel" },
-      { label: "Arts & Culture", href: "/arts-culture" },
-      { label: "Gallery Exhibitions", href: "/exhibitions" },
-      { label: "Museum Exhibitions", href: "/museums" },
-      { label: "Art Fairs", href: "/art-fairs" },
+      { label: "Institutional Travel", href: "/institutional" },
       { label: "Corporate Travel", href: "/corporate-travel" },
     ],
   },
@@ -116,10 +123,11 @@ export const footerColumns: NavGroup[] = [
     links: [
       { label: "About Us", href: "/about" },
       { label: "Leadership", href: "/leadership" },
+      { label: "Our Network", href: "/partners" },
       { label: "Careers", href: "/careers" },
-      { label: "Partners", href: "/partners" },
       { label: "Reviews", href: "/reviews" },
       { label: "FAQs", href: "/faq" },
+      { label: "My World Bridge", href: "/my-world-bridge" },
     ],
   },
 ];
