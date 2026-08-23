@@ -113,6 +113,25 @@ Same pattern: add an entry to `src/data/packages.ts`, `src/data/cruises.ts`, or
   `src/data/company.ts` as a single source of truth — update there rather than
   hard-coding strings across pages.
 
+### Gallery exhibitions, museum exhibitions and art fairs
+
+`/exhibitions`, `/museums` and `/art-fairs` list real, currently-running or
+upcoming shows at major galleries, museums and art fairs worldwide, sourced
+from `src/data/exhibitions.ts`. Unlike the rest of the site's content, **this
+data goes stale on its own** — shows close and fairs move, and this is a
+static site with no live backend to refresh it automatically. Every entry:
+
+- was checked against the institution's own website before being added
+  (`sourceUrl` links straight back to it so it stays verifiable);
+- is stamped with `LAST_VERIFIED` in that file, shown on each page;
+- does not claim any partnership or affiliation with the gallery, museum or
+  fair — it's public information about what's on, offered because we can
+  help plan travel around it.
+
+Re-check and refresh `src/data/exhibitions.ts` against primary sources
+regularly (at minimum, before each listed show's end date passes) — do not
+let stale "currently on view" listings sit indefinitely.
+
 ### Sample / indicative data
 
 Cruise departures and current-journey listings are **sample data** pending live

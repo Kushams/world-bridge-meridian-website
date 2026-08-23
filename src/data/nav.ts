@@ -40,6 +40,14 @@ export const menuGroups: NavGroup[] = [
     ],
   },
   {
+    heading: "Arts & Culture",
+    links: [
+      { label: "Gallery Exhibitions", href: "/exhibitions" },
+      { label: "Museum Exhibitions", href: "/museums" },
+      { label: "Art Fairs", href: "/art-fairs" },
+    ],
+  },
+  {
     heading: "About",
     links: [
       { label: "About World Bridge Meridian", href: "/about" },
@@ -95,6 +103,9 @@ export const footerColumns: NavGroup[] = [
       { label: "Couples Travel", href: "/couples-travel" },
       { label: "Group Travel", href: "/group-travel" },
       { label: "Arts & Culture", href: "/arts-culture" },
+      { label: "Gallery Exhibitions", href: "/exhibitions" },
+      { label: "Museum Exhibitions", href: "/museums" },
+      { label: "Art Fairs", href: "/art-fairs" },
       { label: "Corporate Travel", href: "/corporate-travel" },
     ],
   },

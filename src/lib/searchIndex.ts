@@ -3,9 +3,13 @@ import { packages } from "@/data/packages";
 import { cruises } from "@/data/cruises";
 import { experiences } from "@/data/experiences";
 import { journal } from "@/data/journal";
+import { artListings } from "@/data/exhibitions";
+
+const artHrefByCategory = { gallery: "/exhibitions", museum: "/museums", fair: "/art-fairs" } as const;
+const artTypeByCategory = { gallery: "Exhibition", museum: "Museum Exhibition", fair: "Art Fair" } as const;
 
 export interface SearchItem {
-  type: "Destination" | "Travel Package" | "Cruise" | "Experience" | "Journal";
+  type: "Destination" | "Travel Package" | "Cruise" | "Experience" | "Journal" | "Exhibition" | "Museum Exhibition" | "Art Fair";
   title: string;
   subtitle: string;
   href: string;
@@ -68,6 +72,17 @@ function buildIndex(): SearchItem[] {
       href: `/journal/${a.slug}`,
       image: a.heroImage,
       keywords: `${a.title} ${a.category} ${a.excerpt}`.toLowerCase(),
+    });
+  }
+
+  for (const a of artListings) {
+    items.push({
+      type: artTypeByCategory[a.category],
+      title: a.title,
+      subtitle: `${a.venue} · ${a.city}`,
+      href: artHrefByCategory[a.category],
+      image: a.heroImage,
+      keywords: `${a.title} ${a.venue} ${a.city} ${a.country}`.toLowerCase(),
     });
   }
 

@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -21,6 +22,7 @@ export function SpecialtyPage({
   examplesLabel = "This includes",
   ctaLabel,
   ctaHref = "/plan-your-journey",
+  afterHero,
 }: {
   eyebrow: string;
   title: string;
@@ -32,6 +34,7 @@ export function SpecialtyPage({
   examplesLabel?: string;
   ctaLabel: string;
   ctaHref?: string;
+  afterHero?: ReactNode;
 }) {
   const relatedPackages = packages.filter((p) => p.travelStyles.includes(travelStyle)).slice(0, 3);
   const relatedDestinations = destinations
@@ -42,6 +45,8 @@ export function SpecialtyPage({
   return (
     <>
       <PageHero eyebrow={eyebrow} title={title} description={intro} image={heroImage} imageAlt={heroImageAlt} />
+
+      {afterHero}
 
       <section className="py-16 md:py-24">
         <Container>
