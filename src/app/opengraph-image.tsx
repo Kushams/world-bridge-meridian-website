@@ -34,24 +34,21 @@ export default async function OpengraphImage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            width: 108,
-            height: 108,
+            width: 116,
+            height: 116,
             borderRadius: "50%",
-            border: "3px solid #c8a668",
+            border: "2px solid #c8a668",
             marginBottom: 36,
           }}
         >
-          <span
-            style={{
-              fontFamily: "Georgia, 'Times New Roman', serif",
-              fontStyle: "italic",
-              fontWeight: 700,
-              fontSize: 64,
-              color: "#c8a668",
-            }}
-          >
-            M
-          </span>
+          <svg width="72" height="72" viewBox="0 0 256 256">
+            <path
+              d="M128 26 L144 118 L230 128 L144 138 L128 230 L112 138 L26 128 L112 118 Z"
+              fill="#c8a668"
+            />
+            <circle cx="128" cy="128" r="10" fill="#0a0d0b" />
+            <circle cx="128" cy="128" r="10" fill="none" stroke="#c8a668" strokeWidth="2.5" />
+          </svg>
         </div>
         <div
           style={{
