@@ -76,8 +76,8 @@ export default function LeadershipPage() {
         eyebrow="About"
         title="Leadership & Team"
         description="The people and structure behind how every World Bridge Meridian journey is designed, coordinated and supported."
-        image={themeImage("business", 0)}
-        imageAlt="A portrait in business attire"
+        image={themeImage("business", 2)}
+        imageAlt="A team working together around a table"
       />
       <section className="py-16 md:py-24">
         <Container>
