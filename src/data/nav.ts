@@ -24,6 +24,8 @@ export const menuGroups: NavGroup[] = [
       { label: "Travel Packages", href: "/travel-packages" },
       { label: "Journey Stories", href: "/journey-stories" },
       { label: "Current Journeys", href: "/current-journeys" },
+      { label: "Holiday Collection", href: "/holiday-collection" },
+      { label: "Journeys for Life's Moments", href: "/occasions" },
       { label: "Cruises", href: "/cruises" },
       { label: "Experiences", href: "/experiences" },
       { label: "Stays", href: "/stays" },
@@ -56,6 +58,7 @@ export const menuGroups: NavGroup[] = [
     heading: "About",
     links: [
       { label: "About World Bridge Meridian", href: "/about" },
+      { label: "How We Work", href: "/how-we-work" },
       { label: "Leadership", href: "/leadership" },
       { label: "Careers", href: "/careers" },
       { label: "Partners", href: "/partners" },
@@ -99,6 +102,7 @@ export const footerColumns: NavGroup[] = [
       { label: "Destinations", href: "/destinations" },
       { label: "Travel Packages", href: "/travel-packages" },
       { label: "Journey Stories", href: "/journey-stories" },
+      { label: "Holiday Collection", href: "/holiday-collection" },
       { label: "Cruises", href: "/cruises" },
       { label: "Current Journeys", href: "/current-journeys" },
       { label: "Travel Calendar", href: "/calendar" },
@@ -122,6 +126,7 @@ export const footerColumns: NavGroup[] = [
     heading: "About",
     links: [
       { label: "About Us", href: "/about" },
+      { label: "How We Work", href: "/how-we-work" },
       { label: "Leadership", href: "/leadership" },
       { label: "Our Network", href: "/partners" },
       { label: "Careers", href: "/careers" },

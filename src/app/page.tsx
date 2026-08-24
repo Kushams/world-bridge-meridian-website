@@ -128,6 +128,17 @@ export default function Home() {
         imageAlt="A private villa terrace overlooking the coast"
       />
 
+      <FeatureBanner
+        eyebrow="Holiday Collection"
+        title="The holidays, designed around you."
+        description="Christmas markets in Europe, New Year in New York, holiday cruises and warm-weather escapes — built around when you're free to travel."
+        cta="Explore the Holiday Collection"
+        href="/holiday-collection"
+        image={themeImage("cityscape", 6)}
+        imageAlt="A city decorated for the winter holiday season at night"
+        reverse
+      />
+
       <Concierge />
       <JourneyPanel />
 
