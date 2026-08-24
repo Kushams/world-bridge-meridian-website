@@ -5,12 +5,13 @@ import { experiences } from "@/data/experiences";
 import { journal } from "@/data/journal";
 import { artListings } from "@/data/exhibitions";
 import { journeyStories } from "@/data/journey-stories";
+import { worldEvents, eventCategoryLabels } from "@/data/events";
 
 const artHrefByCategory = { gallery: "/exhibitions", museum: "/museums", fair: "/art-fairs" } as const;
 const artTypeByCategory = { gallery: "Exhibition", museum: "Museum Exhibition", fair: "Art Fair" } as const;
 
 export interface SearchItem {
-  type: "Destination" | "Travel Package" | "Cruise" | "Experience" | "Journal" | "Exhibition" | "Museum Exhibition" | "Art Fair" | "Journey Story";
+  type: "Destination" | "Travel Package" | "Cruise" | "Experience" | "Journal" | "Exhibition" | "Museum Exhibition" | "Art Fair" | "Journey Story" | "Event";
   title: string;
   subtitle: string;
   href: string;
@@ -95,6 +96,17 @@ function buildIndex(): SearchItem[] {
       href: artHrefByCategory[a.category],
       image: a.heroImage,
       keywords: `${a.title} ${a.venue} ${a.city} ${a.country}`.toLowerCase(),
+    });
+  }
+
+  for (const e of worldEvents) {
+    items.push({
+      type: "Event",
+      title: e.title,
+      subtitle: `${eventCategoryLabels[e.category]} · ${e.city}`,
+      href: "/calendar",
+      image: e.heroImage,
+      keywords: `${e.title} ${e.organizer} ${e.city} ${e.country} ${eventCategoryLabels[e.category]}`.toLowerCase(),
     });
   }
 
