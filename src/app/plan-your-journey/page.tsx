@@ -14,9 +14,9 @@ export default function PlanYourJourneyPage() {
   return (
     <>
       <PageHero
-        eyebrow="Begin With a Conversation"
-        title="Plan Your Journey"
-        description="You don't need to know every detail. Answer what you can — we'll take it from there."
+        eyebrow="Journey Consultation"
+        title="Let's design something extraordinary."
+        description="You don't need to have everything figured out. Tell us what you know, what you love, and what you want to experience — we'll help shape the journey."
         image={themeImage("mountainNature", 3)}
         imageAlt="A scenic landscape"
         size="sm"

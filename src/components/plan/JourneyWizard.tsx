@@ -264,15 +264,18 @@ export function JourneyWizard() {
 
         {step === 5 ? (
           <fieldset>
-            <legend className="font-display text-2xl md:text-3xl text-ivory">Budget</legend>
+            <legend className="font-display text-2xl md:text-3xl text-ivory">
+              Indicative journey investment
+            </legend>
             <p className="mt-2 text-sm text-stone-dim">
-              A general range is enough — this helps us shape realistic options.
+              A general range is enough — this helps us shape realistic options. This isn&apos;t a
+              quotation, just a starting point for the conversation.
             </p>
             <input
               type="text"
               value={form.budget}
               onChange={(e) => setForm({ ...form, budget: e.target.value })}
-              placeholder="e.g. $5,000–$8,000 per person, or a total trip budget"
+              placeholder="e.g. $5,000–$8,000 per person, or a total journey investment"
               className="mt-6 w-full rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory placeholder:text-stone-dim outline-none focus:border-gold"
             />
           </fieldset>
