@@ -51,6 +51,7 @@ export const menuGroups: NavGroup[] = [
       { label: "Gallery Exhibitions", href: "/exhibitions" },
       { label: "Museum Exhibitions", href: "/museums" },
       { label: "Art Fairs", href: "/art-fairs" },
+      { label: "Cultural Access Programs", href: "/cultural-access" },
       { label: "Travel Calendar", href: "/calendar" },
     ],
   },
