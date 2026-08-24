@@ -46,7 +46,7 @@ export const team: TeamMember[] = [
     title: "Director of Travel Design",
     department: "Travel Design & Experience",
     reportsToSlug: "justin-warkovsky",
-    photo: stockPortrait("1685760259914-ee8d2c92d2e0"),
+    photo: stockPortrait("1609371497456-3a55a205d5eb"),
     bio: [
       "Amara leads the team that turns a client's first conversation with World Bridge Meridian into an actual itinerary — destinations, pacing, accommodation style and the experiences woven through each day.",
       "Originally from Nigeria, Amara joined the travel design team early on and has shaped much of how it operates today.",
@@ -74,7 +74,7 @@ export const team: TeamMember[] = [
     title: "Director of Client Experience",
     department: "Client Experience",
     reportsToSlug: "justin-warkovsky",
-    photo: stockPortrait("1573496359142-b8d87734a5a2"),
+    photo: stockPortrait("1573497019707-1c04de26e58c"),
     bio: [
       "Priya owns the relationship with every client from the moment a journey is confirmed through to the day they're back home — the point of contact if a flight changes, a plan shifts, or something simply needs handling.",
       "Originally from India, Priya has spent most of her career on the client-facing side of travel, from tour operations to direct account management.",
@@ -146,7 +146,7 @@ export const team: TeamMember[] = [
     title: "Air & Itinerary Planning Manager",
     department: "Operations",
     reportsToSlug: "lucas-ferreira",
-    photo: stockPortrait("1580489944761-15a19d654956"),
+    photo: stockPortrait("1604904612715-47bf9d9bc670"),
     bio: [
       "Hana manages flight itinerary planning — routing, connection timing, and the kind of contingency planning that keeps a long multi-city journey from unraveling over one missed connection.",
       "Originally from Japan, Hana has a background in airline operations, which shows in how closely her team plans routing and connections.",
@@ -190,7 +190,7 @@ export const team: TeamMember[] = [
     title: "Travel Coordinating Officer — Europe",
     department: "Travel Design & Experience",
     reportsToSlug: "sofia-marchetti",
-    photo: stockPortrait("1573497019940-1c28c88b4f3e"),
+    photo: stockPortrait("1652471949169-9c587e8898cd"),
     bio: [
       "Camille coordinates travel packages and flight itineraries across World Bridge Meridian's European destinations — matching hotels, transport and local experiences to a confirmed itinerary and locking in the bookings behind it.",
       "Originally from France, Camille has coordinated European itineraries since early in her career and knows the region's logistics in detail.",
@@ -274,7 +274,7 @@ export const team: TeamMember[] = [
     title: "Cruise Booking Coordinator",
     department: "Travel Design & Experience",
     reportsToSlug: "ethan-walsh",
-    photo: stockPortrait("1573496358961-3c82861ab8f4"),
+    photo: stockPortrait("1573496528816-a104a722b3db"),
     bio: [
       "Leilani manages cabin bookings, deck and category selection, and the shore-excursion planning that rounds out a cruise itinerary.",
       "Originally from Hawaii, Leilani brings a lifelong familiarity with island and cruise travel to her work.",
@@ -316,7 +316,7 @@ export const team: TeamMember[] = [
     title: "Guest Relations Officer",
     department: "Client Experience",
     reportsToSlug: "isabel-rojas",
-    photo: stockPortrait("1556157382-97eda2d62296"),
+    photo: stockPortrait("1740906011452-8b0571dfe7d8"),
     bio: [
       "Diego supports clients while they're actually traveling — the contact point if a flight is delayed, a hotel booking needs adjusting, or a plan needs to change mid-trip.",
       "Originally from Mexico, Diego has worked in guest services for most of his career, including several years with an international hotel group.",
@@ -330,7 +330,7 @@ export const team: TeamMember[] = [
     title: "Visa & Travel Documentation Officer",
     department: "Operations",
     reportsToSlug: "lucas-ferreira",
-    photo: stockPortrait("1611432579699-484f7990b127"),
+    photo: stockPortrait("1585240975858-7264fd020798"),
     bio: [
       "Anastasia tracks visa requirements, passport validity rules and entry documentation for every destination on a client's itinerary, and flags what each traveler needs to arrange before departure.",
       "Originally from Romania, Anastasia has a background in international documentation and visa processing.",
@@ -344,7 +344,7 @@ export const team: TeamMember[] = [
     title: "Finance & Billing Officer",
     department: "Finance",
     reportsToSlug: "daniel-hoffmann",
-    photo: stockPortrait("1560250097-0b93528c311a"),
+    photo: stockPortrait("1645736593731-4eef033ac37a"),
     bio: [
       "Benjamin manages client billing, payment schedules and supplier invoices, making sure every itinerary's finances stay accurate from initial quote through to final payment.",
       "Originally from Ghana, Benjamin has a finance and accounting background from outside the travel industry.",
@@ -358,7 +358,7 @@ export const team: TeamMember[] = [
     title: "Marketing Coordinator",
     department: "Marketing & Partnerships",
     reportsToSlug: "oliver-bennett",
-    photo: stockPortrait("1573497161161-c3e73707e25c"),
+    photo: stockPortrait("1701096351544-7de3c7fa0272"),
     bio: [
       "Chloe coordinates World Bridge Meridian's journal content and destination updates, working with the travel design team to keep destination information accurate and genuinely useful.",
       "Originally from Canada, Chloe has a background in travel journalism before moving into content coordination.",
@@ -372,7 +372,7 @@ export const team: TeamMember[] = [
     title: "Partnerships & Supplier Relations Coordinator",
     department: "Operations",
     reportsToSlug: "lucas-ferreira",
-    photo: stockPortrait("1568602471122-7832951cc4c5"),
+    photo: stockPortrait("1589386417686-0d34b5903d23"),
     bio: [
       "Arjun coordinates day-to-day communication with hotel, ground transport and activity partners, and helps evaluate new suppliers before they're added to any itinerary.",
       "Originally from India, Arjun has managed supplier relationships across hospitality and ground transport for most of his career.",
