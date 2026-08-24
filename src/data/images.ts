@@ -16,6 +16,20 @@ function unsplash(id: string, w = 1600, q = 80) {
 }
 
 /**
+ * The GitHub Pages build serves the site from a /world-bridge-meridian-website
+ * subpath (see next.config.ts). next/image only prepends that basePath
+ * automatically when it's running its own optimizer, which is disabled for
+ * this static export — so any src pointing at a file in /public has to be
+ * prefixed by hand or it 404s in production while still working in local
+ * dev. Use this for any local (non-Unsplash) image path, e.g. "/images/x.jpg".
+ */
+const BASE_PATH = process.env.GITHUB_PAGES === "true" ? "/world-bridge-meridian-website" : "";
+
+export function localImage(path: string) {
+  return `${BASE_PATH}${path}`;
+}
+
+/**
  * Stock professional headshots standing in for staff photos below Earl and
  * Justin (our real founder and COO). Each ID was fetched and visually
  * reviewed. Replace with real staff photography as real hires join —
