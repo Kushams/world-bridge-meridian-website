@@ -13,7 +13,7 @@ export function ScrollProgressBar() {
   return (
     <motion.div
       aria-hidden
-      className="fixed left-0 top-0 z-[60] h-[2px] w-full origin-left bg-gold"
+      className="fixed left-0 top-0 z-[60] h-[3px] w-full origin-left bg-gold shadow-[0_0_10px_2px_rgba(200,166,104,0.55)]"
       style={{ scaleX }}
     />
   );

@@ -5,6 +5,7 @@ import { SITE_URL, company } from "@/data/company";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CustomCursor } from "@/components/motion/CustomCursor";
+import { TouchRipple } from "@/components/motion/TouchRipple";
 import { ScrollProgressBar } from "@/components/motion/ScrollProgressBar";
 import { PageTransition } from "@/components/motion/PageTransition";
 
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
         <ScrollProgressBar />
         <CustomCursor />
+        <TouchRipple />
         <Header />
         <main className="flex-1">
           <PageTransition>{children}</PageTransition>
