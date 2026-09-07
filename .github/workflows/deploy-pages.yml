@@ -1,8 +1,9 @@
 name: Deploy to GitHub Pages
 
+# Disabled from auto-deploying on push — Netlify (worldbridgemeridian.com)
+# is now the live site. Re-add the `push` trigger below if GitHub Pages
+# is ever needed again; until then this only runs if triggered manually.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:

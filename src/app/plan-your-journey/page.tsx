@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { JourneyWizard } from "@/components/plan/JourneyWizard";
+import { NetlifyFormShadow } from "@/components/plan/NetlifyFormShadow";
 import { themeImage } from "@/data/images";
 
 export const metadata: Metadata = {
@@ -26,6 +27,7 @@ export default function PlanYourJourneyPage() {
           <JourneyWizard />
         </Container>
       </section>
+      <NetlifyFormShadow />
     </>
   );
 }

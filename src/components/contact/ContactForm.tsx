@@ -3,17 +3,18 @@
 import { FormEvent, useState } from "react";
 import { company } from "@/data/company";
 import { track } from "@/lib/analytics";
+import { submitToNetlifyForms } from "@/lib/netlifyForms";
 
 export function ContactForm() {
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<"idle" | "submitting" | "sent" | "sent-via-email">("idle");
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
 
     // Honeypot — real visitors never fill this in.
     if (String(form.get("company_website") ?? "").trim() !== "") {
-      setSent(true);
+      setStatus("sent");
       return;
     }
 
@@ -22,18 +23,36 @@ export function ContactForm() {
     const subject = String(form.get("subject") ?? "General Enquiry");
     const message = String(form.get("message") ?? "");
 
+    setStatus("submitting");
+
+    const delivered = await submitToNetlifyForms("contact", { name, email, subject, message });
+
+    if (delivered) {
+      setStatus("sent");
+      track("form_submitted", { form: "contact" });
+      return;
+    }
+
+    // Not served by Netlify right now (local dev, a non-Netlify preview) —
+    // fall back to mailto so the message is never just lost.
     const body = `${message}\n\n— ${name} (${email})`;
     const mailto = `mailto:${company.email}?subject=${encodeURIComponent(
       subject,
     )}&body=${encodeURIComponent(body)}`;
-
     window.location.href = mailto;
-    setSent(true);
-    track("form_submitted", { form: "contact" });
+    setStatus("sent-via-email");
+    track("form_submitted", { form: "contact", via: "mailto" });
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form
+      onSubmit={handleSubmit}
+      name="contact"
+      data-netlify="true"
+      netlify-honeypot="company_website"
+      className="space-y-5"
+    >
+      <input type="hidden" name="form-name" value="contact" />
       <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-0 w-0 overflow-hidden">
         <label htmlFor="company_website">Leave this field blank</label>
         <input id="company_website" name="company_website" type="text" tabIndex={-1} autoComplete="off" />
@@ -90,11 +109,18 @@ export function ContactForm() {
       </div>
       <button
         type="submit"
-        className="inline-flex items-center justify-center rounded-full bg-ivory px-8 py-3.5 text-sm font-semibold uppercase tracking-wide text-ink hover:bg-white transition-colors"
+        disabled={status === "submitting"}
+        className="inline-flex items-center justify-center rounded-full bg-ivory px-8 py-3.5 text-sm font-semibold uppercase tracking-wide text-ink transition-colors hover:bg-white disabled:opacity-50 disabled:pointer-events-none"
       >
-        Start a Conversation
+        {status === "submitting" ? "Sending…" : "Start a Conversation"}
       </button>
-      {sent ? (
+      {status === "sent" ? (
+        <p className="text-sm text-stone-dim">
+          Thank you — your message has been sent. We read every message and will get back to you
+          at the email address you provided.
+        </p>
+      ) : null}
+      {status === "sent-via-email" ? (
         <p className="text-sm text-stone-dim">
           Your email app should have opened with this message ready to send to {company.email}.
           If it didn&apos;t, please email us directly.

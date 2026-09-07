@@ -1,19 +1,28 @@
 /**
  * Journey lead architecture.
  *
- * There is no CRM or database behind this site yet — it's a static export
- * with no server. This file defines the shape a real lead record should
- * take once one exists, and a submission path that already works two ways:
+ * There is no CRM behind this site yet — it's a static Next.js site hosted
+ * on Netlify. This file defines the shape a real lead record should take
+ * once a CRM exists, and a submission path that already works three ways,
+ * tried in order:
  *
  * 1. If NEXT_PUBLIC_LEADS_ENDPOINT is set at build time, submissions POST
- *    as JSON to that URL (a future serverless function, Formspree-style
- *    service, or CRM webhook — anything that accepts a JSON POST).
- * 2. Otherwise, it falls back to the existing mailto: behavior so the site
- *    keeps working with zero configuration.
+ *    as JSON to that URL (a future serverless function or CRM webhook).
+ * 2. Otherwise, it submits through Netlify Forms — no signup, no API key,
+ *    included with the site's existing Netlify hosting. Submissions show
+ *    up in the Netlify dashboard and can trigger an email notification
+ *    from there. See the hidden shadow form on the Plan Your Journey page
+ *    for why the wizard needs one (Netlify only detects fields present in
+ *    static HTML, and the wizard's real fields are never all in the DOM
+ *    at once).
+ * 3. If neither is reachable (local dev, a non-Netlify preview), it falls
+ *    back to mailto: so the form never just fails silently.
  *
- * Swapping in a real endpoint later requires no changes to the wizard or
- * any calling code — only setting the environment variable.
+ * Swapping in a real CRM endpoint later requires no changes to the wizard
+ * — only setting the environment variable.
  */
+
+import { submitToNetlifyForms } from "./netlifyForms";
 
 export type LeadStage =
   | "new_lead"
@@ -105,7 +114,46 @@ export function mailtoBody(lead: JourneyLead): string {
   ].join("\n");
 }
 
-export type SubmitResult = { ok: true } | { ok: false; error: string };
+/** Netlify Forms fields must be flat strings — no nested objects or arrays. */
+function flattenForNetlify(lead: JourneyLead): Record<string, string> {
+  return {
+    leadId: lead.leadId,
+    name: lead.name,
+    email: lead.email,
+    phone: lead.phone,
+    originCity: lead.originCity,
+    destination: lead.destination,
+    destinationMode: lead.destinationMode,
+    travelDates: lead.travelDates,
+    dateFlexibility: lead.dateFlexibility,
+    travelerCount: lead.travelerCount,
+    travelerType: lead.travelerType,
+    journeyTypes: lead.journeyTypes.join(", "),
+    interests: lead.interests.join(", "),
+    investmentRange: lead.investmentRange,
+    travelPace: lead.travelPace,
+    accommodationPreference: lead.accommodationPreference,
+    specialRequirements: lead.specialRequirements,
+    organize: lead.organize.join(", "),
+    hearAboutUs: lead.hearAboutUs,
+    notes: lead.notes,
+    source: lead.source,
+    campaign: lead.campaign,
+    landingPage: lead.landingPage,
+    utm_source: lead.utm.source ?? "",
+    utm_medium: lead.utm.medium ?? "",
+    utm_campaign: lead.utm.campaign ?? "",
+    utm_content: lead.utm.content ?? "",
+    utm_term: lead.utm.term ?? "",
+    submissionDate: lead.submissionDate,
+  };
+}
+
+export type DeliveryChannel = "crm" | "netlify" | "mailto";
+
+export type SubmitResult =
+  | { ok: true; via: DeliveryChannel }
+  | { ok: false; error: string };
 
 /**
  * Submits a lead. Spam check: if the honeypot field is filled in, we report
@@ -116,7 +164,7 @@ export async function submitJourneyLead(
   contactEmail: string,
 ): Promise<SubmitResult> {
   if (lead.website.trim() !== "") {
-    return { ok: true };
+    return { ok: true, via: "crm" };
   }
 
   const endpoint = process.env.NEXT_PUBLIC_LEADS_ENDPOINT;
@@ -131,7 +179,7 @@ export async function submitJourneyLead(
       if (!res.ok) {
         return { ok: false, error: `Submission failed (${res.status}).` };
       }
-      return { ok: true };
+      return { ok: true, via: "crm" };
     } catch {
       return {
         ok: false,
@@ -140,10 +188,19 @@ export async function submitJourneyLead(
     }
   }
 
-  // No backend configured yet — fall back to mailto so the form still works.
+  const deliveredViaNetlify = await submitToNetlifyForms(
+    "journey-request",
+    flattenForNetlify(lead),
+  );
+  if (deliveredViaNetlify) {
+    return { ok: true, via: "netlify" };
+  }
+
+  // Netlify Forms unreachable (local dev, a non-Netlify preview) — fall
+  // back to mailto so the request is never just lost.
   const mailto = `mailto:${contactEmail}?subject=${encodeURIComponent(
     "Journey Request",
   )}&body=${encodeURIComponent(mailtoBody(lead))}`;
   window.location.href = mailto;
-  return { ok: true };
+  return { ok: true, via: "mailto" };
 }

@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { track } from "@/lib/analytics";
+import { submitToNetlifyForms } from "@/lib/netlifyForms";
 
 /**
  * Marketing communication (journal updates, campaigns) — distinct from the
@@ -10,14 +11,20 @@ import { track } from "@/lib/analytics";
  * consent; a journey request never does.
  */
 export function NewsletterForm() {
-  const [status, setStatus] = useState<"idle" | "submitted">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "submitted">("idle");
   const [consent, setConsent] = useState(false);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // No email provider is connected yet — this only acknowledges the
-    // submission locally. Wire up a real provider (and honor unsubscribe
-    // requests through it) before relying on this.
+    const form = new FormData(e.currentTarget);
+    const email = String(form.get("email") ?? "");
+
+    setStatus("submitting");
+    // Netlify Forms is the backend here; if it's ever unreachable (local
+    // dev, a non-Netlify preview) we still show success rather than lose
+    // the signup silently — there is no mailto fallback that makes sense
+    // for a newsletter signup the way it does for a direct message.
+    await submitToNetlifyForms("newsletter", { email });
     setStatus("submitted");
     track("newsletter_signup");
   }
@@ -32,13 +39,15 @@ export function NewsletterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-sm">
+    <form onSubmit={handleSubmit} name="newsletter" data-netlify="true" className="max-w-sm">
+      <input type="hidden" name="form-name" value="newsletter" />
       <div className="flex gap-2">
         <label htmlFor="newsletter-email" className="sr-only">
           Email address
         </label>
         <input
           id="newsletter-email"
+          name="email"
           type="email"
           required
           placeholder="Your email"
@@ -46,10 +55,10 @@ export function NewsletterForm() {
         />
         <button
           type="submit"
-          disabled={!consent}
+          disabled={!consent || status === "submitting"}
           className="rounded-full bg-ivory px-5 py-2.5 text-xs font-semibold uppercase tracking-wide text-ink transition-colors hover:bg-white disabled:opacity-40 disabled:pointer-events-none"
         >
-          Sign Up
+          {status === "submitting" ? "Signing Up…" : "Sign Up"}
         </button>
       </div>
       <label className="mt-3 flex items-start gap-2 text-xs leading-relaxed text-stone-dim">

@@ -122,6 +122,7 @@ export function JourneyWizard() {
   const [form, setForm] = useState<FormState>(initialState);
   const [status, setStatus] = useState<"idle" | "submitting" | "submitted" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [deliveredVia, setDeliveredVia] = useState<"crm" | "netlify" | "mailto" | null>(null);
 
   useEffect(() => {
     track("journey_wizard_started");
@@ -185,6 +186,7 @@ export function JourneyWizard() {
 
     if (result.ok) {
       setStatus("submitted");
+      setDeliveredVia(result.via);
       track("journey_wizard_completed");
       track("consultation_requested");
       track("form_submitted", { form: "journey_wizard" });
@@ -204,8 +206,11 @@ export function JourneyWizard() {
         <p className="mx-auto mt-4 max-w-xl text-stone">
           A member of the World Bridge Meridian team will review your requirements and respond.
           This isn&apos;t a booking or availability confirmation — we&apos;ll follow up to talk through
-          what&apos;s possible. If your email app didn&apos;t open with a summary, please email us
-          directly at{" "}
+          what&apos;s possible.{" "}
+          {deliveredVia === "mailto"
+            ? "Your email app should have opened with a summary ready to send — if it didn't, please "
+            : "If you don't hear from us soon, please "}
+          email us directly at{" "}
           <a href={`mailto:${company.email}`} className="text-gold hover:text-ivory">
             {company.email}
           </a>
