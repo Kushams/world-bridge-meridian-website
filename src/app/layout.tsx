@@ -4,10 +4,10 @@ import "./globals.css";
 import { SITE_URL, company } from "@/data/company";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { CustomCursor } from "@/components/motion/CustomCursor";
 import { TouchRipple } from "@/components/motion/TouchRipple";
 import { ScrollProgressBar } from "@/components/motion/ScrollProgressBar";
 import { PageTransition } from "@/components/motion/PageTransition";
+import { AttributionCapture } from "@/components/AttributionCapture";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -70,8 +70,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
         <ScrollProgressBar />
-        <CustomCursor />
         <TouchRipple />
+        <AttributionCapture />
         <Header />
         <main className="flex-1">
           <PageTransition>{children}</PageTransition>

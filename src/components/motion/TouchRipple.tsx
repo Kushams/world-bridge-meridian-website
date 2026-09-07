@@ -13,8 +13,7 @@ let nextRippleId = 0;
 
 /**
  * A soft gold ring at every touch point — on buttons, cards or just the
- * bare page (including where a scroll gesture starts), so touch feels
- * acknowledged the way a mouse cursor already is via CustomCursor.
+ * bare page (including where a scroll gesture starts).
  * Coarse-pointer only; a no-op everywhere a fine pointer is present.
  */
 export function TouchRipple() {

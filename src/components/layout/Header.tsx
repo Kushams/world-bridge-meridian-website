@@ -58,7 +58,7 @@ export function Header() {
               </svg>
             </button>
             <div className="hidden md:block">
-              <Button href="/plan-your-journey">Plan Your Journey</Button>
+              <Button href="/plan-your-journey">Design My Journey</Button>
             </div>
             <button
               type="button"

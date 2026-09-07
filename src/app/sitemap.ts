@@ -13,6 +13,7 @@ export const dynamic = "force-static";
 const staticRoutes = [
   "",
   "/explore",
+  "/travel-by-interest",
   "/destinations",
   "/travel-packages",
   "/cruises",

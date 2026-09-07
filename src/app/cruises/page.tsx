@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
+import { Button } from "@/components/ui/Button";
 import { CruisesExplorer } from "@/components/cruises/CruisesExplorer";
 import { cruises } from "@/data/cruises";
 import { themeImage } from "@/data/images";
@@ -25,10 +26,27 @@ export default function CruisesPage() {
       <section className="py-16 md:py-24">
         <Container>
           <p className="mb-10 max-w-2xl text-sm text-stone-dim">
-            {company.sampleDataDisclaimer} Every sailing below is confirmed with our cruise
-            partners at the time of enquiry.
+            {company.sampleDataDisclaimer} Sailings, cabin categories and pricing shown are
+            starting points — availability and final pricing are confirmed directly with cruise
+            operators once you enquire.
           </p>
           <CruisesExplorer cruises={cruises} />
+        </Container>
+      </section>
+      <section className="py-20 md:py-28 bg-charcoal border-t hairline">
+        <Container className="text-center">
+          <h2 className="mx-auto max-w-2xl font-display text-3xl md:text-4xl text-ivory text-balance-pretty">
+            Ready to explore cruise journeys?
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-stone">
+            Tell us the region, the ship style and who&apos;s sailing, and we&apos;ll build the rest of
+            the journey around it — flights, pre- and post-cruise stays, and shore experiences.
+          </p>
+          <div className="mt-8">
+            <Button href="/plan-your-journey" size="lg">
+              Explore Cruise Journeys
+            </Button>
+          </div>
         </Container>
       </section>
     </>

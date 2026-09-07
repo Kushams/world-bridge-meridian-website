@@ -1,46 +1,68 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { travelStyles } from "@/data/travel-styles";
+import { interestTags, travelerProfiles } from "@/data/interests";
 import { company } from "@/data/company";
 import { TravelStyleSlug } from "@/data/types";
+import { buildLeadId, submitJourneyLead, type JourneyLead } from "@/lib/leads";
+import { getAttribution } from "@/lib/attribution";
+import { track } from "@/lib/analytics";
 
 interface FormState {
   destinationMode: string;
   destinationText: string;
+  originCity: string;
   dateMode: string;
   dateText: string;
-  travelers: string;
+  dateFlexibility: string;
+  travelerType: string;
+  travelerCount: string;
   styles: TravelStyleSlug[];
+  interests: string[];
+  travelPace: string;
+  accommodationPreference: string;
   budget: string;
   organize: string[];
+  specialRequirements: string;
   name: string;
   email: string;
   phone: string;
   country: string;
   contactMethod: string;
+  hearAboutUs: string;
   additionalInfo: string;
+  website: string; // honeypot — must stay empty
 }
 
 const initialState: FormState = {
   destinationMode: "",
   destinationText: "",
+  originCity: "",
   dateMode: "",
   dateText: "",
-  travelers: "",
+  dateFlexibility: "",
+  travelerType: "",
+  travelerCount: "",
   styles: [],
+  interests: [],
+  travelPace: "",
+  accommodationPreference: "",
   budget: "",
   organize: [],
+  specialRequirements: "",
   name: "",
   email: "",
   phone: "",
   country: "",
   contactMethod: "Email",
+  hearAboutUs: "",
   additionalInfo: "",
+  website: "",
 };
 
-const TOTAL_STEPS = 8;
+const TOTAL_STEPS = 10;
 
 const destinationOptions = [
   { value: "specific", label: "Specific destination" },
@@ -55,14 +77,17 @@ const dateOptions = [
   { value: "season", label: "A particular season" },
 ];
 
-const travelerOptions = [
-  "Solo",
-  "Couple",
-  "Family",
-  "Friends",
-  "Group",
-  "Corporate",
-  "Institution",
+const flexibilityOptions = ["Fixed — these dates only", "Some flexibility", "Fully flexible"];
+
+const paceOptions = ["Leisurely", "Balanced", "Packed / see everything"];
+
+const accommodationOptions = [
+  "Boutique hotels",
+  "Luxury resorts",
+  "Villas & private homes",
+  "Historic properties",
+  "Ship / cruise cabin",
+  "No strong preference",
 ];
 
 const organizeOptions = [
@@ -77,6 +102,15 @@ const organizeOptions = [
   "Everything",
 ];
 
+const hearAboutOptions = [
+  "Referral",
+  "Search engine",
+  "Social media",
+  "Travel Journal / blog",
+  "Press or media",
+  "Other",
+];
+
 const contactMethods = ["Email", "Phone"];
 
 function toggle<T>(arr: T[], value: T): T[] {
@@ -86,39 +120,81 @@ function toggle<T>(arr: T[], value: T): T[] {
 export function JourneyWizard() {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState<FormState>(initialState);
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "submitting" | "submitted" | "error">("idle");
+  const [error, setError] = useState<string | null>(null);
 
-  const next = () => setStep((s) => Math.min(TOTAL_STEPS, s + 1));
+  useEffect(() => {
+    track("journey_wizard_started");
+  }, []);
+
+  const next = () => {
+    setStep((s) => Math.min(TOTAL_STEPS, s + 1));
+    track("journey_wizard_step_completed", { step });
+  };
   const back = () => setStep((s) => Math.max(1, s - 1));
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    setStatus("submitting");
+    setError(null);
 
-    const lines = [
-      `Destination: ${form.destinationMode} — ${form.destinationText || "n/a"}`,
-      `Travel dates: ${form.dateMode} — ${form.dateText || "n/a"}`,
-      `Traveling as: ${form.travelers}`,
-      `Travel style: ${form.styles.map((s) => travelStyles.find((t) => t.slug === s)?.label).join(", ") || "n/a"}`,
-      `Budget: ${form.budget || "n/a"}`,
-      `What to organize: ${form.organize.join(", ") || "n/a"}`,
-      ``,
-      `Name: ${form.name}`,
-      `Email: ${form.email}`,
-      `Phone: ${form.phone || "n/a"}`,
-      `Country: ${form.country || "n/a"}`,
-      `Preferred contact method: ${form.contactMethod}`,
-      ``,
-      `Additional information: ${form.additionalInfo || "n/a"}`,
-    ];
+    const attribution = getAttribution();
+    const lead: JourneyLead = {
+      leadId: buildLeadId(),
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      originCity: form.originCity,
+      destination: form.destinationText,
+      destinationMode: form.destinationMode,
+      travelDates: form.dateText || form.dateMode,
+      dateFlexibility: form.dateFlexibility,
+      travelerCount: form.travelerCount,
+      travelerType: form.travelerType,
+      journeyTypes: form.styles.map(
+        (s) => travelStyles.find((t) => t.slug === s)?.label ?? s,
+      ),
+      interests: form.interests,
+      investmentRange: form.budget,
+      travelPace: form.travelPace,
+      accommodationPreference: form.accommodationPreference,
+      specialRequirements: form.specialRequirements,
+      organize: form.organize,
+      hearAboutUs: form.hearAboutUs,
+      notes: form.additionalInfo,
+      source: "journey_wizard",
+      campaign: attribution.utm_campaign ?? "",
+      landingPage: attribution.landingPage,
+      utm: {
+        source: attribution.utm_source,
+        medium: attribution.utm_medium,
+        campaign: attribution.utm_campaign,
+        content: attribution.utm_content,
+        term: attribution.utm_term,
+      },
+      submissionDate: new Date().toISOString(),
+      leadOwner: null,
+      stage: "new_lead",
+      nextAction: "Initial review and qualification call",
+      lastContact: null,
+      optOut: false,
+      website: form.website,
+    };
 
-    const mailto = `mailto:${company.email}?subject=${encodeURIComponent(
-      "Journey Request",
-    )}&body=${encodeURIComponent(lines.join("\n"))}`;
-    window.location.href = mailto;
-    setSubmitted(true);
+    const result = await submitJourneyLead(lead, company.email);
+
+    if (result.ok) {
+      setStatus("submitted");
+      track("journey_wizard_completed");
+      track("consultation_requested");
+      track("form_submitted", { form: "journey_wizard" });
+    } else {
+      setStatus("error");
+      setError(result.error);
+    }
   }
 
-  if (submitted) {
+  if (status === "submitted") {
     return (
       <div className="rounded-card border hairline bg-charcoal p-10 text-center md:p-16">
         <p className="eyebrow mb-4">Thank You</p>
@@ -126,9 +202,10 @@ export function JourneyWizard() {
           Your journey request has been received.
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-stone">
-          A member of the World Bridge Meridian team will review your requirements and contact
-          you. Your email app should have opened with a summary ready to send — if it didn&apos;t,
-          please email us directly at{" "}
+          A member of the World Bridge Meridian team will review your requirements and respond.
+          This isn&apos;t a booking or availability confirmation — we&apos;ll follow up to talk through
+          what&apos;s possible. If your email app didn&apos;t open with a summary, please email us
+          directly at{" "}
           <a href={`mailto:${company.email}`} className="text-gold hover:text-ivory">
             {company.email}
           </a>
@@ -153,6 +230,20 @@ export function JourneyWizard() {
       </p>
 
       <form onSubmit={handleSubmit}>
+        {/* Honeypot — hidden from real visitors via CSS, not just visually offscreen, so it stays out of the tab order too. */}
+        <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-0 w-0 overflow-hidden">
+          <label htmlFor="website">Leave this field blank</label>
+          <input
+            id="website"
+            name="website"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={form.website}
+            onChange={(e) => setForm({ ...form, website: e.target.value })}
+          />
+        </div>
+
         {step === 1 ? (
           <fieldset>
             <legend className="font-display text-2xl md:text-3xl text-ivory">
@@ -186,8 +277,22 @@ export function JourneyWizard() {
 
         {step === 2 ? (
           <fieldset>
-            <legend className="font-display text-2xl md:text-3xl text-ivory">When?</legend>
-            <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <legend className="font-display text-2xl md:text-3xl text-ivory">
+              Where from, and when?
+            </legend>
+            <label className="mb-2 mt-8 block text-xs uppercase tracking-wide text-stone">
+              Departure city
+            </label>
+            <input
+              type="text"
+              value={form.originCity}
+              onChange={(e) => setForm({ ...form, originCity: e.target.value })}
+              placeholder="e.g. New York, NY"
+              className="w-full rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory placeholder:text-stone-dim outline-none focus:border-gold"
+            />
+
+            <p className="mb-2 mt-6 text-xs uppercase tracking-wide text-stone">Travel dates</p>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {dateOptions.map((opt) => (
                 <button
                   type="button"
@@ -208,24 +313,20 @@ export function JourneyWizard() {
               value={form.dateText}
               onChange={(e) => setForm({ ...form, dateText: e.target.value })}
               placeholder="Details (optional) — e.g. mid-June 2026, or 10 days in autumn"
-              className="mt-6 w-full rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory placeholder:text-stone-dim outline-none focus:border-gold"
+              className="mt-4 w-full rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory placeholder:text-stone-dim outline-none focus:border-gold"
             />
-          </fieldset>
-        ) : null}
 
-        {step === 3 ? (
-          <fieldset>
-            <legend className="font-display text-2xl md:text-3xl text-ivory">
-              Who is traveling?
-            </legend>
-            <div className="mt-8 flex flex-wrap gap-3">
-              {travelerOptions.map((opt) => (
+            <p className="mb-2 mt-6 text-xs uppercase tracking-wide text-stone">
+              How fixed are these dates?
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {flexibilityOptions.map((opt) => (
                 <button
                   type="button"
                   key={opt}
-                  onClick={() => setForm({ ...form, travelers: opt })}
+                  onClick={() => setForm({ ...form, dateFlexibility: opt })}
                   className={`rounded-full border px-5 py-2.5 text-sm transition-colors ${
-                    form.travelers === opt
+                    form.dateFlexibility === opt
                       ? "border-gold text-gold"
                       : "border-line text-ivory-dim hover:border-gold"
                   }`}
@@ -237,10 +338,45 @@ export function JourneyWizard() {
           </fieldset>
         ) : null}
 
+        {step === 3 ? (
+          <fieldset>
+            <legend className="font-display text-2xl md:text-3xl text-ivory">
+              Who is traveling?
+            </legend>
+            <div className="mt-8 flex flex-wrap gap-3">
+              {travelerProfiles.map((opt) => (
+                <button
+                  type="button"
+                  key={opt}
+                  onClick={() => setForm({ ...form, travelerType: opt })}
+                  className={`rounded-full border px-5 py-2.5 text-sm transition-colors ${
+                    form.travelerType === opt
+                      ? "border-gold text-gold"
+                      : "border-line text-ivory-dim hover:border-gold"
+                  }`}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+            <label className="mb-2 mt-6 block text-xs uppercase tracking-wide text-stone">
+              Number of travelers
+            </label>
+            <input
+              type="text"
+              inputMode="numeric"
+              value={form.travelerCount}
+              onChange={(e) => setForm({ ...form, travelerCount: e.target.value })}
+              placeholder="e.g. 2 adults, 2 children"
+              className="w-full max-w-xs rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory placeholder:text-stone-dim outline-none focus:border-gold"
+            />
+          </fieldset>
+        ) : null}
+
         {step === 4 ? (
           <fieldset>
             <legend className="font-display text-2xl md:text-3xl text-ivory">
-              Travel style
+              Journey type
             </legend>
             <p className="mt-2 text-sm text-stone-dim">Select as many as apply.</p>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -265,6 +401,79 @@ export function JourneyWizard() {
         {step === 5 ? (
           <fieldset>
             <legend className="font-display text-2xl md:text-3xl text-ivory">
+              What draws you in?
+            </legend>
+            <p className="mt-2 text-sm text-stone-dim">
+              Travel interests — select any that fit, so we know what to design around.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              {interestTags.map((tag) => (
+                <button
+                  type="button"
+                  key={tag}
+                  onClick={() => setForm({ ...form, interests: toggle(form.interests, tag) })}
+                  className={`rounded-full border px-5 py-2.5 text-sm transition-colors ${
+                    form.interests.includes(tag)
+                      ? "border-gold text-gold"
+                      : "border-line text-ivory-dim hover:border-gold"
+                  }`}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+        ) : null}
+
+        {step === 6 ? (
+          <fieldset>
+            <legend className="font-display text-2xl md:text-3xl text-ivory">
+              Pace &amp; accommodation
+            </legend>
+            <p className="mb-2 mt-8 text-xs uppercase tracking-wide text-stone">
+              Preferred travel pace
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {paceOptions.map((opt) => (
+                <button
+                  type="button"
+                  key={opt}
+                  onClick={() => setForm({ ...form, travelPace: opt })}
+                  className={`rounded-full border px-5 py-2.5 text-sm transition-colors ${
+                    form.travelPace === opt
+                      ? "border-gold text-gold"
+                      : "border-line text-ivory-dim hover:border-gold"
+                  }`}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+            <p className="mb-2 mt-6 text-xs uppercase tracking-wide text-stone">
+              Accommodation preference
+            </p>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {accommodationOptions.map((opt) => (
+                <button
+                  type="button"
+                  key={opt}
+                  onClick={() => setForm({ ...form, accommodationPreference: opt })}
+                  className={`rounded-card border px-5 py-4 text-left text-sm transition-colors ${
+                    form.accommodationPreference === opt
+                      ? "border-gold text-gold"
+                      : "border-line text-ivory-dim hover:border-gold"
+                  }`}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+        ) : null}
+
+        {step === 7 ? (
+          <fieldset>
+            <legend className="font-display text-2xl md:text-3xl text-ivory">
               Indicative journey investment
             </legend>
             <p className="mt-2 text-sm text-stone-dim">
@@ -281,7 +490,7 @@ export function JourneyWizard() {
           </fieldset>
         ) : null}
 
-        {step === 6 ? (
+        {step === 8 ? (
           <fieldset>
             <legend className="font-display text-2xl md:text-3xl text-ivory">
               What should we organize?
@@ -302,10 +511,20 @@ export function JourneyWizard() {
                 </button>
               ))}
             </div>
+            <label className="mb-2 mt-6 block text-xs uppercase tracking-wide text-stone">
+              Special requirements (optional)
+            </label>
+            <textarea
+              rows={3}
+              value={form.specialRequirements}
+              onChange={(e) => setForm({ ...form, specialRequirements: e.target.value })}
+              placeholder="Accessibility needs, dietary requirements, celebrations to plan around…"
+              className="w-full rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory placeholder:text-stone-dim outline-none focus:border-gold"
+            />
           </fieldset>
         ) : null}
 
-        {step === 7 ? (
+        {step === 9 ? (
           <fieldset>
             <legend className="font-display text-2xl md:text-3xl text-ivory">
               Contact details
@@ -379,17 +598,37 @@ export function JourneyWizard() {
                 ))}
               </div>
             </div>
+            <div className="mt-6">
+              <p className="mb-2 text-xs uppercase tracking-wide text-stone">
+                How did you hear about World Bridge Meridian?
+              </p>
+              <div className="flex flex-wrap gap-3">
+                {hearAboutOptions.map((opt) => (
+                  <button
+                    type="button"
+                    key={opt}
+                    onClick={() => setForm({ ...form, hearAboutUs: opt })}
+                    className={`rounded-full border px-5 py-2 text-sm transition-colors ${
+                      form.hearAboutUs === opt
+                        ? "border-gold text-gold"
+                        : "border-line text-ivory-dim hover:border-gold"
+                    }`}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+            </div>
           </fieldset>
         ) : null}
 
-        {step === 8 ? (
+        {step === 10 ? (
           <fieldset>
             <legend className="font-display text-2xl md:text-3xl text-ivory">
               Additional information
             </legend>
             <p className="mt-2 text-sm text-stone-dim">
-              Anything else we should know — celebrations, accessibility needs, past trips you
-              loved or didn&apos;t.
+              Anything else we should know — celebrations, past trips you loved or didn&apos;t.
             </p>
             <textarea
               rows={6}
@@ -397,6 +636,11 @@ export function JourneyWizard() {
               onChange={(e) => setForm({ ...form, additionalInfo: e.target.value })}
               className="mt-6 w-full rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory outline-none focus:border-gold"
             />
+            {status === "error" && error ? (
+              <p role="alert" className="mt-6 rounded-card border border-red-900/50 bg-red-950/30 px-4 py-3 text-sm text-red-300">
+                {error}
+              </p>
+            ) : null}
           </fieldset>
         ) : null}
 
@@ -414,7 +658,9 @@ export function JourneyWizard() {
               Continue
             </Button>
           ) : (
-            <Button type="submit">Submit Journey Request</Button>
+            <Button type="submit" disabled={status === "submitting"}>
+              {status === "submitting" ? "Sending…" : "Submit Journey Request"}
+            </Button>
           )}
         </div>
       </form>

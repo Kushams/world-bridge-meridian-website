@@ -19,7 +19,7 @@ export const partners: Partner[] = [
   {
     category: "Cruise Operators",
     description:
-      "Ocean and river cruise itineraries are arranged through established cruise line partners, confirmed at the time of booking.",
+      "Ocean and river cruise itineraries are booked directly with cruise operators and confirmed at the time of booking.",
   },
   {
     category: "Destination Management Companies",
@@ -41,7 +41,7 @@ export const partners: Partner[] = [
   {
     category: "Cultural Organizations",
     description:
-      "Museums, opera houses and cultural institutions are engaged directly for private access where available.",
+      "Where museums, opera houses and cultural institutions offer their own access or patron programs, we help clients plan a journey around them — see Cultural Access Programs.",
   },
 ];
 

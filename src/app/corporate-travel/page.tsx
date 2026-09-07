@@ -28,7 +28,7 @@ export default function CorporateTravelPage() {
         "Multi-city journeys",
         "Events",
       ]}
-      ctaLabel="Start a Corporate Enquiry"
+      ctaLabel="Discuss Group Travel"
     />
   );
 }

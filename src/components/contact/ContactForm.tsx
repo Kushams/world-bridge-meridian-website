@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { company } from "@/data/company";
+import { track } from "@/lib/analytics";
 
 export function ContactForm() {
   const [sent, setSent] = useState(false);
@@ -9,6 +10,13 @@ export function ContactForm() {
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
+
+    // Honeypot — real visitors never fill this in.
+    if (String(form.get("company_website") ?? "").trim() !== "") {
+      setSent(true);
+      return;
+    }
+
     const name = String(form.get("name") ?? "");
     const email = String(form.get("email") ?? "");
     const subject = String(form.get("subject") ?? "General Enquiry");
@@ -21,10 +29,15 @@ export function ContactForm() {
 
     window.location.href = mailto;
     setSent(true);
+    track("form_submitted", { form: "contact" });
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-0 w-0 overflow-hidden">
+        <label htmlFor="company_website">Leave this field blank</label>
+        <input id="company_website" name="company_website" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
         <div>
           <label htmlFor="name" className="mb-2 block text-xs uppercase tracking-wide text-stone">
@@ -79,7 +92,7 @@ export function ContactForm() {
         type="submit"
         className="inline-flex items-center justify-center rounded-full bg-ivory px-8 py-3.5 text-sm font-semibold uppercase tracking-wide text-ink hover:bg-white transition-colors"
       >
-        Contact World Bridge Meridian
+        Start a Conversation
       </button>
       {sent ? (
         <p className="text-sm text-stone-dim">

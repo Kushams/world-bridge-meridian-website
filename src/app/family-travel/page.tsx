@@ -26,7 +26,7 @@ export default function FamilyTravelPage() {
         "Family beach escapes",
         "Family city experiences",
       ]}
-      ctaLabel="Plan a Family Journey"
+      ctaLabel="Design a Family Journey"
     />
   );
 }

@@ -78,6 +78,39 @@ export default function TermsPage() {
             </div>
 
             <div>
+              <h2 className="mb-3 font-display text-xl text-ivory">Travel Insurance</h2>
+              <p>
+                We strongly recommend arranging comprehensive travel insurance for every journey,
+                covering at minimum trip cancellation and interruption, emergency medical care and
+                evacuation, and baggage loss. Insurance is arranged by you, directly with an
+                insurance provider, and is not included in any journey investment quoted by World
+                Bridge Meridian unless explicitly stated.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="mb-3 font-display text-xl text-ivory">Registration &amp; Licensing</h2>
+              <p>
+                Applicable travel-industry registration or licensing information for World Bridge
+                Meridian&apos;s operating jurisdiction will be published here once confirmed.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="mb-3 font-display text-xl text-ivory">Complaints Procedure</h2>
+              <p>
+                If any part of your journey does not meet expectations, contact us at{" "}
+                <a href={`mailto:${company.email}`} className="text-gold hover:text-ivory">
+                  {company.email}
+                </a>{" "}
+                as soon as possible — while traveling if the issue needs resolving in real time, or
+                afterward for a formal complaint. Include your name, travel dates and a description
+                of the issue. We will acknowledge a formal complaint and respond with next steps or
+                an outcome within a reasonable timeframe.
+              </p>
+            </div>
+
+            <div>
               <h2 className="mb-3 font-display text-xl text-ivory">Limitation of Liability</h2>
               <p>
                 While we take care in selecting partners and organizing journeys, World Bridge

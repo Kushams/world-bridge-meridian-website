@@ -20,6 +20,7 @@ export const menuGroups: NavGroup[] = [
   {
     heading: "Journeys",
     links: [
+      { label: "Travel by Interest", href: "/travel-by-interest" },
       { label: "Destinations", href: "/destinations" },
       { label: "Travel Packages", href: "/travel-packages" },
       { label: "Journey Stories", href: "/journey-stories" },
@@ -100,6 +101,7 @@ export const footerColumns: NavGroup[] = [
   {
     heading: "Explore",
     links: [
+      { label: "Travel by Interest", href: "/travel-by-interest" },
       { label: "Destinations", href: "/destinations" },
       { label: "Travel Packages", href: "/travel-packages" },
       { label: "Journey Stories", href: "/journey-stories" },

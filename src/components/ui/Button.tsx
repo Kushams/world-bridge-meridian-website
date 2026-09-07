@@ -29,17 +29,19 @@ type ButtonAsLink = CommonProps & {
   href: string;
   onClick?: () => void;
   type?: never;
+  disabled?: never;
 };
 
 type ButtonAsButton = CommonProps & {
   href?: never;
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 };
 
 export function Button(props: ButtonAsLink | ButtonAsButton) {
   const { children, variant = "primary", size = "md", className = "" } = props;
-  const classes = `${base} ${variants[variant]} ${sizes[size]} ${className}`;
+  const classes = `${base} ${variants[variant]} ${sizes[size]} ${className} disabled:opacity-50 disabled:pointer-events-none`;
 
   if ("href" in props && props.href) {
     return (
@@ -53,6 +55,7 @@ export function Button(props: ButtonAsLink | ButtonAsButton) {
     <button
       type={props.type ?? "button"}
       onClick={props.onClick}
+      disabled={props.disabled}
       className={classes}
     >
       {children}

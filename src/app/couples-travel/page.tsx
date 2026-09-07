@@ -26,7 +26,7 @@ export default function CouplesTravelPage() {
         "City breaks",
         "Private experiences",
       ]}
-      ctaLabel="Plan a Couples Journey"
+      ctaLabel="Design a Journey for Two"
     />
   );
 }
