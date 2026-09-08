@@ -32,9 +32,12 @@ export default function PrivacyPage() {
               <p>
                 When you use the contact form or journey-planning form, we collect the
                 information you choose to provide — such as your name, email address, phone
-                number, and details about the travel you&apos;re interested in. We do not
-                currently operate customer accounts or store payment information on this
-                website.
+                number, and details about the travel you&apos;re interested in. If you create a My
+                World Bridge account, we also store your name, email, phone number and any
+                journeys you save, so they follow you across devices. We do not process card
+                payments through this website; if you submit a cryptocurrency transaction
+                reference for a confirmed booking, we store that reference solely to verify and
+                reconcile the payment.
               </p>
             </div>
 

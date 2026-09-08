@@ -5,6 +5,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { company } from "@/data/company";
 import { themeImage } from "@/data/images";
+import { CryptoPaymentPanel } from "@/components/payments/CryptoPaymentPanel";
 
 export const metadata: Metadata = {
   title: "Payment Options",
@@ -64,6 +65,28 @@ export default function PaymentsPage() {
                   ever happens on worldbridgemeridian.group itself.
                 </p>
               </div>
+              <div className="rounded-card border hairline p-6">
+                <p className="font-display text-lg text-ivory">Card &amp; Bank (Future)</p>
+                <p className="mt-2 text-sm text-stone leading-relaxed">
+                  Card and bank-transfer processing (e.g. Stripe) is not yet connected — cryptocurrency
+                  is our current payment method. This page will be updated the day that changes.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-16 border-t hairline pt-16">
+            <SectionHeading
+              eyebrow="Submit a Payment"
+              title="Crypto payment reference submission."
+            />
+            <p className="mt-4 max-w-2xl text-sm text-stone leading-relaxed">
+              If your consultant has already sent you payment instructions for a confirmed booking,
+              you can record your transaction reference here. Submitting a hash does not confirm
+              payment — our team verifies every transaction manually before it&apos;s marked confirmed.
+            </p>
+            <div className="mt-6 max-w-xl">
+              <CryptoPaymentPanel />
             </div>
           </div>
 

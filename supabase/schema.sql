@@ -61,3 +61,43 @@ drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- handle_new_user() is SECURITY DEFINER for the trigger's sake only — it
+-- must never be callable directly over the API (that would let anyone
+-- insert an arbitrary profiles row for any user id).
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
+
+-- Crypto payment references submitted from /payments. World Bridge
+-- Meridian has not yet confirmed real wallet addresses (see
+-- src/data/cryptoPayments.ts) — this table exists so the submission flow
+-- is real and ready the moment addresses are added, not to imply payments
+-- are being accepted today. Verification is manual, staff-only, done in
+-- the Supabase dashboard — a submitted transaction hash is never treated
+-- as confirmed automatically.
+create table if not exists public.crypto_payment_submissions (
+  id uuid primary key default gen_random_uuid(),
+  submitted_at timestamptz not null default now(),
+  asset text not null,
+  network text not null,
+  wallet_address text not null,
+  transaction_hash text not null,
+  payer_name text,
+  payer_email text,
+  lead_id text,
+  notes text,
+  status text not null default 'pending_verification'
+    check (status in ('awaiting_payment','payment_submitted','pending_verification','verified','rejected','expired')),
+  verified_at timestamptz,
+  verified_by text
+);
+
+alter table public.crypto_payment_submissions enable row level security;
+
+-- Visitors can submit a payment reference, but can never read submissions
+-- back out (no anon SELECT policy) — verification is staff-only, done in
+-- the Supabase dashboard with the service role, never automatically.
+create policy "Anyone can submit a payment reference"
+  on public.crypto_payment_submissions
+  for insert
+  to anon
+  with check (true);

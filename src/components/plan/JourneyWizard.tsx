@@ -119,7 +119,27 @@ function toggle<T>(arr: T[], value: T): T[] {
 
 export function JourneyWizard() {
   const [step, setStep] = useState(1);
-  const [form, setForm] = useState<FormState>(initialState);
+  // Prefill from a travel search elsewhere on the site (e.g. Flight
+  // Search's "Plan This Trip") — read once, lazily, so it never affects
+  // static rendering of the page (window is unavailable during SSR).
+  const [form, setForm] = useState<FormState>(() => {
+    if (typeof window === "undefined") return initialState;
+    const params = new URLSearchParams(window.location.search);
+    const originCity = params.get("originCity");
+    const destinationText = params.get("destination");
+    const dateText = params.get("dates");
+    const notes = params.get("notes");
+    if (!originCity && !destinationText && !dateText && !notes) return initialState;
+    return {
+      ...initialState,
+      originCity: originCity ?? initialState.originCity,
+      destinationMode: destinationText ? "specific" : initialState.destinationMode,
+      destinationText: destinationText ?? initialState.destinationText,
+      dateMode: dateText ? "exact" : initialState.dateMode,
+      dateText: dateText ?? initialState.dateText,
+      additionalInfo: notes ?? initialState.additionalInfo,
+    };
+  });
   const [status, setStatus] = useState<"idle" | "submitting" | "submitted" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   const [deliveredVia, setDeliveredVia] = useState<"crm" | "netlify" | "mailto" | null>(null);
@@ -175,7 +195,7 @@ export function JourneyWizard() {
       },
       submissionDate: new Date().toISOString(),
       leadOwner: null,
-      stage: "new_lead",
+      stage: "new",
       nextAction: "Initial review and qualification call",
       lastContact: null,
       optOut: false,

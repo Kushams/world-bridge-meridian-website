@@ -14,6 +14,7 @@ const staticRoutes = [
   "",
   "/explore",
   "/travel-by-interest",
+  "/flights",
   "/destinations",
   "/travel-packages",
   "/cruises",

@@ -25,18 +25,18 @@
 import { submitToNetlifyForms } from "./netlifyForms";
 
 export type LeadStage =
-  | "new_lead"
+  | "new"
   | "qualified"
-  | "consultation"
-  | "journey_design"
-  | "proposal"
-  | "revision"
-  | "accepted"
-  | "payment"
-  | "confirmed"
+  | "contacted"
+  | "consultation_scheduled"
+  | "proposal_in_progress"
+  | "proposal_sent"
+  | "negotiation"
+  | "booked"
   | "traveling"
   | "completed"
-  | "repeat_referral";
+  | "nurture"
+  | "lost";
 
 export interface JourneyLead {
   leadId: string;

@@ -21,6 +21,7 @@ export const menuGroups: NavGroup[] = [
     heading: "Journeys",
     links: [
       { label: "Travel by Interest", href: "/travel-by-interest" },
+      { label: "Flight Search", href: "/flights" },
       { label: "Destinations", href: "/destinations" },
       { label: "Travel Packages", href: "/travel-packages" },
       { label: "Journey Stories", href: "/journey-stories" },

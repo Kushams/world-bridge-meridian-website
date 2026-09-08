@@ -23,7 +23,10 @@ export type AnalyticsEvent =
   | "consultation_requested"
   | "form_submitted"
   | "newsletter_signup"
-  | "interest_filter_applied";
+  | "interest_filter_applied"
+  | "travel_search_attempted"
+  | "plan_this_trip_clicked"
+  | "crypto_payment_submitted";
 
 declare global {
   interface Window {
