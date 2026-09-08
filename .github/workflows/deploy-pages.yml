@@ -41,6 +41,11 @@ jobs:
       - run: npm ci
       - run: npm run build
       - uses: actions/configure-pages@v5
+        with:
+          # Repo never had Pages enabled via the dashboard (private repos
+          # don't get it by default) -- this has the action enable it via
+          # the API itself instead of requiring a manual one-time click.
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
