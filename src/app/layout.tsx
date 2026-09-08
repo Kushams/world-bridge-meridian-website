@@ -8,6 +8,8 @@ import { TouchRipple } from "@/components/motion/TouchRipple";
 import { ScrollProgressBar } from "@/components/motion/ScrollProgressBar";
 import { PageTransition } from "@/components/motion/PageTransition";
 import { AttributionCapture } from "@/components/AttributionCapture";
+import { TawkChat } from "@/components/TawkChat";
+import { AuthProvider } from "@/lib/supabase/AuthProvider";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -69,14 +71,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
-        <ScrollProgressBar />
-        <TouchRipple />
-        <AttributionCapture />
-        <Header />
-        <main className="flex-1">
-          <PageTransition>{children}</PageTransition>
-        </main>
-        <Footer />
+        <AuthProvider>
+          <ScrollProgressBar />
+          <TouchRipple />
+          <AttributionCapture />
+          <Header />
+          <main className="flex-1">
+            <PageTransition>{children}</PageTransition>
+          </main>
+          <Footer />
+        </AuthProvider>
+        <TawkChat />
       </body>
     </html>
   );

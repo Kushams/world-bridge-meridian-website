@@ -3,10 +3,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSavedItems } from "@/lib/savedItems";
+import { useAuth } from "@/lib/supabase/AuthProvider";
 import { Button } from "@/components/ui/Button";
 
 export function SavedJourneysPanel() {
   const { items, remove } = useSavedItems();
+  const { user, configured } = useAuth();
+
+  const statusLabel = user
+    ? "synced to your account"
+    : configured
+      ? "stored in this browser — sign in above to sync across devices"
+      : "stored in this browser only";
 
   if (items.length === 0) {
     return (
@@ -15,8 +23,7 @@ export function SavedJourneysPanel() {
         <h3 className="font-display text-xl text-ivory">Nothing saved yet</h3>
         <p className="mx-auto mt-3 max-w-md text-sm text-stone leading-relaxed">
           Look for the &quot;Save Journey&quot; button on any destination, package, cruise or
-          journey story — it&apos;s stored right here in your browser, not on our servers, since
-          accounts aren&apos;t connected yet.
+          journey story — it&apos;s {statusLabel}.
         </p>
         <div className="mt-6">
           <Button href="/explore" variant="outline">
@@ -31,7 +38,7 @@ export function SavedJourneysPanel() {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <p className="eyebrow">
-          Saved Journeys ({items.length}) — stored in this browser only
+          Saved Journeys ({items.length}) — {statusLabel}
         </p>
         {items.length >= 2 ? (
           <Link
