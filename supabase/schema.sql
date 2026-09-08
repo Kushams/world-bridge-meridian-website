@@ -67,13 +67,10 @@ create trigger on_auth_user_created
 -- insert an arbitrary profiles row for any user id).
 revoke execute on function public.handle_new_user() from public, anon, authenticated;
 
--- Crypto payment references submitted from /payments. World Bridge
--- Meridian has not yet confirmed real wallet addresses (see
--- src/data/cryptoPayments.ts) — this table exists so the submission flow
--- is real and ready the moment addresses are added, not to imply payments
--- are being accepted today. Verification is manual, staff-only, done in
--- the Supabase dashboard — a submitted transaction hash is never treated
--- as confirmed automatically.
+-- Crypto payment references submitted from /payments (wallet addresses
+-- confirmed by WBM, see src/data/cryptoPayments.ts). Verification is
+-- manual, staff-only, done in the Supabase dashboard — a submitted
+-- transaction hash is never treated as confirmed automatically.
 create table if not exists public.crypto_payment_submissions (
   id uuid primary key default gen_random_uuid(),
   submitted_at timestamptz not null default now(),
@@ -101,3 +98,38 @@ create policy "Anyone can submit a payment reference"
   for insert
   to anon
   with check (true);
+
+-- On every submission: notify WBM staff (this is the "routed to our team"
+-- step, since there's no separate ticketing system) and send the customer
+-- a receipt-of-submission email (never a payment receipt — nothing is
+-- verified yet). Handled by the notify-crypto-payment Edge Function; the
+-- anon key below is public (already embedded in the site's client bundle)
+-- and is only used here to satisfy the function's verify_jwt requirement,
+-- not as a privilege escalation.
+create extension if not exists pg_net with schema extensions;
+
+create or replace function public.notify_crypto_payment_submission()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  perform net.http_post(
+    url := 'https://rkevnmqofvqdmjujlrvd.supabase.co/functions/v1/notify-crypto-payment',
+    headers := jsonb_build_object(
+      'Content-Type', 'application/json',
+      'Authorization', 'Bearer ' || '<NEXT_PUBLIC_SUPABASE_ANON_KEY>'
+    ),
+    body := jsonb_build_object('record', row_to_json(NEW))
+  );
+  return NEW;
+end;
+$$;
+
+drop trigger if exists on_crypto_payment_submitted on public.crypto_payment_submissions;
+
+create trigger on_crypto_payment_submitted
+  after insert on public.crypto_payment_submissions
+  for each row execute procedure public.notify_crypto_payment_submission();
+
+revoke execute on function public.notify_crypto_payment_submission() from public, anon, authenticated;

@@ -100,9 +100,16 @@ function PaymentDetails({
         <p className="eyebrow mb-3">Payment Submitted — Pending Verification</p>
         <h3 className="font-display text-xl text-ivory md:text-2xl">Thank you</h3>
         <p className="mx-auto mt-3 max-w-md text-sm text-stone leading-relaxed">
-          We&apos;ve recorded your transaction reference. Our team verifies each payment manually
-          against the blockchain before confirming — we&apos;ll be in touch once that&apos;s done.
+          Your transaction reference has been forwarded to our team for verification. A World
+          Bridge Meridian consultant will follow up with you directly once it&apos;s been checked
+          against the blockchain and confirmed.
         </p>
+        {payerEmail ? (
+          <p className="mx-auto mt-3 max-w-md text-sm text-stone leading-relaxed">
+            We&apos;ve also emailed a confirmation to {payerEmail} — that email confirms we
+            received your reference, not that the payment itself has been verified yet.
+          </p>
+        ) : null}
       </div>
     );
   }
