@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { NewsletterForm } from "./NewsletterForm";
+import { FooterAccordion } from "./FooterAccordion";
 import { company } from "@/data/company";
 import { footerColumns, legalLinks } from "@/data/nav";
 
@@ -24,8 +25,11 @@ export function Footer() {
             </div>
           </div>
 
+          {/* Desktop/tablet (lg+): always-expanded columns, matching the
+              header's own lg breakpoint for switching off the hamburger
+              menu. Below lg: collapsed accordion instead (see below). */}
           {footerColumns.map((col) => (
-            <div key={col.heading}>
+            <div key={col.heading} className="hidden lg:block">
               <p className="eyebrow mb-4">{col.heading}</p>
               <ul className="space-y-2.5">
                 {col.links.map((link) => (
@@ -41,6 +45,8 @@ export function Footer() {
               </ul>
             </div>
           ))}
+
+          <FooterAccordion columns={footerColumns} />
         </div>
 
         <div className="mt-14 border-t hairline pt-10">
