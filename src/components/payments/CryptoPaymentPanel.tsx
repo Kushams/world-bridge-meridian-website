@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode";
 import { enabledCryptoPaymentOptions, type CryptoPaymentOption } from "@/data/cryptoPayments";
 import { submitCryptoPayment } from "@/lib/cryptoPaymentSubmissions";
@@ -24,16 +24,43 @@ function CopyAddressButton({ address }: { address: string }) {
   );
 }
 
-function ActivePaymentFlow({ options }: { options: CryptoPaymentOption[] }) {
-  const [selectedId, setSelectedId] = useState(options[0].id);
+type Step = "currency" | "network" | "details";
+
+function CheckoutSteps({ current }: { current: Step }) {
+  const steps: { key: Step; label: string }[] = [
+    { key: "currency", label: "1. Currency" },
+    { key: "network", label: "2. Network" },
+    { key: "details", label: "3. Send Payment" },
+  ];
+  return (
+    <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-stone-dim">
+      {steps.map((s, i) => (
+        <span key={s.key} className="flex items-center gap-2">
+          <span className={s.key === current ? "text-gold" : ""}>{s.label}</span>
+          {i < steps.length - 1 ? <span aria-hidden="true">›</span> : null}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function PaymentDetails({
+  selected,
+  onChangeCurrency,
+  onChangeNetwork,
+  showNetworkBack,
+}: {
+  selected: CryptoPaymentOption;
+  onChangeCurrency: () => void;
+  onChangeNetwork: () => void;
+  showNetworkBack: boolean;
+}) {
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
   const [txHash, setTxHash] = useState("");
   const [payerName, setPayerName] = useState("");
   const [payerEmail, setPayerEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "submitted" | "error">("idle");
   const [error, setError] = useState("");
-
-  const selected = options.find((o) => o.id === selectedId) ?? options[0];
 
   useEffect(() => {
     const address = selected.walletAddress;
@@ -69,7 +96,7 @@ function ActivePaymentFlow({ options }: { options: CryptoPaymentOption[] }) {
 
   if (status === "submitted") {
     return (
-      <div className="rounded-card border hairline bg-charcoal p-8 text-center md:p-12">
+      <div className="text-center">
         <p className="eyebrow mb-3">Payment Submitted — Pending Verification</p>
         <h3 className="font-display text-xl text-ivory md:text-2xl">Thank you</h3>
         <p className="mx-auto mt-3 max-w-md text-sm text-stone leading-relaxed">
@@ -81,29 +108,36 @@ function ActivePaymentFlow({ options }: { options: CryptoPaymentOption[] }) {
   }
 
   return (
-    <div className="rounded-card border hairline bg-charcoal p-6 md:p-8">
-      <div className="flex flex-wrap gap-2">
-        {options.map((o) => (
+    <div>
+      <div className="flex flex-wrap gap-4 text-xs">
+        <button
+          type="button"
+          onClick={onChangeCurrency}
+          className="text-stone-dim underline transition-colors hover:text-ivory"
+        >
+          ← Change currency
+        </button>
+        {showNetworkBack ? (
           <button
-            key={o.id}
             type="button"
-            onClick={() => setSelectedId(o.id)}
-            className={`rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-wide transition-colors ${
-              selectedId === o.id
-                ? "border-gold text-gold"
-                : "border-line text-stone hover:text-ivory"
-            }`}
+            onClick={onChangeNetwork}
+            className="text-stone-dim underline transition-colors hover:text-ivory"
           >
-            {o.displayName}
+            ← Change network
           </button>
-        ))}
+        ) : null}
       </div>
 
-      <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-[auto_1fr] sm:items-start">
+      <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-[auto_1fr] sm:items-start">
         {qrDataUrl ? (
           // QR code encodes only the public wallet address — safe to display.
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={qrDataUrl} alt={`QR code for ${selected.displayName} address`} width={140} height={140} />
+          <img
+            src={qrDataUrl}
+            alt={`QR code for ${selected.displayName} address`}
+            width={140}
+            height={140}
+          />
         ) : null}
         <div>
           <p className="text-xs uppercase tracking-wide text-stone">
@@ -176,6 +210,112 @@ function ActivePaymentFlow({ options }: { options: CryptoPaymentOption[] }) {
   );
 }
 
+function Checkout({ options }: { options: CryptoPaymentOption[] }) {
+  const assets = useMemo(() => {
+    const order: string[] = [];
+    const byAsset = new Map<string, CryptoPaymentOption[]>();
+    for (const o of options) {
+      if (!byAsset.has(o.asset)) {
+        byAsset.set(o.asset, []);
+        order.push(o.asset);
+      }
+      byAsset.get(o.asset)!.push(o);
+    }
+    return order.map((asset) => ({ asset, options: byAsset.get(asset)! }));
+  }, [options]);
+
+  const [step, setStep] = useState<Step>("currency");
+  const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  const assetOptions = assets.find((a) => a.asset === selectedAsset)?.options ?? [];
+  const selected = assetOptions.find((o) => o.id === selectedId) ?? null;
+
+  function chooseAsset(asset: string) {
+    const opts = assets.find((a) => a.asset === asset)?.options ?? [];
+    setSelectedAsset(asset);
+    if (opts.length === 1) {
+      setSelectedId(opts[0].id);
+      setStep("details");
+    } else {
+      setSelectedId(null);
+      setStep("network");
+    }
+  }
+
+  function chooseNetwork(id: string) {
+    setSelectedId(id);
+    setStep("details");
+  }
+
+  return (
+    <div className="rounded-card border hairline bg-charcoal p-6 md:p-8">
+      <CheckoutSteps current={step} />
+
+      {step === "currency" ? (
+        <div className="mt-6">
+          <p className="mb-3 text-sm text-stone">Select a cryptocurrency to pay with.</p>
+          <div className="flex flex-wrap gap-2">
+            {assets.map((a) => (
+              <button
+                key={a.asset}
+                type="button"
+                onClick={() => chooseAsset(a.asset)}
+                className="rounded-full border border-line px-4 py-2 text-xs font-semibold uppercase tracking-wide text-stone transition-colors hover:border-gold hover:text-gold"
+              >
+                {a.asset}
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
+
+      {step === "network" ? (
+        <div className="mt-6">
+          <p className="mb-3 text-sm text-stone">
+            {selectedAsset} is available on more than one network — select the one you&apos;re
+            sending from.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {assetOptions.map((o) => (
+              <button
+                key={o.id}
+                type="button"
+                onClick={() => chooseNetwork(o.id)}
+                className="rounded-full border border-line px-4 py-2 text-xs font-semibold uppercase tracking-wide text-stone transition-colors hover:border-gold hover:text-gold"
+              >
+                {o.network}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={() => setStep("currency")}
+            className="mt-4 text-xs text-stone-dim underline transition-colors hover:text-ivory"
+          >
+            ← Change currency
+          </button>
+        </div>
+      ) : null}
+
+      {step === "details" && selected ? (
+        <div className="mt-6">
+          <PaymentDetails
+            selected={selected}
+            onChangeCurrency={() => {
+              setStep("currency");
+              setSelectedAsset(null);
+              setSelectedId(null);
+            }}
+            onChangeNetwork={() => setStep("network")}
+            showNetworkBack={assetOptions.length > 1}
+          />
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 export function CryptoPaymentPanel() {
   const options = enabledCryptoPaymentOptions();
 
@@ -195,5 +335,5 @@ export function CryptoPaymentPanel() {
     );
   }
 
-  return <ActivePaymentFlow options={options} />;
+  return <Checkout options={options} />;
 }
