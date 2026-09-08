@@ -17,7 +17,13 @@ export const company = {
   address: null as string | null, // "[ADDRESS TO BE PROVIDED]"
   cooName: "Justin Warkovsky" as string | null,
   cryptoAcceptedSince: 2015,
-  cryptoCurrencies: ["Bitcoin (BTC)", "Tether (USDT)", "Solana (SOL)"],
+  cryptoCurrencies: [
+    "Bitcoin (BTC)",
+    "Ethereum (ETH)",
+    "Tether (USDT)",
+    "USD Coin (USDC)",
+    "Solana (SOL)",
+  ],
 
   tagline:
     "World Bridge Meridian designs journeys around the people taking them — private escapes, cultural discoveries, family adventures, group departures and extraordinary cruises, curated rather than catalogued.",
