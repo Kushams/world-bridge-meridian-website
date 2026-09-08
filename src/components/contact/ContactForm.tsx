@@ -45,14 +45,7 @@ export function ContactForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      name="contact"
-      data-netlify="true"
-      netlify-honeypot="company_website"
-      className="space-y-5"
-    >
-      <input type="hidden" name="form-name" value="contact" />
+    <form onSubmit={handleSubmit} className="space-y-5">
       <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-0 w-0 overflow-hidden">
         <label htmlFor="company_website">Leave this field blank</label>
         <input id="company_website" name="company_website" type="text" tabIndex={-1} autoComplete="off" />

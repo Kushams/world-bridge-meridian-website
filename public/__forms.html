@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+  <head><meta charset="utf-8" /><title>Netlify form detection</title></head>
+  <body>
+    <!--
+      Not a real page — nobody sees this. Modern Next.js (via
+      @netlify/plugin-nextjs v5 / the OpenNext adapter) doesn't write each
+      route to a static HTML file the way Netlify's form detector expects,
+      so React forms rendered inside the app are invisible to it. This
+      plain static file is what Netlify actually scans at deploy time to
+      register each form's name and fields; the real forms in the app
+      (src/components/contact/ContactForm.tsx, NewsletterForm.tsx,
+      JourneyWizard.tsx) submit to it via fetch in src/lib/netlifyForms.ts.
+      Keep the field names below in sync with those components.
+    -->
+    <form name="contact" data-netlify="true" netlify-honeypot="company_website" hidden>
+      <input name="company_website" />
+      <input name="name" />
+      <input name="email" />
+      <input name="subject" />
+      <input name="message" />
+    </form>
+
+    <form name="newsletter" data-netlify="true" hidden>
+      <input name="email" />
+    </form>
+
+    <form name="journey-request" data-netlify="true" netlify-honeypot="website" hidden>
+      <input name="website" />
+      <input name="leadId" />
+      <input name="name" />
+      <input name="email" />
+      <input name="phone" />
+      <input name="originCity" />
+      <input name="destination" />
+      <input name="destinationMode" />
+      <input name="travelDates" />
+      <input name="dateFlexibility" />
+      <input name="travelerCount" />
+      <input name="travelerType" />
+      <input name="journeyTypes" />
+      <input name="interests" />
+      <input name="investmentRange" />
+      <input name="travelPace" />
+      <input name="accommodationPreference" />
+      <input name="specialRequirements" />
+      <input name="organize" />
+      <input name="hearAboutUs" />
+      <input name="notes" />
+      <input name="source" />
+      <input name="campaign" />
+      <input name="landingPage" />
+      <input name="utm_source" />
+      <input name="utm_medium" />
+      <input name="utm_campaign" />
+      <input name="utm_content" />
+      <input name="utm_term" />
+      <input name="submissionDate" />
+    </form>
+  </body>
+</html>

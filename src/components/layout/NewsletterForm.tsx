@@ -39,8 +39,7 @@ export function NewsletterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} name="newsletter" data-netlify="true" className="max-w-sm">
-      <input type="hidden" name="form-name" value="newsletter" />
+    <form onSubmit={handleSubmit} className="max-w-sm">
       <div className="flex gap-2">
         <label htmlFor="newsletter-email" className="sr-only">
           Email address
