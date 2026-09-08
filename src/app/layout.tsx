@@ -9,6 +9,7 @@ import { ScrollProgressBar } from "@/components/motion/ScrollProgressBar";
 import { PageTransition } from "@/components/motion/PageTransition";
 import { AttributionCapture } from "@/components/AttributionCapture";
 import { TawkChat } from "@/components/TawkChat";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { AuthProvider } from "@/lib/supabase/AuthProvider";
 
 const fraunces = Fraunces({
@@ -82,6 +83,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Footer />
         </AuthProvider>
         <TawkChat />
+        <GoogleAnalytics />
       </body>
     </html>
   );
