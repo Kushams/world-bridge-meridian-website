@@ -8,7 +8,7 @@ import { themeImage } from "@/data/images";
 
 export const metadata: Metadata = {
   title: "Payment Options",
-  description: `How payment works with ${company.name}, including cryptocurrency, card and bank transfer.`,
+  description: `How payment works with ${company.name}, including cryptocurrency, card, bank transfer and regional payment partners.`,
 };
 
 export default function PaymentsPage() {
@@ -17,7 +17,7 @@ export default function PaymentsPage() {
       <PageHero
         eyebrow="Payments"
         title="How payment works."
-        description="World Bridge Meridian doesn't run an online checkout. Every journey is priced and confirmed with you directly before any payment is arranged — by cryptocurrency, card or bank transfer."
+        description="World Bridge Meridian doesn't run an online checkout. Every journey is priced and confirmed with you directly before any payment is arranged — by cryptocurrency, card, bank transfer, or a regional payment partner where local currency makes that the better option."
         image={themeImage("business", 1)}
         imageAlt="A workspace"
       />
@@ -62,6 +62,46 @@ export default function PaymentsPage() {
                 <p className="mt-2 text-sm text-stone leading-relaxed">
                   This page is informational. No payment, card number, wallet address or crypto transaction
                   ever happens on worldbridgemeridian.group itself.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-16 grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] border-t hairline pt-16">
+            <div>
+              <SectionHeading
+                eyebrow="Local Currency"
+                title="Regional payment partners, where it makes sense."
+              />
+              <div className="mt-6 space-y-4 text-base text-stone leading-relaxed">
+                <p>
+                  In a number of markets, paying in US dollars or euros isn&apos;t practical for clients —
+                  currency controls, banking restrictions or simply preferring to pay in their own
+                  currency. For those bookings, we work with a small number of vetted regional payment
+                  partners — local companies and, in some markets, individual licensed agents — who
+                  collect payment in the local currency and remit it to World Bridge Meridian on the
+                  client&apos;s behalf.
+                </p>
+                <p>
+                  This is arranged per booking, never speculatively. If it applies to your journey, your
+                  point of contact on our team will tell you directly, name the specific partner, and
+                  confirm the amount and currency before anything changes hands.
+                </p>
+                <p className="text-ivory">
+                  The same rule applies here as with cryptocurrency: we will never direct you to pay
+                  anyone — a person or a company — that you weren&apos;t introduced to directly by your
+                  World Bridge Meridian contact for your specific booking. If you&apos;re contacted by
+                  anyone claiming to collect payment on our behalf outside of that, verify it with us
+                  before paying.
+                </p>
+              </div>
+            </div>
+            <div className="space-y-6">
+              <div className="rounded-card border hairline p-6">
+                <p className="font-display text-lg text-ivory">Not Every Booking</p>
+                <p className="mt-2 text-sm text-stone leading-relaxed">
+                  Most clients simply pay us directly by card, bank transfer or cryptocurrency. Regional
+                  partners are used only where a client&apos;s local circumstances call for it.
                 </p>
               </div>
             </div>
