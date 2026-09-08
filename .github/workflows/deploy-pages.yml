@@ -1,9 +1,13 @@
 name: Deploy to GitHub Pages
 
-# Disabled from auto-deploying on push — Netlify (worldbridgemeridian.com)
-# is now the live site. Re-add the `push` trigger below if GitHub Pages
-# is ever needed again; until then this only runs if triggered manually.
+# GitHub Pages is now used as a free PREVIEW mirror for the `preview`
+# branch only — Netlify (worldbridgemeridian.com) remains the live site
+# and only watches `main`. Pushing `preview` costs zero Netlify credits
+# since it never touches `main`; this lets changes get reviewed here
+# before being merged into `main` and pushed live.
 on:
+  push:
+    branches: [preview]
   workflow_dispatch:
 
 permissions:
@@ -20,6 +24,14 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_PAGES: "true"
+      # Optional: add these as repo secrets (Settings -> Secrets and
+      # variables -> Actions) so the preview also shows sign-in and live
+      # chat, not just the "not configured" fallback states. Everything
+      # else previews correctly without them.
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      NEXT_PUBLIC_TAWK_PROPERTY_ID: ${{ secrets.NEXT_PUBLIC_TAWK_PROPERTY_ID }}
+      NEXT_PUBLIC_TAWK_WIDGET_ID: ${{ secrets.NEXT_PUBLIC_TAWK_WIDGET_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
