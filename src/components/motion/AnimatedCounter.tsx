@@ -17,7 +17,11 @@ export function AnimatedCounter({
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-10% 0px" });
   const prefersReducedMotion = useReducedMotion();
-  const [display, setDisplay] = useState(prefersReducedMotion ? value : 0);
+  // The real value is always the initial render — pre-hydration HTML, no-JS
+  // clients, and crawlers all see the true number, never a transient 0.
+  // isInView is false during SSR and only flips true client-side once the
+  // element scrolls into view, so the animation never runs before then.
+  const [display, setDisplay] = useState(value);
 
   useEffect(() => {
     if (!isInView || prefersReducedMotion) return;

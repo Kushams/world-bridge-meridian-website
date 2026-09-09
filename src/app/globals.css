@@ -2,24 +2,33 @@
 
 /* ------------------------------------------------------------------ */
 /* World Bridge Meridian design tokens                                 */
-/* A single fixed dark, editorial-luxury palette — this is a brand      */
-/* decision, not a light/dark user preference, so it does not respond   */
-/* to prefers-color-scheme.                                             */
+/* A single fixed bright, warm editorial-luxury palette — this is a     */
+/* brand decision, not a light/dark user preference, so it does not     */
+/* respond to prefers-color-scheme.                                     */
+/*                                                                       */
+/* Token names are historical (this repo shipped dark-first). "ink" and */
+/* "ivory" have swapped visual roles from the original dark palette so  */
+/* every existing bg-ivory/text-ink and bg-ink/text-ivory pairing in    */
+/* the codebase inverts correctly without touching each component:      */
+/*   --color-ink    is now the WARM WHITE page canvas (was near-black). */
+/*   --color-ivory  is now the DARK reading-text ink (was near-white).  */
+/* forest/forest-2 are reserved for intentional deep-contrast sections  */
+/* (footer, final CTA) rather than the page default.                    */
 /* ------------------------------------------------------------------ */
 @theme {
-  --color-ink: #0a0d0b;
-  --color-charcoal: #121613;
-  --color-charcoal-2: #171c18;
-  --color-forest: #1c2a21;
+  --color-ink: #faf6ec;
+  --color-charcoal: #f1ead9;
+  --color-charcoal-2: #e8dfc9;
+  --color-forest: #1b2a20;
   --color-forest-2: #24362a;
-  --color-ivory: #f4efe4;
-  --color-ivory-dim: #d9d2c2;
-  --color-stone: #a6a093;
-  --color-stone-dim: #8a8474;
-  --color-gold: #c8a668;
-  --color-gold-dim: #8f7648;
-  --color-line: rgba(244, 239, 228, 0.12);
-  --color-line-strong: rgba(244, 239, 228, 0.22);
+  --color-ivory: #211f1a;
+  --color-ivory-dim: #55503f;
+  --color-stone: #6e6552;
+  --color-stone-dim: #8f866f;
+  --color-gold: #a6763b;
+  --color-gold-dim: #7d5a2c;
+  --color-line: rgba(34, 31, 26, 0.12);
+  --color-line-strong: rgba(34, 31, 26, 0.22);
 
   --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -76,7 +85,7 @@ body {
 
 ::selection {
   background: var(--color-gold);
-  color: var(--color-ink);
+  color: var(--color-ivory);
 }
 
 /* Focus states — always visible, never suppressed */
@@ -104,8 +113,8 @@ body {
 
 .bg-grid-texture {
   background-image:
-    linear-gradient(to right, rgba(244, 239, 228, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(244, 239, 228, 0.05) 1px, transparent 1px);
+    linear-gradient(to right, rgba(34, 31, 26, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(34, 31, 26, 0.06) 1px, transparent 1px);
   background-size: 64px 64px;
 }
 

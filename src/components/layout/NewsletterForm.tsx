@@ -55,7 +55,7 @@ export function NewsletterForm() {
         <button
           type="submit"
           disabled={!consent || status === "submitting"}
-          className="rounded-full bg-ivory px-5 py-2.5 text-xs font-semibold uppercase tracking-wide text-ink transition-colors hover:bg-white disabled:opacity-40 disabled:pointer-events-none"
+          className="rounded-full bg-ivory px-5 py-2.5 text-xs font-semibold uppercase tracking-wide text-ink transition-colors hover:opacity-90 disabled:opacity-40 disabled:pointer-events-none"
         >
           {status === "submitting" ? "Signing Up…" : "Sign Up"}
         </button>
