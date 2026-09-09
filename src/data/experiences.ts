@@ -212,7 +212,7 @@ export const experiences: Experience[] = [
     title: "Lavender Fields Photography Excursion",
     category: "Nature",
     destinationSlug: "paris",
-    heroImage: themeImage("mountainNature", 6),
+    heroImage: themeImage("mountainNature", 7),
     shortDescription: "A guided drive through Provence's lavender fields at peak bloom, with a private photographer.",
     description: [
       "A seasonal excursion (typically late June through July) through Provence's lavender fields, with a photographer on hand for the group.",
