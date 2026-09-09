@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export function Logo({ className = "" }: { className?: string }) {
   return (
@@ -6,20 +7,15 @@ export function Logo({ className = "" }: { className?: string }) {
       href="/"
       className={`group inline-flex items-center gap-3 ${className}`}
     >
-      <svg
-        width="32"
-        height="32"
-        viewBox="0 0 256 256"
+      <Image
+        src="/images/brand/emblem.png"
+        alt=""
         aria-hidden
-        className="shrink-0 text-gold"
-      >
-        <path
-          d="M128 52 L139 118 L205 128 L139 138 L128 204 L117 138 L51 128 L117 118 Z"
-          fill="currentColor"
-        />
-        <circle cx="128" cy="128" r="8" fill="var(--color-ink)" />
-        <circle cx="128" cy="128" r="8" fill="none" stroke="currentColor" strokeWidth="2" />
-      </svg>
+        width={348}
+        height={312}
+        priority
+        className="h-9 w-auto shrink-0 md:h-10"
+      />
       <span className="flex flex-col leading-none">
         <span className="font-display text-base md:text-lg tracking-[0.06em] uppercase text-ivory">
           World Bridge Meridian

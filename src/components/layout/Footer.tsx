@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { NewsletterForm } from "./NewsletterForm";
 import { FooterAccordion } from "./FooterAccordion";
@@ -13,9 +14,13 @@ export function Footer() {
       <Container className="py-16 md:py-20">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.3fr_repeat(3,1fr)]">
           <div>
-            <span className="font-display text-xl tracking-[0.06em] uppercase text-ivory">
-              World Bridge Meridian
-            </span>
+            <Image
+              src="/images/brand/logo-mark.png"
+              alt="World Bridge Meridian"
+              width={657}
+              height={455}
+              className="h-20 w-auto"
+            />
             <p className="mt-4 max-w-xs text-sm text-stone leading-relaxed">
               {company.footerTagline}
             </p>
