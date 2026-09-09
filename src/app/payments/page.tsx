@@ -25,7 +25,7 @@ export default function PaymentsPage() {
 
       <section className="py-16 md:py-24">
         <Container>
-          <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr]">
+          <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] [&>*]:min-w-0">
             <div>
               <SectionHeading eyebrow="Cryptocurrency" title="We've accepted crypto since 2015." />
               <div className="mt-6 space-y-4 text-base text-stone leading-relaxed">
@@ -92,7 +92,7 @@ export default function PaymentsPage() {
             </div>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] border-t hairline pt-16">
+          <div className="mt-16 grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] border-t hairline pt-16 [&>*]:min-w-0">
             <div>
               <SectionHeading
                 eyebrow="Local Currency"

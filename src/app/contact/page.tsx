@@ -23,7 +23,7 @@ export default function ContactPage() {
       />
       <section className="py-16 md:py-24">
         <Container>
-          <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1.3fr_1fr]">
+          <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1.3fr_1fr] [&>*]:min-w-0">
             <ContactForm />
 
             <div className="space-y-10">
