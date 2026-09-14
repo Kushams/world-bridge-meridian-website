@@ -6,6 +6,7 @@ import { themeImage } from "@/data/images";
 import { Parallax } from "@/components/motion/Parallax";
 import { RevealText } from "@/components/motion/RevealText";
 import { Magnetic } from "@/components/motion/Magnetic";
+import { HeroBlurTransition } from "@/components/layout/HeroBlurTransition";
 
 export function Hero() {
   return (
@@ -13,16 +14,17 @@ export function Hero() {
       <div className="absolute inset-0 overflow-hidden">
         <Parallax offset={70} className="absolute -top-[12%] -bottom-[12%] left-0 right-0">
           <Image
-            src={themeImage("tropicalBeach", 3, 2000)}
-            alt="Overwater villas at dusk, representative of World Bridge Meridian's curated journeys"
+            src={themeImage("culturalHeritage", 6, 2000)}
+            alt="Machu Picchu rising through the morning mist, representative of World Bridge Meridian's curated journeys"
             fill
             priority
             sizes="100vw"
             className="hero-zoom object-cover"
           />
         </Parallax>
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/30" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/65 to-ink/35" />
         <div className="bg-grid-texture absolute inset-0 opacity-20" />
+        <HeroBlurTransition />
       </div>
 
       <Container className="relative pb-20 pt-40 md:pb-28">

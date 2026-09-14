@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
+import { HeroBlurTransition } from "@/components/layout/HeroBlurTransition";
 import { ReactNode } from "react";
 
 export function PageHero({
@@ -31,7 +32,8 @@ export function PageHero({
             sizes="100vw"
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/70 to-ink/35" />
+          <HeroBlurTransition />
         </div>
       ) : (
         <div className="bg-grid-texture absolute inset-0 opacity-30" />
