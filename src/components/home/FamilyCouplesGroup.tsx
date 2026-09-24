@@ -50,10 +50,10 @@ export function FamilyCouplesGroup() {
                     sizes="(min-width: 768px) 33vw, 100vw"
                     className="img-zoom object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-ink/10 to-transparent" />
+                  <div className="scrim-card absolute inset-0" />
                   <div className="absolute inset-x-0 bottom-0 p-6">
-                    <h3 className="font-display text-xl text-ivory">{tile.label}</h3>
-                    <p className="mt-2 text-sm text-ivory-dim leading-relaxed">
+                    <h3 className="font-display text-xl text-on-photo">{tile.label}</h3>
+                    <p className="mt-2 text-sm text-on-photo-dim leading-relaxed">
                       {tile.description}
                     </p>
                   </div>

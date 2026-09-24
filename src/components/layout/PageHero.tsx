@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
+import { HeroBlurTransition } from "@/components/layout/HeroBlurTransition";
 import { ReactNode } from "react";
 
 export function PageHero({
@@ -31,18 +32,27 @@ export function PageHero({
             sizes="100vw"
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/20" />
+          <div className="scrim-hero absolute inset-0" />
+          <HeroBlurTransition />
         </div>
       ) : (
         <div className="bg-grid-texture absolute inset-0 opacity-30" />
       )}
       <Container className="relative pb-14 pt-36 md:pb-16">
-        <p className="eyebrow mb-4">{eyebrow}</p>
-        <h1 className="max-w-3xl font-display text-4xl md:text-5xl lg:text-6xl leading-[1.08] text-ivory text-balance-pretty">
+        <p className={`eyebrow mb-4 ${image ? "eyebrow-on-photo" : ""}`}>{eyebrow}</p>
+        <h1
+          className={`max-w-3xl font-display text-4xl md:text-6xl lg:text-7xl leading-[1.04] tracking-[-0.02em] text-balance-pretty ${
+            image ? "text-on-photo" : "text-ivory"
+          }`}
+        >
           {title}
         </h1>
         {description ? (
-          <p className="mt-5 max-w-xl text-base md:text-lg text-ivory-dim leading-relaxed">
+          <p
+            className={`mt-5 max-w-xl text-base md:text-lg leading-relaxed ${
+              image ? "text-on-photo-dim" : "text-stone"
+            }`}
+          >
             {description}
           </p>
         ) : null}

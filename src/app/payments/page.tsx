@@ -25,7 +25,7 @@ export default function PaymentsPage() {
 
       <section className="py-16 md:py-24">
         <Container>
-          <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr]">
+          <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] [&>*]:min-w-0">
             <div>
               <SectionHeading eyebrow="Cryptocurrency" title="We've accepted crypto since 2015." />
               <div className="mt-6 space-y-4 text-base text-stone leading-relaxed">
@@ -35,17 +35,18 @@ export default function PaymentsPage() {
                   {company.cryptoCurrencies.join(", ")}.
                 </p>
                 <p>
-                  There is no public wallet address or QR code on this site, and there won&apos;t be. Once your
-                  itinerary is finalized, your point of contact on our team sends payment instructions —
-                  including the specific address and exact amount for your booking — directly to you, tied
-                  to that booking. We&apos;ll never ask you to pay a figure or address you haven&apos;t
-                  received that way.
+                  Once your itinerary and exact amount are confirmed with your point of contact, you can
+                  send payment directly using the receiving address and QR code below — select the asset
+                  and network, send the exact amount agreed for your booking, and record the transaction
+                  reference. Submitting a reference does not confirm payment on its own: our team verifies
+                  every transaction manually and sends written confirmation once it clears.
                 </p>
                 <p className="text-ivory">
-                  For your own protection: never send funds to a crypto address you find anywhere else
-                  claiming to be us, and never to an address you weren&apos;t given directly through a
-                  confirmed conversation about your specific journey. If anything about a payment request
-                  seems off, contact us before sending anything.
+                  For your own protection: only ever send to the address shown on this page for the asset
+                  and network you intend to use, and double-check it against the amount and booking your
+                  consultant confirmed. We will never direct you to a different address by email, chat or
+                  any other channel — if anything about a payment request seems off, contact us before
+                  sending anything.
                 </p>
               </div>
             </div>
@@ -59,10 +60,11 @@ export default function PaymentsPage() {
                 </p>
               </div>
               <div className="rounded-card border hairline p-6">
-                <p className="font-display text-lg text-ivory">Nothing Collected Here</p>
+                <p className="font-display text-lg text-ivory">What This Page Does</p>
                 <p className="mt-2 text-sm text-stone leading-relaxed">
-                  This page is informational. No payment, card number, wallet address or crypto transaction
-                  ever happens on worldbridgemeridian.group itself.
+                  This page shows our crypto receiving addresses and lets you record a transaction
+                  reference for a confirmed booking. No card details, bank details or automatic charge
+                  ever happens on worldbridgemeridian.group — those are always arranged with you directly.
                 </p>
               </div>
               <div className="rounded-card border hairline p-6">
@@ -90,7 +92,7 @@ export default function PaymentsPage() {
             </div>
           </div>
 
-          <div className="mt-16 grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] border-t hairline pt-16">
+          <div className="mt-16 grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] border-t hairline pt-16 [&>*]:min-w-0">
             <div>
               <SectionHeading
                 eyebrow="Local Currency"

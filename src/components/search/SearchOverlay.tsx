@@ -99,7 +99,7 @@ export function SearchOverlay({
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {items.map((item) => (
                       <Link
-                        key={item.href}
+                        key={`${item.href}-${item.title}`}
                         href={item.href}
                         onClick={onClose}
                         className="group flex items-center gap-4 rounded-control p-2 hover:bg-charcoal transition-colors"

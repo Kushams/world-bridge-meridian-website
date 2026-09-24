@@ -41,22 +41,22 @@ export function CorePaths() {
                   sizes="(min-width: 768px) 50vw, 100vw"
                   className="img-zoom object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/50 to-ink/10" />
+                <div className="scrim-card absolute inset-0" />
                 <Link
                   href={path.href}
                   aria-label={path.title}
                   className="absolute inset-0 z-10"
                 />
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 p-8 md:p-10">
-                  <p className="eyebrow mb-3">{path.eyebrow}</p>
-                  <h2 className="font-display text-2xl md:text-3xl text-ivory">
+                  <p className="eyebrow eyebrow-on-photo mb-3">{path.eyebrow}</p>
+                  <h2 className="font-display text-3xl md:text-4xl text-on-photo">
                     {path.title}
                   </h2>
-                  <p className="mt-3 max-w-sm text-sm text-ivory-dim leading-relaxed">
+                  <p className="mt-3 max-w-sm text-sm text-on-photo-dim leading-relaxed">
                     {path.description}
                   </p>
                   <span className="pointer-events-auto relative z-20 mt-6 inline-block">
-                    <Button href={path.href} variant="outline">
+                    <Button href={path.href} variant="photo-outline">
                       {path.cta}
                     </Button>
                   </span>

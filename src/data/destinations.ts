@@ -689,7 +689,7 @@ export const destinations: Destination[] = [
     name: "Abu Dhabi",
     country: "United Arab Emirates",
     region: "Middle East & Africa",
-    heroImage: themeImage("desertArchitecture", 0),
+    heroImage: themeImage("desertArchitecture", 1),
     gallery: themeGallery("cityscape", 6, 4),
     shortDescription: "Grand architecture, museums and a quieter counterpoint to Dubai.",
     description: [
@@ -794,7 +794,7 @@ export const destinations: Destination[] = [
     name: "Cairo",
     country: "Egypt",
     region: "Middle East & Africa",
-    heroImage: themeImage("desertArchitecture", 0),
+    heroImage: themeImage("desertArchitecture", 2),
     gallery: themeGallery("culturalHeritage", 6, 3),
     shortDescription: "The pyramids, the Nile, and one of the world's deepest histories.",
     description: [
@@ -1648,7 +1648,7 @@ export const destinations: Destination[] = [
     name: "Doha",
     country: "Qatar",
     region: "Middle East & Africa",
-    heroImage: themeImage("desertArchitecture", 0),
+    heroImage: themeImage("desertArchitecture", 3),
     gallery: themeGallery("cityscape", 6, 15),
     shortDescription: "Contemporary architecture and a rapidly growing museum scene.",
     description: [

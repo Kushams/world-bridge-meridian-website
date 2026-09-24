@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
+import { Logo } from "./Logo";
 import { NewsletterForm } from "./NewsletterForm";
 import { FooterAccordion } from "./FooterAccordion";
 import { company } from "@/data/company";
@@ -13,10 +14,8 @@ export function Footer() {
       <Container className="py-16 md:py-20">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.3fr_repeat(3,1fr)]">
           <div>
-            <span className="font-display text-xl tracking-[0.06em] uppercase text-ivory">
-              World Bridge Meridian
-            </span>
-            <p className="mt-4 max-w-xs text-sm text-stone leading-relaxed">
+            <Logo size="large" />
+            <p className="mt-6 max-w-xs text-sm text-stone leading-relaxed">
               {company.footerTagline}
             </p>
             <div className="mt-6">

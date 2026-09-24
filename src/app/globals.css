@@ -2,24 +2,42 @@
 
 /* ------------------------------------------------------------------ */
 /* World Bridge Meridian design tokens                                 */
-/* A single fixed dark, editorial-luxury palette — this is a brand      */
-/* decision, not a light/dark user preference, so it does not respond   */
-/* to prefers-color-scheme.                                             */
+/* A single fixed bright, warm editorial-luxury palette — this is a     */
+/* brand decision, not a light/dark user preference, so it does not     */
+/* respond to prefers-color-scheme.                                     */
+/*                                                                       */
+/* Token names are historical (this repo shipped dark-first). "ink" and */
+/* "ivory" have swapped visual roles from the original dark palette so  */
+/* every existing bg-ivory/text-ink and bg-ink/text-ivory pairing in    */
+/* the codebase inverts correctly without touching each component:      */
+/*   --color-ink    is now the WARM WHITE page canvas (was near-black). */
+/*   --color-ivory  is now the DARK reading-text ink (was near-white).  */
+/* forest/forest-2 are reserved for intentional deep-contrast sections  */
+/* (footer, final CTA) rather than the page default.                    */
 /* ------------------------------------------------------------------ */
 @theme {
-  --color-ink: #0a0d0b;
-  --color-charcoal: #121613;
-  --color-charcoal-2: #171c18;
-  --color-forest: #1c2a21;
+  --color-ink: #faf6ec;
+  --color-charcoal: #f1ead9;
+  --color-charcoal-2: #e8dfc9;
+  --color-forest: #1b2a20;
   --color-forest-2: #24362a;
-  --color-ivory: #f4efe4;
-  --color-ivory-dim: #d9d2c2;
-  --color-stone: #a6a093;
-  --color-stone-dim: #8a8474;
-  --color-gold: #c8a668;
-  --color-gold-dim: #8f7648;
-  --color-line: rgba(244, 239, 228, 0.12);
-  --color-line-strong: rgba(244, 239, 228, 0.22);
+  --color-ivory: #211f1a;
+  --color-ivory-dim: #55503f;
+  --color-stone: #6e6552;
+  --color-stone-dim: #8f866f;
+  --color-gold: #a6763b;
+  --color-gold-dim: #7d5a2c;
+  --color-line: rgba(34, 31, 26, 0.12);
+  --color-line-strong: rgba(34, 31, 26, 0.22);
+
+  /* Photography layer. The page is bright, but imagery keeps its own dark
+     scrim so photos stay saturated instead of washing out, and anything set
+     over a photo uses these three tokens rather than the page tokens. */
+  --color-scrim: #14110c;
+  --color-on-photo: #f8f4ea;
+  --color-on-photo-dim: rgba(248, 244, 234, 0.74);
+  --color-on-photo-line: rgba(248, 244, 234, 0.4);
+  --color-gold-bright: #d9ab63;
 
   --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
@@ -76,7 +94,7 @@ body {
 
 ::selection {
   background: var(--color-gold);
-  color: var(--color-ink);
+  color: var(--color-ivory);
 }
 
 /* Focus states — always visible, never suppressed */
@@ -102,10 +120,104 @@ body {
   color: var(--color-gold);
 }
 
+/* ------------------------------------------------------------------ */
+/* Photography scrims                                                  */
+/* Applied to the overlay element that sits between a photo and the    */
+/* text over it. Keep photographs dark-scrimmed and set type in        */
+/* on-photo tokens; never tint imagery with the page canvas color.     */
+/* ------------------------------------------------------------------ */
+
+.scrim-hero {
+  background-image:
+    linear-gradient(
+      to top,
+      rgba(20, 17, 12, 0.9) 0%,
+      rgba(20, 17, 12, 0.66) 28%,
+      rgba(20, 17, 12, 0.3) 58%,
+      rgba(20, 17, 12, 0.14) 100%
+    ),
+    linear-gradient(to right, rgba(20, 17, 12, 0.5) 0%, rgba(20, 17, 12, 0) 62%);
+}
+
+.scrim-card {
+  background-image: linear-gradient(
+    to top,
+    rgba(20, 17, 12, 0.88) 0%,
+    rgba(20, 17, 12, 0.45) 38%,
+    rgba(20, 17, 12, 0.05) 72%,
+    rgba(20, 17, 12, 0) 100%
+  );
+}
+
+.scrim-flat {
+  background-color: rgba(20, 17, 12, 0.34);
+  background-image: linear-gradient(
+    to top,
+    rgba(20, 17, 12, 0.72) 0%,
+    rgba(20, 17, 12, 0.18) 55%,
+    rgba(20, 17, 12, 0) 100%
+  );
+  transition: background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.group:hover .scrim-flat {
+  background-color: rgba(20, 17, 12, 0.14);
+}
+
+.eyebrow-on-photo {
+  color: var(--color-gold-bright);
+}
+
+/* ------------------------------------------------------------------ */
+/* Display typography                                                  */
+/* Fraunces is loaded as a variable font. Large display sizes get the  */
+/* high optical size and a touch of WONK so headlines read as editorial */
+/* rather than as scaled-up body serif; small serif text stays plain.  */
+/* ------------------------------------------------------------------ */
+
+.font-display {
+  font-variation-settings:
+    "opsz" 72,
+    "SOFT" 12,
+    "WONK" 0;
+  letter-spacing: -0.005em;
+}
+
+h1.font-display,
+.display-xl {
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 20,
+    "WONK" 1;
+}
+
+/* A rule that hangs above a section heading, used to give sections a
+   printed-page rhythm instead of relying on whitespace alone. */
+.rule-top {
+  border-top: 1px solid var(--color-line);
+}
+
+.section-index {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.26em;
+  color: var(--color-stone-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.figure-lg {
+  font-variation-settings:
+    "opsz" 144,
+    "SOFT" 0,
+    "WONK" 0;
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: -0.03em;
+}
+
 .bg-grid-texture {
   background-image:
-    linear-gradient(to right, rgba(244, 239, 228, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(244, 239, 228, 0.05) 1px, transparent 1px);
+    linear-gradient(to right, rgba(34, 31, 26, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(34, 31, 26, 0.06) 1px, transparent 1px);
   background-size: 64px 64px;
 }
 

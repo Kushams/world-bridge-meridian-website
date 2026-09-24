@@ -153,7 +153,7 @@ export function AuthPanel() {
         <button
           type="submit"
           disabled={status === "submitting"}
-          className="w-full rounded-full bg-ivory px-6 py-3 text-xs font-semibold uppercase tracking-wide text-ink transition-colors hover:bg-white disabled:opacity-50 disabled:pointer-events-none"
+          className="w-full rounded-full bg-ivory px-6 py-3 text-xs font-semibold uppercase tracking-wide text-ink transition-colors hover:opacity-90 disabled:opacity-50 disabled:pointer-events-none"
         >
           {status === "submitting"
             ? "Please wait…"

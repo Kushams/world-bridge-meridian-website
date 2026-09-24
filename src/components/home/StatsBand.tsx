@@ -17,15 +17,21 @@ const stats = [
 
 export function StatsBand() {
   return (
-    <section className="border-y hairline bg-charcoal py-14">
+    <section className="border-y hairline bg-charcoal py-14 md:py-16">
       <Container>
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4">
           {stats.map((stat, i) => (
-            <Reveal key={stat.label} delay={i * 80} className="text-center">
-              <p className="font-display text-4xl text-ivory md:text-5xl">
+            <Reveal
+              key={stat.label}
+              delay={i * 80}
+              className={`px-0 py-5 sm:py-0 sm:px-8 sm:first:pl-0 ${
+                i % 2 === 1 ? "border-l hairline pl-6 sm:pl-8" : ""
+              } sm:border-l sm:first:border-l-0`}
+            >
+              <p className="figure-lg font-display text-5xl text-ivory md:text-6xl">
                 <AnimatedCounter value={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="mt-2 text-xs uppercase tracking-wide text-stone-dim md:text-sm">
+              <p className="mt-3 max-w-[20ch] text-xs uppercase tracking-[0.14em] text-stone-dim">
                 {stat.label}
               </p>
             </Reveal>
