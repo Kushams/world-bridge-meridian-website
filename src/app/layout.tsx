@@ -30,6 +30,11 @@ export const metadata: Metadata = {
     template: `%s — ${company.name}`,
   },
   description: company.tagline,
+  // Relative canonical — Next resolves it per route against metadataBase,
+  // so every page gets its own self-referencing canonical URL.
+  alternates: {
+    canonical: "./",
+  },
   openGraph: {
     type: "website",
     siteName: company.name,
@@ -75,8 +80,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <ScrollProgressBar />
           <TouchRipple />
           <AttributionCapture />
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-6 focus:top-6 focus:z-50 focus:rounded-full focus:bg-ivory focus:px-5 focus:py-3 focus:text-xs focus:font-semibold focus:uppercase focus:tracking-wide focus:text-ink"
+          >
+            Skip to content
+          </a>
           <Header />
-          <main className="flex-1">
+          <main id="main-content" tabIndex={-1} className="flex-1">
             <PageTransition>{children}</PageTransition>
           </main>
           <Footer />
