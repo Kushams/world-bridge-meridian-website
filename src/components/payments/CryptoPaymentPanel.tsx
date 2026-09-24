@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode";
+import { company } from "@/data/company";
 import { enabledCryptoPaymentOptions, type CryptoPaymentOption } from "@/data/cryptoPayments";
 import { submitCryptoPayment } from "@/lib/cryptoPaymentSubmissions";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
@@ -93,6 +94,22 @@ function PaymentDetails({
       setError(result.error);
     }
   }
+
+  // Someone reaching this form has usually already sent funds, so a failed
+  // submission must never be a dead end — they get a prefilled email with the
+  // same reference our team would have received.
+  const fallbackMailto = `mailto:${company.email}?subject=${encodeURIComponent(
+    `Crypto payment reference — ${selected.asset} (${selected.network})`,
+  )}&body=${encodeURIComponent(
+    [
+      `Asset: ${selected.asset}`,
+      `Network: ${selected.network}`,
+      `Wallet address: ${selected.walletAddress ?? ""}`,
+      `Transaction hash: ${txHash}`,
+      `Name: ${payerName}`,
+      `Email: ${payerEmail}`,
+    ].join("\n"),
+  )}`;
 
   if (status === "submitted") {
     return (
@@ -211,7 +228,17 @@ function PaymentDetails({
         >
           {status === "submitting" ? "Submitting…" : "Submit Payment Reference"}
         </button>
-        {status === "error" ? <p className="text-xs text-red-400">{error}</p> : null}
+        {status === "error" ? (
+          <div className="space-y-2">
+            <p className="text-xs text-red-400">
+              We couldn&apos;t record your reference automatically ({error}). Your payment is
+              unaffected — send us the reference directly and our team will verify it.
+            </p>
+            <a href={fallbackMailto} className="inline-block text-xs text-gold underline">
+              Email your transaction reference to {company.email}
+            </a>
+          </div>
+        ) : null}
       </form>
     </div>
   );
