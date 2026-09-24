@@ -17,7 +17,10 @@ export function AnimatedCounter({
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-10% 0px" });
   const prefersReducedMotion = useReducedMotion();
-  const [display, setDisplay] = useState(prefersReducedMotion ? value : 0);
+  // Starts at the real value so the server-rendered HTML carries it for
+  // crawlers, assistive technology and no-JS visitors; the count-up only
+  // starts once the browser has taken over.
+  const [display, setDisplay] = useState(value);
 
   useEffect(() => {
     if (!isInView || prefersReducedMotion) return;
@@ -29,11 +32,15 @@ export function AnimatedCounter({
     return () => controls.stop();
   }, [isInView, value, duration, prefersReducedMotion]);
 
+  const full = `${prefix}${value}${suffix}`;
+
   return (
-    <span ref={ref}>
-      {prefix}
-      {display}
-      {suffix}
+    <span ref={ref} role="img" aria-label={full}>
+      <span aria-hidden="true">
+        {prefix}
+        {display}
+        {suffix}
+      </span>
     </span>
   );
 }
