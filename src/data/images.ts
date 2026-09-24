@@ -23,7 +23,7 @@ function unsplash(id: string, w = 1600, q = 80) {
  * prefixed by hand or it 404s in production while still working in local
  * dev. Use this for any local (non-Unsplash) image path, e.g. "/images/x.jpg".
  */
-const BASE_PATH = process.env.GITHUB_PAGES === "true" ? "/world-bridge-meridian-website" : "";
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export function localImage(path: string) {
   return `${BASE_PATH}${path}`;

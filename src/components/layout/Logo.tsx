@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { localImage } from "@/data/images";
 
 export function Logo({
   className = "",
@@ -16,7 +17,7 @@ export function Logo({
       className={`group inline-flex items-center ${large ? "gap-5" : "gap-3"} ${className}`}
     >
       <Image
-        src="/images/brand/emblem.png"
+        src={localImage("/images/brand/emblem.png")}
         alt=""
         aria-hidden
         width={348}
