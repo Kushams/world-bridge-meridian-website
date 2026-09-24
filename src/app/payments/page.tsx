@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { company } from "@/data/company";
 import { themeImage } from "@/data/images";
 import { CryptoPaymentPanel } from "@/components/payments/CryptoPaymentPanel";
+import { enabledCryptoPaymentOptions } from "@/data/cryptoPayments";
+import { isSupabaseConfigured } from "@/lib/supabase/client";
 
 export const metadata: Metadata = {
   title: "Payment Options",
@@ -13,6 +15,8 @@ export const metadata: Metadata = {
 };
 
 export default function PaymentsPage() {
+  const addressesPublished = isSupabaseConfigured && enabledCryptoPaymentOptions().length > 0;
+
   return (
     <>
       <PageHero
@@ -34,19 +38,37 @@ export default function PaymentsPage() {
                   — well before it was common in travel. We currently support{" "}
                   {company.cryptoCurrencies.join(", ")}.
                 </p>
-                <p>
-                  Amounts are never quoted here. Once your itinerary is finalized, your point of contact
-                  on our team confirms the exact amount and the asset and network to use for your booking
-                  directly with you. The wallet addresses shown further down this page are our own,
-                  published here so you can verify them — they are the only addresses we ever collect
-                  cryptocurrency at.
-                </p>
-                <p className="text-ivory">
-                  For your own protection: check the address you are about to send to against the one
-                  published on this page, and never send funds to an address given to you anywhere else
-                  claiming to be us — including by email, chat or social media. If anything about a
-                  payment request seems off, contact us before sending anything.
-                </p>
+                {addressesPublished ? (
+                  <>
+                    <p>
+                      Amounts are never quoted here. Once your itinerary is finalized, your point of
+                      contact on our team confirms the exact amount and the asset and network to use for
+                      your booking directly with you. The wallet addresses shown further down this page
+                      are our own, published here so you can verify them — they are the only addresses we
+                      ever collect cryptocurrency at.
+                    </p>
+                    <p className="text-ivory">
+                      For your own protection: check the address you are about to send to against the one
+                      published on this page before you send anything. If a consultant, an email, a chat
+                      or a social account gives you an address that doesn&apos;t match, don&apos;t send to
+                      it — contact us first.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p>
+                      Amounts are never quoted here, and there is no address published on this page at the
+                      moment. Once your itinerary is finalized, your point of contact on our team sends
+                      payment instructions — the exact amount, asset, network and address for your booking
+                      — directly to you.
+                    </p>
+                    <p className="text-ivory">
+                      For your own protection: only ever send to an address you were given directly through
+                      a confirmed conversation about your own journey. If anything about a payment request
+                      seems off, contact us before sending anything.
+                    </p>
+                  </>
+                )}
               </div>
             </div>
 
@@ -82,10 +104,11 @@ export default function PaymentsPage() {
               title="Crypto payment reference submission."
             />
             <p className="mt-4 max-w-2xl text-sm text-stone leading-relaxed">
-              If your consultant has already sent you payment instructions for a confirmed booking,
-              send to the address below for the agreed asset and network, then record your transaction
-              reference here. Submitting a hash does not confirm payment — our team verifies every
-              transaction manually against the blockchain before it&apos;s marked confirmed.
+              {addressesPublished
+                ? "If your consultant has already sent you payment instructions for a confirmed booking, send to the address below for the agreed asset and network, then record your transaction reference here."
+                : "Once you have sent a payment for a confirmed booking, record your transaction reference here."}{" "}
+              Submitting a hash does not confirm payment — our team verifies every transaction manually
+              against the blockchain before it&apos;s marked confirmed.
             </p>
             <div className="mt-6 max-w-xl">
               <CryptoPaymentPanel />
