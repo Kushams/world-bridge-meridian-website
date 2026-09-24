@@ -19,24 +19,24 @@ export function FinalCta() {
             className="object-cover"
           />
         </Parallax>
-        <div className="absolute inset-0 bg-ink/80" />
+        <div className="absolute inset-0 bg-scrim/85" />
       </div>
       <Container className="relative">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <h2 className="font-display text-3xl md:text-5xl leading-[1.1] text-ivory text-balance-pretty">
+          <h2 className="font-display text-4xl md:text-6xl leading-[1.05] tracking-[-0.02em] text-on-photo text-balance-pretty">
             The world feels different when it is yours to explore.
           </h2>
-          <p className="mt-6 text-base md:text-lg text-ivory-dim leading-relaxed">
+          <p className="mt-6 text-base md:text-lg text-on-photo-dim leading-relaxed">
             Wherever you&apos;re imagining, we can help organize the journey around it.
           </p>
           <div className="mt-9 flex flex-wrap justify-center gap-4">
             <Magnetic>
-              <Button href="/plan-your-journey" size="lg">
+              <Button href="/plan-your-journey" variant="photo" size="lg">
                 Plan Your Journey
               </Button>
             </Magnetic>
             <Magnetic>
-              <Button href="/explore" variant="outline" size="lg">
+              <Button href="/explore" variant="photo-outline" size="lg">
                 Explore Journeys
               </Button>
             </Magnetic>

@@ -15,8 +15,8 @@ import { AuthProvider } from "@/lib/supabase/AuthProvider";
 const fraunces = Fraunces({
   variable: "--font-fraunces",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
   style: ["normal", "italic"],
+  axes: ["SOFT", "WONK", "opsz"],
 });
 
 const inter = Inter({

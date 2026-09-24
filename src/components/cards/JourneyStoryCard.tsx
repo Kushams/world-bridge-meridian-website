@@ -15,10 +15,10 @@ export function JourneyStoryCard({ story }: { story: JourneyStory }) {
           sizes="(min-width: 1024px) 400px, (min-width: 640px) 45vw, 90vw"
           className="img-zoom object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/10 to-transparent" />
+        <div className="scrim-card absolute inset-0" />
         <div className="absolute inset-x-0 bottom-0 p-5">
-          <p className="eyebrow !text-[0.65rem] mb-1 text-gold">{story.subtitle}</p>
-          <h3 className="font-display text-lg text-ivory">{story.title}</h3>
+          <p className="eyebrow eyebrow-on-photo !text-[0.65rem] mb-1">{story.subtitle}</p>
+          <h3 className="font-display text-lg text-on-photo">{story.title}</h3>
         </div>
       </TiltCard>
       <div className="mt-4">
