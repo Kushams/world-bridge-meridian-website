@@ -2,8 +2,9 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode";
+import { company } from "@/data/company";
 import { enabledCryptoPaymentOptions, type CryptoPaymentOption } from "@/data/cryptoPayments";
-import { submitCryptoPayment } from "@/lib/cryptoPaymentSubmissions";
+import { submitCryptoPayment, type SubmissionFailure } from "@/lib/cryptoPaymentSubmissions";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { track } from "@/lib/analytics";
 
@@ -61,6 +62,7 @@ function PaymentDetails({
   const [payerEmail, setPayerEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "submitted" | "error">("idle");
   const [error, setError] = useState("");
+  const [failure, setFailure] = useState<SubmissionFailure>("unavailable");
 
   useEffect(() => {
     const address = selected.walletAddress;
@@ -91,8 +93,25 @@ function PaymentDetails({
     } else {
       setStatus("error");
       setError(result.error);
+      setFailure(result.kind);
     }
   }
+
+  // Someone reaching this form has usually already sent funds, so a failed
+  // submission must never be a dead end — they get a prefilled email with the
+  // same reference our team would have received.
+  const fallbackMailto = `mailto:${company.email}?subject=${encodeURIComponent(
+    `Crypto payment reference — ${selected.asset} (${selected.network})`,
+  )}&body=${encodeURIComponent(
+    [
+      `Asset: ${selected.asset}`,
+      `Network: ${selected.network}`,
+      `Wallet address: ${selected.walletAddress ?? ""}`,
+      `Transaction hash: ${txHash}`,
+      `Name: ${payerName}`,
+      `Email: ${payerEmail}`,
+    ].join("\n"),
+  )}`;
 
   if (status === "submitted") {
     return (
@@ -211,7 +230,22 @@ function PaymentDetails({
         >
           {status === "submitting" ? "Submitting…" : "Submit Payment Reference"}
         </button>
-        {status === "error" ? <p className="text-xs text-red-400">{error}</p> : null}
+        {status === "error" ? (
+          <div className="space-y-2">
+            <p className="text-xs text-red-400">
+              {failure === "duplicate"
+                ? "We've already received this transaction reference — it's with our team for verification, no need to submit it again."
+                : failure === "throttled"
+                  ? error
+                  : `We couldn't record your reference automatically (${error}). Your payment is unaffected — send us the reference directly and our team will verify it.`}
+            </p>
+            {failure === "unavailable" ? (
+              <a href={fallbackMailto} className="inline-block text-xs text-gold underline">
+                Email your transaction reference to {company.email}
+              </a>
+            ) : null}
+          </div>
+        ) : null}
       </form>
     </div>
   );

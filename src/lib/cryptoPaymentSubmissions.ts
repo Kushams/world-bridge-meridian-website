@@ -19,6 +19,8 @@ export interface CryptoPaymentSubmissionInput {
   notes?: string;
 }
 
+export type SubmissionFailure = "duplicate" | "throttled" | "unavailable";
+
 /**
  * Records a payment reference for manual staff verification. This never
  * marks a payment as confirmed — status always starts at
@@ -27,10 +29,14 @@ export interface CryptoPaymentSubmissionInput {
  */
 export async function submitCryptoPayment(
   input: CryptoPaymentSubmissionInput,
-): Promise<{ ok: true } | { ok: false; error: string }> {
+): Promise<{ ok: true } | { ok: false; kind: SubmissionFailure; error: string }> {
   const supabase = getSupabaseClient();
   if (!supabase) {
-    return { ok: false, error: "Payment submission isn't available right now." };
+    return {
+      ok: false,
+      kind: "unavailable",
+      error: "Payment submission isn't available right now.",
+    };
   }
 
   const { error } = await supabase.from("crypto_payment_submissions").insert({
@@ -46,7 +52,19 @@ export async function submitCryptoPayment(
   });
 
   if (error) {
-    return { ok: false, error: error.message };
+    // Both come from supabase/hardening.sql: 23505 is the one-row-per-hash
+    // index, 53400 the submission rate limits.
+    if (error.code === "23505") {
+      return {
+        ok: false,
+        kind: "duplicate",
+        error: "We've already received this transaction reference.",
+      };
+    }
+    if (error.code === "53400") {
+      return { ok: false, kind: "throttled", error: error.message };
+    }
+    return { ok: false, kind: "unavailable", error: error.message };
   }
   return { ok: true };
 }

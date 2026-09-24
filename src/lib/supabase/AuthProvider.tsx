@@ -62,7 +62,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       options: {
         data: { full_name: fullName, phone },
         emailRedirectTo:
-          typeof window !== "undefined" ? `${window.location.origin}/my-world-bridge` : undefined,
+          typeof window !== "undefined"
+            ? `${window.location.origin}${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/my-world-bridge`
+            : undefined,
       },
     });
     return error ? { ok: false, error: error.message } : { ok: true };
