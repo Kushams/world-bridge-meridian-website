@@ -7,6 +7,14 @@
 -- anyone can replay that endpoint in a loop and bury real submissions
 -- under fake staff notifications.
 
+-- 0. Pre-flight: the index in step 1 fails if duplicates already exist.
+--    This should return no rows; if it does, keep the earliest of each
+--    group and delete the rest before continuing.
+--
+--      select lower(transaction_hash), count(*)
+--      from public.crypto_payment_submissions
+--      group by 1 having count(*) > 1;
+
 -- 1. One transaction hash = one payment. Kills replays and the
 --    double-click double-submit at the same time.
 create unique index if not exists crypto_payment_submissions_tx_hash_key
