@@ -35,34 +35,35 @@ export default function PaymentsPage() {
                   {company.cryptoCurrencies.join(", ")}.
                 </p>
                 <p>
-                  There is no public wallet address or QR code on this site, and there won&apos;t be. Once your
-                  itinerary is finalized, your point of contact on our team sends payment instructions —
-                  including the specific address and exact amount for your booking — directly to you, tied
-                  to that booking. We&apos;ll never ask you to pay a figure or address you haven&apos;t
-                  received that way.
+                  Amounts are never quoted here. Once your itinerary is finalized, your point of contact
+                  on our team confirms the exact amount and the asset and network to use for your booking
+                  directly with you. The wallet addresses shown further down this page are our own,
+                  published here so you can verify them — they are the only addresses we ever collect
+                  cryptocurrency at.
                 </p>
                 <p className="text-ivory">
-                  For your own protection: never send funds to a crypto address you find anywhere else
-                  claiming to be us, and never to an address you weren&apos;t given directly through a
-                  confirmed conversation about your specific journey. If anything about a payment request
-                  seems off, contact us before sending anything.
+                  For your own protection: check the address you are about to send to against the one
+                  published on this page, and never send funds to an address given to you anywhere else
+                  claiming to be us — including by email, chat or social media. If anything about a
+                  payment request seems off, contact us before sending anything.
                 </p>
               </div>
             </div>
 
             <div className="space-y-6">
               <div className="rounded-card border hairline p-6">
-                <p className="font-display text-lg text-ivory">Card &amp; Bank Transfer</p>
+                <p className="font-display text-lg text-ivory">Bank Transfer</p>
                 <p className="mt-2 text-sm text-stone leading-relaxed">
-                  Also available, and confirmed with you directly during booking — the same way as
-                  cryptocurrency, with details issued per booking rather than collected on the site.
+                  Arranged directly with your consultant, with transfer details issued per booking
+                  rather than published on the site.
                 </p>
               </div>
               <div className="rounded-card border hairline p-6">
-                <p className="font-display text-lg text-ivory">Nothing Collected Here</p>
+                <p className="font-display text-lg text-ivory">No Card Details Collected</p>
                 <p className="mt-2 text-sm text-stone leading-relaxed">
-                  This page is informational. No payment, card number, wallet address or crypto transaction
-                  ever happens on worldbridgemeridian.group itself.
+                  This site never collects a card number or bank detail. The only thing submitted here is
+                  a cryptocurrency transaction reference for a booking already confirmed with your
+                  consultant.
                 </p>
               </div>
               <div className="rounded-card border hairline p-6">
@@ -82,8 +83,9 @@ export default function PaymentsPage() {
             />
             <p className="mt-4 max-w-2xl text-sm text-stone leading-relaxed">
               If your consultant has already sent you payment instructions for a confirmed booking,
-              you can record your transaction reference here. Submitting a hash does not confirm
-              payment — our team verifies every transaction manually before it&apos;s marked confirmed.
+              send to the address below for the agreed asset and network, then record your transaction
+              reference here. Submitting a hash does not confirm payment — our team verifies every
+              transaction manually against the blockchain before it&apos;s marked confirmed.
             </p>
             <div className="mt-6 max-w-xl">
               <CryptoPaymentPanel />
