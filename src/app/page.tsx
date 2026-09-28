@@ -39,7 +39,20 @@ export default function Home() {
       <Hero />
       <Philosophy />
       <StatsBand />
+
+      {/* Journey discovery: how can WBM travel with me */}
       <CorePaths />
+      <TravelStyles />
+
+      <FeatureBanner
+        eyebrow="Bespoke Journeys"
+        title="Your journey. Your way."
+        description="When nothing off the shelf fits, we build the itinerary entirely from what you tell us — destinations, pace, style and every detail in between."
+        cta="Design My Journey"
+        href="/bespoke"
+        image={themeImage("mountainNature", 7)}
+        imageAlt="A remote, dramatic mountain landscape"
+      />
 
       <CardSection
         eyebrow="Featured Journeys"
@@ -68,7 +81,18 @@ export default function Home() {
         </div>
       </CardSection>
 
-      <TravelStyles />
+      {/* Arts & Culture gets its own moment — a signature differentiator,
+          not another item in a card grid. */}
+      <FeatureBanner
+        eyebrow="Arts & Culture"
+        title="Travel through culture."
+        description="Museums, opera, galleries and heritage sites — journeys built for clients who travel to go deeper into a place, not just to see it."
+        cta="Plan a Cultural Journey"
+        href="/arts-culture"
+        image={themeImage("culturalHeritage", 8)}
+        imageAlt="A white-walled museum gallery interior"
+        reverse
+      />
 
       <CardSection
         eyebrow="Journey Stories"
@@ -98,27 +122,6 @@ export default function Home() {
       </CardSection>
 
       <FeatureBanner
-        eyebrow="Arts & Culture"
-        title="Travel through culture."
-        description="Museums, opera, galleries and heritage sites — journeys built for clients who travel to go deeper into a place, not just to see it."
-        cta="Plan a Cultural Journey"
-        href="/arts-culture"
-        image={themeImage("culturalHeritage", 8)}
-        imageAlt="A white-walled museum gallery interior"
-      />
-
-      <FeatureBanner
-        eyebrow="Bespoke Journeys"
-        title="Your journey. Your way."
-        description="When nothing off the shelf fits, we build the itinerary entirely from what you tell us — destinations, pace, style and every detail in between."
-        cta="Design My Journey"
-        href="/bespoke"
-        image={themeImage("mountainNature", 7)}
-        imageAlt="A remote, dramatic mountain landscape"
-        reverse
-      />
-
-      <FeatureBanner
         eyebrow="Private Journeys"
         title="Entirely yours, from the first night to the last."
         description="No shared itinerary, no group pace — a private journey designed around one traveler, couple, family or group."
@@ -127,6 +130,14 @@ export default function Home() {
         image={themeImage("luxuryResort", 1)}
         imageAlt="A private villa terrace overlooking the coast"
       />
+
+      {/* Concierge methodology — how WBM actually works */}
+      <Concierge />
+      <JourneyPanel />
+
+      <FamilyCouplesGroup />
+      <WhyWorldBridge />
+      <Standard />
 
       <FeatureBanner
         eyebrow="Holiday Collection"
@@ -139,14 +150,9 @@ export default function Home() {
         reverse
       />
 
-      <Concierge />
-      <JourneyPanel />
-
-      <FamilyCouplesGroup />
-      <WhyWorldBridge />
-      <Standard />
       <PartnersStrip />
 
+      {/* Social proof, then editorial, then the close */}
       <CardSection
         eyebrow="Reviews"
         title="What traveling with us has been like."

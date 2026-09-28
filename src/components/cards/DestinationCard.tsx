@@ -17,10 +17,10 @@ export function DestinationCard({ destination }: { destination: Destination }) {
           sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 90vw"
           className="img-zoom object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent" />
+        <div className="scrim-card absolute inset-0" />
         <div className="absolute inset-x-0 bottom-0 p-5">
-          <p className="eyebrow !text-[0.65rem] mb-1">{destination.country}</p>
-          <h3 className="font-display text-xl text-ivory">{destination.name}</h3>
+          <p className="eyebrow eyebrow-on-photo !text-[0.65rem] mb-1">{destination.country}</p>
+          <h3 className="font-display text-xl text-on-photo">{destination.name}</h3>
         </div>
       </TiltCard>
       <p className="mt-3 text-sm text-stone leading-relaxed">

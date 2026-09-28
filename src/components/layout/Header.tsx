@@ -23,10 +23,8 @@ export function Header() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-40 transition-colors duration-500 ${
-          scrolled || menuOpen
-            ? "bg-ink/95 backdrop-blur border-b hairline"
-            : "bg-gradient-to-b from-ink/70 via-ink/20 to-transparent border-b border-transparent"
+        className={`fixed inset-x-0 top-0 z-40 bg-ink/95 backdrop-blur border-b transition-shadow duration-500 ${
+          scrolled || menuOpen ? "hairline shadow-sm" : "border-transparent"
         }`}
       >
         <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-6 md:px-10 py-4">

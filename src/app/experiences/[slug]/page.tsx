@@ -60,7 +60,7 @@ export default async function ExperiencePage({
 
       <section className="pb-24">
         <Container>
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.6fr_1fr]">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.6fr_1fr] [&>*]:min-w-0">
             <div className="space-y-4">
               {experience.description.map((p, i) => (
                 <p key={i} className="text-base text-stone leading-relaxed">

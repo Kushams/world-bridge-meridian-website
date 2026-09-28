@@ -6,7 +6,12 @@ import { travelStyles } from "@/data/travel-styles";
 import { interestTags, travelerProfiles } from "@/data/interests";
 import { company } from "@/data/company";
 import { TravelStyleSlug } from "@/data/types";
-import { buildLeadId, submitJourneyLead, type JourneyLead } from "@/lib/leads";
+import {
+  buildLeadId,
+  submitJourneyLead,
+  type DeliveryChannel,
+  type JourneyLead,
+} from "@/lib/leads";
 import { getAttribution } from "@/lib/attribution";
 import { track } from "@/lib/analytics";
 
@@ -142,7 +147,7 @@ export function JourneyWizard() {
   });
   const [status, setStatus] = useState<"idle" | "submitting" | "submitted" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
-  const [deliveredVia, setDeliveredVia] = useState<"crm" | "netlify" | "mailto" | null>(null);
+  const [deliveredVia, setDeliveredVia] = useState<DeliveryChannel | null>(null);
 
   useEffect(() => {
     track("journey_wizard_started");

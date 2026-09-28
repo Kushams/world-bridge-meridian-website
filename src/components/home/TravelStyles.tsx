@@ -39,9 +39,9 @@ export function TravelStyles() {
                   sizes="(min-width: 768px) 25vw, 50vw"
                   className="img-zoom object-cover"
                 />
-                <div className="absolute inset-0 bg-ink/45 transition-colors group-hover:bg-ink/30" />
+                <div className="scrim-flat absolute inset-0" />
                 <div className="absolute inset-0 flex items-end p-4 md:p-5">
-                  <h3 className="font-display text-base md:text-lg text-ivory">
+                  <h3 className="font-display text-base md:text-lg text-on-photo">
                     {style.label}
                   </h3>
                 </div>

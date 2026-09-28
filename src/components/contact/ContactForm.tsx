@@ -3,10 +3,14 @@
 import { FormEvent, useState } from "react";
 import { company } from "@/data/company";
 import { track } from "@/lib/analytics";
+import { submitForm } from "@/lib/formSubmissions";
 import { submitToNetlifyForms } from "@/lib/netlifyForms";
 
 export function ContactForm() {
-  const [status, setStatus] = useState<"idle" | "submitting" | "sent" | "sent-via-email">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "submitting" | "sent" | "sent-via-email" | "throttled"
+  >("idle");
+  const [notice, setNotice] = useState("");
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -25,16 +29,36 @@ export function ContactForm() {
 
     setStatus("submitting");
 
-    const delivered = await submitToNetlifyForms("contact", { name, email, subject, message });
+    const result = await submitForm({
+      formType: "contact",
+      name,
+      email,
+      subject: subject || "General Enquiry",
+      message,
+    });
 
-    if (delivered) {
+    if (result.ok) {
       setStatus("sent");
       track("form_submitted", { form: "contact" });
       return;
     }
 
-    // Not served by Netlify right now (local dev, a non-Netlify preview) —
-    // fall back to mailto so the message is never just lost.
+    if (result.kind === "throttled") {
+      setNotice(result.error);
+      setStatus("throttled");
+      return;
+    }
+
+    // Supabase unreachable (paused free-tier project, offline visitor):
+    // Netlify Forms still works while Netlify serves the site.
+    const delivered = await submitToNetlifyForms("contact", { name, email, subject, message });
+    if (delivered) {
+      setStatus("sent");
+      track("form_submitted", { form: "contact", via: "netlify" });
+      return;
+    }
+
+    // Neither backend reachable — mailto so the message is never just lost.
     const body = `${message}\n\n— ${name} (${email})`;
     const mailto = `mailto:${company.email}?subject=${encodeURIComponent(
       subject,
@@ -103,7 +127,7 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={status === "submitting"}
-        className="inline-flex items-center justify-center rounded-full bg-ivory px-8 py-3.5 text-sm font-semibold uppercase tracking-wide text-ink transition-colors hover:bg-white disabled:opacity-50 disabled:pointer-events-none"
+        className="inline-flex items-center justify-center rounded-full bg-ivory px-8 py-3.5 text-sm font-semibold uppercase tracking-wide text-ink transition-colors hover:opacity-90 disabled:opacity-50 disabled:pointer-events-none"
       >
         {status === "submitting" ? "Sending…" : "Start a Conversation"}
       </button>
@@ -112,6 +136,9 @@ export function ContactForm() {
           Thank you — your message has been sent. We read every message and will get back to you
           at the email address you provided.
         </p>
+      ) : null}
+      {status === "throttled" ? (
+        <p className="text-sm text-stone-dim">{notice}</p>
       ) : null}
       {status === "sent-via-email" ? (
         <p className="text-sm text-stone-dim">

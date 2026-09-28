@@ -24,7 +24,7 @@ export function CardSection({
   return (
     <section className={`py-20 md:py-28 ${tone === "charcoal" ? "bg-charcoal" : ""}`}>
       <Container>
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-6 border-t hairline pt-10 md:flex-row md:items-end md:justify-between">
           <Reveal>
             <SectionHeading eyebrow={eyebrow} title={title} description={description} />
           </Reveal>

@@ -1,5 +1,6 @@
 -- World Bridge Meridian — saved journeys table.
--- Run this once in the Supabase dashboard: SQL Editor -> New Query -> paste -> Run.
+-- Run this once in the Supabase dashboard: SQL Editor -> New Query -> paste -> Run,
+-- then run hardening.sql (abuse controls + Vault-based notification credentials).
 
 create table if not exists public.saved_journeys (
   id uuid primary key default gen_random_uuid(),
@@ -102,10 +103,12 @@ create policy "Anyone can submit a payment reference"
 -- On every submission: notify WBM staff (this is the "routed to our team"
 -- step, since there's no separate ticketing system) and send the customer
 -- a receipt-of-submission email (never a payment receipt — nothing is
--- verified yet). Handled by the notify-crypto-payment Edge Function; the
--- anon key below is public (already embedded in the site's client bundle)
--- and is only used here to satisfy the function's verify_jwt requirement,
--- not as a privilege escalation.
+-- verified yet). Handled by the notify-crypto-payment Edge Function.
+--
+-- The version below is a placeholder that cannot authenticate — it exists
+-- so the trigger is in place; hardening.sql replaces it with one that
+-- reads real credentials from Vault. Run that file too, or notifications
+-- 401 silently.
 create extension if not exists pg_net with schema extensions;
 
 create or replace function public.notify_crypto_payment_submission()

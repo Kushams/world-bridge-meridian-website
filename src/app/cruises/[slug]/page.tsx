@@ -62,7 +62,7 @@ export default async function CruisePage({
 
       <section className="pb-16 md:pb-24">
         <Container>
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.6fr_1fr]">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.6fr_1fr] [&>*]:min-w-0">
             <div>
               <SectionHeading eyebrow="Overview" title="About this cruise" />
               <div className="mt-6 space-y-4">

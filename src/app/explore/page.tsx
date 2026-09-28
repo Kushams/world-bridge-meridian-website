@@ -123,13 +123,13 @@ export default function ExplorePage() {
                   sizes="(min-width: 1024px) 25vw, 50vw"
                   className="img-zoom object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent" />
+                <div className="scrim-card absolute inset-0" />
                 <div className="absolute left-4 top-4 rounded-full bg-ink/70 backdrop-blur px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-wide text-ivory">
                   {journey.status}
                 </div>
                 <div className="absolute inset-x-0 bottom-0 p-5">
-                  <h3 className="font-display text-lg text-ivory">{journey.title}</h3>
-                  <p className="mt-1 text-xs text-stone">{journey.travelPeriod}</p>
+                  <h3 className="font-display text-lg text-on-photo">{journey.title}</h3>
+                  <p className="mt-1 text-xs text-on-photo-dim">{journey.travelPeriod}</p>
                 </div>
               </div>
             </Link>

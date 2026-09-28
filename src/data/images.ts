@@ -23,7 +23,7 @@ function unsplash(id: string, w = 1600, q = 80) {
  * prefixed by hand or it 404s in production while still working in local
  * dev. Use this for any local (non-Unsplash) image path, e.g. "/images/x.jpg".
  */
-const BASE_PATH = process.env.GITHUB_PAGES === "true" ? "/world-bridge-meridian-website" : "";
+const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export function localImage(path: string) {
   return `${BASE_PATH}${path}`;
@@ -48,7 +48,7 @@ export const IMAGE_BANK = {
     "1512453979798-5ea266f8880c", // Dubai skyline, sunset
     "1546412414-8035e1776c9a", // Dubai, contemporary architecture
     "1496442226666-8d4d0e62e6e9", // Times Square, night
-    "1519501025264-65ba15a82390", // rain-lit city street, night
+    "1741034793665-64c8afcf6c23", // rain-lit downtown street at dusk, steam rising
     "1583422409516-2895a77efded", // dense old-city rooftops, aerial
     "1449034446853-66c86144b0ad", // Golden Gate Bridge
     "1522093007474-d86e9bf7ba6f", // European café street, morning
@@ -105,7 +105,7 @@ export const IMAGE_BANK = {
   ],
   cruiseAndSea: [
     "1512100356356-de1b84283e18", // seaplane, tropical aerial
-    "1571003123894-1f0594d2b5d9", // overwater villas, dusk
+    "1719423324139-04edfa77ea0d", // cruise ship bow, aerial top-down, emerald water
     "1540206395-68808572332f", // ocean wave, aerial
     "1590050752117-238cb0fb12b1", // dock over water, sunset
   ],
@@ -134,10 +134,13 @@ export const IMAGE_BANK = {
   ],
   wellness: [
     "1544367567-0f2fcb009e0b", // yoga silhouette, sunset
-    "1512621776951-a57141f2eefd", // fresh, healthful spread
+    "1484452330304-377cdeb05340", // yoga silhouette in cliffside cave, sunrise over valley
   ],
   desertArchitecture: [
-    "1518684079-3c830dcef090", // waterfront tower, aerial
+    "1742158626626-446bdc84dc37", // mud-brick kasbah towers, golden hour, Morocco (Marrakech)
+    "1613835579153-9bfe32e50da6", // Emirates Palace and Etihad Towers skyline (Abu Dhabi)
+    "1761561044700-4262beec7d63", // Pyramids of Giza in desert haze (Cairo)
+    "1710749240779-aab2df2dd8d4", // West Bay skyline across the water, dhow boat (Doha)
   ],
   adventure: [
     "1500835556837-99ac94a94552", // airplane wing, sunset clouds

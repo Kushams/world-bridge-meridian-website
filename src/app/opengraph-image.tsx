@@ -17,7 +17,7 @@ export default async function OpengraphImage() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#0a0d0b",
+          background: "#faf6ec",
           position: "relative",
         }}
       >
@@ -25,7 +25,7 @@ export default async function OpengraphImage() {
           style={{
             position: "absolute",
             inset: 40,
-            border: "1px solid #3a352a",
+            border: "1px solid #ddd2b6",
             display: "flex",
           }}
         />
@@ -37,17 +37,17 @@ export default async function OpengraphImage() {
             width: 116,
             height: 116,
             borderRadius: "50%",
-            border: "2px solid #c8a668",
+            border: "2px solid #a6763b",
             marginBottom: 36,
           }}
         >
           <svg width="72" height="72" viewBox="0 0 256 256">
             <path
               d="M128 26 L144 118 L230 128 L144 138 L128 230 L112 138 L26 128 L112 118 Z"
-              fill="#c8a668"
+              fill="#a6763b"
             />
-            <circle cx="128" cy="128" r="10" fill="#0a0d0b" />
-            <circle cx="128" cy="128" r="10" fill="none" stroke="#c8a668" strokeWidth="2.5" />
+            <circle cx="128" cy="128" r="10" fill="#faf6ec" />
+            <circle cx="128" cy="128" r="10" fill="none" stroke="#a6763b" strokeWidth="2.5" />
           </svg>
         </div>
         <div
@@ -57,7 +57,7 @@ export default async function OpengraphImage() {
             fontSize: 60,
             letterSpacing: 3,
             textTransform: "uppercase",
-            color: "#f4efe4",
+            color: "#211f1a",
           }}
         >
           World Bridge Meridian
@@ -70,7 +70,7 @@ export default async function OpengraphImage() {
             fontSize: 24,
             letterSpacing: 6,
             textTransform: "uppercase",
-            color: "#a89d87",
+            color: "#6e6552",
           }}
         >
           Bespoke Travel Group

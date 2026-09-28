@@ -8,6 +8,7 @@ import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Button } from "@/components/ui/Button";
 import { DestinationCard } from "@/components/cards/DestinationCard";
 import { formatDate } from "@/lib/format";
+import { SITE_URL, company } from "@/data/company";
 
 export function generateStaticParams() {
   return journal.map((a) => ({ slug: a.slug }));
@@ -39,8 +40,28 @@ export default async function JournalArticlePage({
 
   const related = destinations.filter((d) => article.relatedDestinationSlugs?.includes(d.slug));
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: article.title,
+    description: article.excerpt,
+    image: article.heroImage,
+    datePublished: article.date,
+    author: { "@type": "Organization", name: article.author },
+    publisher: {
+      "@type": "Organization",
+      name: company.name,
+      logo: { "@type": "ImageObject", url: `${SITE_URL}/icon.svg` },
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/journal/${article.slug}` },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <PageHero
         eyebrow={article.category}
         title={article.title}

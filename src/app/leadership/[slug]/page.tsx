@@ -60,7 +60,7 @@ export default async function TeamMemberPage({
 
       <section className="pb-20 md:pb-28">
         <Container>
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1.6fr]">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1.6fr] [&>*]:min-w-0">
             <div>
               {member.photo ? (
                 <div className="relative aspect-[4/5] w-full overflow-hidden rounded-card bg-charcoal border hairline">

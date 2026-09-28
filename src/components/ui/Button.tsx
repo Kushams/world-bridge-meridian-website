@@ -1,16 +1,19 @@
 import Link from "next/link";
 import { ReactNode } from "react";
 
-type Variant = "primary" | "outline" | "ghost";
+type Variant = "primary" | "outline" | "ghost" | "photo" | "photo-outline";
 type Size = "md" | "lg";
 
 const base =
   "tap-shrink inline-flex items-center justify-center gap-2 rounded-full font-sans text-sm font-semibold tracking-wide uppercase transition-colors duration-300 focus-visible:outline-offset-4";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-ivory text-ink hover:bg-white",
+  primary: "bg-ivory text-ink hover:opacity-90",
   outline: "border border-line-strong text-ivory hover:bg-ivory hover:text-ink",
   ghost: "text-ivory hover:text-gold",
+  photo: "bg-on-photo text-scrim hover:bg-gold-bright hover:text-scrim",
+  "photo-outline":
+    "border border-on-photo-line text-on-photo hover:bg-on-photo hover:text-scrim",
 };
 
 const sizes: Record<Size, string> = {
