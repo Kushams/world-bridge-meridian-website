@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "worldbridgemeridian",
+  "name": "world-bridge-meridian-website",
   "compatibility_date": "2026-09-24",
   // Static-only Worker: no `main`, so every request is served straight from
   // the `next build` export. Cloudflare's dashboard no longer offers the
