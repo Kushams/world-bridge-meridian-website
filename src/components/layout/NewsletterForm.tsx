@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { track } from "@/lib/analytics";
+import { submitForm } from "@/lib/formSubmissions";
 import { submitToNetlifyForms } from "@/lib/netlifyForms";
 
 /**
@@ -11,7 +12,10 @@ import { submitToNetlifyForms } from "@/lib/netlifyForms";
  * consent; a journey request never does.
  */
 export function NewsletterForm() {
-  const [status, setStatus] = useState<"idle" | "submitting" | "submitted">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "submitted" | "throttled">(
+    "idle",
+  );
+  const [notice, setNotice] = useState<string | null>(null);
   const [consent, setConsent] = useState(false);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -20,13 +24,26 @@ export function NewsletterForm() {
     const email = String(form.get("email") ?? "");
 
     setStatus("submitting");
-    // Netlify Forms is the backend here; if it's ever unreachable (local
-    // dev, a non-Netlify preview) we still show success rather than lose
-    // the signup silently — there is no mailto fallback that makes sense
-    // for a newsletter signup the way it does for a direct message.
-    await submitToNetlifyForms("newsletter", { email });
+    // Supabase is the backend; Netlify Forms stays as a fallback while
+    // Netlify serves the site. If neither is reachable we still show
+    // success rather than lose the signup visibly — there is no mailto
+    // fallback that makes sense for a newsletter signup the way it does
+    // for a direct message.
+    const result = await submitForm({ formType: "newsletter", email });
+    if (!result.ok) {
+      if (result.kind === "throttled") {
+        setNotice(result.error);
+        setStatus("throttled");
+        return;
+      }
+      await submitToNetlifyForms("newsletter", { email });
+    }
     setStatus("submitted");
     track("newsletter_signup");
+  }
+
+  if (status === "throttled") {
+    return <p className="text-sm text-ivory-dim">{notice}</p>;
   }
 
   if (status === "submitted") {
