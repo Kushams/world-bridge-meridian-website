@@ -1,27 +1,27 @@
 /**
  * Journey lead architecture.
  *
- * There is no CRM behind this site yet — it's a static Next.js site hosted
- * on Netlify. This file defines the shape a real lead record should take
- * once a CRM exists, and a submission path that already works three ways,
- * tried in order:
+ * There is no CRM behind this site yet. This file defines the shape a real
+ * lead record should take once one exists, and a submission path that
+ * already works four ways, tried in order:
  *
  * 1. If NEXT_PUBLIC_LEADS_ENDPOINT is set at build time, submissions POST
  *    as JSON to that URL (a future serverless function or CRM webhook).
- * 2. Otherwise, it submits through Netlify Forms — no signup, no API key,
- *    included with the site's existing Netlify hosting. Submissions show
- *    up in the Netlify dashboard and can trigger an email notification
- *    from there. See the hidden shadow form on the Plan Your Journey page
- *    for why the wizard needs one (Netlify only detects fields present in
- *    static HTML, and the wizard's real fields are never all in the DOM
- *    at once).
- * 3. If neither is reachable (local dev, a non-Netlify preview), it falls
- *    back to mailto: so the form never just fails silently.
+ * 2. Otherwise Supabase (public.form_submissions), which emails the team
+ *    through Resend and works on any host — see supabase/forms.sql.
+ * 3. Netlify Forms, which only works while Netlify serves the site, as a
+ *    fallback for a paused/unreachable Supabase project. See the hidden
+ *    shadow form on the Plan Your Journey page for why the wizard needs
+ *    one (Netlify only detects fields present in static HTML, and the
+ *    wizard's real fields are never all in the DOM at once).
+ * 4. If none is reachable, it falls back to mailto: so the form never
+ *    just fails silently.
  *
  * Swapping in a real CRM endpoint later requires no changes to the wizard
  * — only setting the environment variable.
  */
 
+import { submitForm } from "./formSubmissions";
 import { submitToNetlifyForms } from "./netlifyForms";
 
 export type LeadStage =
@@ -149,7 +149,7 @@ function flattenForNetlify(lead: JourneyLead): Record<string, string> {
   };
 }
 
-export type DeliveryChannel = "crm" | "netlify" | "mailto";
+export type DeliveryChannel = "crm" | "supabase" | "netlify" | "mailto";
 
 export type SubmitResult =
   | { ok: true; via: DeliveryChannel }
@@ -186,6 +186,21 @@ export async function submitJourneyLead(
         error: "We couldn't reach our server. Please try again, or email us directly.",
       };
     }
+  }
+
+  const stored = await submitForm({
+    formType: "journey-request",
+    name: lead.name,
+    email: lead.email,
+    subject: `Journey request — ${lead.destination || lead.destinationMode}`,
+    message: lead.notes,
+    payload: flattenForNetlify(lead),
+  });
+  if (stored.ok) {
+    return { ok: true, via: "supabase" };
+  }
+  if (stored.kind === "throttled") {
+    return { ok: false, error: stored.error };
   }
 
   const deliveredViaNetlify = await submitToNetlifyForms(
