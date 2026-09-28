@@ -1,0 +1,13 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "world-bridge-meridian-website",
+  "compatibility_date": "2026-09-24",
+  // Static-only Worker: no `main`, so every request is served straight from
+  // the `next build` export. Cloudflare's dashboard no longer offers the
+  // Pages flow for new projects, and Workers Builds needs this file.
+  "assets": {
+    "directory": "./out",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}
