@@ -1138,6 +1138,652 @@ Use a common master schema with campaign-specific fields where necessary.
 
 ---
 
+# 35. RECOMMENDED MASTER DATABASE STRUCTURE
+
+Use:
+
+**MASTER_LEADS** — All prospects.
+
+Then logically segment into:
+
+- **B2C_BROAD** — Individual broad prospects.
+- **B2C_INTENT** — Individual prospects with identifiable travel intent.
+- **B2B_CORPORATE** — Corporate prospects.
+- **TRAVEL_INDUSTRY** — Travel professionals.
+- **CONCIERGE_LUXURY** — Concierge/lifestyle prospects.
+- **EVENTS_WEDDINGS** — Event and wedding prospects.
+- **ARTS_CULTURE** — Arts and cultural prospects.
+- **INSTITUTIONAL** — Institutional prospects.
+- **CRUISE** — Cruise-related prospects.
+- **GROUP_TRAVEL** — Group travel prospects.
+- **STRATEGIC_PARTNERS** — Partnership prospects.
+
+---
+
+# 36. GEOGRAPHIC SEGMENTATION
+
+Each dataset must support country segmentation.
+
+Examples:
+
+- USA: B2C / USA
+- Canada: B2C / Canada
+- UK: B2C / UK
+- Germany: B2C / Germany
+- France: B2C / France
+- Japan: B2C / Japan
+- Australia: B2C / Australia
+- etc.
+
+Do not merge countries merely for convenience.
+
+---
+
+# 37. OUTREACH PREPARATION
+
+Although you are NOT sending emails, the database should be designed to support future email campaigns.
+
+Therefore include:
+
+- Campaign
+- Segment
+- Lead Type
+- Geography
+- First Name
+- Company
+- Relevant Use Case
+- Intent
+- Destination Interest
+- Source
+- Notes
+
+This allows the WBM team to create separate campaigns later.
+
+---
+
+# 38. DO NOT WRITE ONE GENERIC CAMPAIGN
+
+The database must make it possible to create campaigns such as:
+
+- B2C USA — Broad Prospects
+- B2C USA — Travel Intent
+- B2C UK — Broad Prospects
+- B2C UK — Travel Intent
+- B2C Germany — Broad Prospects
+- B2B USA — Corporate
+- B2B UK — Corporate
+- Travel Advisors — USA
+- Travel Advisors — UK
+- Travel Advisors — Europe
+- Arts & Culture — Europe
+- Event Planners — USA
+- Corporate Retreats — USA
+- etc.
+
+---
+
+# 39. LEAD GENERATION SHOULD BE CONTINUOUS
+
+Do not design this as a one-time scrape.
+
+Design the system so that future runs can:
+
+1. Load existing leads.
+2. Identify existing records.
+3. Discover new sources.
+4. Find new prospects.
+5. Deduplicate.
+6. Append new leads.
+7. Update existing records only when legitimate new information is found.
+8. Preserve historical source information.
+9. Report what was newly discovered.
+
+The goal is a living WBM prospect database.
+
+---
+
+# 40. EXISTING DATA
+
+Before generating new leads:
+
+Inspect the existing WBM lead files, repositories, databases, CSVs, JSON files, or directories available to you.
+
+Do not blindly recreate existing leads.
+
+Determine:
+
+- Existing schema
+- Existing campaigns
+- Existing countries
+- Existing sources
+- Existing duplicate rules
+- Existing lead counts
+- Existing gaps
+
+Then build upon the existing system.
+
+---
+
+# 41. GITHUB / FILE MANAGEMENT
+
+If the lead database is maintained in a GitHub repository:
+
+- Inspect the current repository structure first.
+- Preserve existing files unless there is a clear reason to modify them.
+- Do not delete existing lead databases.
+- Do not overwrite valuable historical data.
+- Use version-controlled changes.
+- Keep datasets organized.
+- Maintain clear commit messages.
+- Do not expose credentials or secrets.
+
+If the project already has an established lead-generation workflow, improve it rather than replacing it unnecessarily.
+
+---
+
+# 42. AUTOMATION
+
+Automate repetitive operations where practical:
+
+- Search
+- Collection
+- Parsing
+- Normalization
+- Deduplication
+- Classification
+- Country detection
+- Pipeline assignment
+- Export
+- Reporting
+
+But never automate fabrication.
+
+---
+
+# 43. SEARCH STRATEGY
+
+Search broadly.
+
+Do not repeatedly issue the same search query.
+
+Generate variations based on:
+
+- Country
+- City
+- Industry
+- Organization type
+- Role
+- Travel category
+- Event
+- Season
+- Business type
+- Prospect type
+
+Example conceptual searches:
+
+- USA travel professionals
+- New York executive travel contacts
+- UK travel advisors
+- Germany corporate travel companies
+- Paris event planners
+- London destination wedding planners
+- New York cultural organizations
+- Italy art fair organizations
+- Canada corporate retreat companies
+
+These are examples.
+
+Develop much broader search patterns.
+
+---
+
+# 44. SEARCH FOR PEOPLE AND ORGANIZATIONS
+
+- **For B2C:** Search for publicly available individual contact information where legitimately available.
+- **For B2B:** Search organizations first, then relevant contacts.
+- **For institutions:** Search the institution and then relevant departments/people.
+- **For partnerships:** Search businesses and identify appropriate contacts.
+
+---
+
+# 45. SOURCE EVIDENCE
+
+Whenever practical, retain the source URL that supports:
+
+- Person identity
+- Organization
+- Email
+- Job title
+- Travel intent
+- Event
+- Destination interest
+
+This allows the WBM team to understand where the lead originated.
+
+---
+
+# 46. DO NOT SCORE PEOPLE BASED ON PERSONAL ATTRIBUTES
+
+Do not create invasive or speculative personal scoring.
+
+Do not infer:
+
+- Wealth
+- Political affiliation
+- Religion
+- Health
+- Sexual orientation
+- Personal beliefs
+
+Instead, classify leads using commercially relevant observable information such as:
+
+- Geography
+- Organization type
+- Role
+- Public business context
+- Travel-related public intent
+- Travel category
+- Event relevance
+- Partnership relevance
+
+---
+
+# 47. PRIORITIZATION
+
+You may create an operational priority field, but do not pretend it is a prediction of whether someone will become a customer.
+
+For example:
+
+- **HIGH RELEVANCE** — Strong match to a WBM use case.
+- **MEDIUM RELEVANCE** — Potentially relevant.
+- **BROAD PROSPECT** — General prospect with no specific identified opportunity.
+
+For intent leads, additional context can be recorded.
+
+Do not manufacture probability scores such as:
+
+> "85% chance this person will book."
+
+Do not make unsupported predictions.
+
+---
+
+# 48. SEASONAL OPPORTUNITY DATABASE
+
+Maintain a separate event/opportunity dataset containing:
+
+- Opportunity
+- Category
+- Date
+- Location
+- Country
+- Source
+- Potential audience
+- WBM travel use case
+- Discovery date
+
+This can later help the WBM team create timely campaigns.
+
+---
+
+# 49. EXAMPLE SEASONAL CATEGORIES
+
+Maintain categories such as:
+
+**HOLIDAY**
+
+- Christmas
+- New Year's
+- Thanksgiving
+- Easter
+- Valentine's Day
+
+**LIFE EVENTS**
+
+- Honeymoon
+- Anniversary
+- Birthday
+- Graduation
+- Wedding
+
+**CULTURE**
+
+- Art fair
+- Exhibition
+- Opera
+- Festival
+- Museum event
+- Fashion event
+- Design event
+
+**CORPORATE**
+
+- Conference
+- Retreat
+- Incentive trip
+- Executive event
+- International meeting
+
+**LEISURE**
+
+- Summer vacation
+- Winter escape
+- Family holiday
+- Cruise
+- Adventure trip
+
+---
+
+# 50. IMPORTANT: WBM IS BROAD
+
+Do not reduce WBM to:
+
+- Luxury travel agency
+- Vacation booking website
+- Corporate travel company
+- Cruise company
+- Arts travel company
+
+WBM can operate across all of these travel needs.
+
+The lead-generation engine should therefore be broad while remaining structured.
+
+---
+
+# 51. DO NOT CONFUSE LEAD GENERATION WITH CUSTOMER CONFIRMATION
+
+A discovered lead is NOT a customer.
+
+A discovered email is NOT evidence that someone wants WBM.
+
+A public travel post is NOT a booking.
+
+A business contact is NOT a partner.
+
+Only classify a prospect as an actual interested customer when the separate WBM outreach/sales process establishes that.
+
+Until then use language such as:
+
+- Prospect
+- Lead
+- Broad Prospect
+- Intent Prospect
+- Potential Partner
+
+Never:
+
+- Customer
+
+unless the CRM/customer system confirms it.
+
+---
+
+# 52. FINAL OUTPUT REPORT
+
+After each major lead-generation run, report:
+
+**TOTAL**
+
+- Total leads discovered
+- New leads
+- Duplicates
+- Out-of-scope records
+- Leads with email
+- Leads without email
+
+**BY PIPELINE**
+
+- B2C Broad
+- B2C Intent
+- B2B Corporate
+- Travel Industry
+- Concierge/Luxury
+- Events/Weddings
+- Arts/Culture
+- Institutional
+- Cruise
+- Group Travel
+- Strategic Partnerships
+
+**BY GEOGRAPHY**
+
+- USA
+- Canada
+- UK
+- Each European country
+- Asia by country
+- Australia
+
+**BY INTENT**
+
+- Broad
+- Travel Intent
+- Event
+- Seasonal
+- Destination Interest
+- Corporate
+- Partnership
+
+**SOURCE PERFORMANCE**
+
+Identify which source types produced the most useful leads.
+
+Do not claim that a source is "best" based on assumptions.
+
+Report actual counts and data quality.
+
+---
+
+# 53. CONTINUOUS IMPROVEMENT
+
+After every substantial run, identify:
+
+- Which markets are underrepresented?
+- Which customer categories are underrepresented?
+- Which sources are producing useful leads?
+- Which sources are producing duplicates?
+- Which fields are frequently missing?
+- Which countries need more discovery?
+- Which industries produce relevant B2B prospects?
+- Which seasonal opportunities are emerging?
+
+Then improve the next discovery cycle.
+
+---
+
+# 54. DO NOT OPTIMIZE ONLY FOR LEAD COUNT
+
+The objective is:
+
+**Useful, actionable prospect coverage at scale.**
+
+Not simply:
+
+**Maximum rows.**
+
+A database with 100,000 useless entries is not success.
+
+A large database should still have:
+
+- Correct names where available
+- Correct emails where available
+- Correct organizations
+- Correct geography
+- Correct classifications
+- Source information
+- Clear distinction between broad and intent prospects
+- Strong deduplication
+
+---
+
+# 55. MASTER PRINCIPLE
+
+Think of the entire system as:
+
+```
+DISCOVER
+   ↓
+COLLECT
+   ↓
+NORMALIZE
+   ↓
+ENRICH
+   ↓
+CLASSIFY
+   ↓
+DEDUPLICATE
+   ↓
+SEGMENT
+   ↓
+STORE
+   ↓
+EXPORT
+   ↓
+WBM OUTREACH TEAM
+```
+
+You stop before outreach.
+
+---
+
+# 56. FIRST ACTION
+
+Before changing or creating anything:
+
+1. **STEP 1** — Inspect the existing WBM lead-generation project.
+2. **STEP 2** — Inspect all existing lead databases.
+3. **STEP 3** — Understand the current schema.
+4. **STEP 4** — Identify current sources.
+5. **STEP 5** — Identify existing duplicate logic.
+6. **STEP 6** — Identify current automation.
+7. **STEP 7** — Identify missing capabilities.
+8. **STEP 8** — Propose the improved architecture.
+
+Do not immediately delete or rewrite existing systems.
+
+---
+
+# 57. BUILD PHILOSOPHY
+
+Use a progressive enhancement approach.
+
+Preserve anything that already works.
+
+Improve weak systems.
+
+Only replace components when there is a clear technical or operational reason.
+
+Do not create unnecessary complexity.
+
+The system should be:
+
+- Fast
+- Scalable
+- Maintainable
+- Reproducible
+- Auditable
+- Organized
+- Cost-conscious
+- Easy to run repeatedly
+
+---
+
+# 58. FINAL SUCCESS CRITERIA
+
+The system is successful when WBM can run Claude Code and reliably obtain:
+
+**A LARGE GLOBAL PROSPECT DATABASE**
+
+with:
+
+- B2C prospects
+- B2B prospects
+- Institutional prospects
+- Travel industry prospects
+- Strategic partners
+- Event prospects
+- Arts & culture prospects
+- Cruise prospects
+- Group travel prospects
+
+organized by:
+
+**CUSTOMER TYPE + COUNTRY + CITY + CAMPAIGN + BROAD VS INTENT + TRAVEL CATEGORY + SEASONAL/EVENT OPPORTUNITY**
+
+with legitimate:
+
+- NAME
+- EMAIL
+- COMPANY
+- ROLE
+- LOCATION
+- SOURCE
+
+and other useful publicly available commercial information.
+
+---
+
+# 59. ABSOLUTE RULES
+
+- Claude Code performs lead generation.
+- Claude Code does NOT send emails.
+- Do not connect lead generation to SMTP.
+- Do not send outreach automatically.
+- B2C broad prospecting is allowed and expected.
+- Travel intent is an additional pipeline, not a requirement.
+- B2B, institutional, partnership and customer leads must remain distinguishable.
+- USA, Canada and UK must be separate markets.
+- Europe must be separated by country.
+- Asia should be separated by country where practical.
+- Australia should be separate.
+- Africa is not a primary prospecting market.
+- Do not create destination-specific primary campaigns.
+- Destination interest can be stored as a field.
+- Seasonal and event opportunities should be actively researched.
+- Do not invent data.
+- Do not guess email addresses.
+- Do not create invasive personal profiles.
+- Deduplicate aggressively but preserve legitimate separate contacts.
+- Preserve existing lead data.
+- Do not destroy working systems.
+- Use legitimate public sources.
+- Record sources whenever practical.
+- Optimize for useful leads, not meaningless volume.
+- The final product is the lead database—not the email campaign.
+
+---
+
+# FINAL DIRECTIVE
+
+Operate as the global prospect-discovery engine for World Bridge Meridian.
+
+Think beyond traditional travel-agency lead generation.
+
+WBM can serve an individual planning a Christmas vacation, a couple planning a honeymoon, a family planning a summer journey, a group planning a cruise, an executive traveling internationally, a corporation planning a retreat, an event planner arranging destination travel, a university organizing international travel, a museum developing a cultural journey, an art traveler attending an exhibition, a travel advisor looking for a strategic partner, or a completely ordinary person who simply may decide they want to travel.
+
+Do not assume who will travel. Discover the market broadly.
+
+Build separate, structured prospect pipelines.
+
+Find both:
+
+- people who are actively showing travel intent
+
+and
+
+- people who simply represent potential future travel demand.
+
+Use geography, customer type, public commercial information, legitimate travel signals, events, seasons, and organizations to continuously expand WBM's addressable prospect universe.
+
+Do not send the emails.
+
+Do not become the outreach system.
+
+Your responsibility ends when you have produced a clean, structured, deduplicated, source-backed prospect database ready for WBM's separate outreach operation.
+
+
+---
+
 # PART 2 — GITHUB REPOSITORY INTEGRATION — WORLD BRIDGE MERIDIAN
 
 Now continue working from the existing World Bridge Meridian website repository on GitHub.
