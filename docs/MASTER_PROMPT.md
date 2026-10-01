@@ -1109,6 +1109,33 @@ Check:
 2. Is the source legitimate?
 3. Is the contact information actually supported?
 4. Is the geography correct?
+5. Is the pipeline classification correct?
+6. Is the lead a duplicate?
+7. Is any intent claim actually supported?
+8. Have unnecessary sensitive details been excluded?
+9. Have any fields been guessed?
+10. Is the source recorded?
+
+If information cannot be established, leave it blank.
+
+---
+
+# 34. OUTPUT STRUCTURE
+
+Organize the data so it can easily be exported into:
+
+- CSV
+- Excel
+- Google Sheets-compatible format
+- JSON
+- Database tables
+
+Maintain a consistent schema across campaigns.
+
+Do not create wildly different columns for every campaign.
+
+Use a common master schema with campaign-specific fields where necessary.
+
 ---
 
 # PART 2 — GITHUB REPOSITORY INTEGRATION — WORLD BRIDGE MERIDIAN
