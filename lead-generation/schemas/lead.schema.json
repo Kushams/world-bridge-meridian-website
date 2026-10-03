@@ -1,0 +1,388 @@
+{
+  "$comment": "Column order here is the column order of master_leads.csv. required: always = every record; no = optional (leave blank when unknown, never guess). Cross-field rules are enforced in scripts/lib/validate.mjs and documented in SCHEMA.md.",
+  "version": 1,
+  "dataset": "leads",
+  "fields": [
+    {
+      "name": "lead_id",
+      "group": "identity",
+      "type": "string",
+      "required": "always",
+      "description": "Stable ID, WBM-<12 hex> derived from the primary duplicate key at first insert. Never changes afterwards.",
+      "assigned": true
+    },
+    {
+      "name": "lead_type",
+      "group": "identity",
+      "type": "enum",
+      "required": "always",
+      "description": "PERSON (a named individual) or ORGANIZATION (an organisation / general business contact). Never 'customer'.",
+      "enum": [
+        "PERSON",
+        "ORGANIZATION"
+      ]
+    },
+    {
+      "name": "first_name",
+      "group": "person",
+      "type": "string",
+      "required": "no",
+      "description": "Given name as published. Not derived by splitting full_name."
+    },
+    {
+      "name": "last_name",
+      "group": "person",
+      "type": "string",
+      "required": "no",
+      "description": "Family name as published."
+    },
+    {
+      "name": "full_name",
+      "group": "person",
+      "type": "string",
+      "required": "no",
+      "description": "Full name; built from first+last when both are given."
+    },
+    {
+      "name": "email",
+      "group": "person",
+      "type": "email",
+      "required": "no",
+      "description": "Only an address actually published at source_url. NEVER constructed from a naming pattern."
+    },
+    {
+      "name": "email_type",
+      "group": "person",
+      "type": "enum",
+      "required": "no",
+      "description": "PERSONAL (named individual's address) or GENERAL_BUSINESS (info@, hello@...). Required whenever email is set; inferred from the local part if omitted.",
+      "enum": [
+        "PERSONAL",
+        "GENERAL_BUSINESS"
+      ]
+    },
+    {
+      "name": "phone",
+      "group": "person",
+      "type": "string",
+      "required": "no",
+      "description": "Only if publicly published. Kept as published."
+    },
+    {
+      "name": "job_title",
+      "group": "person",
+      "type": "string",
+      "required": "no",
+      "description": "Role as published."
+    },
+    {
+      "name": "department",
+      "group": "person",
+      "type": "string",
+      "required": "no",
+      "description": "Relevant department, e.g. Events, HR, Travel, Operations."
+    },
+    {
+      "name": "company",
+      "group": "organization",
+      "type": "string",
+      "required": "no",
+      "description": "Organisation name. Required for ORGANIZATION records."
+    },
+    {
+      "name": "website",
+      "group": "organization",
+      "type": "url",
+      "required": "no",
+      "description": "Organisation or personal business website."
+    },
+    {
+      "name": "linkedin_url",
+      "group": "person",
+      "type": "url",
+      "required": "no",
+      "description": "Public LinkedIn URL if publicly available."
+    },
+    {
+      "name": "other_profile_url",
+      "group": "person",
+      "type": "url",
+      "required": "no",
+      "description": "Another relevant public profile."
+    },
+    {
+      "name": "industry",
+      "group": "organization",
+      "type": "string",
+      "required": "no",
+      "description": "Industry as published."
+    },
+    {
+      "name": "organization_type",
+      "group": "organization",
+      "type": "string",
+      "required": "no",
+      "description": "e.g. travel agency, museum, law firm, wedding planner."
+    },
+    {
+      "name": "company_size",
+      "group": "organization",
+      "type": "string",
+      "required": "no",
+      "description": "Only if publicly stated."
+    },
+    {
+      "name": "city",
+      "group": "geography",
+      "type": "string",
+      "required": "no",
+      "description": "City."
+    },
+    {
+      "name": "state_province",
+      "group": "geography",
+      "type": "string",
+      "required": "no",
+      "description": "State / province / county where relevant."
+    },
+    {
+      "name": "country",
+      "group": "geography",
+      "type": "string",
+      "required": "always",
+      "description": "Canonical country name from config/countries.json (USA, Canada, UK, Germany...). Europe and Asia are NOT lumped."
+    },
+    {
+      "name": "region",
+      "group": "geography",
+      "type": "string",
+      "required": "no",
+      "description": "Derived from country via config/countries.json when blank."
+    },
+    {
+      "name": "pipeline",
+      "group": "classification",
+      "type": "enum",
+      "required": "always",
+      "description": "Primary pipeline / segment.",
+      "enum": [
+        "B2C_BROAD",
+        "B2C_INTENT",
+        "B2B_CORPORATE",
+        "TRAVEL_INDUSTRY",
+        "CONCIERGE_LUXURY",
+        "EVENTS_WEDDINGS",
+        "ARTS_CULTURE",
+        "INSTITUTIONAL",
+        "CRUISE",
+        "GROUP_TRAVEL",
+        "STRATEGIC_PARTNERS"
+      ]
+    },
+    {
+      "name": "customer_type",
+      "group": "classification",
+      "type": "enum",
+      "required": "no",
+      "description": "Derived from pipeline when blank (B2C, B2B, Institutional, Travel Industry, Strategic Partnership, Events/Weddings, Arts & Culture, Group Travel, Cruise, Other). A classification label only; no record is a 'customer' until the CRM says so.",
+      "enum": [
+        "B2C",
+        "B2B",
+        "Institutional",
+        "Travel Industry",
+        "Strategic Partnership",
+        "Events/Weddings",
+        "Arts & Culture",
+        "Group Travel",
+        "Cruise",
+        "Other"
+      ]
+    },
+    {
+      "name": "campaign",
+      "group": "classification",
+      "type": "string",
+      "required": "no",
+      "description": "Derived label '<pipeline> | <country> | <intent class>' when blank, e.g. 'B2C Broad | USA | Broad Prospect'."
+    },
+    {
+      "name": "intent_class",
+      "group": "classification",
+      "type": "enum",
+      "required": "no",
+      "description": "Broad vs intent. Defaults to BROAD_PROSPECT. TRAVEL_INTENT / EVENT_INTENT / SEASONAL_OPPORTUNITY / DESTINATION_INTEREST need intent_evidence.",
+      "enum": [
+        "BROAD_PROSPECT",
+        "TRAVEL_INTENT",
+        "EVENT_INTENT",
+        "SEASONAL_OPPORTUNITY",
+        "DESTINATION_INTEREST",
+        "CORPORATE_OPPORTUNITY",
+        "PARTNERSHIP_OPPORTUNITY"
+      ]
+    },
+    {
+      "name": "intent_type",
+      "group": "classification",
+      "type": "string",
+      "required": "no",
+      "description": "What the evidence shows (e.g. Honeymoon, Christmas travel, Cruise). 'None Identified' when there is no evidence."
+    },
+    {
+      "name": "travel_category",
+      "group": "classification",
+      "type": "string",
+      "required": "no",
+      "description": "Travel category relevant to the lead (leisure, corporate, cruise, cultural...)."
+    },
+    {
+      "name": "destination_interest",
+      "group": "classification",
+      "type": "string",
+      "required": "no",
+      "description": "A DATA FIELD, never a campaign. Only if the source explicitly shows interest in a destination."
+    },
+    {
+      "name": "seasonal_opportunity",
+      "group": "classification",
+      "type": "string",
+      "required": "no",
+      "description": "e.g. Christmas 2026. Only with evidence; never assumed for a whole market."
+    },
+    {
+      "name": "event_opportunity",
+      "group": "classification",
+      "type": "string",
+      "required": "no",
+      "description": "Specific event the lead relates to, only with a source."
+    },
+    {
+      "name": "potential_use_case",
+      "group": "classification",
+      "type": "string",
+      "required": "no",
+      "description": "Potential WBM use case (e.g. corporate retreat, honeymoon design, institutional group travel)."
+    },
+    {
+      "name": "relevance",
+      "group": "classification",
+      "type": "enum",
+      "required": "no",
+      "description": "Operational priority, not a probability. Never a conversion prediction.",
+      "enum": [
+        "HIGH_RELEVANCE",
+        "MEDIUM_RELEVANCE",
+        "BROAD_PROSPECT"
+      ]
+    },
+    {
+      "name": "source_url",
+      "group": "source",
+      "type": "url",
+      "required": "always",
+      "description": "URL supporting the lead (identity / organisation / email / title / intent)."
+    },
+    {
+      "name": "source_type",
+      "group": "source",
+      "type": "enum",
+      "required": "always",
+      "description": "Category of the source.",
+      "enum": [
+        "search_engine",
+        "company_website",
+        "organization_website",
+        "business_directory",
+        "professional_directory",
+        "event_website",
+        "conference_page",
+        "cultural_organization_website",
+        "professional_profile",
+        "social_profile",
+        "travel_community",
+        "public_forum",
+        "membership_directory",
+        "institutional_directory",
+        "other"
+      ]
+    },
+    {
+      "name": "discovery_date",
+      "group": "source",
+      "type": "date",
+      "required": "always",
+      "description": "YYYY-MM-DD first discovery date."
+    },
+    {
+      "name": "discovery_method",
+      "group": "source",
+      "type": "string",
+      "required": "always",
+      "description": "How it was found, e.g. 'web search: UK travel advisors', 'directory listing'."
+    },
+    {
+      "name": "evidence",
+      "group": "source",
+      "type": "string",
+      "required": "no",
+      "description": "Short factual note on what the source shows (identity, role, where the email appears). No sensitive personal data."
+    },
+    {
+      "name": "intent_evidence",
+      "group": "source",
+      "type": "string",
+      "required": "no",
+      "description": "Quote/paraphrase and URL of the public statement of travel intent. Required for any intent class that is not BROAD/CORPORATE/PARTNERSHIP."
+    },
+    {
+      "name": "duplicate_key",
+      "group": "database",
+      "type": "string",
+      "required": "always",
+      "description": "Highest-priority dedupe key (email:... / profile:... / person:... / org:...). Unique across the master.",
+      "assigned": true
+    },
+    {
+      "name": "existing_match",
+      "group": "database",
+      "type": "string",
+      "required": "no",
+      "description": "lead_id of another record at the same organisation that was kept separate (a different contact). Not a duplicate marker."
+    },
+    {
+      "name": "lead_status",
+      "group": "database",
+      "type": "enum",
+      "required": "always",
+      "description": "DISCOVERED, ENRICHED, READY_FOR_OUTREACH (DUPLICATE and OUT_OF_SCOPE are reported but not stored in master).",
+      "enum": [
+        "DISCOVERED",
+        "ENRICHED",
+        "DUPLICATE",
+        "OUT_OF_SCOPE",
+        "READY_FOR_OUTREACH"
+      ]
+    },
+    {
+      "name": "source_history",
+      "group": "database",
+      "type": "string",
+      "required": "no",
+      "description": "Every source seen for this lead, ' || ' separated: date|source_type|url. Appended on enrichment, never rewritten."
+    },
+    {
+      "name": "last_updated",
+      "group": "database",
+      "type": "date",
+      "required": "no",
+      "description": "YYYY-MM-DD of the last legitimate update."
+    },
+    {
+      "name": "notes",
+      "group": "database",
+      "type": "string",
+      "required": "no",
+      "description": "Free notes. No sensitive personal information."
+    }
+  ]
+}

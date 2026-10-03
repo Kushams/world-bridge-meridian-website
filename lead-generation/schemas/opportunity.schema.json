@@ -1,0 +1,100 @@
+{
+  "$comment": "Seasonal / event opportunity dataset (MASTER_PROMPT sections 21, 48, 49). Never fabricate events; every row needs a source.",
+  "version": 1,
+  "dataset": "opportunities",
+  "fields": [
+    {
+      "name": "opportunity_id",
+      "group": "identity",
+      "type": "string",
+      "required": "always",
+      "description": "Stable ID, OPP-<12 hex> from opportunity + date + location.",
+      "assigned": true
+    },
+    {
+      "name": "opportunity",
+      "group": "identity",
+      "type": "string",
+      "required": "always",
+      "description": "Name of the holiday / event / exhibition / fair."
+    },
+    {
+      "name": "category",
+      "group": "classification",
+      "type": "enum",
+      "required": "always",
+      "description": "HOLIDAY, LIFE_EVENT, CULTURE, CORPORATE, LEISURE or OTHER.",
+      "enum": [
+        "HOLIDAY",
+        "LIFE_EVENT",
+        "CULTURE",
+        "CORPORATE",
+        "LEISURE",
+        "OTHER"
+      ]
+    },
+    {
+      "name": "date",
+      "group": "when",
+      "type": "partial_date",
+      "required": "no",
+      "description": "YYYY-MM-DD, YYYY-MM or YYYY (start)."
+    },
+    {
+      "name": "end_date",
+      "group": "when",
+      "type": "partial_date",
+      "required": "no",
+      "description": "YYYY-MM-DD, YYYY-MM or YYYY."
+    },
+    {
+      "name": "location",
+      "group": "where",
+      "type": "string",
+      "required": "no",
+      "description": "City / venue."
+    },
+    {
+      "name": "country",
+      "group": "where",
+      "type": "string",
+      "required": "no",
+      "description": "Canonical country name."
+    },
+    {
+      "name": "source_url",
+      "group": "source",
+      "type": "url",
+      "required": "always",
+      "description": "Official or reputable source for the event."
+    },
+    {
+      "name": "potential_audience",
+      "group": "use",
+      "type": "string",
+      "required": "no",
+      "description": "Relevant audience."
+    },
+    {
+      "name": "wbm_use_case",
+      "group": "use",
+      "type": "string",
+      "required": "no",
+      "description": "Potential WBM travel use case."
+    },
+    {
+      "name": "discovery_date",
+      "group": "source",
+      "type": "date",
+      "required": "always",
+      "description": "YYYY-MM-DD."
+    },
+    {
+      "name": "notes",
+      "group": "database",
+      "type": "string",
+      "required": "no",
+      "description": "Free notes."
+    }
+  ]
+}
