@@ -7,7 +7,13 @@
     "build": "next build",
     "build:cloudflare": "STATIC_EXPORT=true next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "leads:test": "node --test lead-generation/scripts/tests/leads.test.mjs",
+    "leads:validate": "node lead-generation/scripts/validate_leads.mjs",
+    "leads:ingest": "node lead-generation/scripts/ingest_leads.mjs",
+    "leads:segment": "node lead-generation/scripts/segment_leads.mjs",
+    "leads:export": "node lead-generation/scripts/export_leads.mjs",
+    "leads:report": "node lead-generation/scripts/generate_report.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",
