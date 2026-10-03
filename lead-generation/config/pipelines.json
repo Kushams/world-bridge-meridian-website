@@ -1,0 +1,105 @@
+{
+  "_comment": "Pipelines (segments) of MASTER_LEADS. `dir` is where segment_leads.mjs writes the DERIVED per-pipeline file, relative to lead-generation/data/. Dataset directories are fixed; geography is a field, not a folder.",
+  "pipelines": {
+    "B2C_BROAD": {
+      "label": "B2C Broad",
+      "customer_type": "B2C",
+      "dir": "b2c/broad",
+      "leadTypes": ["PERSON"],
+      "description": "Individual prospects with no known current travel requirement."
+    },
+    "B2C_INTENT": {
+      "label": "B2C Intent",
+      "customer_type": "B2C",
+      "dir": "b2c/intent",
+      "leadTypes": ["PERSON"],
+      "description": "Individuals with publicly observable, recorded travel-related evidence."
+    },
+    "B2B_CORPORATE": {
+      "label": "B2B Corporate",
+      "customer_type": "B2B",
+      "dir": "b2b",
+      "leadTypes": ["PERSON", "ORGANIZATION"],
+      "description": "Companies and their relevant contacts (executive, assistant, ops, HR, events, travel, procurement...)."
+    },
+    "TRAVEL_INDUSTRY": {
+      "label": "Travel Industry",
+      "customer_type": "Travel Industry",
+      "dir": "travel-industry",
+      "leadTypes": ["PERSON", "ORGANIZATION"],
+      "description": "Travel agencies, advisors, tour operators, TMCs, planners, concierge/vacation specialists."
+    },
+    "CONCIERGE_LUXURY": {
+      "label": "Concierge & Luxury",
+      "customer_type": "Other",
+      "dir": "concierge-luxury",
+      "leadTypes": ["PERSON", "ORGANIZATION"],
+      "description": "Concierge, lifestyle, family-office, private-club, yacht, aviation and luxury businesses."
+    },
+    "EVENTS_WEDDINGS": {
+      "label": "Events & Weddings",
+      "customer_type": "Events/Weddings",
+      "dir": "events-weddings",
+      "leadTypes": ["PERSON", "ORGANIZATION"],
+      "description": "Wedding planners, event planners, conference organisers, production companies."
+    },
+    "ARTS_CULTURE": {
+      "label": "Arts & Culture",
+      "customer_type": "Arts & Culture",
+      "dir": "arts-culture",
+      "leadTypes": ["PERSON", "ORGANIZATION"],
+      "description": "Museums, galleries, art fairs, opera, performing arts, cultural institutions and foundations."
+    },
+    "INSTITUTIONAL": {
+      "label": "Institutional",
+      "customer_type": "Institutional",
+      "dir": "institutional",
+      "leadTypes": ["PERSON", "ORGANIZATION"],
+      "description": "Universities, research bodies, associations, international and membership organisations."
+    },
+    "CRUISE": {
+      "label": "Cruise",
+      "customer_type": "Cruise",
+      "dir": "cruise",
+      "leadTypes": ["PERSON", "ORGANIZATION"],
+      "description": "Cruise-related prospects and cruise group opportunities."
+    },
+    "GROUP_TRAVEL": {
+      "label": "Group Travel",
+      "customer_type": "Group Travel",
+      "dir": "group-travel",
+      "leadTypes": ["PERSON", "ORGANIZATION"],
+      "description": "Family, friend, corporate, school, cultural, event and wedding groups."
+    },
+    "STRATEGIC_PARTNERS": {
+      "label": "Strategic Partners",
+      "customer_type": "Strategic Partnership",
+      "dir": "strategic-partners",
+      "leadTypes": ["PERSON", "ORGANIZATION"],
+      "description": "Hotels, DMCs, experience/transport providers and others for partnership, kept apart from direct prospects."
+    }
+  },
+  "customerTypes": [
+    "B2C",
+    "B2B",
+    "Institutional",
+    "Travel Industry",
+    "Strategic Partnership",
+    "Events/Weddings",
+    "Arts & Culture",
+    "Group Travel",
+    "Cruise",
+    "Other"
+  ],
+  "intentClasses": {
+    "BROAD_PROSPECT": { "label": "Broad Prospect", "requiresEvidence": false },
+    "TRAVEL_INTENT": { "label": "Travel Intent", "requiresEvidence": true },
+    "EVENT_INTENT": { "label": "Event Intent", "requiresEvidence": true },
+    "SEASONAL_OPPORTUNITY": { "label": "Seasonal Opportunity", "requiresEvidence": true },
+    "DESTINATION_INTEREST": { "label": "Destination Interest", "requiresEvidence": true },
+    "CORPORATE_OPPORTUNITY": { "label": "Corporate Opportunity", "requiresEvidence": false },
+    "PARTNERSHIP_OPPORTUNITY": { "label": "Partnership Opportunity", "requiresEvidence": false }
+  },
+  "relevance": ["HIGH_RELEVANCE", "MEDIUM_RELEVANCE", "BROAD_PROSPECT"],
+  "campaignTemplate": "{pipeline} | {country} | {intent}"
+}

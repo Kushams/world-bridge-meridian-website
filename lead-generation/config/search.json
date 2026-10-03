@@ -1,0 +1,22 @@
+{
+  "_comment": "Non-secret search planning inputs for discovery runs (MASTER_PROMPT section 43). Vary queries across these dimensions instead of repeating one query. Nothing here is a lead. Credentials for any search/enrichment API must come from environment variables, never from this file.",
+  "asOf": "2026-09-28",
+  "dimensions": {
+    "markets": ["USA", "Canada", "UK", "Germany", "France", "Italy", "Spain", "Netherlands", "Belgium", "Switzerland", "Austria", "Ireland", "Portugal", "Sweden", "Norway", "Denmark", "Finland", "Poland", "Greece", "Czech Republic", "Australia", "Japan", "Singapore", "Hong Kong", "South Korea", "India"],
+    "organizationTypes": ["travel agency", "independent travel advisor", "tour operator", "travel management company", "corporate travel company", "concierge company", "lifestyle management company", "family office", "private club", "yacht company", "private aviation company", "luxury hospitality group", "wedding planner", "destination wedding planner", "event planner", "conference organiser", "corporate event agency", "museum", "gallery", "art fair organiser", "opera company", "performing arts organisation", "foundation", "university", "professional association", "consulting firm", "law firm", "investment firm", "technology company", "media company"],
+    "contactRoles": ["founder", "CEO", "executive assistant", "personal assistant", "office manager", "operations", "HR", "people operations", "travel manager", "travel coordinator", "events manager", "events coordinator", "marketing", "partnerships", "procurement", "administration"],
+    "travelCategories": ["leisure", "luxury", "family", "couples", "honeymoon", "anniversary", "solo", "group", "corporate", "executive", "incentive", "corporate retreat", "conference", "destination wedding", "cruise", "cultural", "arts", "festival", "sporting event", "educational", "adventure", "wellness", "bespoke", "multi-destination"],
+    "seasons": ["Thanksgiving 2026", "Christmas 2026", "New Year 2026/27", "winter escape 2026/27", "Valentine's 2027", "Easter 2027", "spring break 2027", "summer 2027"],
+    "sourceTypes": ["search_engine", "company_website", "organization_website", "business_directory", "professional_directory", "event_website", "conference_page", "cultural_organization_website", "professional_profile", "social_profile", "travel_community", "public_forum", "membership_directory", "institutional_directory"]
+  },
+  "limits": {
+    "_comment": "Politeness defaults for any future collection script.",
+    "respectRobotsTxt": true,
+    "maxRequestsPerSecondPerHost": 1,
+    "userAgentEnvVar": "WBM_LEADGEN_USER_AGENT"
+  },
+  "envVars": {
+    "_comment": "Names only. Set in your shell or a local .env (git-ignored). Nothing is required today.",
+    "optional": ["WBM_LEADGEN_USER_AGENT", "WBM_SEARCH_API_KEY"]
+  }
+}

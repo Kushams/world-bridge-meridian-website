@@ -1,0 +1,21 @@
+{
+  "_comment": "Quality-control settings used by validate_leads.mjs and ingest_leads.mjs (MASTER_PROMPT sections 23-33).",
+  "genericEmailLocalParts": [
+    "info", "hello", "hi", "contact", "contactus", "enquiries", "enquiry", "inquiries", "inquiry", "office", "admin",
+    "mail", "email", "team", "sales", "bookings", "booking", "reservations", "reservation", "events", "event",
+    "press", "media", "pr", "marketing", "partnerships", "partners", "support", "help", "service", "services",
+    "reception", "frontdesk", "concierge", "travel", "groups", "membership", "accounts", "hr", "careers", "jobs"
+  ],
+  "sensitiveTerms": [
+    "health", "medical", "diagnos", "illness", "disease", "cancer", "disabilit", "pregnan", "religio", "church",
+    "mosque", "synagogue", "political", "republican", "democrat", "party member", "sexual", "lgbt", "orientation",
+    "ethnicity", "race", "salary", "net worth", "wealth", "bank account", "credit card", "password", "divorce"
+  ],
+  "readyForOutreach": {
+    "description": "READY_FOR_OUTREACH means the record has enough information for the separate outreach team to evaluate it. It never means the person agreed to anything.",
+    "requires": ["email", "source_url", "discovery_date", "country", "pipeline"],
+    "requiresOneOf": [["full_name", "company"]]
+  },
+  "maxCellLength": 2000,
+  "emailPattern": "^[a-z0-9._%+'-]+@[a-z0-9-]+(\\.[a-z0-9-]+)*\\.[a-z]{2,}$"
+}

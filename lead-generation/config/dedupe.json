@@ -1,0 +1,19 @@
+{
+  "_comment": "Deduplication rules (MASTER_PROMPT section 31). Every record gets all applicable keys; a new record is a duplicate of an existing one when ANY key matches. `duplicate_key` stores the highest-priority key. Different emails at the same company are different people and are never merged.",
+  "keyPriority": [
+    { "prefix": "email", "description": "Priority 1 - exact email match (case-insensitive, trimmed)." },
+    { "prefix": "profile", "description": "Exact public profile match (normalised linkedin_url)." },
+    { "prefix": "person", "description": "Priority 2 - same person (normalised full name) + same company (legal suffixes ignored)." },
+    { "prefix": "org", "description": "Priority 3 - ORGANIZATION records: same organisation + same contact point (website host, else phone digits)." }
+  ],
+  "companyLegalSuffixes": [
+    "inc", "incorporated", "llc", "llp", "lp", "ltd", "limited", "plc", "corp", "corporation", "co", "company",
+    "gmbh", "ag", "sa", "sarl", "srl", "spa", "bv", "nv", "ab", "as", "oy", "pty", "pte", "the"
+  ],
+  "merge": {
+    "policy": "fill-blank-only",
+    "description": "On a duplicate, only blank fields of the existing record are filled from the new one. Existing non-blank values are never overwritten; differing values are counted as conflicts in the run report. New source URLs are appended to source_history so original provenance is preserved.",
+    "neverOverwrite": ["lead_id", "discovery_date", "source_url", "source_type", "discovery_method", "pipeline", "lead_type"]
+  },
+  "idPrefix": "WBM-"
+}

@@ -1,0 +1,15 @@
+{
+  "_comment": "Output configuration. master_leads.csv is the single source of truth; everything else is derived and regenerable.",
+  "sourceOfTruth": "data/master/master_leads.csv",
+  "opportunitiesSourceOfTruth": "data/seasonal/opportunities.csv",
+  "incomingDir": "data/incoming",
+  "reportsDir": "reports",
+  "exportsDir": "exports",
+  "exportFormats": {
+    "csv": "UTF-8 CSV (Google Sheets / databases).",
+    "excel": "UTF-8 CSV with BOM and formula-injection protection (opens correctly in Excel).",
+    "json": "JSON array.",
+    "jsonl": "One JSON object per line (bulk database loads)."
+  },
+  "segmentFileNaming": "{pipeline_lower}.csv  or  {pipeline_lower}__{country_slug}.csv with --by-country"
+}
