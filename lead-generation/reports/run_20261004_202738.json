@@ -1,0 +1,296 @@
+{
+  "runId": "20261004_202738",
+  "date": "2026-10-04",
+  "dataset": "leads",
+  "input": "../../../../tmp/claude-0/-home-user-world-bridge-meridian-website/97f0dd7c-0d53-526f-8c5a-36cf797ee628/scratchpad/batch.json",
+  "dryRun": false,
+  "discovered": 76,
+  "added": 76,
+  "duplicates": 0,
+  "enriched": 0,
+  "conflicts": 0,
+  "invalid": 0,
+  "outOfScope": 0,
+  "withEmail": 76,
+  "withoutEmail": 0,
+  "masterAfter": 76,
+  "countries": [
+    [
+      "USA",
+      28
+    ],
+    [
+      "UK",
+      23
+    ],
+    [
+      "Canada",
+      9
+    ],
+    [
+      "Switzerland",
+      4
+    ],
+    [
+      "Australia",
+      2
+    ],
+    [
+      "Italy",
+      2
+    ],
+    [
+      "Netherlands",
+      2
+    ],
+    [
+      "Austria",
+      1
+    ],
+    [
+      "Germany",
+      1
+    ],
+    [
+      "Greece",
+      1
+    ],
+    [
+      "Hong Kong",
+      1
+    ],
+    [
+      "Monaco",
+      1
+    ],
+    [
+      "Sweden",
+      1
+    ]
+  ],
+  "pipelines": [
+    [
+      "ARTS_CULTURE",
+      54
+    ],
+    [
+      "TRAVEL_INDUSTRY",
+      9
+    ],
+    [
+      "INSTITUTIONAL",
+      7
+    ],
+    [
+      "CONCIERGE_LUXURY",
+      4
+    ],
+    [
+      "STRATEGIC_PARTNERS",
+      2
+    ]
+  ],
+  "campaigns": [
+    [
+      "Arts & Culture | USA | Broad Prospect",
+      21
+    ],
+    [
+      "Arts & Culture | UK | Broad Prospect",
+      17
+    ],
+    [
+      "Arts & Culture | Canada | Broad Prospect",
+      4
+    ],
+    [
+      "Arts & Culture | Switzerland | Broad Prospect",
+      4
+    ],
+    [
+      "Travel Industry | USA | Partnership Opportunity",
+      4
+    ],
+    [
+      "Concierge & Luxury | UK | Partnership Opportunity",
+      3
+    ],
+    [
+      "Travel Industry | Canada | Partnership Opportunity",
+      3
+    ],
+    [
+      "Arts & Culture | Italy | Broad Prospect",
+      2
+    ],
+    [
+      "Arts & Culture | Netherlands | Broad Prospect",
+      2
+    ],
+    [
+      "Institutional | UK | Broad Prospect",
+      2
+    ],
+    [
+      "Institutional | USA | Broad Prospect",
+      2
+    ],
+    [
+      "Arts & Culture | Australia | Broad Prospect",
+      1
+    ],
+    [
+      "Arts & Culture | Germany | Broad Prospect",
+      1
+    ],
+    [
+      "Arts & Culture | Hong Kong | Broad Prospect",
+      1
+    ],
+    [
+      "Arts & Culture | Sweden | Broad Prospect",
+      1
+    ],
+    [
+      "Concierge & Luxury | Monaco | Partnership Opportunity",
+      1
+    ],
+    [
+      "Institutional | Austria | Broad Prospect",
+      1
+    ],
+    [
+      "Institutional | Canada | Broad Prospect",
+      1
+    ],
+    [
+      "Institutional | Greece | Broad Prospect",
+      1
+    ],
+    [
+      "Strategic Partners | Canada | Partnership Opportunity",
+      1
+    ],
+    [
+      "Strategic Partners | USA | Partnership Opportunity",
+      1
+    ],
+    [
+      "Travel Industry | Australia | Partnership Opportunity",
+      1
+    ],
+    [
+      "Travel Industry | UK | Partnership Opportunity",
+      1
+    ]
+  ],
+  "intents": [
+    [
+      "BROAD_PROSPECT",
+      61
+    ],
+    [
+      "PARTNERSHIP_OPPORTUNITY",
+      15
+    ]
+  ],
+  "sources": [
+    [
+      "cultural_organization_website",
+      54
+    ],
+    [
+      "company_website",
+      22
+    ]
+  ],
+  "issueCodes": [],
+  "gaps": {
+    "primaryWithNone": [
+      "France",
+      "Spain",
+      "Belgium",
+      "Ireland",
+      "Portugal",
+      "Norway",
+      "Denmark",
+      "Finland",
+      "Poland",
+      "Czech Republic",
+      "Luxembourg",
+      "Hungary",
+      "Croatia",
+      "Iceland",
+      "Malta"
+    ],
+    "secondaryWithNone": [
+      "Japan",
+      "South Korea",
+      "Singapore",
+      "China",
+      "Taiwan",
+      "India",
+      "Thailand",
+      "Malaysia",
+      "Indonesia",
+      "Philippines",
+      "Vietnam"
+    ],
+    "pipelinesWithNone": [
+      "B2C_BROAD",
+      "B2C_INTENT",
+      "B2B_CORPORATE",
+      "EVENTS_WEDDINGS",
+      "CRUISE",
+      "GROUP_TRAVEL"
+    ]
+  },
+  "missing": [
+    [
+      "email",
+      "0",
+      "0.0%"
+    ],
+    [
+      "phone",
+      "76",
+      "100.0%"
+    ],
+    [
+      "job_title",
+      "76",
+      "100.0%"
+    ],
+    [
+      "company",
+      "0",
+      "0.0%"
+    ],
+    [
+      "website",
+      "0",
+      "0.0%"
+    ],
+    [
+      "city",
+      "4",
+      "5.3%"
+    ],
+    [
+      "country",
+      "0",
+      "0.0%"
+    ],
+    [
+      "linkedin_url",
+      "76",
+      "100.0%"
+    ],
+    [
+      "evidence",
+      "0",
+      "0.0%"
+    ]
+  ],
+  "problems": []
+}
