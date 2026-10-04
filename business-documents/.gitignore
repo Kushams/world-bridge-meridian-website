@@ -1,0 +1,2 @@
+# Derived bundle of the PDFs; regenerate from build.py
+*.zip
