@@ -11,6 +11,7 @@ import { loadConfig, loadDataset, readMaster, ROOT } from "../lib/config.mjs";
 import { normalizeLead, leadKeys, normCompany } from "../lib/normalize.mjs";
 import { validateLead } from "../lib/validate.mjs";
 import { runIngest } from "../lib/ingest.mjs";
+import { execFileSync } from "node:child_process";
 
 const config = loadConfig();
 const dataset = loadDataset("leads", config);
@@ -215,6 +216,22 @@ test("opportunities dataset: dedupes and requires a source", () => {
   assert.equal(r.report.added, 1);
   assert.equal(r.report.duplicates, 1);
   assert.equal(r.report.invalid, 1);
+});
+
+test("export splits CSV output into batches of at most 500 rows", () => {
+  const cfg = tempRoot();
+  const many = Array.from({ length: 1201 }, (_, i) => person({ first_name: `T${i}`, last_name: "Synthetic", email: `t${i}@example.com` }));
+  runIngest({ config: cfg, records: many, today: TODAY, runId: "big" });
+  // Run the real script against a temp copy of the module so ROOT resolves to the temp data.
+  const copy = fs.mkdtempSync(path.join(os.tmpdir(), "wbm-export-"));
+  fs.cpSync(cfg.root, path.join(copy, "lead-generation"), { recursive: true });
+  fs.cpSync(path.join(ROOT, "scripts"), path.join(copy, "lead-generation", "scripts"), { recursive: true });
+  const out = path.join(copy, "lead-generation", "exports", "t.csv");
+  execFileSync("node", [path.join(copy, "lead-generation", "scripts", "export_leads.mjs"), "--out", out]);
+  const files = fs.readdirSync(path.dirname(out)).filter((f) => f.startsWith("t_part")).sort();
+  assert.deepEqual(files, ["t_part001.csv", "t_part002.csv", "t_part003.csv"]);
+  const counts = files.map((f) => parseCsvRecords(fs.readFileSync(path.join(path.dirname(out), f), "utf8")).records.length);
+  assert.deepEqual(counts, [500, 500, 201]);
 });
 
 test("scripts never contain email-sending or network code (email safety)", () => {

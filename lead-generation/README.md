@@ -108,7 +108,7 @@ npm run leads:export -- --format excel --country UK --pipeline TRAVEL_INDUSTRY -
 npm run leads:report                       # whole-master summary
 ```
 
-Export formats: `csv` (UTF-8, Google Sheets / databases), `excel` (UTF-8 BOM + formula-injection protection),
+CSV and Excel exports are split into files of at most 500 rows (`_part001.csv`, ...; change with `--batch-size N`, `0` = one file). Export formats: `csv` (UTF-8, Google Sheets / databases), `excel` (UTF-8 BOM + formula-injection protection),
 `json`, `jsonl`. Filters: `--pipeline`, `--country`, `--status`, `--intent`, `--campaign`, `--has-email`.
 
 Ingest rejects a record (and lists it in `data/incoming/rejected_<run>.json`) when it fails validation: missing
