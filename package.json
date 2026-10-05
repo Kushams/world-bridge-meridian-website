@@ -13,7 +13,9 @@
     "leads:ingest": "node lead-generation/scripts/ingest_leads.mjs",
     "leads:segment": "node lead-generation/scripts/segment_leads.mjs",
     "leads:export": "node lead-generation/scripts/export_leads.mjs",
-    "leads:report": "node lead-generation/scripts/generate_report.mjs"
+    "leads:report": "node lead-generation/scripts/generate_report.mjs",
+    "leads:prune": "node lead-generation/scripts/prune_leads.mjs",
+    "leads:batches": "node lead-generation/scripts/export_batches.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",

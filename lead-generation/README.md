@@ -165,7 +165,15 @@ contains no email-sending code (a test enforces this).
 
 ### Who to target
 
-Organisations first (travel companies, planners, arts and cultural bodies, associations, tourism boards, concierge/luxury): their
-published business inbox is intended for enquiries, is stable, and carries the least privacy and consent risk. Named staff are added
-only when the organisation itself publishes the person and role on its own site (for example events or partnerships manager).
-Private individuals, students and personal addresses are out of scope unless they opted in (for example through the website forms).
+WBM wants people and organisations that might **buy** travel, not travel sellers. `config/targeting.json` excludes travel agencies,
+tour operators, cruise lines, DMCs, concierge/yacht/aviation companies, tourism boards and travel trade associations. Ingest counts
+them as OUT_OF_SCOPE and `npm run leads:prune` removes any that are already in the master. Remaining targets are organisations whose
+people travel (arts and cultural bodies, planners, companies, institutions, membership organisations).
+Private individuals, students and personal addresses (for example scraped from social profiles) are out of scope unless they
+opted in, for example through the website forms.
+
+### Batches of 500
+
+`npm run leads:batches` writes every **complete** block of 500 master leads to `data/batches/wbm_leads_batch_NNNN.csv`. Batch files are
+committed to GitHub as frozen snapshots, never overwritten, and handed to the outreach team. Leads beyond the last full block wait for the
+next batch. Run it after each ingest; the new files are the ones to send.

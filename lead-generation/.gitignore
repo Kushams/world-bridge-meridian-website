@@ -8,6 +8,7 @@ data/*/*.csv
 data/*/*/*.csv
 !data/master/*.csv
 !data/seasonal/*.csv
+!data/batches/*.csv
 
 # Staged batches and rejected records (may contain personal data)
 data/incoming/*

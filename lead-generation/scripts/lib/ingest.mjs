@@ -6,6 +6,7 @@ import { loadDataset, readMaster, writeMaster, readIncoming } from "./config.mjs
 import { normalizeLead, normalizeOpportunity, makeId, oppKey, readyForOutreach, leadKeys } from "./normalize.mjs";
 import { validateLead, validateOpportunity } from "./validate.mjs";
 import { LeadIndex, mergeInto } from "./dedupe.mjs";
+import { loadTargeting, outOfScopeReason } from "./targeting.mjs";
 import { tally, missingRates, coverageGaps, KEY_FIELDS, renderRunReport } from "./report.mjs";
 
 const bump = (m, k, n = 1) => m.set(k, (m.get(k) ?? 0) + n);
@@ -30,6 +31,7 @@ export function runIngest({ config, datasetName = "leads", records, inputLabel =
   }
 
   const isLeads = datasetName === "leads";
+  const targeting = loadTargeting(config.root);
   const index = isLeads ? new LeadIndex(master, config) : null;
   const oppKeys = new Map();
   if (!isLeads) for (const r of master) oppKeys.set(oppKey(r), r);
@@ -46,9 +48,10 @@ export function runIngest({ config, datasetName = "leads", records, inputLabel =
     const rec = isLeads ? normalizeLead(raw, dataset, config) : normalizeOpportunity(raw, dataset, config);
     bump(sourceCounts, rec.source_type || "(blank)");
 
-    if (isLeads && rec.lead_status === "OUT_OF_SCOPE") {
+    const scopeReason = isLeads ? (rec.lead_status === "OUT_OF_SCOPE" ? "marked OUT_OF_SCOPE" : outOfScopeReason(rec, targeting)) : null;
+    if (scopeReason) {
       stats.outOfScope++;
-      rejected.push({ row, reason: "OUT_OF_SCOPE", raw });
+      rejected.push({ row, reason: "OUT_OF_SCOPE", detail: scopeReason, raw });
       return;
     }
 

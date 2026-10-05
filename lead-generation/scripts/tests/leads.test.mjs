@@ -36,7 +36,7 @@ const person = (over = {}) => ({
   last_name: "Person",
   email: "test.person@example.com",
   company: "Test Travel Co",
-  pipeline: "TRAVEL_INDUSTRY",
+  pipeline: "B2B_CORPORATE",
   country: "United Kingdom",
   source_url: "https://example.com/team",
   source_type: "company_website",
@@ -88,10 +88,10 @@ test("normalisation derives only what rules allow and never guesses email", () =
   const n = normalizeLead(person({ email: "", first_name: "", last_name: "", full_name: "Test Person" }), dataset, config);
   assert.equal(n.email, "");
   assert.equal(n.first_name, "");
-  assert.equal(n.customer_type, "Travel Industry");
+  assert.equal(n.customer_type, "B2B");
   assert.equal(n.intent_type, "None Identified");
   assert.equal(n.intent_class, "BROAD_PROSPECT");
-  assert.equal(n.campaign, "Travel Industry | UK | Broad Prospect");
+  assert.equal(n.campaign, "B2B Corporate | UK | Broad Prospect");
   assert.equal(normalizeLead(person({ email: "INFO@Example.com", lead_type: "ORGANIZATION" }), dataset, config).email_type, "GENERAL_BUSINESS");
 });
 
@@ -236,6 +236,34 @@ test("export splits CSV output into batches of at most 500 rows", () => {
   assert.deepEqual(files, ["t_part001.csv", "t_part002.csv", "t_part003.csv"]);
   const counts = files.map((f) => parseCsvRecords(fs.readFileSync(path.join(path.dirname(out), f), "utf8")).records.length);
   assert.deepEqual(counts, [500, 500, 201]);
+});
+
+test("travel sellers are out of scope: rejected by ingest and removed by prune", () => {
+  const cfg = tempRoot();
+  const agency = person({ email: "info@example.net", lead_type: "ORGANIZATION", company: "Example Tours", organization_type: "tour operator", pipeline: "B2B_CORPORATE" });
+  const cruise = person({ email: "info@example.org", lead_type: "ORGANIZATION", company: "Example Cruises", pipeline: "CRUISE" });
+  const r = runIngest({ config: cfg, records: [agency, cruise, person()], today: TODAY, runId: "scope" });
+  assert.equal(r.report.outOfScope, 2);
+  assert.equal(r.report.added, 1);
+});
+
+test("export_batches writes only complete batches of 500 and never overwrites them", () => {
+  const cfg = tempRoot();
+  const many = Array.from({ length: 1201 }, (_, i) => person({ first_name: `T${i}`, last_name: "Synthetic", email: `t${i}@example.com` }));
+  runIngest({ config: cfg, records: many, today: TODAY, runId: "b" });
+  const copy = fs.mkdtempSync(path.join(os.tmpdir(), "wbm-batches-"));
+  fs.cpSync(cfg.root, path.join(copy, "lead-generation"), { recursive: true });
+  fs.cpSync(path.join(ROOT, "scripts"), path.join(copy, "lead-generation", "scripts"), { recursive: true });
+  const run = () => execFileSync("node", [path.join(copy, "lead-generation", "scripts", "export_batches.mjs")]).toString();
+  assert.match(run(), /2 complete batch\(es\).*201 lead\(s\) waiting/);
+  const dir = path.join(copy, "lead-generation", "data", "batches");
+  const files = fs.readdirSync(dir).sort();
+  assert.deepEqual(files, ["wbm_leads_batch_0001.csv", "wbm_leads_batch_0002.csv"]);
+  const counts = files.map((f) => parseCsvRecords(fs.readFileSync(path.join(dir, f), "utf8")).records.length);
+  assert.deepEqual(counts, [500, 500]);
+  const before = fs.readFileSync(path.join(dir, files[0]), "utf8");
+  assert.match(run(), /0 new file/);
+  assert.equal(fs.readFileSync(path.join(dir, files[0]), "utf8"), before);
 });
 
 test("scripts never contain email-sending or network code (email safety)", () => {
