@@ -18,10 +18,13 @@ const dataset = loadDataset("leads", config);
 const TODAY = "2026-10-03";
 
 /** A temp module root with the real config + schemas and empty data dirs. */
-function tempRoot() {
+function tempRoot({ strictTargeting = false } = {}) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "wbm-leadgen-test-"));
   for (const d of ["config", "schemas"]) fs.cpSync(path.join(ROOT, d), path.join(root, d), { recursive: true });
   for (const d of ["data/master", "data/seasonal", "data/incoming", "reports"]) fs.mkdirSync(path.join(root, d), { recursive: true });
+  if (!strictTargeting) {
+    fs.writeFileSync(path.join(root, "config", "targeting.json"), JSON.stringify({ excludedLeadTypes: [], excludedPipelines: [], excludedOrganizationTypePatterns: [] }));
+  }
   const cfg = loadConfig(root);
   for (const n of ["leads", "opportunities"]) {
     const ds = loadDataset(n, cfg);
@@ -238,12 +241,15 @@ test("export splits CSV output into batches of at most 500 rows", () => {
   assert.deepEqual(counts, [500, 500, 201]);
 });
 
-test("travel sellers are out of scope: rejected by ingest and removed by prune", () => {
-  const cfg = tempRoot();
+test("targeting: businesses, travel sellers and arts bodies are out of scope; individuals are in", () => {
+  const cfg = tempRoot({ strictTargeting: true });
   const agency = person({ email: "info@example.net", lead_type: "ORGANIZATION", company: "Example Tours", organization_type: "tour operator", pipeline: "B2B_CORPORATE" });
   const cruise = person({ email: "info@example.org", lead_type: "ORGANIZATION", company: "Example Cruises", pipeline: "CRUISE" });
-  const r = runIngest({ config: cfg, records: [agency, cruise, person()], today: TODAY, runId: "scope" });
-  assert.equal(r.report.outOfScope, 2);
+  const business = person({ email: "info@example.io", lead_type: "ORGANIZATION", company: "Example Law LLP", pipeline: "B2B_CORPORATE" });
+  const arts = person({ email: "x@example.io", pipeline: "ARTS_CULTURE" });
+  const individual = person({ pipeline: "B2C_BROAD", company: "" });
+  const r = runIngest({ config: cfg, records: [agency, cruise, business, arts, individual], today: TODAY, runId: "scope" });
+  assert.equal(r.report.outOfScope, 4);
   assert.equal(r.report.added, 1);
 });
 

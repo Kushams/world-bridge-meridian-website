@@ -1,9 +1,34 @@
 {
-  "_comment": "Who is NOT a target. WBM wants people who might BUY travel. Travel sellers (they book travel for others) and arts/culture bodies (WBM sends its own clients TO them, so they are destinations/suppliers) are excluded. Records matching these rules are counted as OUT_OF_SCOPE by ingest and removed from the master by prune_leads.mjs.",
-  "excludedPipelines": ["TRAVEL_INDUSTRY", "CRUISE", "STRATEGIC_PARTNERS", "CONCIERGE_LUXURY", "ARTS_CULTURE"],
+  "_comment": "Who is NOT a target. WBM wants individual people who might travel. Businesses/organisations are out of scope (any ORGANIZATION record), as are travel sellers and arts/culture bodies (WBM sends its own clients to them). Ingest counts matches as OUT_OF_SCOPE; prune_leads.mjs removes them from the master.",
+  "excludedPipelines": [
+    "TRAVEL_INDUSTRY",
+    "CRUISE",
+    "STRATEGIC_PARTNERS",
+    "CONCIERGE_LUXURY",
+    "ARTS_CULTURE"
+  ],
   "excludedOrganizationTypePatterns": [
-    "tour operator", "travel agency", "travel company", "travel advisor", "travel management", "travel organisation",
-    "cruise", "destination management", "tourism", "trade association", "professional association", "conference organiser association",
-    "concierge", "yacht", "private aviation", "hotel collection", "villa rental", "host agency", "franchise network"
+    "tour operator",
+    "travel agency",
+    "travel company",
+    "travel advisor",
+    "travel management",
+    "travel organisation",
+    "cruise",
+    "destination management",
+    "tourism",
+    "trade association",
+    "professional association",
+    "conference organiser association",
+    "concierge",
+    "yacht",
+    "private aviation",
+    "hotel collection",
+    "villa rental",
+    "host agency",
+    "franchise network"
+  ],
+  "excludedLeadTypes": [
+    "ORGANIZATION"
   ]
 }

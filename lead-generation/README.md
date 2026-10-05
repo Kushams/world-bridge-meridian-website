@@ -165,12 +165,11 @@ contains no email-sending code (a test enforces this).
 
 ### Who to target
 
-WBM wants people and organisations that might **buy** travel, not travel sellers. `config/targeting.json` excludes travel agencies,
-tour operators, cruise lines, DMCs, concierge/yacht/aviation companies, tourism boards and travel trade associations. Ingest counts
-them as OUT_OF_SCOPE and `npm run leads:prune` removes any that are already in the master. Remaining targets are organisations whose
-people travel (arts and cultural bodies, planners, companies, institutions, membership organisations).
-Private individuals, students and personal addresses (for example scraped from social profiles) are out of scope unless they
-opted in, for example through the website forms.
+WBM wants **individual people** who might travel. `config/targeting.json` excludes every business/organisation record
+(`lead_type` ORGANIZATION), travel sellers, and arts/culture bodies (WBM sends its own clients to them). Ingest counts matches
+as OUT_OF_SCOPE and `npm run leads:prune` removes any already in the master. Individuals must come from sources that allow
+marketing contact (for example opt-in sign-ups through the website forms, with consent recorded).
+Collecting personal or staff emails from social profiles or team pages is not done by this system.
 
 ### Batches of 500
 
