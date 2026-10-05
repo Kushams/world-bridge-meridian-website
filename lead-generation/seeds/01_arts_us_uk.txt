@@ -1,0 +1,33 @@
+artbasel.com|Art Basel|Basel|Switzerland|ARTS_CULTURE|art fair organiser|VIP and collector art-fair travel
+artgeneve.ch|Art Genève|Geneva|Switzerland|ARTS_CULTURE|art fair organiser|art-fair VIP travel
+tefaf.com|TEFAF|Maastricht|Netherlands|ARTS_CULTURE|art fair organiser|art-fair VIP travel
+outsiderartfair.com|Outsider Art Fair|New York|USA|ARTS_CULTURE|art fair organiser|art-fair travel
+artfund.org|Art Fund|London|UK|ARTS_CULTURE|arts charity|museum member and patron journeys
+ashmolean.org|Ashmolean Museum|Oxford|UK|ARTS_CULTURE|museum|museum and patron group journeys
+courtauld.ac.uk|The Courtauld|London|UK|ARTS_CULTURE|art gallery and institute|patron and study journeys
+fitzmuseum.cam.ac.uk|Fitzwilliam Museum|Cambridge|UK|ARTS_CULTURE|museum|museum group journeys
+hepworthwakefield.org|The Hepworth Wakefield|Wakefield|UK|ARTS_CULTURE|gallery|cultural group journeys
+nelson-atkins.org|Nelson-Atkins Museum of Art|Kansas City|USA|ARTS_CULTURE|museum|museum member journeys
+newmuseum.org|New Museum|New York|USA|ARTS_CULTURE|contemporary art museum|cultural journeys
+whitney.org|Whitney Museum of American Art|New York|USA|ARTS_CULTURE|museum|corporate and member cultural journeys
+clevelandart.org|Cleveland Museum of Art|Cleveland|USA|ARTS_CULTURE|museum|museum member journeys
+edfringe.com|Edinburgh Festival Fringe|Edinburgh|UK|ARTS_CULTURE|arts festival|festival travel
+eif.co.uk|Edinburgh International Festival|Edinburgh|UK|ARTS_CULTURE|arts festival|festival travel
+frick.org|The Frick Collection|New York|USA|ARTS_CULTURE|museum|cultural journeys
+glyndebourne.com|Glyndebourne|Lewes|UK|ARTS_CULTURE|opera house|opera group travel
+guggenheim.org|Guggenheim Museums and Foundation|New York|USA|ARTS_CULTURE|museum|cultural journeys
+houstongrandopera.org|Houston Grand Opera|Houston|USA|ARTS_CULTURE|opera company|opera travel
+lacma.org|Los Angeles County Museum of Art|Los Angeles|USA|ARTS_CULTURE|museum|member journeys
+nationalgallery.org.uk|National Gallery|London|UK|ARTS_CULTURE|museum|patron study trips
+neuegalerie.org|Neue Galerie New York|New York|USA|ARTS_CULTURE|museum|cultural journeys
+nyphil.org|New York Philharmonic|New York|USA|ARTS_CULTURE|orchestra|performing-arts group travel
+operanorth.co.uk|Opera North|Leeds|UK|ARTS_CULTURE|opera company|opera travel
+royalacademy.org.uk|Royal Academy of Arts|London|UK|ARTS_CULTURE|art institution|patron journeys
+rsc.org.uk|Royal Shakespeare Company|Stratford-upon-Avon|UK|ARTS_CULTURE|theatre company|group theatre travel
+serpentinegalleries.org|Serpentine Galleries|London|UK|ARTS_CULTURE|gallery|cultural journeys
+sfmoma.org|San Francisco Museum of Modern Art|San Francisco|USA|ARTS_CULTURE|museum|member journeys
+sfopera.com|San Francisco Opera|San Francisco|USA|ARTS_CULTURE|opera company|opera travel
+thebroad.org|The Broad|Los Angeles|USA|ARTS_CULTURE|museum|cultural journeys
+vam.ac.uk|Victoria and Albert Museum|London|UK|ARTS_CULTURE|museum|cultural journeys
+whitechapelgallery.org|Whitechapel Gallery|London|UK|ARTS_CULTURE|gallery|cultural journeys
+londonartfair.co.uk|London Art Fair|London|UK|ARTS_CULTURE|art fair organiser|art-fair VIP travel

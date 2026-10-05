@@ -1,0 +1,98 @@
+louvre.fr|Musée du Louvre|Paris|France|ARTS_CULTURE|museum|cultural journeys
+musee-orsay.fr|Musée d'Orsay|Paris|France|ARTS_CULTURE|museum|cultural journeys
+centrepompidou.fr|Centre Pompidou|Paris|France|ARTS_CULTURE|museum|cultural journeys
+fondationlouisvuitton.fr|Fondation Louis Vuitton|Paris|France|ARTS_CULTURE|foundation and museum|cultural journeys
+grandpalais.fr|Grand Palais|Paris|France|ARTS_CULTURE|exhibition venue|exhibition travel
+palaisdetokyo.com|Palais de Tokyo|Paris|France|ARTS_CULTURE|art centre|cultural journeys
+operadeparis.fr|Opéra national de Paris|Paris|France|ARTS_CULTURE|opera company|opera travel
+rijksmuseum.nl|Rijksmuseum|Amsterdam|Netherlands|ARTS_CULTURE|museum|cultural journeys
+vangoghmuseum.nl|Van Gogh Museum|Amsterdam|Netherlands|ARTS_CULTURE|museum|cultural journeys
+stedelijk.nl|Stedelijk Museum Amsterdam|Amsterdam|Netherlands|ARTS_CULTURE|museum|cultural journeys
+mauritshuis.nl|Mauritshuis|The Hague|Netherlands|ARTS_CULTURE|museum|cultural journeys
+museodelprado.es|Museo del Prado|Madrid|Spain|ARTS_CULTURE|museum|cultural journeys
+museoreinasofia.es|Museo Reina Sofía|Madrid|Spain|ARTS_CULTURE|museum|cultural journeys
+museothyssen.org|Museo Nacional Thyssen-Bornemisza|Madrid|Spain|ARTS_CULTURE|museum|cultural journeys
+guggenheim-bilbao.eus|Guggenheim Museum Bilbao|Bilbao|Spain|ARTS_CULTURE|museum|cultural journeys
+macba.cat|MACBA Barcelona|Barcelona|Spain|ARTS_CULTURE|museum|cultural journeys
+uffizi.it|Gallerie degli Uffizi|Florence|Italy|ARTS_CULTURE|museum|cultural journeys
+labiennale.org|La Biennale di Venezia|Venice|Italy|ARTS_CULTURE|arts festival organiser|biennale travel
+fondazioneprada.org|Fondazione Prada|Milan|Italy|ARTS_CULTURE|foundation and museum|cultural journeys
+triennale.org|Triennale Milano|Milan|Italy|ARTS_CULTURE|design and arts institution|design travel
+teatroallascala.org|Teatro alla Scala|Milan|Italy|ARTS_CULTURE|opera house|opera travel
+maxxi.art|MAXXI|Rome|Italy|ARTS_CULTURE|museum|cultural journeys
+arena.it|Fondazione Arena di Verona|Verona|Italy|ARTS_CULTURE|opera festival|opera travel
+khm.at|Kunsthistorisches Museum Wien|Vienna|Austria|ARTS_CULTURE|museum|cultural journeys
+belvedere.at|Belvedere|Vienna|Austria|ARTS_CULTURE|museum|cultural journeys
+albertina.at|Albertina|Vienna|Austria|ARTS_CULTURE|museum|cultural journeys
+salzburgerfestspiele.at|Salzburg Festival|Salzburg|Austria|ARTS_CULTURE|arts festival|festival travel
+kunsthaus.ch|Kunsthaus Zürich|Zurich|Switzerland|ARTS_CULTURE|museum|cultural journeys
+fondationbeyeler.ch|Fondation Beyeler|Riehen|Switzerland|ARTS_CULTURE|museum|cultural journeys
+montreuxjazzfestival.com|Montreux Jazz Festival|Montreux|Switzerland|ARTS_CULTURE|music festival|festival travel
+smb.museum|Staatliche Museen zu Berlin|Berlin|Germany|ARTS_CULTURE|museum group|cultural journeys
+pinakothek.de|Pinakothek München|Munich|Germany|ARTS_CULTURE|museum|cultural journeys
+staedelmuseum.de|Städel Museum|Frankfurt|Germany|ARTS_CULTURE|museum|cultural journeys
+hamburger-kunsthalle.de|Hamburger Kunsthalle|Hamburg|Germany|ARTS_CULTURE|museum|cultural journeys
+elbphilharmonie.de|Elbphilharmonie Hamburg|Hamburg|Germany|ARTS_CULTURE|concert hall|performing-arts travel
+semperoper.de|Semperoper Dresden|Dresden|Germany|ARTS_CULTURE|opera house|opera travel
+bayreuther-festspiele.de|Bayreuth Festival|Bayreuth|Germany|ARTS_CULTURE|opera festival|festival travel
+documenta.de|documenta|Kassel|Germany|ARTS_CULTURE|exhibition organiser|exhibition travel
+nationalmuseum.se|Nationalmuseum Stockholm|Stockholm|Sweden|ARTS_CULTURE|museum|cultural journeys
+munchmuseet.no|MUNCH|Oslo|Norway|ARTS_CULTURE|museum|cultural journeys
+louisiana.dk|Louisiana Museum of Modern Art|Humlebæk|Denmark|ARTS_CULTURE|museum|cultural journeys
+ateneum.fi|Ateneum Art Museum|Helsinki|Finland|ARTS_CULTURE|museum|cultural journeys
+nationalgallery.ie|National Gallery of Ireland|Dublin|Ireland|ARTS_CULTURE|museum|cultural journeys
+imma.ie|Irish Museum of Modern Art|Dublin|Ireland|ARTS_CULTURE|museum|cultural journeys
+gulbenkian.pt|Fundação Calouste Gulbenkian|Lisbon|Portugal|ARTS_CULTURE|foundation|cultural journeys
+serralves.pt|Fundação de Serralves|Porto|Portugal|ARTS_CULTURE|foundation and museum|cultural journeys
+nm.cz|National Museum Prague|Prague|Czech Republic|ARTS_CULTURE|museum|cultural journeys
+rom.on.ca|Royal Ontario Museum|Toronto|Canada|ARTS_CULTURE|museum|cultural journeys
+ago.ca|Art Gallery of Ontario|Toronto|Canada|ARTS_CULTURE|museum|cultural journeys
+vanartgallery.bc.ca|Vancouver Art Gallery|Vancouver|Canada|ARTS_CULTURE|museum|cultural journeys
+mbam.qc.ca|Montreal Museum of Fine Arts|Montreal|Canada|ARTS_CULTURE|museum|cultural journeys
+gallery.ca|National Gallery of Canada|Ottawa|Canada|ARTS_CULTURE|museum|cultural journeys
+tso.ca|Toronto Symphony Orchestra|Toronto|Canada|ARTS_CULTURE|orchestra|performing-arts travel
+coc.ca|Canadian Opera Company|Toronto|Canada|ARTS_CULTURE|opera company|opera travel
+stratfordfestival.ca|Stratford Festival|Stratford|Canada|ARTS_CULTURE|theatre festival|festival group travel
+shawfest.com|Shaw Festival|Niagara-on-the-Lake|Canada|ARTS_CULTURE|theatre festival|festival group travel
+tiff.net|Toronto International Film Festival|Toronto|Canada|ARTS_CULTURE|film festival|festival travel
+nac-cna.ca|National Arts Centre|Ottawa|Canada|ARTS_CULTURE|performing arts centre|performing-arts travel
+ngv.vic.gov.au|National Gallery of Victoria|Melbourne|Australia|ARTS_CULTURE|museum|cultural journeys
+artgallery.nsw.gov.au|Art Gallery of New South Wales|Sydney|Australia|ARTS_CULTURE|museum|cultural journeys
+sydneyoperahouse.com|Sydney Opera House|Sydney|Australia|ARTS_CULTURE|performing arts centre|performing-arts travel
+mca.com.au|Museum of Contemporary Art Australia|Sydney|Australia|ARTS_CULTURE|museum|cultural journeys
+qagoma.qld.gov.au|Queensland Art Gallery|Brisbane|Australia|ARTS_CULTURE|museum|cultural journeys
+nationalgallery.sg|National Gallery Singapore|Singapore|Singapore|ARTS_CULTURE|museum|cultural journeys
+mplus.org.hk|M+ Museum|Hong Kong|Hong Kong|ARTS_CULTURE|museum|cultural journeys
+mori.art.museum|Mori Art Museum|Tokyo|Japan|ARTS_CULTURE|museum|cultural journeys
+kennedy-center.org|John F. Kennedy Center for the Performing Arts|Washington, D.C.|USA|ARTS_CULTURE|performing arts centre|performing-arts travel
+nycballet.com|New York City Ballet|New York|USA|ARTS_CULTURE|ballet company|performing-arts travel
+cso.org|Chicago Symphony Orchestra|Chicago|USA|ARTS_CULTURE|orchestra|performing-arts travel
+bso.org|Boston Symphony Orchestra|Boston|USA|ARTS_CULTURE|orchestra|performing-arts travel
+laphil.com|Los Angeles Philharmonic|Los Angeles|USA|ARTS_CULTURE|orchestra|performing-arts travel
+sfsymphony.org|San Francisco Symphony|San Francisco|USA|ARTS_CULTURE|orchestra|performing-arts travel
+huntington.org|The Huntington|San Marino|USA|ARTS_CULTURE|library museum and gardens|cultural journeys
+crystalbridges.org|Crystal Bridges Museum of American Art|Bentonville|USA|ARTS_CULTURE|museum|cultural journeys
+massmoca.org|MASS MoCA|North Adams|USA|ARTS_CULTURE|museum|cultural journeys
+dia.org|Detroit Institute of Arts|Detroit|USA|ARTS_CULTURE|museum|cultural journeys
+walkerart.org|Walker Art Center|Minneapolis|USA|ARTS_CULTURE|museum|cultural journeys
+artsmia.org|Minneapolis Institute of Art|Minneapolis|USA|ARTS_CULTURE|museum|cultural journeys
+slam.org|Saint Louis Art Museum|St. Louis|USA|ARTS_CULTURE|museum|cultural journeys
+nashersculpturecenter.org|Nasher Sculpture Center|Dallas|USA|ARTS_CULTURE|museum|cultural journeys
+kimbellart.org|Kimbell Art Museum|Fort Worth|USA|ARTS_CULTURE|museum|cultural journeys
+menil.org|Menil Collection|Houston|USA|ARTS_CULTURE|museum|cultural journeys
+pamm.org|Pérez Art Museum Miami|Miami|USA|ARTS_CULTURE|museum|cultural journeys
+bassmuseum.org|The Bass|Miami Beach|USA|ARTS_CULTURE|museum|cultural journeys
+scope-art.com|SCOPE Art Show|New York|USA|ARTS_CULTURE|art fair organiser|art-fair travel
+untitledartfairs.com|Untitled Art Fairs|Miami|USA|ARTS_CULTURE|art fair organiser|art-fair travel
+independentnewyork.com|Independent Art Fair|New York|USA|ARTS_CULTURE|art fair organiser|art-fair travel
+springbreakartshow.com|Spring/Break Art Show|New York|USA|ARTS_CULTURE|art fair organiser|art-fair travel
+tate.org.uk|Tate|London|UK|ARTS_CULTURE|museum group|cultural journeys
+npg.org.uk|National Portrait Gallery|London|UK|ARTS_CULTURE|museum|cultural journeys
+barbican.org.uk|Barbican Centre|London|UK|ARTS_CULTURE|arts centre|cultural journeys
+nhm.ac.uk|Natural History Museum|London|UK|ARTS_CULTURE|museum|cultural journeys
+nationaltrust.org.uk|National Trust|Swindon|UK|ARTS_CULTURE|heritage charity|heritage group travel
+english-heritage.org.uk|English Heritage|London|UK|ARTS_CULTURE|heritage charity|heritage group travel
+wimbledon.com|The Championships, Wimbledon|London|UK|EVENTS_WEDDINGS|sporting event|sporting-event hospitality travel
+royalascot.com|Royal Ascot|Ascot|UK|EVENTS_WEDDINGS|sporting event|event hospitality travel
+silverstone.co.uk|Silverstone Circuit|Silverstone|UK|EVENTS_WEDDINGS|sporting event venue|event hospitality travel
+goodwood.com|Goodwood|Chichester|UK|EVENTS_WEDDINGS|events estate|event hospitality travel

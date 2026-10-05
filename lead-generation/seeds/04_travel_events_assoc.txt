@@ -1,0 +1,106 @@
+scottdunn.com|Scott Dunn|London|UK|TRAVEL_INDUSTRY|luxury tour operator|partnership and itinerary collaboration
+trailfinders.com|Trailfinders|London|UK|TRAVEL_INDUSTRY|travel agency|partnership
+kirkerholidays.com|Kirker Holidays|London|UK|TRAVEL_INDUSTRY|cultural tour operator|partnership
+steppestravel.co.uk|Steppes Travel|Cirencester|UK|TRAVEL_INDUSTRY|tailor-made tour operator|partnership
+audleytravel.com|Audley Travel|Witney|UK|TRAVEL_INDUSTRY|tailor-made tour operator|partnership
+abercrombiekent.co.uk|Abercrombie & Kent UK|London|UK|TRAVEL_INDUSTRY|luxury tour operator|partnership
+kuoni.co.uk|Kuoni UK||UK|TRAVEL_INDUSTRY|tour operator|partnership
+elegantresorts.co.uk|Elegant Resorts||UK|TRAVEL_INDUSTRY|luxury tour operator|partnership
+responsibletravel.com|responsibletravel.com|Brighton|UK|TRAVEL_INDUSTRY|tour marketplace|partnership
+travelleaders.com|Travel Leaders Group||USA|TRAVEL_INDUSTRY|travel agency network|advisor network partnership
+tzell.com|Tzell Travel Group|New York|USA|TRAVEL_INDUSTRY|corporate and leisure travel company|partnership
+fora.travel|Fora Travel||USA|TRAVEL_INDUSTRY|travel advisor network|advisor network partnership
+tauck.com|Tauck||USA|TRAVEL_INDUSTRY|premium tour operator|partnership
+abercrombiekent.com|Abercrombie & Kent USA||USA|TRAVEL_INDUSTRY|luxury tour operator|partnership
+globusfamily.com|Globus family of brands||USA|TRAVEL_INDUSTRY|tour operator|partnership
+gate1travel.com|Gate 1 Travel||USA|TRAVEL_INDUSTRY|tour operator|partnership
+classicvacations.com|Classic Vacations||USA|TRAVEL_INDUSTRY|luxury vacation packager|partnership
+smithsonianjourneys.org|Smithsonian Journeys|Washington, D.C.|USA|TRAVEL_INDUSTRY|educational tour operator|cultural travel partnership
+goway.com|Goway Travel|Toronto|Canada|TRAVEL_INDUSTRY|tour operator|partnership
+gadventures.com|G Adventures|Toronto|Canada|TRAVEL_INDUSTRY|adventure tour operator|partnership
+flightcentre.ca|Flight Centre Canada||Canada|TRAVEL_INDUSTRY|travel agency|partnership
+transat.com|Transat A.T.||Canada|TRAVEL_INDUSTRY|tour operator|partnership
+intrepidtravel.com|Intrepid Travel|Melbourne|Australia|TRAVEL_INDUSTRY|tour operator|partnership
+worldexpeditions.com|World Expeditions|Sydney|Australia|TRAVEL_INDUSTRY|adventure tour operator|partnership
+flightcentre.com.au|Flight Centre Australia|Brisbane|Australia|TRAVEL_INDUSTRY|travel agency|partnership
+kuoni.ch|Kuoni Switzerland||Switzerland|TRAVEL_INDUSTRY|tour operator|partnership
+dertouristik.com|DER Touristik|Cologne|Germany|TRAVEL_INDUSTRY|tour operator|partnership
+studiosus.com|Studiosus Reisen|Munich|Germany|TRAVEL_INDUSTRY|cultural tour operator|cultural travel partnership
+hotelplan.ch|Hotelplan Group||Switzerland|TRAVEL_INDUSTRY|tour operator|partnership
+voyageurs-du-monde.fr|Voyageurs du Monde|Paris|France|TRAVEL_INDUSTRY|tailor-made tour operator|partnership
+kuoni.fr|Kuoni France||France|TRAVEL_INDUSTRY|tour operator|partnership
+tui.com|TUI Group|Hanover|Germany|TRAVEL_INDUSTRY|tour operator|partnership
+bcdtravel.com|BCD Travel|Utrecht|Netherlands|TRAVEL_INDUSTRY|travel management company|corporate travel partnership
+cwt.com|CWT||USA|TRAVEL_INDUSTRY|travel management company|corporate travel partnership
+amexgbt.com|American Express Global Business Travel|New York|USA|TRAVEL_INDUSTRY|travel management company|corporate travel partnership
+fcmtravel.com|FCM Travel||Australia|TRAVEL_INDUSTRY|travel management company|corporate travel partnership
+atpi.com|ATPI|Guildford|UK|TRAVEL_INDUSTRY|travel management company|corporate travel partnership
+travelleaders.ca|Travel Leaders Canada||Canada|TRAVEL_INDUSTRY|travel agency network|partnership
+cruising.org|Cruise Lines International Association||USA|INSTITUTIONAL|trade association|industry partnership
+asta.org|American Society of Travel Advisors|Alexandria|USA|INSTITUTIONAL|professional association|advisor community partnership
+ustoa.com|United States Tour Operators Association|New York|USA|INSTITUTIONAL|trade association|tour operator community
+gbta.org|Global Business Travel Association|Alexandria|USA|INSTITUTIONAL|professional association|corporate travel community
+acte.org|Association of Corporate Travel Executives||USA|INSTITUTIONAL|professional association|corporate travel community
+mpi.org|Meeting Professionals International||USA|INSTITUTIONAL|professional association|meetings community
+siteglobal.com|Society for Incentive Travel Excellence||USA|INSTITUTIONAL|professional association|incentive travel community
+pcma.org|PCMA|Chicago|USA|INSTITUTIONAL|professional association|conference organiser community
+abta.com|ABTA|London|UK|INSTITUTIONAL|trade association|industry partnership
+aito.com|AITO|London|UK|INSTITUTIONAL|tour operator association|industry partnership
+ukinbound.org|UKinbound|London|UK|INSTITUTIONAL|trade association|inbound tourism partnership
+abpco.org|ABPCO|London|UK|INSTITUTIONAL|conference organiser association|conference community
+acta.ca|Association of Canadian Travel Agencies||Canada|INSTITUTIONAL|trade association|industry partnership
+tiac-aitc.ca|Tourism Industry Association of Canada|Ottawa|Canada|INSTITUTIONAL|trade association|industry partnership
+etoa.org|European Tour Operators Association|London|UK|INSTITUTIONAL|trade association|industry partnership
+ectaa.eu|ECTAA||Belgium|INSTITUTIONAL|trade association|industry partnership
+afta.com.au|Australian Federation of Travel Agents|Sydney|Australia|INSTITUTIONAL|trade association|industry partnership
+tourism.australia.com|Tourism Australia||Australia|INSTITUTIONAL|tourism body|destination partnership
+visitbritain.org|VisitBritain|London|UK|INSTITUTIONAL|tourism body|destination partnership
+destinationcanada.com|Destination Canada|Vancouver|Canada|INSTITUTIONAL|tourism body|destination partnership
+brandusa.com|Brand USA||USA|INSTITUTIONAL|tourism body|destination partnership
+nycgo.com|NYC & Company|New York|USA|INSTITUTIONAL|tourism body|destination partnership
+visitlondon.com|London & Partners|London|UK|INSTITUTIONAL|tourism body|destination partnership
+iamsterdam.com|Amsterdam & Partners|Amsterdam|Netherlands|INSTITUTIONAL|tourism body|destination partnership
+myswitzerland.com|Switzerland Tourism|Zurich|Switzerland|INSTITUTIONAL|tourism body|destination partnership
+germany.travel|German National Tourist Board|Frankfurt|Germany|INSTITUTIONAL|tourism body|destination partnership
+italia.it|ENIT Italian National Tourist Board|Rome|Italy|INSTITUTIONAL|tourism body|destination partnership
+spain.info|Turespaña||Spain|INSTITUTIONAL|tourism body|destination partnership
+visitportugal.com|Turismo de Portugal|Lisbon|Portugal|INSTITUTIONAL|tourism body|destination partnership
+ireland.com|Tourism Ireland|Dublin|Ireland|INSTITUTIONAL|tourism body|destination partnership
+visitgreece.gr|Greek National Tourism Organisation|Athens|Greece|INSTITUTIONAL|tourism body|destination partnership
+czechtourism.com|CzechTourism|Prague|Czech Republic|INSTITUTIONAL|tourism body|destination partnership
+visitdenmark.com|VisitDenmark|Copenhagen|Denmark|INSTITUTIONAL|tourism body|destination partnership
+visitnorway.com|Innovation Norway (VisitNorway)|Oslo|Norway|INSTITUTIONAL|tourism body|destination partnership
+visitsweden.com|Visit Sweden|Stockholm|Sweden|INSTITUTIONAL|tourism body|destination partnership
+visitfinland.com|Visit Finland|Helsinki|Finland|INSTITUTIONAL|tourism body|destination partnership
+austria.info|Austrian National Tourist Office|Vienna|Austria|INSTITUTIONAL|tourism body|destination partnership
+visit.brussels|visit.brussels|Brussels|Belgium|INSTITUTIONAL|tourism body|destination partnership
+jnto.go.jp|Japan National Tourism Organization|Tokyo|Japan|INSTITUTIONAL|tourism body|destination partnership
+visitsingapore.com|Singapore Tourism Board|Singapore|Singapore|INSTITUTIONAL|tourism body|destination partnership
+discoverhongkong.com|Hong Kong Tourism Board|Hong Kong|Hong Kong|INSTITUTIONAL|tourism body|destination partnership
+tourism.gov.in|Ministry of Tourism India|New Delhi|India|INSTITUTIONAL|tourism body|destination partnership
+tourismthailand.org|Tourism Authority of Thailand|Bangkok|Thailand|INSTITUTIONAL|tourism body|destination partnership
+tourism.gov.my|Tourism Malaysia|Kuala Lumpur|Malaysia|INSTITUTIONAL|tourism body|destination partnership
+visitkorea.or.kr|Korea Tourism Organization|Wonju|South Korea|INSTITUTIONAL|tourism body|destination partnership
+tengroup.com|Ten Lifestyle Group|London|UK|CONCIERGE_LUXURY|lifestyle and concierge company|concierge partnership
+aspirelifestyles.com|Aspire Lifestyles||USA|CONCIERGE_LUXURY|lifestyle and concierge company|concierge partnership
+luxuryattache.com|Luxury Attaché||USA|CONCIERGE_LUXURY|concierge company|concierge partnership
+sohohouse.com|Soho House & Co|London|UK|CONCIERGE_LUXURY|private members club|member journeys
+burgessyachts.com|Burgess|London|UK|CONCIERGE_LUXURY|yacht brokerage and charter|yacht charter partnership
+camperandnicholsons.com|Camper & Nicholsons||Monaco|CONCIERGE_LUXURY|yacht brokerage and charter|yacht charter partnership
+fraseryachts.com|Fraser Yachts|Monaco|Monaco|CONCIERGE_LUXURY|yacht brokerage and charter|yacht charter partnership
+northropandjohnson.com|Northrop & Johnson|Fort Lauderdale|USA|CONCIERGE_LUXURY|yacht brokerage and charter|yacht charter partnership
+ocean-independence.com|Ocean Independence||UK|CONCIERGE_LUXURY|yacht brokerage and charter|yacht charter partnership
+netjets.com|NetJets||USA|CONCIERGE_LUXURY|private aviation|private aviation partnership
+flexjet.com|Flexjet|Cleveland|USA|CONCIERGE_LUXURY|private aviation|private aviation partnership
+vistajet.com|VistaJet|London|UK|CONCIERGE_LUXURY|private aviation|private aviation partnership
+wheelsup.com|Wheels Up||USA|CONCIERGE_LUXURY|private aviation|private aviation partnership
+jackmorton.com|Jack Morton Worldwide|New York|USA|EVENTS_WEDDINGS|experiential agency|corporate event travel
+bizbash.com|BizBash|New York|USA|EVENTS_WEDDINGS|event industry media|event planner community
+eventbrite.com|Eventbrite||USA|EVENTS_WEDDINGS|event platform|event organiser community
+cvent.com|Cvent|Tysons|USA|EVENTS_WEDDINGS|event technology company|event organiser community
+maritzglobalevents.com|Maritz Global Events||USA|EVENTS_WEDDINGS|event agency|corporate event travel
+cwtmeetingsandevents.com|CWT Meetings & Events||USA|EVENTS_WEDDINGS|event agency|corporate event travel
+bcdmeetingsevents.com|BCD Meetings & Events||USA|EVENTS_WEDDINGS|event agency|corporate event travel
+hellodmc.com|Hello! Destination Management|Orlando|USA|STRATEGIC_PARTNERS|destination management company|destination support
+getusa.com|GET U.S. Destination Event Management|Orlando|USA|STRATEGIC_PARTNERS|destination management company|destination support
+1dmcnorthamerica.com|1 DMC North America||USA|STRATEGIC_PARTNERS|DMC association|destination support

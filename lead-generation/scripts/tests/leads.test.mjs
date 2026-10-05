@@ -62,8 +62,12 @@ test("spreadsheet sanitiser blocks formulas but keeps phone numbers", () => {
   assert.equal(sanitizeForSpreadsheet("-cmd"), "'-cmd");
 });
 
-test("committed master datasets are empty header-only files matching the schema", () => {
-  assert.deepEqual(readMaster(dataset), []);
+test("committed master datasets match the schema, and every stored lead passes validation", () => {
+  const stored = readMaster(dataset); // throws if the header does not match the schema
+  for (const [i, rec] of stored.entries()) {
+    const errors = validateLead(rec, dataset, config, { today: "2999-01-01" }).filter((x) => x.level === "error");
+    assert.deepEqual(errors, [], `master row ${i + 2} has validation errors`);
+  }
   assert.deepEqual(readMaster(loadDataset("opportunities", config)), []);
   assert.equal(new Set(dataset.columns).size, dataset.columns.length);
   for (const required of ["first_name", "email", "company", "pipeline", "intent_type", "destination_interest", "duplicate_key", "lead_status", "source_url", "evidence"]) {
@@ -248,6 +252,14 @@ test("scripts never contain email-sending or network code (email safety)", () =>
   assert.ok(files.length > 5);
   const banned = /nodemailer|smtp|sendmail|resend|node:(net|tls|http|https|dgram)|\bfetch\s*\(|XMLHttpRequest|child_process/i;
   for (const f of files) assert.ok(!banned.test(fs.readFileSync(f, "utf8")), `${path.basename(f)} contains network/email code`);
+});
+
+test("collectors never contain email-sending code and write only to git-ignored incoming data", () => {
+  const dir = path.join(ROOT, "collectors");
+  const files = fs.readdirSync(dir).filter((f) => f.endsWith(".mjs"));
+  assert.ok(files.length >= 2);
+  const mail = /nodemailer|smtp|sendmail|resend|node:(net|tls|dgram)|child_process|method:\s*["']POST["']|\.post\(/i;
+  for (const f of files) assert.ok(!mail.test(fs.readFileSync(path.join(dir, f), "utf8")), `${f} contains mail/POST code`);
 });
 
 test("config contains no secrets", () => {

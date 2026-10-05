@@ -148,3 +148,24 @@ Public, legitimately accessible sources only; no authentication bypass, CAPTCHA 
 private/leaked data. No sensitive personal data (health, religion, politics, finances, family) and no personal
 scoring. Respect robots.txt and applicable privacy / electronic-marketing law (GDPR/PECR, CAN-SPAM, CASL...).
 Never invent or pattern-guess data. Volume never justifies fabrication.
+
+## Collectors and recurring discovery
+
+`collectors/` is the only place network access is allowed. It is separate from `scripts/` (which stays network-free) and
+contains no email-sending code (a test enforces this).
+
+1. `collectors/probe.mjs <domains...>` fetches standard public contact pages and records the addresses literally published
+   there (Cloudflare-obfuscated ones decoded as a browser would). It never guesses, logs in or submits forms. Results are cached in
+   `data/incoming/probe_cache.jsonl` (git-ignored).
+2. `seeds/*.txt` holds one row per organisation: `domain|Company|City|Country|PIPELINE|type|use case`. Add a row only for facts you can
+   verify; leave City blank if unsure.
+3. `collectors/build_batch.mjs` joins probe results and seeds into `data/incoming/batch_<date>.json`, choosing one generic business
+   inbox per organisation (groups, corporate, events, VIP, info). Named-person, ticketing, membership and press inboxes are never chosen.
+4. `npm run leads:ingest -- lead-generation/data/incoming/batch_<date>.json` dedupes, validates, appends and writes the run report.
+
+### Who to target
+
+Organisations first (travel companies, planners, arts and cultural bodies, associations, tourism boards, concierge/luxury): their
+published business inbox is intended for enquiries, is stable, and carries the least privacy and consent risk. Named staff are added
+only when the organisation itself publishes the person and role on its own site (for example events or partnerships manager).
+Private individuals, students and personal addresses are out of scope unless they opted in (for example through the website forms).

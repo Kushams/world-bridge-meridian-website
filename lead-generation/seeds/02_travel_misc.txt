@@ -1,0 +1,8 @@
+artisansofleisure.com|Artisans of Leisure|New York|USA|TRAVEL_INDUSTRY|luxury tour operator|referral and itinerary collaboration
+tripsandships.com|Trips & Ships Luxury Travel|Winter Garden|USA|TRAVEL_INDUSTRY|luxury travel agency|advisor collaboration
+tourcanvacations.com|Tourcan Vacations|Toronto|Canada|TRAVEL_INDUSTRY|luxury tour operator|partnership and itinerary support
+entreedestinations.com|Entrée Destinations|Vancouver|Canada|TRAVEL_INDUSTRY|luxury tour operator|partnership and destination support
+cantrav.com|Cantrav Services||Canada|STRATEGIC_PARTNERS|destination management company|destination support
+insideincentive.com|Inside Incentive, LLC|Laguna Niguel|USA|STRATEGIC_PARTNERS|destination management company|incentive travel partnership
+hauteretreats.com|Haute Retreats|Miami|USA|TRAVEL_INDUSTRY|luxury villa rental specialist|partnership and referral
+quintessentially.com|Quintessentially|London|UK|CONCIERGE_LUXURY|lifestyle and concierge company|concierge partnership

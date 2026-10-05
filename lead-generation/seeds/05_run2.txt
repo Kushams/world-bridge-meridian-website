@@ -1,0 +1,25 @@
+amawaterways.com|AmaWaterways||USA|CRUISE|river cruise line|river cruise group travel
+scenic.com.au|Scenic Group|Sydney|Australia|CRUISE|luxury cruise and tour operator|cruise and tour partnership
+quarkexpeditions.com|Quark Expeditions||USA|CRUISE|expedition cruise operator|expedition cruise partnership
+explorajourneys.com|EXPLORA Journeys|Geneva|Switzerland|CRUISE|luxury cruise line|cruise partnership
+slh.com|Small Luxury Hotels of the World|London|UK|STRATEGIC_PARTNERS|boutique hotel collection|hospitality partnership
+blacktomato.com|Black Tomato|London|UK|TRAVEL_INDUSTRY|bespoke travel company|partnership and itinerary collaboration
+marcyblum.com|Marcy Blum Associates|New York|USA|EVENTS_WEDDINGS|event and wedding planner|destination weddings and guest travel
+mindyweiss.com|Mindy Weiss Party Consultants|Los Angeles|USA|EVENTS_WEDDINGS|event and wedding planner|destination weddings and guest travel
+seatunique.com|SeatUnique|London|UK|EVENTS_WEDDINGS|event hospitality provider|corporate hospitality travel
+robbreport.com|Robb Report||USA|STRATEGIC_PARTNERS|luxury lifestyle media|luxury audience partnership
+nexion.com|Nexion||USA|TRAVEL_INDUSTRY|travel advisor network|advisor network partnership
+uniglobe.com|Uniglobe Travel International||Canada|TRAVEL_INDUSTRY|travel agency franchise network|partnership
+embarkbeyond.com|Embark Beyond||USA|TRAVEL_INDUSTRY|luxury travel agency|partnership and referral
+mtsobek.com|Mountain Travel Sobek|Emeryville|USA|TRAVEL_INDUSTRY|adventure tour operator|partnership
+wildernesstravel.com|Wilderness Travel|Berkeley|USA|TRAVEL_INDUSTRY|adventure and cultural tour operator|partnership
+butterfield.com|Butterfield & Robinson|Toronto|Canada|TRAVEL_INDUSTRY|luxury active-travel operator|partnership
+geoex.com|Geographic Expeditions||USA|TRAVEL_INDUSTRY|expedition tour operator|partnership
+roadscholar.org|Road Scholar|Boston|USA|TRAVEL_INDUSTRY|educational travel organisation|group educational travel partnership
+originaltravel.co.uk|Original Travel|London|UK|TRAVEL_INDUSTRY|tailor-made travel company|partnership
+sadlerswells.com|Sadler's Wells|London|UK|ARTS_CULTURE|dance theatre|performing-arts travel
+arttoronto.ca|Art Toronto|Toronto|Canada|ARTS_CULTURE|art fair organiser|art-fair travel
+liceubarcelona.cat|Gran Teatre del Liceu|Barcelona|Spain|ARTS_CULTURE|opera house|opera travel
+sydneysymphony.com|Sydney Symphony Orchestra|Sydney|Australia|ARTS_CULTURE|orchestra|performing-arts travel
+artdubai.ae|Art Dubai|Dubai|United Arab Emirates|ARTS_CULTURE|art fair organiser|art-fair VIP travel
+visitscotland.com|VisitScotland|Edinburgh|UK|INSTITUTIONAL|national tourism organisation|destination partnership
