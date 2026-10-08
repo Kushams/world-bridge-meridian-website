@@ -5,6 +5,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { company } from "@/data/company";
 import { themeImage } from "@/data/images";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
   title: "Careers",
@@ -52,14 +53,14 @@ export default function CareersPage() {
       <section className="py-16 md:py-24">
         <Container>
           <SectionHeading eyebrow="Where We're Growing" title="Departments" />
-          <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <SwipeRow className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {departments.map((d) => (
               <div key={d.name} className="rounded-card border hairline p-6">
                 <h3 className="font-display text-lg text-ivory">{d.name}</h3>
                 <p className="mt-3 text-sm text-stone leading-relaxed">{d.description}</p>
               </div>
             ))}
-          </div>
+          </SwipeRow>
         </Container>
       </section>
 

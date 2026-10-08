@@ -3,6 +3,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { partners, partnersStatement } from "@/data/partners";
 import { themeImage } from "@/data/images";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
   title: "Partners",
@@ -26,14 +27,14 @@ export default function PartnersPage() {
             organize journeys to. Until specific named partnerships are confirmed and ready to
             publish, we describe our network by category rather than by name.
           </p>
-          <div className="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <SwipeRow className="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
             {partners.map((partner) => (
               <div key={partner.category} className="border-t hairline pt-6">
                 <h3 className="font-display text-lg text-ivory">{partner.category}</h3>
                 <p className="mt-3 text-sm text-stone leading-relaxed">{partner.description}</p>
               </div>
             ))}
-          </div>
+          </SwipeRow>
         </Container>
       </section>
     </>

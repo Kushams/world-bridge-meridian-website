@@ -87,7 +87,7 @@ export function NavOverlay({
   open: boolean;
   onClose: () => void;
 }) {
-  const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const [openGroup, setOpenGroup] = useState<string | null>(menuGroups[0]?.heading ?? null);
 
   useEffect(() => {
     if (!open) return;

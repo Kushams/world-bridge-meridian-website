@@ -363,4 +363,20 @@ h1.font-display,
     color: var(--color-stone);
     font-variant-numeric: tabular-nums;
   }
+  /* Filter chips: one swipeable line instead of a tall wrapped block. */
+  .chip-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    padding: 0 1.5rem 0.25rem;
+    scrollbar-width: none;
+  }
+  .chip-row::-webkit-scrollbar {
+    display: none;
+  }
+  .chip-row > * {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
 }

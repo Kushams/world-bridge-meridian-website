@@ -52,7 +52,7 @@ export function CalendarEntryCard({ entry, today }: { entry: CalendarEntry; toda
         isPast ? "opacity-70" : ""
       }`}
     >
-      <div className="relative h-44 w-full shrink-0">
+      <div className="relative h-32 w-full shrink-0 md:h-44">
         <Image
           src={entry.heroImage}
           alt=""
@@ -67,7 +67,7 @@ export function CalendarEntryCard({ entry, today }: { entry: CalendarEntry; toda
           {status.label}
         </span>
       </div>
-      <div className="flex flex-1 flex-col p-6">
+      <div className="flex flex-1 flex-col p-5 md:p-6">
         <p className="eyebrow !text-[0.65rem] mb-2">
           {entry.venue} · {entry.city}, {entry.country}
         </p>
@@ -75,9 +75,9 @@ export function CalendarEntryCard({ entry, today }: { entry: CalendarEntry; toda
         <p className="mt-2 text-sm text-stone-dim">
           {formatDate(entry.startDate)} – {formatDate(entry.endDate)}
         </p>
-        <p className="mt-4 flex-1 text-sm text-stone leading-relaxed">{entry.description}</p>
+        <p className="mt-3 flex-1 text-sm text-stone leading-relaxed line-clamp-3 md:mt-4 md:line-clamp-none">{entry.description}</p>
 
-        <div className="mt-6 flex flex-wrap items-center gap-4 border-t hairline pt-5">
+        <div className="mt-4 flex flex-wrap items-center gap-4 border-t hairline pt-4 md:mt-6 md:pt-5">
           <a
             href={entry.sourceUrl}
             target="_blank"

@@ -26,12 +26,12 @@ export function FeatureBanner({
     <section className="py-24 md:py-32">
       <Container>
         <div
-          className={`grid grid-cols-1 items-center gap-10 md:grid-cols-12 md:gap-16 ${
+          className={`grid grid-cols-1 items-center gap-6 md:grid-cols-12 md:gap-16 ${
             reverse ? "md:[&>*:first-child]:order-2" : ""
           }`}
         >
           <Reveal
-            className={`relative aspect-[4/3] overflow-hidden rounded-card md:col-span-7 md:aspect-[5/4] ${
+            className={`relative aspect-[16/9] overflow-hidden rounded-card md:col-span-7 md:aspect-[5/4] ${
               reverse ? "md:col-start-6" : ""
             }`}
           >

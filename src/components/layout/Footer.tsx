@@ -48,7 +48,8 @@ export function Footer() {
           <FooterAccordion columns={footerColumns} />
         </div>
 
-        <div className="mt-14 border-t hairline pt-10">
+        <div className="mt-10 grid grid-cols-2 gap-6 border-t hairline pt-8 sm:max-w-xl">
+         <div className="min-w-0">
           <p className="eyebrow mb-4">Contact</p>
           <ul className="space-y-2.5 text-sm text-ivory-dim">
             <li>
@@ -62,12 +63,7 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/payments" className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors">
-                Payment Options
-              </Link>
-            </li>
-            <li>
-              <a href={`mailto:${company.email}`} className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors">
+              <a href={`mailto:${company.email}`} className="inline-block -my-1.5 break-all py-1.5 hover:text-gold transition-colors">
                 {company.email}
               </a>
             </li>
@@ -80,6 +76,27 @@ export function Footer() {
               </a>
             </li>
           </ul>
+         </div>
+         <div className="min-w-0">
+          <p className="eyebrow mb-4">Payments</p>
+          <ul className="space-y-2.5 text-sm text-ivory-dim">
+            <li>
+              <Link href="/payments" className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors">
+                Payment Options
+              </Link>
+            </li>
+            <li>
+              <Link href="/payments#bank-transfer" className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors">
+                Bank Transfer
+              </Link>
+            </li>
+            <li>
+              <Link href="/payments#cryptocurrency" className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors">
+                Pay with Crypto
+              </Link>
+            </li>
+          </ul>
+         </div>
         </div>
 
         <div className="mt-10 flex flex-col-reverse items-start gap-4 border-t hairline pt-8 text-xs text-stone-dim md:flex-row md:items-center md:justify-between">

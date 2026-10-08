@@ -19,7 +19,7 @@ export function ExperiencesExplorer({ experiences }: { experiences: Experience[]
 
   return (
     <div>
-      <div className="flex flex-wrap gap-3">
+      <div className="chip-row flex flex-wrap gap-3">
         <button
           onClick={() => setCategory("all")}
           className={`rounded-full border px-5 py-2 text-xs font-semibold uppercase tracking-wide transition-colors ${

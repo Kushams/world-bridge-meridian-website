@@ -76,7 +76,7 @@ export function CalendarPage() {
 
       <section className="pb-10">
         <Container>
-          <div className="flex flex-wrap gap-3">
+          <div className="chip-row flex flex-wrap gap-3">
             <button
               type="button"
               onClick={() => setSection("all")}

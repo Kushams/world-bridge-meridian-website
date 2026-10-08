@@ -8,6 +8,7 @@ import { TeamAvatar } from "@/components/team/TeamAvatar";
 import { team } from "@/data/team";
 import { company } from "@/data/company";
 import { themeImage } from "@/data/images";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
   title: "Leadership & Team",
@@ -38,7 +39,7 @@ function TierSection({
     <div className="mt-20 first:mt-0">
       <SectionHeading eyebrow={eyebrow} title={title} />
       <p className="mt-4 max-w-2xl text-sm text-stone leading-relaxed">{description}</p>
-      <div
+      <SwipeRow
         className={`mt-10 grid grid-cols-1 gap-x-8 gap-y-14 ${
           size === "lg" ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-3"
         }`}
@@ -64,7 +65,7 @@ function TierSection({
             </h3>
           </Link>
         ))}
-      </div>
+      </SwipeRow>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { company } from "@/data/company";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 const reasons = [
   {
@@ -36,7 +37,7 @@ export function WhyWorldBridge() {
             description={company.tagline}
           />
         </Reveal>
-        <div className="mt-14 grid grid-cols-2 gap-5 md:gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <SwipeRow className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {reasons.map((reason, i) => (
             <Reveal key={reason.title} delay={i * 100}>
               <div className="border-t hairline pt-6">
@@ -47,7 +48,7 @@ export function WhyWorldBridge() {
               </div>
             </Reveal>
           ))}
-        </div>
+        </SwipeRow>
       </Container>
     </section>
   );
