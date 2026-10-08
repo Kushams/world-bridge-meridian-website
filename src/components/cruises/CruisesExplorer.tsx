@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Cruise } from "@/data/types";
 import { CruiseCard } from "@/components/cards/CruiseCard";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export function CruisesExplorer({ cruises }: { cruises: Cruise[] }) {
   const [category, setCategory] = useState<string>("all");
@@ -45,11 +46,11 @@ export function CruisesExplorer({ cruises }: { cruises: Cruise[] }) {
         {filtered.length} cruise{filtered.length === 1 ? "" : "s"}
       </p>
 
-      <div className="mt-6 grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-3">
+      <SwipeRow className="mt-6 grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-3">
         {filtered.map((cruise) => (
           <CruiseCard key={cruise.slug} cruise={cruise} />
         ))}
-      </div>
+      </SwipeRow>
     </div>
   );
 }

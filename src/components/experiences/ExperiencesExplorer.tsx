@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Experience } from "@/data/types";
 import { ExperienceCard } from "@/components/cards/ExperienceCard";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export function ExperiencesExplorer({ experiences }: { experiences: Experience[] }) {
   const [category, setCategory] = useState<string>("all");
@@ -44,11 +45,11 @@ export function ExperiencesExplorer({ experiences }: { experiences: Experience[]
         {filtered.length} experience{filtered.length === 1 ? "" : "s"}
       </p>
 
-      <div className="mt-6 grid grid-cols-2 gap-6 md:grid-cols-4">
+      <SwipeRow className="mt-6 grid grid-cols-2 gap-6 md:grid-cols-4">
         {filtered.map((experience) => (
           <ExperienceCard key={experience.slug} experience={experience} />
         ))}
-      </div>
+      </SwipeRow>
     </div>
   );
 }

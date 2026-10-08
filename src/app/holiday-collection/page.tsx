@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { themeImage } from "@/data/images";
 import { company } from "@/data/company";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
   title: "Holiday Collection",
@@ -96,7 +97,7 @@ export default function HolidayCollectionPage() {
             title="A starting point for the season."
             description={`${company.sampleDataDisclaimer} Every holiday journey is designed from a private consultation — these are the kinds of journeys we're most often asked to build around the season.`}
           />
-          <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <SwipeRow className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {concepts.map((c, i) => (
               <Reveal key={c.title} delay={i * 60}>
                 <div className="group">
@@ -122,7 +123,7 @@ export default function HolidayCollectionPage() {
                 </div>
               </Reveal>
             ))}
-          </div>
+          </SwipeRow>
         </Container>
       </section>
 

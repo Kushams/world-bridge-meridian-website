@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { stays } from "@/data/stays";
 import { getDestination } from "@/data/destinations";
 import { themeImage } from "@/data/images";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
   title: "Stays",
@@ -32,7 +33,7 @@ export default function StaysPage() {
             return (
               <div key={category} className="mb-16 last:mb-0">
                 <p className="eyebrow mb-6">{category}</p>
-                <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                <SwipeRow className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                   {items.map((stay) => {
                     const destination = getDestination(stay.destinationSlug);
                     return (
@@ -74,7 +75,7 @@ export default function StaysPage() {
                       </div>
                     );
                   })}
-                </div>
+                </SwipeRow>
               </div>
             );
           })}

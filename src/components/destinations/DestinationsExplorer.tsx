@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Destination, TravelStyleSlug } from "@/data/types";
 import { travelStyles } from "@/data/travel-styles";
 import { DestinationCard } from "@/components/cards/DestinationCard";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 const regions = [
   "North America",
@@ -80,11 +81,11 @@ export function DestinationsExplorer({ destinations }: { destinations: Destinati
           .
         </p>
       ) : (
-        <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+        <SwipeRow className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
           {filtered.map((destination) => (
             <DestinationCard key={destination.slug} destination={destination} />
           ))}
-        </div>
+        </SwipeRow>
       )}
     </div>
   );

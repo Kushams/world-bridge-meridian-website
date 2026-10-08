@@ -14,6 +14,7 @@ import { ItineraryTimeline } from "@/components/detail/ItineraryTimeline";
 import { PricingBlock } from "@/components/detail/PricingBlock";
 import { DestinationCard } from "@/components/cards/DestinationCard";
 import Link from "next/link";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export function generateStaticParams() {
   return packages.map((p) => ({ slug: p.slug }));
@@ -178,11 +179,11 @@ export default async function PackagePage({
           {relatedDestinations.length > 0 ? (
             <div className="mt-20">
               <SectionHeading eyebrow="Related Destinations" title="Where this journey takes you" />
-              <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+              <SwipeRow className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
                 {relatedDestinations.map((d) => (
                   <DestinationCard key={d.slug} destination={d} />
                 ))}
-              </div>
+              </SwipeRow>
             </div>
           ) : null}
 

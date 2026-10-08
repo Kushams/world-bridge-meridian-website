@@ -12,6 +12,7 @@ import { ItineraryTimeline } from "@/components/detail/ItineraryTimeline";
 import { JourneyRoute } from "@/components/detail/JourneyRoute";
 import { PricingBlock } from "@/components/detail/PricingBlock";
 import { DestinationCard } from "@/components/cards/DestinationCard";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export function generateStaticParams() {
   return journeyStories.map((s) => ({ slug: s.slug }));
@@ -155,11 +156,11 @@ export default async function JourneyStoryPage({
           {relatedDestinations.length > 0 ? (
             <div className="mt-20">
               <SectionHeading eyebrow="Where This Journey Takes You" title="The destinations" />
-              <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+              <SwipeRow className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
                 {relatedDestinations.map((d) => (
                   <DestinationCard key={d.slug} destination={d} />
                 ))}
-              </div>
+              </SwipeRow>
             </div>
           ) : null}
         </Container>

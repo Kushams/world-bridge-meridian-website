@@ -4,6 +4,7 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { themeImage } from "@/data/images";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 const paths = [
   {
@@ -30,7 +31,7 @@ export function CorePaths() {
   return (
     <section className="py-20 md:py-28">
       <Container>
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <SwipeRow className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {paths.map((path, i) => (
             <Reveal key={path.href} delay={i * 120}>
               <div className="group relative h-[420px] overflow-hidden rounded-card md:h-[520px]">
@@ -64,7 +65,7 @@ export function CorePaths() {
               </div>
             </Reveal>
           ))}
-        </div>
+        </SwipeRow>
       </Container>
     </section>
   );

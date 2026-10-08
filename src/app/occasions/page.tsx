@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { themeImage } from "@/data/images";
 import { company } from "@/data/company";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
   title: "Journeys for Life's Moments",
@@ -84,7 +85,7 @@ export default function OccasionsPage() {
             title="Starting points, not a fixed menu."
             description={`${company.sampleDataDisclaimer} Every journey is designed from a private consultation around your specific occasion.`}
           />
-          <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <SwipeRow className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {occasions.map((o, i) => (
               <Reveal key={o.title} delay={i * 60}>
                 <div className="group">
@@ -111,7 +112,7 @@ export default function OccasionsPage() {
                 </div>
               </Reveal>
             ))}
-          </div>
+          </SwipeRow>
         </Container>
       </section>
 
