@@ -17,6 +17,8 @@ import { PackageCard } from "@/components/cards/PackageCard";
 import { ExperienceCard } from "@/components/cards/ExperienceCard";
 import { ReviewCard } from "@/components/cards/ReviewCard";
 import { reviewsForDestinationSlug } from "@/data/reviews";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { SITE_URL } from "@/data/company";
 
 export function generateStaticParams() {
   return destinations.map((d) => ({ slug: d.slug }));
@@ -53,6 +55,19 @@ export default async function DestinationPage({
 
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "TouristDestination",
+          name: destination.name,
+          description: destination.shortDescription,
+          url: `${SITE_URL}/destinations/${destination.slug}`,
+          image: [destination.heroImage, ...destination.gallery],
+          containedInPlace: { "@type": "Country", name: destination.country },
+          touristType: destination.travelStyles.map(travelStyleLabel),
+          includesAttraction: destination.highlights.map((h) => ({ "@type": "TouristAttraction", name: h })),
+        }}
+      />
       <PageHero
         eyebrow={`${destination.country} · ${destination.region}`}
         title={destination.name}

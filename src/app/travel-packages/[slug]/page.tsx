@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { packages, getPackage } from "@/data/packages";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { SITE_URL } from "@/data/company";
 import { destinations } from "@/data/destinations";
 import { travelStyleLabel } from "@/data/travel-styles";
 import { PageHero } from "@/components/layout/PageHero";
@@ -48,6 +50,27 @@ export default async function PackagePage({
 
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "TouristTrip",
+          name: pkg.title,
+          description: pkg.shortDescription,
+          url: `${SITE_URL}/travel-packages/${pkg.slug}`,
+          image: [pkg.heroImage, ...pkg.gallery],
+          touristType: pkg.travelerType,
+          provider: { "@id": `${SITE_URL}/#organization` },
+          itinerary: {
+            "@type": "ItemList",
+            itemListElement: pkg.itinerary.map((day, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              name: `${day.day}: ${day.title}`,
+              description: day.description,
+            })),
+          },
+        }}
+      />
       <PageHero
         eyebrow={`${pkg.duration} · ${pkg.travelerType}`}
         title={pkg.title}

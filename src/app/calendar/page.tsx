@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { CalendarPage } from "@/components/specialty/CalendarPage";
 import { buildCalendarEntries } from "@/lib/calendarEntries";
 import { SITE_URL } from "@/data/company";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
   title: "Travel Calendar",
@@ -34,10 +35,7 @@ export default function Page() {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(calendarJsonLd) }}
-      />
+      <JsonLd data={calendarJsonLd} />
       <CalendarPage />
     </>
   );
