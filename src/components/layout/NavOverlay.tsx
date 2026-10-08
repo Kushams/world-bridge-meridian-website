@@ -7,6 +7,14 @@ import { menuGroups, legalLinks } from "@/data/nav";
 import { company } from "@/data/company";
 import { Button } from "@/components/ui/Button";
 
+/** Quick-access tiles at the top of the menu; every one also lives in a group below. */
+const popularLinks = [
+  { href: "/destinations", label: "Destinations" },
+  { href: "/travel-packages", label: "Travel Packages" },
+  { href: "/exhibitions", label: "Gallery Exhibitions" },
+  { href: "/contact", label: "Contact Us" },
+];
+
 function AccordionGroup({
   heading,
   links,
@@ -28,16 +36,17 @@ function AccordionGroup({
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="flex w-full items-center justify-between py-5 text-left"
+        className="flex min-h-14 w-full items-center justify-between gap-3 py-3.5 text-left"
       >
         <span className="font-display text-xl md:text-2xl text-ivory">{heading}</span>
+        <span className="ml-auto text-xs tabular-nums text-stone-dim">{links.length}</span>
         <svg
           width="16"
           height="16"
           viewBox="0 0 16 16"
           fill="none"
           aria-hidden
-          className={`shrink-0 text-stone transition-transform duration-300 ${open ? "rotate-45" : ""}`}
+          className={`shrink-0 text-gold transition-transform duration-300 ${open ? "rotate-45" : ""}`}
         >
           <path d="M8 1V15M1 8H15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
@@ -51,13 +60,13 @@ function AccordionGroup({
             transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="overflow-hidden"
           >
-            <ul className="grid grid-cols-2 gap-x-6 gap-y-1 pb-6 sm:grid-cols-3">
+            <ul className="grid grid-cols-2 gap-2 pb-5 pt-1 sm:grid-cols-3">
               {links.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
                     onClick={onLinkClick}
-                    className="inline-block -my-1.5 py-1.5 text-base text-ivory-dim hover:text-gold transition-colors"
+                    className="flex min-h-12 items-center rounded-control border border-line px-3.5 py-2 text-[15px] leading-snug text-ivory-dim transition-colors hover:border-gold hover:text-gold"
                   >
                     {link.label}
                   </Link>
@@ -78,7 +87,7 @@ export function NavOverlay({
   open: boolean;
   onClose: () => void;
 }) {
-  const [openGroup, setOpenGroup] = useState<string | null>(menuGroups[0]?.heading ?? null);
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -108,8 +117,8 @@ export function NavOverlay({
     >
       <div className="bg-grid-texture absolute inset-0 opacity-40" aria-hidden />
       <div className="relative h-full overflow-y-auto">
-        <div className="mx-auto w-full max-w-[900px] px-6 md:px-10 pt-8 pb-16">
-          <div className="flex items-center justify-between">
+        <div className="mx-auto w-full max-w-[900px] px-6 md:px-10 pb-32">
+          <div className="sticky top-0 z-10 -mx-6 flex items-center justify-between bg-ink/95 px-6 py-4 backdrop-blur md:-mx-10 md:px-10">
             <span className="font-display text-lg tracking-[0.06em] uppercase text-ivory">
               World Bridge Meridian
             </span>
@@ -125,13 +134,29 @@ export function NavOverlay({
             </button>
           </div>
 
-          <div className="mt-12 mb-6">
-            <Button href="/plan-your-journey" size="lg" onClick={onClose}>
+          <div className="mt-4">
+            <Button href="/plan-your-journey" size="lg" onClick={onClose} className="w-full">
               Design My Journey
             </Button>
           </div>
 
-          <nav>
+          <p className="eyebrow mb-3 mt-8">Popular</p>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {popularLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={onClose}
+                className="flex min-h-14 items-center justify-center rounded-card border border-line bg-charcoal px-3 py-2 text-center font-display text-base leading-tight text-ivory transition-colors hover:border-gold hover:text-gold"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          <p className="eyebrow mb-1 mt-8">Explore the site</p>
+
+          <nav className="border-t hairline">
             {menuGroups.map((group) => (
               <AccordionGroup
                 key={group.heading}
@@ -146,7 +171,24 @@ export function NavOverlay({
             ))}
           </nav>
 
-          <div className="mt-10 pt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6 text-sm text-stone">
+          <div className="mt-8 grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <a
+              href={`mailto:${company.email}`}
+              className="flex min-h-12 items-center justify-center rounded-control border border-line px-4 py-2 text-sm text-ivory hover:border-gold hover:text-gold"
+            >
+              {company.email}
+            </a>
+            {company.phone ? (
+              <a
+                href={`tel:${company.phone.replace(/[^+\d]/g, "")}`}
+                className="flex min-h-12 items-center justify-center rounded-control border border-line px-4 py-2 text-sm text-ivory hover:border-gold hover:text-gold"
+              >
+                {company.phone}
+              </a>
+            ) : null}
+          </div>
+
+          <div className="mt-8 flex flex-col gap-4 border-t hairline pt-6 text-sm text-stone">
             <div className="flex flex-wrap gap-x-6 gap-y-2">
               {legalLinks.map((link) => (
                 <Link
@@ -159,9 +201,6 @@ export function NavOverlay({
                 </Link>
               ))}
             </div>
-            <a href={`mailto:${company.email}`} className="inline-block -my-1.5 py-1.5 hover:text-ivory transition-colors">
-              {company.email}
-            </a>
           </div>
         </div>
       </div>
