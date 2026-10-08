@@ -10,9 +10,12 @@ import { HeroBlurTransition } from "@/components/layout/HeroBlurTransition";
 import { destinations } from "@/data/destinations";
 import { travelStyles } from "@/data/travel-styles";
 
+const regionCount = new Set(destinations.map((d) => d.region)).size;
+
 const heroMeta = [
   { label: "Organizing journeys since", value: company.foundedYear },
   { label: "Destinations", value: `${destinations.length}+` },
+  { label: "Regions covered", value: regionCount },
   { label: "Ways to travel", value: travelStyles.length },
 ];
 
@@ -57,10 +60,10 @@ export function Hero() {
           </Magnetic>
         </div>
 
-        <dl className="mt-8 grid max-w-3xl grid-cols-3 gap-px overflow-hidden border-y border-on-photo-line/40 md:mt-14">
+        <dl className="mt-8 grid max-w-4xl grid-cols-4 gap-px overflow-hidden border-y border-on-photo-line/40 md:mt-14">
           {heroMeta.map((item) => (
-            <div key={item.label} className="py-3 pr-3 md:py-5 md:pr-8">
-              <dt className="text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-on-photo-dim md:text-[0.68rem] md:tracking-[0.22em]">
+            <div key={item.label} className="flex flex-col justify-between py-3 pr-2 md:block md:py-5 md:pr-8">
+              <dt className="text-[0.55rem] font-semibold uppercase leading-snug tracking-[0.1em] text-on-photo-dim md:text-[0.68rem] md:tracking-[0.22em]">
                 {item.label}
               </dt>
               <dd className="mt-1 font-display text-base text-on-photo md:text-xl">{item.value}</dd>

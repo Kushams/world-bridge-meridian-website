@@ -2,22 +2,23 @@ import Link from "next/link";
 import type { NavGroup } from "@/data/nav";
 
 /**
- * Phone/tablet footer: every link column is always visible, laid out two or
- * three across, so none of it hides behind a tap. Desktop (lg+) uses the
- * wider always-expanded columns in Footer.tsx; this is hidden there.
+ * Phone/tablet footer: every link group is always visible, but set as short
+ * wrapped lines instead of tall lists so the footer stays compact. Desktop
+ * (lg+) uses the wider always-expanded columns in Footer.tsx; this is hidden
+ * there.
  */
 export function FooterAccordion({ columns }: { columns: NavGroup[] }) {
   return (
-    <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:hidden">
+    <div className="space-y-5 lg:hidden">
       {columns.map((col) => (
-        <div key={col.heading} className="min-w-0">
-          <p className="eyebrow mb-3">{col.heading}</p>
-          <ul className="space-y-2.5">
+        <div key={col.heading}>
+          <p className="eyebrow mb-2">{col.heading}</p>
+          <ul className="flex flex-wrap gap-x-4 gap-y-0.5">
             {col.links.map((link) => (
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="inline-block -my-1.5 py-1.5 text-sm text-ivory-dim hover:text-gold transition-colors"
+                  className="inline-block py-1.5 text-[13px] text-ivory-dim hover:text-gold transition-colors"
                 >
                   {link.label}
                 </Link>
