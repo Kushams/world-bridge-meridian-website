@@ -15,7 +15,7 @@ export const cryptoBuyingSteps: { title: string; body: string }[] = [
   },
   {
     title: "Open an account with a regulated exchange",
-    body: "Choose an exchange that is licensed or registered where you live — see the regional guide below. Sign up with your legal name and complete identity verification (usually a photo ID and a selfie). Verification can take anywhere from minutes to a few days, so do it early.",
+    body: "Choose an exchange that is licensed or registered where you live — pick your country above. Sign up with your legal name and complete identity verification (usually a photo ID and a selfie). Verification can take anywhere from minutes to a few days, so do it early.",
   },
   {
     title: "Add money in your local currency",
@@ -39,132 +39,290 @@ export const cryptoBuyingSteps: { title: string; body: string }[] = [
   },
 ];
 
-export interface CryptoRegion {
+export interface CryptoCountryGuide {
   id: string;
-  region: string;
-  countries: string;
-  exchanges: string[];
-  notes: string[];
+  platforms: string[];
+  steps: string[];
+  note?: string;
 }
 
-export const cryptoRegions: CryptoRegion[] = [
+function standardSteps(signUp: string, deposit: string): string[] {
+  return [
+    signUp,
+    "Verify your ID.",
+    deposit,
+    "Buy the asset your consultant specified.",
+    "Send it to the World Bridge Meridian address your consultant confirms, on the network they specify.",
+  ];
+}
+
+export const cryptoCountryGuides: CryptoCountryGuide[] = [
   {
-    id: "united-states",
-    region: "United States",
-    countries: "All states",
-    exchanges: ["Coinbase", "Kraken", "Gemini", "PayPal / Venmo (selected assets)"],
-    notes: [
-      "Fund by ACH bank transfer for the lowest fees; debit cards are faster but cost more.",
-      "In New York, use a provider licensed by NYDFS (for example Coinbase or Gemini).",
-      "PayPal and Venmo support only a few assets — check that the agreed asset and network are available before buying.",
+    id: "us",
+    platforms: ["Coinbase", "Kraken", "Gemini"],
+    steps: standardSteps(
+      "Sign up on a US-regulated exchange (Coinbase, Kraken or Gemini).",
+      "Deposit USD by ACH bank transfer (cheapest) or debit card.",
+    ),
+    note: "In New York, use a provider licensed by NYDFS — Coinbase and Gemini both are.",
+  },
+  {
+    id: "ca",
+    platforms: ["Wealthsimple", "Kraken", "Coinbase"],
+    steps: standardSteps(
+      "Sign up on a CSA-registered platform (Wealthsimple, Kraken or Coinbase).",
+      "Deposit CAD by Interac e-Transfer or bank transfer.",
+    ),
+    note: "USDT isn't offered on most Canadian platforms — pay with USDC, BTC or ETH instead.",
+  },
+  {
+    id: "mx",
+    platforms: ["Bitso"],
+    steps: standardSteps("Sign up on Bitso.", "Deposit MXN by SPEI bank transfer."),
+  },
+  {
+    id: "br",
+    platforms: ["Mercado Bitcoin", "Foxbit", "Binance"],
+    steps: standardSteps(
+      "Sign up on Mercado Bitcoin, Foxbit or Binance.",
+      "Deposit BRL instantly by Pix.",
+    ),
+  },
+  {
+    id: "ar",
+    platforms: ["Lemon", "Belo", "Ripio"],
+    steps: standardSteps(
+      "Sign up on Lemon, Belo or Ripio.",
+      "Deposit ARS by bank transfer to your CVU.",
+    ),
+  },
+  {
+    id: "andean",
+    platforms: ["Buda", "Binance"],
+    steps: standardSteps(
+      "Sign up on Buda or Binance.",
+      "Deposit local currency (COP, CLP or PEN) by bank transfer.",
+    ),
+  },
+  {
+    id: "uk",
+    platforms: ["Coinbase", "Kraken", "eToro"],
+    steps: standardSteps(
+      "Sign up on an FCA-registered exchange (Coinbase, Kraken) or eToro.",
+      "Deposit GBP by bank transfer or card.",
+    ),
+    note: "On eToro, buying and sending are separate steps — you'll move the crypto into the eToro Money app before you can send it externally. Some UK banks limit payments to exchanges.",
+  },
+  {
+    id: "eu",
+    platforms: ["Coinbase", "Kraken", "Bitpanda", "Bitstamp"],
+    steps: standardSteps(
+      "Sign up on a MiCA-authorised exchange (Coinbase, Kraken, Bitpanda or Bitstamp).",
+      "Deposit EUR (or your local currency) by SEPA bank transfer.",
+    ),
+    note: "USDT is generally not available to EU/EEA customers under MiCA — pay with USDC, BTC or ETH instead.",
+  },
+  {
+    id: "ch",
+    platforms: ["Swissquote", "Kraken", "Coinbase"],
+    steps: standardSteps(
+      "Sign up on Swissquote, Kraken or Coinbase.",
+      "Deposit CHF or EUR by bank transfer.",
+    ),
+  },
+  {
+    id: "tr",
+    platforms: ["BtcTurk", "Paribu"],
+    steps: standardSteps(
+      "Sign up on a Capital Markets Board–authorised platform (BtcTurk or Paribu).",
+      "Deposit TRY by bank transfer from an account in your own name.",
+    ),
+  },
+  {
+    id: "gulf",
+    platforms: ["Rain", "BitOasis"],
+    steps: standardSteps(
+      "Sign up on a licensed regional exchange (Rain or BitOasis).",
+      "Deposit AED or BHD by bank transfer.",
+    ),
+  },
+  {
+    id: "jp",
+    platforms: ["bitFlyer", "Coincheck", "bitbank"],
+    steps: standardSteps(
+      "Sign up on an FSA-registered exchange (bitFlyer, Coincheck or bitbank).",
+      "Deposit JPY by bank transfer.",
+    ),
+    note: "Japanese exchanges ask for recipient details when you send abroad (the travel rule). The recipient is World Bridge Meridian, a business — ask your consultant if the exchange needs more.",
+  },
+  {
+    id: "kr",
+    platforms: ["Upbit", "Bithumb"],
+    steps: standardSteps(
+      "Sign up on Upbit or Bithumb and link a real-name bank account at the exchange's partner bank.",
+      "Deposit KRW from that linked account.",
+    ),
+    note: "Korean exchanges require a real-name bank account and restrict withdrawals abroad — you may need to register the destination address first. Check with your consultant before buying.",
+  },
+  {
+    id: "hk",
+    platforms: ["HashKey Exchange", "OSL"],
+    steps: standardSteps(
+      "Sign up on an SFC-licensed exchange (HashKey Exchange or OSL).",
+      "Deposit HKD by FPS or bank transfer.",
+    ),
+  },
+  {
+    id: "tw",
+    platforms: ["MaiCoin", "BitoPro"],
+    steps: standardSteps(
+      "Sign up on an FSC-registered platform (MaiCoin or BitoPro).",
+      "Deposit TWD by bank transfer.",
+    ),
+  },
+  {
+    id: "sg",
+    platforms: ["Coinbase", "Independent Reserve", "Coinhako"],
+    steps: standardSteps(
+      "Sign up on a MAS-licensed exchange (Coinbase, Independent Reserve or Coinhako).",
+      "Deposit SGD by PayNow or FAST bank transfer.",
+    ),
+  },
+  {
+    id: "ph",
+    platforms: ["Coins.ph", "PDAX"],
+    steps: standardSteps(
+      "Sign up on a BSP-registered platform (Coins.ph or PDAX).",
+      "Deposit PHP by InstaPay, bank transfer or e-wallet.",
+    ),
+  },
+  {
+    id: "th",
+    platforms: ["Bitkub"],
+    steps: standardSteps(
+      "Sign up on a Thai SEC–licensed exchange such as Bitkub.",
+      "Deposit THB by bank transfer.",
+    ),
+  },
+  {
+    id: "id",
+    platforms: ["Indodax", "Tokocrypto"],
+    steps: standardSteps(
+      "Sign up on a registered exchange (Indodax or Tokocrypto).",
+      "Deposit IDR by bank transfer or virtual account.",
+    ),
+  },
+  {
+    id: "my",
+    platforms: ["Luno", "SINEGY"],
+    steps: standardSteps(
+      "Sign up on a Securities Commission–registered exchange (Luno or SINEGY).",
+      "Deposit MYR by FPX or DuitNow bank transfer.",
+    ),
+  },
+  {
+    id: "in",
+    platforms: ["CoinDCX", "CoinSwitch"],
+    steps: standardSteps(
+      "Sign up on an FIU-registered exchange (CoinDCX or CoinSwitch).",
+      "Deposit INR by UPI or bank transfer.",
+    ),
+    note: "Indian tax rules, including 1% TDS on crypto transfers, apply — check with your tax adviser.",
+  },
+  {
+    id: "cn",
+    platforms: [],
+    steps: [
+      "Cryptocurrency trading has been restricted in mainland China since 2021, so we don't suggest a way to buy it there.",
+      "Ask your consultant to arrange payment by bank transfer or through one of our regional payment intermediaries instead.",
     ],
   },
   {
-    id: "canada",
-    region: "Canada",
-    countries: "All provinces",
-    exchanges: ["Wealthsimple", "Kraken", "Coinbase", "Newton"],
-    notes: [
-      "Fund with Interac e-Transfer or bank transfer.",
-      "Most Canadian platforms don't offer USDT; use USDC or BTC instead.",
+    id: "au",
+    platforms: ["Independent Reserve", "CoinSpot", "Swyftx"],
+    steps: standardSteps(
+      "Sign up on an AUSTRAC-registered exchange (Independent Reserve, CoinSpot or Swyftx).",
+      "Deposit AUD by PayID or bank transfer.",
+    ),
+  },
+  {
+    id: "nz",
+    platforms: ["Easy Crypto", "Independent Reserve", "Swyftx"],
+    steps: standardSteps(
+      "Sign up on a registered provider (Easy Crypto, Independent Reserve or Swyftx).",
+      "Deposit NZD by bank transfer.",
+    ),
+  },
+];
+
+export interface CryptoCountryGroup {
+  continent: string;
+  countries: { name: string; guide: string }[];
+}
+
+const eu = (names: string[]) => names.map((name) => ({ name, guide: "eu" }));
+
+export const cryptoCountryGroups: CryptoCountryGroup[] = [
+  {
+    continent: "North America",
+    countries: [
+      { name: "United States", guide: "us" },
+      { name: "Canada", guide: "ca" },
+      { name: "Mexico", guide: "mx" },
     ],
   },
   {
-    id: "united-kingdom",
-    region: "United Kingdom",
-    countries: "England, Scotland, Wales, Northern Ireland",
-    exchanges: ["Coinbase", "Kraken", "Revolut"],
-    notes: [
-      "Use a provider registered with the FCA, and fund with a Faster Payments bank transfer.",
-      "First-time buyers may face a 24-hour cooling-off period before their first purchase.",
-      "Some UK banks block or cap payments to exchanges; Revolut and Monzo are usually smoother.",
+    continent: "South America",
+    countries: [
+      { name: "Argentina", guide: "ar" },
+      { name: "Brazil", guide: "br" },
+      { name: "Chile", guide: "andean" },
+      { name: "Colombia", guide: "andean" },
+      { name: "Peru", guide: "andean" },
     ],
   },
   {
-    id: "europe",
-    region: "Europe (EU & EEA)",
-    countries: "Germany, France, Spain, Italy, Netherlands, Ireland, Portugal, Nordics and more",
-    exchanges: ["Coinbase", "Kraken", "Bitpanda", "Bitstamp"],
-    notes: [
-      "Choose an exchange authorised under the EU's MiCA rules, and fund by SEPA bank transfer.",
-      "USDT is generally not available to EU and EEA customers on regulated exchanges — pay with USDC, BTC or ETH.",
-      "In Switzerland, Swissquote and Kraken are common choices.",
+    continent: "Europe",
+    countries: [
+      ...eu([
+        "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czechia", "Denmark", "Estonia",
+        "Finland", "France", "Germany", "Greece", "Hungary", "Iceland", "Ireland", "Italy",
+        "Latvia", "Liechtenstein", "Lithuania", "Luxembourg", "Malta", "Netherlands", "Norway",
+        "Poland", "Portugal", "Romania", "Slovakia", "Slovenia", "Spain", "Sweden",
+      ]),
+      { name: "Switzerland", guide: "ch" },
+      { name: "Türkiye", guide: "tr" },
+      { name: "United Kingdom", guide: "uk" },
+    ].sort((a, b) => a.name.localeCompare(b.name)),
+  },
+  {
+    continent: "Middle East",
+    countries: [
+      { name: "Bahrain", guide: "gulf" },
+      { name: "United Arab Emirates", guide: "gulf" },
     ],
   },
   {
-    id: "middle-east",
-    region: "Middle East",
-    countries: "United Arab Emirates, Bahrain",
-    exchanges: ["Rain", "BitOasis"],
-    notes: [
-      "In Dubai, use a platform licensed by VARA; elsewhere in the UAE and Bahrain, look for a licensed local provider.",
-      "Fund with a local AED or BHD bank transfer.",
+    continent: "Asia",
+    countries: [
+      { name: "China (mainland)", guide: "cn" },
+      { name: "Hong Kong", guide: "hk" },
+      { name: "India", guide: "in" },
+      { name: "Indonesia", guide: "id" },
+      { name: "Japan", guide: "jp" },
+      { name: "Malaysia", guide: "my" },
+      { name: "Philippines", guide: "ph" },
+      { name: "Singapore", guide: "sg" },
+      { name: "South Korea", guide: "kr" },
+      { name: "Taiwan", guide: "tw" },
+      { name: "Thailand", guide: "th" },
     ],
   },
   {
-    id: "east-asia",
-    region: "East Asia",
-    countries: "Japan, Hong Kong, South Korea",
-    exchanges: ["bitFlyer, Coincheck (Japan)", "HashKey Exchange, OSL (Hong Kong)", "Upbit, Bithumb (South Korea)"],
-    notes: [
-      "Japanese exchanges offer few stablecoins — BTC or ETH is usually simplest.",
-      "Exchanges in Japan and South Korea often require you to declare or pre-register the recipient before sending overseas, and South Korea restricts transfers to foreign addresses. Talk to your consultant first; a bank transfer or regional partner may be easier.",
-      "In Hong Kong, use an SFC-licensed platform.",
-    ],
-  },
-  {
-    id: "southeast-asia",
-    region: "Southeast Asia",
-    countries: "Singapore, Philippines, Thailand, Indonesia, Malaysia",
-    exchanges: [
-      "Coinhako, Independent Reserve (Singapore)",
-      "Coins.ph, PDAX (Philippines)",
-      "Bitkub (Thailand)",
-      "Indodax (Indonesia)",
-      "Luno (Malaysia)",
-    ],
-    notes: [
-      "Use a provider licensed by your country's regulator (for example MAS in Singapore, BSP in the Philippines, SEC Thailand).",
-      "Fund with local bank transfer or e-wallet where offered.",
-    ],
-  },
-  {
-    id: "south-asia",
-    region: "South Asia",
-    countries: "India",
-    exchanges: ["CoinDCX", "Mudrex"],
-    notes: [
-      "Use an exchange registered with India's Financial Intelligence Unit (FIU-IND).",
-      "A 1% TDS is withheld on crypto transfers, and gains are taxed — factor this into the amount.",
-    ],
-  },
-  {
-    id: "oceania",
-    region: "Australia & New Zealand",
-    countries: "Australia, New Zealand",
-    exchanges: ["Independent Reserve", "CoinSpot", "Swyftx", "Easy Crypto (New Zealand)"],
-    notes: [
-      "In Australia, use an exchange registered with AUSTRAC; fund with PayID or bank transfer.",
-    ],
-  },
-  {
-    id: "africa",
-    region: "Africa",
-    countries: "South Africa, Nigeria, Kenya, Ghana and more",
-    exchanges: ["Luno, VALR (South Africa)", "Yellow Card (many African countries)", "Quidax, Busha (Nigeria)"],
-    notes: [
-      "Fund with local bank transfer or mobile money where the exchange supports it.",
-      "Where buying crypto is difficult, ask your consultant about our regional payment intermediaries.",
-    ],
-  },
-  {
-    id: "latin-america",
-    region: "Latin America",
-    countries: "Mexico, Brazil, Argentina, Colombia",
-    exchanges: ["Bitso (Mexico, Argentina, Brazil, Colombia)", "Mercado Bitcoin (Brazil)", "Lemon (Argentina)"],
-    notes: [
-      "Fund with SPEI (Mexico), Pix (Brazil) or local bank transfer.",
-      "Stablecoins avoid exchange-rate swings between confirmation and payment.",
+    continent: "Australia & Oceania",
+    countries: [
+      { name: "Australia", guide: "au" },
+      { name: "New Zealand", guide: "nz" },
     ],
   },
 ];

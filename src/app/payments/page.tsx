@@ -7,7 +7,8 @@ import { company } from "@/data/company";
 import { themeImage } from "@/data/images";
 import { CryptoPaymentPanel } from "@/components/payments/CryptoPaymentPanel";
 import { enabledCryptoPaymentOptions } from "@/data/cryptoPayments";
-import { cryptoBuyingSteps, cryptoGuideReviewed, cryptoRegions } from "@/data/cryptoBuyingGuide";
+import { cryptoBuyingSteps, cryptoGuideReviewed } from "@/data/cryptoBuyingGuide";
+import { CryptoCountryGuide } from "@/components/payments/CryptoCountryGuide";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { JsonLd } from "@/components/seo/JsonLd";
 
@@ -172,8 +173,8 @@ export default function PaymentsPage() {
               <div className="rounded-card border hairline p-6">
                 <p className="font-display text-lg text-ivory">Local-Currency Intermediaries</p>
                 <p className="mt-2 text-sm text-stone leading-relaxed">
-                  Available in many markets across the Americas, Europe, the Middle East, Africa and
-                  Asia. Ask your consultant whether one is available in your country.
+                  Available in many countries. Ask your consultant whether one is available where
+                  you are.
                 </p>
               </div>
               <div className="rounded-card border hairline p-6">
@@ -250,9 +251,13 @@ export default function PaymentsPage() {
           <SectionHeading
             eyebrow="Step-by-Step Guide"
             title="How to buy crypto and send it to us."
-            description="New to cryptocurrency? Follow these steps, then find your country below for exchanges that are commonly used there."
+            description="Pick your country for a licensed exchange and local funding method, then follow the steps below to send safely."
           />
-          <ol className="mt-12 grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-2">
+          <div className="mt-12 max-w-3xl">
+            <CryptoCountryGuide />
+          </div>
+          <p className="eyebrow mt-16 mb-8">Sending Safely, Step by Step</p>
+          <ol className="grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-2">
             {cryptoBuyingSteps.map((step, i) => (
               <li key={step.title} className="flex gap-5">
                 <span
@@ -269,52 +274,13 @@ export default function PaymentsPage() {
             ))}
           </ol>
 
-          <div className="mt-16">
-            <p className="eyebrow mb-6">Where to Buy, by Country</p>
-            <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
-              {cryptoRegions.map((r) => (
-                <details
-                  key={r.id}
-                  id={`buy-crypto-${r.id}`}
-                  className="group rounded-card border hairline bg-ink/40 p-6 open:border-gold/50"
-                >
-                  <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
-                    <span>
-                      <span className="block font-display text-lg text-ivory">{r.region}</span>
-                      <span className="mt-1 block text-xs text-stone-dim">{r.countries}</span>
-                    </span>
-                    <span aria-hidden className="shrink-0 text-gold transition-transform group-open:rotate-45">
-                      +
-                    </span>
-                  </summary>
-                  <div className="mt-5 space-y-4 text-sm leading-relaxed">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.18em] text-stone-dim">Commonly used exchanges</p>
-                      <ul className="mt-2 flex flex-wrap gap-2">
-                        {r.exchanges.map((x) => (
-                          <li key={x} className="rounded-full border border-line px-3 py-1 text-ivory-dim">
-                            {x}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <ul className="list-disc space-y-1.5 pl-5 text-stone">
-                      {r.notes.map((n) => (
-                        <li key={n}>{n}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </details>
-              ))}
-            </div>
-            <p className="mt-6 max-w-3xl text-xs text-stone-dim leading-relaxed">
+          <p className="mt-12 max-w-3xl text-xs text-stone-dim leading-relaxed">
               Exchanges are listed as commonly used examples, not endorsements or partners of{" "}
               {company.name}. Availability, licensing and supported assets change — confirm the
               provider is licensed where you live. Not financial or tax advice. Guide last reviewed{" "}
               {cryptoGuideReviewed}. Country not listed, or can&apos;t buy crypto where you are? Ask your
               consultant about bank transfer or a regional intermediary.
             </p>
-          </div>
         </Container>
       </section>
 
