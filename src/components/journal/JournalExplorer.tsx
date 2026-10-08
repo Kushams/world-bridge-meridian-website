@@ -37,7 +37,7 @@ export function JournalExplorer({ articles }: { articles: JournalArticle[] }) {
         ))}
       </div>
 
-      <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-10 grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-3">
         {filtered.map((article) => (
           <JournalCard key={article.slug} article={article} />
         ))}

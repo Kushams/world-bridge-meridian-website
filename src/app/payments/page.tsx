@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { MobileCollapse } from "@/components/ui/MobileCollapse";
 import { Button } from "@/components/ui/Button";
 import { company } from "@/data/company";
 import { themeImage } from "@/data/images";
@@ -150,9 +151,11 @@ export default function PaymentsPage() {
 
       <section id="bank-transfer" className="scroll-mt-24 border-t hairline py-16 md:py-24">
         <Container>
+          <SectionHeading eyebrow="Bank Transfer" title="Arranged by your consultant." className="md:hidden" />
+          <MobileCollapse label="Show bank transfer details">
           <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] [&>*]:min-w-0">
             <div>
-              <SectionHeading eyebrow="Bank Transfer" title="Arranged by your consultant." />
+              <SectionHeading eyebrow="Bank Transfer" title="Arranged by your consultant." className="hidden md:block" />
               <div className="mt-6 space-y-4 text-base text-stone leading-relaxed">
                 <p>
                   Every client is assigned a consultant, and bank transfers are arranged through them.
@@ -207,12 +210,14 @@ export default function PaymentsPage() {
               </div>
             </div>
           </div>
+          </MobileCollapse>
         </Container>
       </section>
 
       <section id="cryptocurrency" className="scroll-mt-24 border-t hairline py-16 md:py-24">
         <Container>
           <SectionHeading eyebrow="Cryptocurrency" title={`Accepted since ${company.cryptoAcceptedSince}.`} />
+          <MobileCollapse label="Show how to buy & send crypto">
           <div id="buy-crypto" className="mt-10 max-w-3xl scroll-mt-24">
             <CryptoCountryGuide />
           </div>
@@ -267,6 +272,7 @@ export default function PaymentsPage() {
               </p>
             </div>
           </div>
+          </MobileCollapse>
         </Container>
       </section>
 
@@ -277,6 +283,7 @@ export default function PaymentsPage() {
             title="Step by step, from purchase to confirmation."
             description="Whichever country you buy in, follow these steps so your payment arrives at the right address, on the right network."
           />
+          <MobileCollapse label="Show the step-by-step">
           <ol className="mt-12 grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-2">
             {cryptoBuyingSteps.map((step, i) => (
               <li key={step.title} className="flex gap-5">
@@ -301,6 +308,7 @@ export default function PaymentsPage() {
               {cryptoGuideReviewed}. Country not listed, or can&apos;t buy crypto where you are? Ask your
               consultant about bank transfer or a regional intermediary.
             </p>
+          </MobileCollapse>
         </Container>
       </section>
 
@@ -314,9 +322,11 @@ export default function PaymentsPage() {
             Submitting a hash does not confirm payment — our team verifies every transaction manually
             against the blockchain before it&apos;s marked confirmed.
           </p>
-          <div className="mt-6 max-w-xl">
-            <CryptoPaymentPanel />
-          </div>
+          <MobileCollapse label="Open the payment reference form">
+            <div className="mt-6 max-w-xl">
+              <CryptoPaymentPanel />
+            </div>
+          </MobileCollapse>
         </Container>
       </section>
 

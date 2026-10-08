@@ -39,7 +39,7 @@ export function Standard() {
             title="The principles behind every journey we design."
           />
         </Reveal>
-        <div className="mt-14 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid grid-cols-2 gap-x-5 gap-y-8 lg:grid-cols-3">
           {principles.map((p, i) => (
             <Reveal key={p.title} delay={i * 80}>
               <div className="border-t hairline pt-6">

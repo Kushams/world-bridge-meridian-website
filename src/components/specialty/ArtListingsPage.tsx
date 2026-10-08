@@ -36,6 +36,10 @@ export function ArtListingsPage({
   // closed drops out of the live list and into the archive below without
   // needing this page rebuilt or redeployed.
   const [today, setToday] = useState(LAST_VERIFIED);
+  // On phones only the first few shows are listed until asked for more;
+  // md and up always show everything.
+  const [showAll, setShowAll] = useState(false);
+  const PHONE_INITIAL = 6;
   useEffect(() => {
     const raf = requestAnimationFrame(() => setToday(todayIso()));
     return () => cancelAnimationFrame(raf);
@@ -68,11 +72,26 @@ export function ArtListingsPage({
       <section className="pb-16 md:pb-24">
         <Container>
           {live.length > 0 ? (
+            <>
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {live.map((listing) => (
-                <ArtListingCard key={listing.slug} listing={listing} today={today} />
+              {live.map((listing, i) => (
+                <div key={listing.slug} className={!showAll && i >= PHONE_INITIAL ? "hidden md:block" : ""}>
+                  <ArtListingCard listing={listing} today={today} />
+                </div>
               ))}
             </div>
+            {!showAll && live.length > PHONE_INITIAL ? (
+              <div className="mt-8 text-center md:hidden">
+                <button
+                  type="button"
+                  onClick={() => setShowAll(true)}
+                  className="rounded-full border border-line px-6 py-3 text-xs font-semibold uppercase tracking-wide text-ivory hover:border-gold"
+                >
+                  Show all {live.length} shows
+                </button>
+              </div>
+            ) : null}
+            </>
           ) : (
             <p className="text-sm text-stone-dim">{emptyNote}</p>
           )}

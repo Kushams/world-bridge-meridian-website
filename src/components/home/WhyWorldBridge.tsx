@@ -36,7 +36,7 @@ export function WhyWorldBridge() {
             description={company.tagline}
           />
         </Reveal>
-        <div className="mt-14 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-14 grid grid-cols-2 gap-5 md:gap-8 md:grid-cols-2 lg:grid-cols-4">
           {reasons.map((reason, i) => (
             <Reveal key={reason.title} delay={i * 100}>
               <div className="border-t hairline pt-6">

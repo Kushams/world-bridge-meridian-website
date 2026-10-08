@@ -60,7 +60,7 @@ export default function Home() {
         description="Each of these began as a conversation, not a catalog listing."
         viewAllHref="/travel-packages"
       >
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="swipe-row grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {featuredPackages.map((pkg) => (
             <PackageCard key={pkg.slug} pkg={pkg} />
           ))}
@@ -101,7 +101,7 @@ export default function Home() {
         viewAllHref="/journey-stories"
         tone="charcoal"
       >
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="swipe-row grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {featuredJourneyStories.map((story) => (
             <JourneyStoryCard key={story.slug} story={story} />
           ))}
@@ -114,7 +114,7 @@ export default function Home() {
         description="Sample sailings across our cruise categories — confirmed availability at enquiry."
         viewAllHref="/cruises"
       >
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="swipe-row grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {featuredCruises.map((cruise) => (
             <CruiseCard key={cruise.slug} cruise={cruise} />
           ))}
@@ -159,7 +159,7 @@ export default function Home() {
         viewAllHref="/reviews"
         viewAllLabel="Read All Reviews"
       >
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div className="swipe-row grid grid-cols-1 gap-6 md:grid-cols-3">
           {featuredReviews.map((review) => (
             <ReviewCard key={review.id} review={review} />
           ))}
@@ -173,7 +173,7 @@ export default function Home() {
         viewAllLabel="Read the Journal"
         tone="charcoal"
       >
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="swipe-row grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {latestJournal.map((article) => (
             <JournalCard key={article.slug} article={article} />
           ))}

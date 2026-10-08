@@ -31,7 +31,7 @@ export default function CurrentJourneysPage() {
           <p className="mb-10 max-w-2xl rounded-card border hairline bg-charcoal p-5 text-sm text-stone-dim leading-relaxed">
             {company.sampleDataDisclaimer}
           </p>
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-3">
             {currentJourneys.map((journey) => {
               const journeyDestinations = destinations.filter((d) =>
                 journey.destinationSlugs.includes(d.slug),

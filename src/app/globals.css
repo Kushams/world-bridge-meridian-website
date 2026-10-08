@@ -272,3 +272,62 @@ h1.font-display,
     transform: scale(1);
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Compact phone layout. Sections were built with desktop-sized        */
+/* breathing room (up to 7rem top and bottom), which made every page   */
+/* many screens too long on a phone. Phones only — md: and up keep    */
+/* their original spacing.                                              */
+/* ------------------------------------------------------------------ */
+@media (max-width: 767px) {
+  section[class*="py-16"],
+  section[class*="py-20"],
+  section[class*="py-24"],
+  section[class*="py-28"] {
+    padding-top: 2.25rem;
+    padding-bottom: 2.25rem;
+  }
+  section[class*="pb-16"],
+  section[class*="pb-20"],
+  section[class*="pb-24"] {
+    padding-bottom: 2.25rem;
+  }
+  section[class*="pt-16"],
+  section[class*="pt-20"],
+  section[class*="pt-24"] {
+    padding-top: 2.25rem;
+  }
+  /* Large gaps between a section heading and its content. */
+  section [class*="mt-14"],
+  section [class*="mt-16"] {
+    margin-top: 1.75rem;
+  }
+  section [class*="mt-12"],
+  section [class*="mt-10"] {
+    margin-top: 1.5rem;
+  }
+  section [class*="gap-y-10"],
+  section [class*="gap-10"] {
+    row-gap: 1.5rem;
+  }
+  /* Image-card lists become side-swipe rows: full-size photos, one row tall. */
+  .swipe-row {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 1rem;
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    padding: 0 1.5rem 0.5rem;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .swipe-row::-webkit-scrollbar {
+    display: none;
+  }
+  .swipe-row > * {
+    flex: 0 0 78%;
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+}
