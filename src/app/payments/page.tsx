@@ -113,6 +113,26 @@ export default function PaymentsPage() {
         </Container>
       </nav>
 
+      <Container className="pt-10">
+        <a
+          href="#buy-crypto"
+          className="group flex flex-col gap-4 rounded-card border border-gold/50 bg-gold/5 p-6 transition-colors hover:border-gold sm:flex-row sm:items-center sm:justify-between md:p-8"
+        >
+          <span>
+            <span className="block font-display text-xl text-ivory md:text-2xl">
+              Paying with crypto for the first time?
+            </span>
+            <span className="mt-2 block text-sm text-stone leading-relaxed">
+              Choose your country and we&apos;ll show you, in five simple steps, where to buy it and how
+              to send it to us. No experience needed.
+            </span>
+          </span>
+          <span className="shrink-0 rounded-full bg-ivory px-6 py-3 text-sm font-semibold uppercase tracking-wide text-ink transition-opacity group-hover:opacity-90">
+            Start here
+          </span>
+        </a>
+      </Container>
+
       <section id="how-it-works" className="scroll-mt-24 py-16 md:py-24">
         <Container>
           <SectionHeading eyebrow="How It Works" title="Four steps, always in this order." />

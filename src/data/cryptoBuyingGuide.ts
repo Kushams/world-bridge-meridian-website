@@ -39,6 +39,29 @@ export const cryptoBuyingSteps: { title: string; body: string }[] = [
   },
 ];
 
+export const cryptoGlossary: { term: string; meaning: string }[] = [
+  {
+    term: "Exchange",
+    meaning: "An app or website, like a bank for crypto, where you swap your normal money for cryptocurrency.",
+  },
+  {
+    term: "Stablecoin (USDC, USDT)",
+    meaning: "A cryptocurrency pegged to the US dollar — 1 USDC is worth about $1 — so its value doesn't jump around. The simplest choice for first-timers.",
+  },
+  {
+    term: "Wallet address",
+    meaning: "A long string of letters and numbers that works like an account number. You paste ours into your exchange to send us crypto.",
+  },
+  {
+    term: "Network",
+    meaning: "The \u201croad\u201d the crypto travels on, such as Ethereum, Tron or Solana. The same coin can travel on different networks, so always pick the one your consultant names.",
+  },
+  {
+    term: "Transaction ID (hash)",
+    meaning: "A receipt number your exchange shows after you send. Share it with us so we can find and confirm your payment.",
+  },
+];
+
 export interface CryptoCountryGuide {
   id: string;
   platforms: string[];

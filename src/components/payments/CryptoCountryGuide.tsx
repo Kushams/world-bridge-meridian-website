@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { cryptoCountryGroups, cryptoCountryGuides } from "@/data/cryptoBuyingGuide";
+import { cryptoCountryGroups, cryptoCountryGuides, cryptoGlossary } from "@/data/cryptoBuyingGuide";
 
 export function CryptoCountryGuide() {
   const [country, setCountry] = useState("");
@@ -16,6 +16,11 @@ export function CryptoCountryGuide() {
         Choose your country and we&apos;ll show a short set of steps to get started — a legitimate,
         licensed exchange, how to fund it, and how to send crypto to the address your consultant
         confirms.
+      </p>
+      <p className="mt-4 rounded-2xl border border-gold/40 bg-gold/5 px-4 py-3 text-sm text-ivory-dim leading-relaxed">
+        <span className="font-semibold text-ivory">First time?</span> No experience needed. USDC, a
+        digital dollar, is the simplest choice for most first-timers, and your consultant can help
+        you at any step.
       </p>
       <label htmlFor="crypto-country" className="mt-6 block text-xs uppercase tracking-[0.18em] text-stone-dim">
         Your country
@@ -60,6 +65,23 @@ export function CryptoCountryGuide() {
         </div>
       ))}
       </div>
+
+      <details className="group mt-6 border-t hairline pt-5">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-ivory">
+          New to the words? Crypto terms explained
+          <span aria-hidden className="text-gold transition-transform group-open:rotate-45">
+            +
+          </span>
+        </summary>
+        <dl className="mt-4 space-y-3 text-sm leading-relaxed">
+          {cryptoGlossary.map((g) => (
+            <div key={g.term}>
+              <dt className="text-ivory">{g.term}</dt>
+              <dd className="text-stone">{g.meaning}</dd>
+            </div>
+          ))}
+        </dl>
+      </details>
     </div>
   );
 }
