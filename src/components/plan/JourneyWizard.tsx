@@ -12,6 +12,7 @@ import {
   type DeliveryChannel,
   type JourneyLead,
 } from "@/lib/leads";
+import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { getAttribution } from "@/lib/attribution";
 import { track } from "@/lib/analytics";
 
@@ -147,6 +148,8 @@ export function JourneyWizard() {
   });
   const [status, setStatus] = useState<"idle" | "submitting" | "submitted" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileReset, setTurnstileReset] = useState(0);
   const [deliveredVia, setDeliveredVia] = useState<DeliveryChannel | null>(null);
 
   useEffect(() => {
@@ -207,7 +210,8 @@ export function JourneyWizard() {
       website: form.website,
     };
 
-    const result = await submitJourneyLead(lead, company.email);
+    const result = await submitJourneyLead(lead, company.email, turnstileToken);
+    setTurnstileReset((n) => n + 1);
 
     if (result.ok) {
       setStatus("submitted");
@@ -672,6 +676,12 @@ export function JourneyWizard() {
               </p>
             ) : null}
           </fieldset>
+        ) : null}
+
+        {step === TOTAL_STEPS ? (
+          <div className="mt-8">
+            <TurnstileWidget onToken={setTurnstileToken} resetKey={turnstileReset} />
+          </div>
         ) : null}
 
         <div className="mt-10 flex items-center justify-between">

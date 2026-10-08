@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import { track } from "@/lib/analytics";
 import { submitForm } from "@/lib/formSubmissions";
 import { submitToNetlifyForms } from "@/lib/netlifyForms";
+import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 
 /**
  * Marketing communication (journal updates, campaigns) — distinct from the
@@ -17,6 +18,8 @@ export function NewsletterForm() {
   );
   const [notice, setNotice] = useState<string | null>(null);
   const [consent, setConsent] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileReset, setTurnstileReset] = useState(0);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -29,8 +32,14 @@ export function NewsletterForm() {
     // success rather than lose the signup visibly — there is no mailto
     // fallback that makes sense for a newsletter signup the way it does
     // for a direct message.
-    const result = await submitForm({ formType: "newsletter", email });
+    const result = await submitForm({ formType: "newsletter", email, turnstileToken });
+    setTurnstileReset((n) => n + 1);
     if (!result.ok) {
+      if (result.kind === "verification") {
+        setNotice(result.error);
+        setStatus("idle");
+        return;
+      }
       if (result.kind === "throttled") {
         setNotice(result.error);
         setStatus("throttled");
@@ -90,6 +99,12 @@ export function NewsletterForm() {
           Bridge Meridian by email. Unsubscribe anytime.
         </span>
       </label>
+      {consent ? (
+        <div className="mt-3">
+          <TurnstileWidget onToken={setTurnstileToken} resetKey={turnstileReset} />
+        </div>
+      ) : null}
+      {status === "idle" && notice ? <p className="mt-2 text-xs text-stone-dim">{notice}</p> : null}
     </form>
   );
 }

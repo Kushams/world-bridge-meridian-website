@@ -162,6 +162,7 @@ export type SubmitResult =
 export async function submitJourneyLead(
   lead: JourneyLead,
   contactEmail: string,
+  turnstileToken: string | null = null,
 ): Promise<SubmitResult> {
   if (lead.website.trim() !== "") {
     return { ok: true, via: "crm" };
@@ -195,11 +196,12 @@ export async function submitJourneyLead(
     subject: `Journey request — ${lead.destination || lead.destinationMode}`,
     message: lead.notes,
     payload: flattenForNetlify(lead),
+    turnstileToken,
   });
   if (stored.ok) {
     return { ok: true, via: "supabase" };
   }
-  if (stored.kind === "throttled") {
+  if (stored.kind === "throttled" || stored.kind === "verification") {
     return { ok: false, error: stored.error };
   }
 
