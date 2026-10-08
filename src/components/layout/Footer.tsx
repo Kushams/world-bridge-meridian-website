@@ -45,10 +45,33 @@ export function Footer() {
             </div>
           ))}
 
-          <FooterAccordion columns={footerColumns} />
+          <FooterAccordion
+            columns={[
+              ...footerColumns,
+              {
+                heading: "Contact",
+                links: [
+                  { label: "Contact Us", href: "/contact" },
+                  { label: "Plan Your Journey", href: "/plan-your-journey" },
+                  { label: company.email, href: `mailto:${company.email}` },
+                  ...(company.phone
+                    ? [{ label: company.phone, href: `tel:${company.phone.replace(/[^+\d]/g, "")}` }]
+                    : []),
+                ],
+              },
+              {
+                heading: "Payments",
+                links: [
+                  { label: "Payment Options", href: "/payments" },
+                  { label: "Bank Transfer", href: "/payments#bank-transfer" },
+                  { label: "Pay with Crypto", href: "/payments#cryptocurrency" },
+                ],
+              },
+            ]}
+          />
         </div>
 
-        <div className="mt-6 grid grid-cols-2 gap-6 border-t hairline pt-6 sm:max-w-xl md:mt-10 md:pt-8">
+        <div className="mt-10 hidden grid-cols-2 gap-6 border-t hairline pt-8 lg:grid lg:max-w-xl">
          <div className="min-w-0">
           <p className="eyebrow mb-4">Contact</p>
           <ul className="space-y-2.5 text-sm text-ivory-dim">
