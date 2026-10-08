@@ -16,6 +16,188 @@ export const journalCategories = [
 
 export const journal: JournalArticle[] = [
   {
+    slug: "what-does-a-bespoke-travel-planner-do",
+    title: "What Does a Bespoke Travel Planner Do — and Is It Worth It?",
+    category: "Travel Inspiration",
+    date: "2026-10-08",
+    author: "World Bridge Meridian Editorial",
+    readingTime: "6 min read",
+    heroImage: themeImage("luxuryResort", 1),
+    excerpt:
+      "A bespoke travel planner designs a journey around you rather than selling you a package. Here's what that work involves, and when it's worth paying for.",
+    body: [
+      "A bespoke travel planner designs a trip from a blank page around one traveler, couple, family or group. Instead of choosing from a fixed package, you describe how you like to travel, and the planner builds the route, pace, accommodation and experiences to match, then coordinates everything until you're home.",
+      "In practice, the work starts with a conversation, not a booking form. We ask what a good day on holiday looks like to you, who is travelling, what you've loved or disliked on past trips, and what absolutely has to happen. That conversation shapes everything that follows.",
+      "From there, a planner sequences the journey: which cities or regions, in what order, for how many nights, and how you move between them. Getting that sequence right is most of the difference between a trip that flows and one that feels like a series of transfers.",
+      "The planner then matches accommodation to the way you travel. That might mean connecting rooms for a family, a villa for a group, or a smaller property with a better location for a couple. They also arrange private guides, cultural access, dining and transport that would be difficult to secure, or even discover, on your own.",
+      "Finally, a planner is your point of contact while you travel. If a flight is cancelled or plans change, there is one person who knows the whole itinerary and can rearrange the pieces around it.",
+      "It's most worth it for multi-city or multi-country trips, milestone journeys such as honeymoons and anniversaries, family trips spanning several generations, group travel, and destinations where local knowledge and access really matter. For a simple weekend in a city you already know, booking directly is usually enough.",
+    ],
+    faqs: [
+      {
+        question: "What is a bespoke travel planner?",
+        answer:
+          "A bespoke travel planner designs a custom journey around a specific traveler or group, covering the route, pace, accommodation, guides and experiences, and coordinates the trip from planning through to your return.",
+      },
+      {
+        question: "How is bespoke travel different from a package holiday?",
+        answer:
+          "A package holiday is a fixed itinerary sold to many travelers. A bespoke journey is built from scratch for one client, so the destinations, timing, hotels and activities all reflect that client's preferences.",
+      },
+      {
+        question: "When is a travel planner worth it?",
+        answer:
+          "A planner adds the most value on multi-destination trips, honeymoons and milestone celebrations, multi-generational family travel, group trips, and destinations where private access and local expertise make a real difference.",
+      },
+    ],
+    relatedDestinationSlugs: ["paris", "kyoto", "cape-town", "maldives"],
+  },
+  {
+    slug: "how-to-plan-a-private-cultural-trip-to-japan",
+    title: "How to Plan a Private Cultural Trip to Japan",
+    category: "Destinations",
+    date: "2026-10-06",
+    author: "World Bridge Meridian Editorial",
+    readingTime: "7 min read",
+    heroImage: themeImage("culturalHeritage", 2),
+    excerpt:
+      "Temples, tea, craft and food: how to shape a first or return trip to Japan around culture rather than checklists.",
+    body: [
+      "Plan a cultural trip to Japan around a small number of bases, usually Tokyo and Kyoto, with time to slow down in each. Then build each day around one or two meaningful experiences rather than a long list of sights. Ten to fourteen days suits most first visits.",
+      "Tokyo is the natural starting point: museums, design, contemporary art and the energy of the city. Three or four nights gives time for both the famous districts and the quieter neighborhoods where the city feels most like itself.",
+      "Kyoto is where most travelers feel Japan's traditional culture most closely: temples and gardens, tea ceremony, craft workshops and kaiseki dining. We recommend at least four nights, so that early-morning visits to the best-known temples, before the crowds arrive, are possible rather than rushed.",
+      "A private guide changes a cultural trip to Japan more than almost anywhere else. Context, etiquette and language open doors, and a good guide can arrange experiences such as time with a craftsperson or a tea master that aren't sold as standard tours.",
+      "Timing matters. Spring cherry blossom and autumn foliage are spectacular but are also the busiest and most expensive periods, and the best ryokan and hotels book many months ahead. Late autumn and the weeks either side of peak blossom often balance beauty and crowds well.",
+      "A night or two in a traditional ryokan, ideally with hot-spring baths, is one of the most memorable parts of a trip to Japan. It works best as a pause between cities rather than as an overnight stop squeezed into a busy schedule.",
+    ],
+    faqs: [
+      {
+        question: "How many days do you need for a cultural trip to Japan?",
+        answer:
+          "Ten to fourteen days suits most first visits, with three to four nights in Tokyo, at least four in Kyoto, and a night or two in a traditional ryokan.",
+      },
+      {
+        question: "Is a private guide worth it in Japan?",
+        answer:
+          "Yes for culture-focused trips. A private guide provides context, handles language and etiquette, and can arrange experiences with craftspeople, tea masters and temples that aren't available as standard tours.",
+      },
+      {
+        question: "When is the best time to visit Japan for culture?",
+        answer:
+          "Spring and autumn are the most beautiful seasons but also the busiest. The weeks either side of peak cherry blossom, and late autumn, often balance scenery and crowds well. Book the best hotels and ryokan many months ahead.",
+      },
+    ],
+    relatedDestinationSlugs: ["tokyo", "kyoto"],
+  },
+  {
+    slug: "what-shapes-the-cost-of-a-luxury-safari",
+    title: "What Shapes the Cost of a Luxury Safari",
+    category: "Luxury Travel",
+    date: "2026-10-04",
+    author: "World Bridge Meridian Editorial",
+    readingTime: "6 min read",
+    heroImage: themeImage("safari", 1),
+    excerpt:
+      "Two safaris of the same length can differ enormously in price. These are the factors that actually move the number.",
+    body: [
+      "The cost of a luxury safari depends mainly on five things: the season, the lodge, how private the reserve is, how you travel between camps, and how long you stay. Understanding those factors helps you decide where to spend and where to save.",
+      "Season is the biggest single factor. Peak months, when wildlife viewing is at its best and international school holidays fall, command the highest rates and sell out early. Shoulder months can offer excellent game viewing at noticeably lower rates.",
+      "Lodges vary widely. The most exclusive camps keep guest numbers small, include most meals and activities in the rate, and are staffed generously. That inclusiveness is part of the price, so compare what is included rather than the nightly rate alone.",
+      "Location within a region matters too. Private reserves and conservancies limit the number of vehicles at a sighting and often allow off-road driving, night drives and walking safaris that national parks restrict. That privacy usually costs more, and for many travelers it's where the value lies.",
+      "Moving between camps by light aircraft saves long road transfers and adds to the experience, but it adds cost and comes with strict luggage limits, usually soft bags only. Fewer, longer stays reduce both transfer costs and travel fatigue.",
+      "Finally, many travelers combine a safari with a city or beach stay, for example Nairobi with Zanzibar, or Cape Town with a reserve. Splitting the trip this way can balance the budget, and it's a gentler end to an early-starting week.",
+    ],
+    faqs: [
+      {
+        question: "What affects the price of a luxury safari?",
+        answer:
+          "Season, the lodge and what its rate includes, whether you stay in a private reserve or a national park, transfers between camps by road or light aircraft, and the number of nights.",
+      },
+      {
+        question: "Is a private reserve worth the extra cost?",
+        answer:
+          "For many travelers, yes. Private reserves limit vehicles at sightings and often allow off-road driving, night drives and walking safaris that national parks restrict.",
+      },
+      {
+        question: "Can you combine a safari with a beach holiday?",
+        answer:
+          "Yes. Popular combinations include a Kenyan safari followed by Zanzibar, or a South African reserve paired with Cape Town and the Winelands.",
+      },
+    ],
+    relatedDestinationSlugs: ["nairobi", "zanzibar", "cape-town"],
+  },
+  {
+    slug: "maldives-or-seychelles-choosing-an-island-honeymoon",
+    title: "Maldives or Seychelles? Choosing an Island Honeymoon",
+    category: "Couples Travel",
+    date: "2026-10-02",
+    author: "World Bridge Meridian Editorial",
+    readingTime: "5 min read",
+    heroImage: themeImage("tropicalBeach", 1),
+    excerpt:
+      "Both are Indian Ocean icons, but they suit very different honeymoons. Here's how to choose between them, and where Mauritius fits.",
+    body: [
+      "Choose the Maldives if your ideal honeymoon is total seclusion: an overwater villa, a private island resort and days spent between the lagoon and the reef. Choose the Seychelles if you want dramatic granite beaches, lush hiking and the freedom to explore more than one island.",
+      "The Maldives is built around the one-island, one-resort model. You arrive by seaplane or speedboat and stay put, which makes it effortless and very private. The snorkeling and diving straight from the villa are exceptional, and the resort you choose largely defines the trip.",
+      "The Seychelles feels wilder and more varied. Granite boulders, forested hills and beaches that are often among the most photographed in the world make island-hopping between Mahé, Praslin and La Digue part of the appeal. It suits couples who want to move around and explore.",
+      "Mauritius is a strong alternative for couples who want a beach honeymoon with more to do on land: varied cuisine, hiking, golf and culture alongside excellent resorts, often with easier flight connections.",
+      "Whichever you choose, the best villas and resorts book many months ahead for popular honeymoon dates, so begin planning as soon as your wedding date is set.",
+    ],
+    faqs: [
+      {
+        question: "Is the Maldives or the Seychelles better for a honeymoon?",
+        answer:
+          "The Maldives is better for complete seclusion, overwater villas and reef snorkeling at a single resort. The Seychelles is better for couples who want dramatic beaches, hiking and island-hopping.",
+      },
+      {
+        question: "Can you visit more than one island in the Seychelles?",
+        answer:
+          "Yes. Island-hopping between Mahé, Praslin and La Digue by short flight or ferry is one of the main reasons couples choose the Seychelles.",
+      },
+      {
+        question: "How far in advance should you book an island honeymoon?",
+        answer:
+          "Start as soon as your wedding date is set. The most sought-after villas and resorts book many months ahead for popular honeymoon periods.",
+      },
+    ],
+    relatedDestinationSlugs: ["maldives", "seychelles", "mauritius"],
+  },
+  {
+    slug: "can-you-pay-for-travel-with-cryptocurrency",
+    title: "Can You Pay for Travel With Cryptocurrency? How It Works With Us",
+    category: "Travel Tips",
+    date: "2026-09-30",
+    author: "World Bridge Meridian Editorial",
+    readingTime: "4 min read",
+    heroImage: themeImage("business", 0),
+    excerpt:
+      "Yes. World Bridge Meridian has accepted cryptocurrency since 2015. Here's exactly how a crypto payment for a journey works, and how to stay safe.",
+    body: [
+      "Yes, you can pay for travel with cryptocurrency through World Bridge Meridian. We have accepted crypto since 2015, including Bitcoin, Ethereum and USDT stablecoins on several networks, alongside card, bank transfer and regional payment partners.",
+      "There is no online checkout. Every journey is designed, priced and confirmed with you directly first. Your consultant then sends payment instructions: the exact amount, the asset, the network and the address for your booking.",
+      "After sending the payment, you record the transaction reference (the hash) on our payments page. Submitting a hash does not confirm the payment by itself: our team verifies every transaction manually on the blockchain before marking it confirmed.",
+      "Two safety rules matter most. First, always send on the exact network your consultant specifies, because sending a token on the wrong network can lose the funds. Second, only act on payment instructions that are part of a confirmed conversation about your own journey. If anything about a payment request looks unusual, contact us before sending.",
+      "Stablecoins such as USDT are often the most practical choice for travel, because their value is pegged to the US dollar and won't move between confirmation and payment.",
+    ],
+    faqs: [
+      {
+        question: "Does World Bridge Meridian accept cryptocurrency?",
+        answer:
+          "Yes. World Bridge Meridian has accepted cryptocurrency since 2015, including Bitcoin, Ethereum and USDT stablecoins on several networks, as well as card and bank transfer.",
+      },
+      {
+        question: "How do I pay for a trip with crypto?",
+        answer:
+          "Your journey is priced and confirmed with your consultant first. They send the exact amount, asset, network and address. After paying, you record the transaction hash on the payments page, and the team verifies it manually on the blockchain.",
+      },
+      {
+        question: "Which cryptocurrency is best for paying for travel?",
+        answer:
+          "Stablecoins such as USDT are often the most practical, because they are pegged to the US dollar and their value doesn't change between confirmation and payment.",
+      },
+    ],
+  },
+  {
     slug: "planning-a-multi-generational-family-trip",
     title: "How to Plan a Multi-Generational Family Trip That Actually Works",
     category: "Family Travel",

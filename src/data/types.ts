@@ -141,6 +141,8 @@ export interface JournalArticle {
   excerpt: string;
   body: string[];
   relatedDestinationSlugs?: string[];
+  /** Short question-and-answer pairs, rendered on the page and as FAQPage JSON-LD. */
+  faqs?: { question: string; answer: string }[];
 }
 
 export interface CurrentJourney {
