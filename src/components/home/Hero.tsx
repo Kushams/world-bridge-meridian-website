@@ -4,8 +4,6 @@ import { Container } from "@/components/ui/Container";
 import { company } from "@/data/company";
 import { themeImage } from "@/data/images";
 import { Parallax } from "@/components/motion/Parallax";
-import { RevealText } from "@/components/motion/RevealText";
-import { Magnetic } from "@/components/motion/Magnetic";
 import { HeroBlurTransition } from "@/components/layout/HeroBlurTransition";
 import { destinations } from "@/data/destinations";
 import { travelStyles } from "@/data/travel-styles";
@@ -30,7 +28,7 @@ export function Hero() {
             fill
             priority
             sizes="100vw"
-            className="hero-zoom object-cover"
+            className="object-cover"
           />
         </Parallax>
         <div className="scrim-hero absolute inset-0" />
@@ -41,23 +39,21 @@ export function Hero() {
         <p className="eyebrow eyebrow-on-photo mb-6 reveal reveal-visible">{company.heroEyebrow}</p>
         <h1 className="max-w-4xl font-display text-5xl leading-[1.02] tracking-[-0.02em] text-on-photo sm:text-6xl md:text-7xl lg:text-8xl text-balance-pretty">
           {company.heroHeadlineLines.map((line, i) => (
-            <RevealText key={i} text={line} delay={i * 0.15} className="block" />
+            <span key={i} className="block">
+              {line}
+            </span>
           ))}
         </h1>
         <p className="mt-6 max-w-xl text-base text-on-photo-dim md:text-lg leading-relaxed">
           {company.tagline}
         </p>
         <div className="mt-9 flex flex-wrap gap-4">
-          <Magnetic>
-            <Button href="/plan-your-journey" variant="photo" size="lg">
-              Design Your Journey
-            </Button>
-          </Magnetic>
-          <Magnetic>
-            <Button href="/explore" variant="photo-outline" size="lg">
-              Explore Journeys
-            </Button>
-          </Magnetic>
+          <Button href="/plan-your-journey" variant="photo" size="lg">
+            Design Your Journey
+          </Button>
+          <Button href="/explore" variant="photo-outline" size="lg">
+            Explore Journeys
+          </Button>
         </div>
 
         <dl className="mt-8 grid max-w-4xl grid-cols-4 gap-px overflow-hidden border-y border-on-photo-line/40 md:mt-14">
