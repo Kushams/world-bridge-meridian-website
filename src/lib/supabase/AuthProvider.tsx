@@ -104,32 +104,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const supabase = getSupabaseClient();
     if (!supabase || !userId) return;
     let cancelled = false;
-    supabase
-      .from("profiles")
-      .select(
-        "full_name, phone, home_city, nationality, preferred_contact, travel_styles, interests, travel_pace, bed_preference, dietary_requirements, allergies",
-      )
-      .eq("id", userId)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (cancelled) return;
-        setLoaded({
-          userId,
-          profile: (data as Profile | null) ?? {
-            full_name: null,
-            phone: null,
-            home_city: null,
-            nationality: null,
-            preferred_contact: null,
-            travel_styles: [],
-            interests: [],
-            travel_pace: null,
-            bed_preference: null,
-            dietary_requirements: null,
-            allergies: null,
-          },
-        });
-      });
+    const emptyProfile: Profile = {
+      full_name: null,
+      phone: null,
+      home_city: null,
+      nationality: null,
+      preferred_contact: null,
+      travel_styles: [],
+      interests: [],
+      travel_pace: null,
+      bed_preference: null,
+      dietary_requirements: null,
+      allergies: null,
+    };
+    const fullColumns =
+      "full_name, phone, home_city, nationality, preferred_contact, travel_styles, interests, travel_pace, bed_preference, dietary_requirements, allergies";
+    (async () => {
+      const first = await supabase.from("profiles").select(fullColumns).eq("id", userId).maybeSingle();
+      let data: unknown = first.data;
+      if (first.error) {
+        // The new profile columns aren't in the database yet (supabase/profiles-enquiries.sql
+        // not run): fall back to the original two so sign-in and the dashboard still work.
+        const basic = await supabase.from("profiles").select("full_name, phone").eq("id", userId).maybeSingle();
+        data = basic.data;
+      }
+      if (cancelled) return;
+      setLoaded({ userId, profile: { ...emptyProfile, ...((data as Partial<Profile> | null) ?? {}) } });
+    })();
     return () => {
       cancelled = true;
     };
