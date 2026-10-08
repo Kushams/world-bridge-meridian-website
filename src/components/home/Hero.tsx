@@ -57,13 +57,13 @@ export function Hero() {
           </Magnetic>
         </div>
 
-        <dl className="mt-14 hidden max-w-3xl grid-cols-3 gap-px overflow-hidden border-y border-on-photo-line/40 md:grid">
+        <dl className="mt-8 grid max-w-3xl grid-cols-3 gap-px overflow-hidden border-y border-on-photo-line/40 md:mt-14">
           {heroMeta.map((item) => (
-            <div key={item.label} className="py-5 pr-8">
-              <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-on-photo-dim">
+            <div key={item.label} className="py-3 pr-3 md:py-5 md:pr-8">
+              <dt className="text-[0.58rem] font-semibold uppercase tracking-[0.14em] text-on-photo-dim md:text-[0.68rem] md:tracking-[0.22em]">
                 {item.label}
               </dt>
-              <dd className="mt-1 font-display text-xl text-on-photo">{item.value}</dd>
+              <dd className="mt-1 font-display text-base text-on-photo md:text-xl">{item.value}</dd>
             </div>
           ))}
         </dl>

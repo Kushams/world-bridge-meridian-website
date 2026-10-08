@@ -58,6 +58,11 @@ export function Header() {
             <div className="hidden md:block">
               <Button href="/plan-your-journey">Design My Journey</Button>
             </div>
+            <div className="md:hidden">
+              <Button href="/plan-your-journey" className="!px-4 !py-2.5 !text-xs">
+                Plan
+              </Button>
+            </div>
             <button
               type="button"
               onClick={() => setMenuOpen(true)}

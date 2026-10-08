@@ -1,4 +1,5 @@
 import { Hero } from "@/components/home/Hero";
+import { PlannerBand } from "@/components/home/PlannerBand";
 import { Philosophy } from "@/components/home/Philosophy";
 import { CorePaths } from "@/components/home/CorePaths";
 import { StatsBand } from "@/components/home/StatsBand";
@@ -38,6 +39,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <PlannerBand />
       <Philosophy />
       <StatsBand />
 

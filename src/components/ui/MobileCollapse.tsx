@@ -10,9 +10,12 @@ import { ReactNode, useEffect, useRef } from "react";
  */
 export function MobileCollapse({
   label = "Show details",
+  defaultOpen = false,
   children,
 }: {
   label?: string;
+  /** Start open on phones too (for content that should be visible at a glance). */
+  defaultOpen?: boolean;
   children: ReactNode;
 }) {
   const ref = useRef<HTMLDetailsElement>(null);
@@ -29,11 +32,11 @@ export function MobileCollapse({
         target.scrollIntoView();
       }
     };
-    el.open = !isPhone;
+    el.open = !isPhone || defaultOpen;
     openForHash();
     window.addEventListener("hashchange", openForHash);
     return () => window.removeEventListener("hashchange", openForHash);
-  }, []);
+  }, [defaultOpen]);
 
   return (
     <details ref={ref} open className="group md:contents">

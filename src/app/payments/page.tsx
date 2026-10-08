@@ -152,7 +152,7 @@ export default function PaymentsPage() {
       <section id="bank-transfer" className="scroll-mt-24 border-t hairline py-16 md:py-24">
         <Container>
           <SectionHeading eyebrow="Bank Transfer" title="Arranged by your consultant." className="md:hidden" />
-          <MobileCollapse label="Show bank transfer details">
+          <MobileCollapse label="Show bank transfer details" defaultOpen>
           <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] [&>*]:min-w-0">
             <div>
               <SectionHeading eyebrow="Bank Transfer" title="Arranged by your consultant." className="hidden md:block" />

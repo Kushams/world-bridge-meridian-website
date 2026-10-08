@@ -75,7 +75,7 @@ export function CalendarEntryCard({ entry, today }: { entry: CalendarEntry; toda
         <p className="mt-2 text-sm text-stone-dim">
           {formatDate(entry.startDate)} – {formatDate(entry.endDate)}
         </p>
-        <p className="mt-3 flex-1 text-sm text-stone leading-relaxed line-clamp-3 md:mt-4 md:line-clamp-none">{entry.description}</p>
+        <p className="mt-3 flex-1 text-sm text-stone leading-relaxed md:mt-4">{entry.description}</p>
 
         <div className="mt-4 flex flex-wrap items-center gap-4 border-t hairline pt-4 md:mt-6 md:pt-5">
           <a
