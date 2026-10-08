@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { menuGroups, legalLinks } from "@/data/nav";
 import { company } from "@/data/company";
 import { Button } from "@/components/ui/Button";
+import { displayName, initials, useAuth } from "@/lib/supabase/AuthProvider";
 
 /** Quick-access tiles at the top of the menu; every one also lives in a group below. */
 const popularLinks = [
@@ -87,6 +88,7 @@ export function NavOverlay({
   open: boolean;
   onClose: () => void;
 }) {
+  const { user, profile } = useAuth();
   const [openGroup, setOpenGroup] = useState<string | null>(menuGroups[0]?.heading ?? null);
 
   useEffect(() => {
@@ -139,6 +141,25 @@ export function NavOverlay({
               Design My Journey
             </Button>
           </div>
+
+          {user ? (
+            <Link
+              href="/my-world-bridge"
+              onClick={onClose}
+              className="mt-4 flex items-center gap-3 rounded-card border border-line px-4 py-3 transition-colors hover:border-gold"
+            >
+              <span
+                aria-hidden
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/60 font-display text-sm text-gold"
+              >
+                {initials(displayName(user, profile))}
+              </span>
+              <span className="min-w-0">
+                <span className="block truncate text-sm text-ivory">{displayName(user, profile)}</span>
+                <span className="block text-xs text-stone-dim">View my account</span>
+              </span>
+            </Link>
+          ) : null}
 
           <p className="eyebrow mb-3 mt-8">Popular</p>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">

@@ -3,8 +3,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { themeImage } from "@/data/images";
-import { SavedJourneysPanel } from "@/components/account/SavedJourneysPanel";
-import { AuthPanel } from "@/components/account/AuthPanel";
+import { AccountArea } from "@/components/account/AccountArea";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 
 export const metadata: Metadata = {
@@ -15,16 +14,8 @@ export const metadata: Metadata = {
 
 const features = [
   {
-    title: "My Enquiries",
-    description: "Track the status of journey requests you've submitted.",
-  },
-  {
     title: "Itineraries & Documents",
     description: "Access confirmed itineraries and travel documents in one place.",
-  },
-  {
-    title: "Travel Preferences & Profile",
-    description: "Store your travel preferences so future journeys start from what we already know.",
   },
 ];
 
@@ -46,10 +37,10 @@ export default function MyWorldBridgePage() {
 
       <section className="py-16 md:py-24">
         <Container>
-          <div className="mx-auto max-w-xl">
-            {isSupabaseConfigured ? (
-              <AuthPanel />
-            ) : (
+          {isSupabaseConfigured ? (
+            <AccountArea />
+          ) : (
+            <div className="mx-auto max-w-xl">
               <div className="rounded-card border hairline bg-charcoal p-8 text-center md:p-12">
                 <p className="eyebrow mb-4">Coming Soon</p>
                 <h2 className="font-display text-2xl md:text-3xl text-ivory">
@@ -67,16 +58,12 @@ export default function MyWorldBridgePage() {
                   </Button>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
           <div className="mt-20">
-            <SavedJourneysPanel />
-          </div>
-
-          <div className="mt-20">
-            <p className="eyebrow mb-8 text-center">What&apos;s Coming</p>
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <p className="eyebrow mb-8 text-center">Coming Next</p>
+            <div className="mx-auto grid max-w-xl grid-cols-1 gap-8">
               {features.map((f) => (
                 <div key={f.title} className="border-t hairline pt-5">
                   <h3 className="font-display text-lg text-ivory">{f.title}</h3>

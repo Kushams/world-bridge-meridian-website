@@ -7,11 +7,13 @@ import { NavOverlay } from "./NavOverlay";
 import { Button } from "@/components/ui/Button";
 import { primaryNav } from "@/data/nav";
 import { SearchOverlay } from "@/components/search/SearchOverlay";
+import { displayName, initials, useAuth } from "@/lib/supabase/AuthProvider";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const { user, profile } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -55,6 +57,15 @@ export function Header() {
                 <path d="M18 18L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
             </button>
+            {user ? (
+              <Link
+                href="/my-world-bridge"
+                aria-label={`My account (${displayName(user, profile)})`}
+                className="hidden h-11 w-11 items-center justify-center rounded-full border border-gold/60 font-display text-sm text-gold transition-colors hover:bg-gold hover:text-ink md:flex"
+              >
+                {initials(displayName(user, profile))}
+              </Link>
+            ) : null}
             <div className="hidden md:block">
               <Button href="/plan-your-journey">Design My Journey</Button>
             </div>

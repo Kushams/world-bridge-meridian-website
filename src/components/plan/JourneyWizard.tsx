@@ -15,6 +15,7 @@ import {
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { getAttribution } from "@/lib/attribution";
 import { track } from "@/lib/analytics";
+import { useAuth } from "@/lib/supabase/AuthProvider";
 
 interface FormState {
   destinationMode: string;
@@ -155,6 +156,32 @@ export function JourneyWizard() {
       additionalInfo: notes ?? initialState.additionalInfo,
     };
   });
+  // Fill what we already know from a signed-in customer's profile — once,
+  // and never over anything already typed or pre-filled from a search.
+  const { user, profile } = useAuth();
+  const [prefilledFor, setPrefilledFor] = useState<string | null>(null);
+  if (user && profile && prefilledFor !== user.id) {
+    setPrefilledFor(user.id);
+    setForm((f) => ({
+      ...f,
+      name: f.name || profile.full_name || "",
+      email: f.email || user.email || "",
+      phone: f.phone || profile.phone || "",
+      originCity: f.originCity || profile.home_city || "",
+      bedPreference: f.bedPreference || profile.bed_preference || "",
+      dietaryRequirements: f.dietaryRequirements || profile.dietary_requirements || "",
+      allergies: f.allergies || profile.allergies || "",
+      travelPace: f.travelPace || profile.travel_pace || "",
+      styles: f.styles.length
+        ? f.styles
+        : travelStyles.filter((s) => profile.travel_styles.includes(s.label)).map((s) => s.slug),
+      interests: f.interests.length ? f.interests : profile.interests,
+      contactMethod:
+        profile.preferred_contact === "Phone" || profile.preferred_contact === "Email"
+          ? profile.preferred_contact
+          : f.contactMethod,
+    }));
+  }
   const [status, setStatus] = useState<"idle" | "submitting" | "submitted" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);

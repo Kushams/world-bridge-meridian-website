@@ -1,10 +1,11 @@
 "use client";
 
-import { FormEvent, ReactNode, useEffect, useState } from "react";
+import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { company } from "@/data/company";
 import { track } from "@/lib/analytics";
 import { submitForm } from "@/lib/formSubmissions";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
+import { useAuth } from "@/lib/supabase/AuthProvider";
 
 const inputClass =
   "w-full rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory placeholder:text-stone-dim outline-none focus:border-gold";
@@ -103,6 +104,8 @@ export function TravelDetailsForm() {
   const [itineraryRows, setItineraryRows] = useState(3);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [turnstileReset, setTurnstileReset] = useState(0);
+  const formRef = useRef<HTMLFormElement>(null);
+  const { user, profile } = useAuth();
   const [eventName, setEventName] = useState("");
   const [eventType, setEventType] = useState("");
   const [eventDates, setEventDates] = useState("");
@@ -122,6 +125,30 @@ export function TravelDetailsForm() {
     });
     return () => cancelAnimationFrame(raf);
   }, []);
+
+  // Pre-fill from a signed-in customer's profile. The inputs are uncontrolled, so
+  // this writes straight to the fields, and only ever into empty ones.
+  useEffect(() => {
+    const form = formRef.current;
+    if (!form || !user || !profile) return;
+    const put = (name: string, value: string | null | undefined) => {
+      const el = form.elements.namedItem(name);
+      if (value && el instanceof HTMLInputElement && el.type !== "radio" && !el.value) el.value = value;
+    };
+    put("full_name", profile.full_name);
+    put("email", user.email);
+    put("phone", profile.phone);
+    put("nationality", profile.nationality);
+    put("departure_city", profile.home_city);
+    put("dietary_requirements", profile.dietary_requirements);
+    put("allergies", profile.allergies);
+    const beds = form.querySelectorAll<HTMLInputElement>('input[name="bed_preference"]');
+    if (profile.bed_preference && ![...beds].some((b) => b.checked)) {
+      beds.forEach((b) => {
+        if (b.value === profile.bed_preference) b.checked = true;
+      });
+    }
+  }, [user, profile]);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -243,7 +270,7 @@ export function TravelDetailsForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-10">
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-10">
       <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-0 w-0 overflow-hidden">
         <label htmlFor="company_website">Leave this field blank</label>
         <input id="company_website" name="company_website" type="text" tabIndex={-1} autoComplete="off" />
