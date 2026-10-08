@@ -5,12 +5,15 @@ import { company } from "@/data/company";
 import { track } from "@/lib/analytics";
 import { submitForm } from "@/lib/formSubmissions";
 import { submitToNetlifyForms } from "@/lib/netlifyForms";
+import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 
 export function ContactForm() {
   const [status, setStatus] = useState<
     "idle" | "submitting" | "sent" | "sent-via-email" | "throttled"
   >("idle");
   const [notice, setNotice] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileReset, setTurnstileReset] = useState(0);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -35,7 +38,9 @@ export function ContactForm() {
       email,
       subject: subject || "General Enquiry",
       message,
+      turnstileToken,
     });
+    setTurnstileReset((n) => n + 1);
 
     if (result.ok) {
       setStatus("sent");
@@ -43,7 +48,7 @@ export function ContactForm() {
       return;
     }
 
-    if (result.kind === "throttled") {
+    if (result.kind === "throttled" || result.kind === "verification") {
       setNotice(result.error);
       setStatus("throttled");
       return;
@@ -124,6 +129,7 @@ export function ContactForm() {
           className="w-full rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory outline-none focus:border-gold"
         />
       </div>
+      <TurnstileWidget onToken={setTurnstileToken} resetKey={turnstileReset} />
       <button
         type="submit"
         disabled={status === "submitting"}
