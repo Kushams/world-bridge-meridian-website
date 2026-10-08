@@ -21,7 +21,7 @@ const heroMeta = [
 
 export function Hero() {
   return (
-    <section className="relative flex h-[100svh] min-h-[640px] w-full items-end overflow-hidden bg-ink">
+    <section className="relative flex min-h-[100svh] w-full items-end overflow-hidden bg-ink">
       <div className="absolute inset-0 overflow-hidden">
         <Parallax offset={70} className="absolute -top-[12%] -bottom-[12%] left-0 right-0">
           <Image
@@ -37,7 +37,7 @@ export function Hero() {
         <HeroBlurTransition />
       </div>
 
-      <Container className="relative pb-20 pt-40 md:pb-28">
+      <Container className="relative pb-14 pt-44 md:pb-28 md:pt-40">
         <p className="eyebrow eyebrow-on-photo mb-6 reveal reveal-visible">{company.heroEyebrow}</p>
         <h1 className="max-w-4xl font-display text-5xl leading-[1.02] tracking-[-0.02em] text-on-photo sm:text-6xl md:text-7xl lg:text-8xl text-balance-pretty">
           {company.heroHeadlineLines.map((line, i) => (
