@@ -1,4 +1,5 @@
 import { Hero } from "@/components/home/Hero";
+import { PlannerBand } from "@/components/home/PlannerBand";
 import { Philosophy } from "@/components/home/Philosophy";
 import { CorePaths } from "@/components/home/CorePaths";
 import { StatsBand } from "@/components/home/StatsBand";
@@ -25,6 +26,7 @@ import { reviews } from "@/data/reviews";
 import { journal } from "@/data/journal";
 import { journeyStories } from "@/data/journey-stories";
 import { themeImage } from "@/data/images";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export default function Home() {
   const featuredPackages = (getFeaturedPackages().length ? getFeaturedPackages() : packages).slice(0, 3);
@@ -37,6 +39,7 @@ export default function Home() {
   return (
     <>
       <Hero />
+      <PlannerBand />
       <Philosophy />
       <StatsBand />
 
@@ -60,11 +63,11 @@ export default function Home() {
         description="Each of these began as a conversation, not a catalog listing."
         viewAllHref="/travel-packages"
       >
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <SwipeRow className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {featuredPackages.map((pkg) => (
             <PackageCard key={pkg.slug} pkg={pkg} />
           ))}
-        </div>
+        </SwipeRow>
       </CardSection>
 
       <CardSection
@@ -74,11 +77,11 @@ export default function Home() {
         viewAllHref="/destinations"
         tone="charcoal"
       >
-        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+        <SwipeRow className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
           {featuredDestinations.map((destination) => (
             <DestinationCard key={destination.slug} destination={destination} />
           ))}
-        </div>
+        </SwipeRow>
       </CardSection>
 
       {/* Arts & Culture gets its own moment — a signature differentiator,
@@ -101,11 +104,11 @@ export default function Home() {
         viewAllHref="/journey-stories"
         tone="charcoal"
       >
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+        <SwipeRow className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {featuredJourneyStories.map((story) => (
             <JourneyStoryCard key={story.slug} story={story} />
           ))}
-        </div>
+        </SwipeRow>
       </CardSection>
 
       <CardSection
@@ -114,11 +117,11 @@ export default function Home() {
         description="Sample sailings across our cruise categories — confirmed availability at enquiry."
         viewAllHref="/cruises"
       >
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <SwipeRow className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {featuredCruises.map((cruise) => (
             <CruiseCard key={cruise.slug} cruise={cruise} />
           ))}
-        </div>
+        </SwipeRow>
       </CardSection>
 
       <FeatureBanner
@@ -159,11 +162,11 @@ export default function Home() {
         viewAllHref="/reviews"
         viewAllLabel="Read All Reviews"
       >
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <SwipeRow className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {featuredReviews.map((review) => (
             <ReviewCard key={review.id} review={review} />
           ))}
-        </div>
+        </SwipeRow>
       </CardSection>
 
       <CardSection
@@ -173,11 +176,11 @@ export default function Home() {
         viewAllLabel="Read the Journal"
         tone="charcoal"
       >
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <SwipeRow className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {latestJournal.map((article) => (
             <JournalCard key={article.slug} article={article} />
           ))}
-        </div>
+        </SwipeRow>
       </CardSection>
 
       <FinalCta />

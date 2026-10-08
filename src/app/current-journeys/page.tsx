@@ -9,6 +9,7 @@ import { destinations } from "@/data/destinations";
 import { themeImage } from "@/data/images";
 import { formatPrice } from "@/lib/format";
 import { company } from "@/data/company";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
   title: "Current Journeys",
@@ -31,7 +32,7 @@ export default function CurrentJourneysPage() {
           <p className="mb-10 max-w-2xl rounded-card border hairline bg-charcoal p-5 text-sm text-stone-dim leading-relaxed">
             {company.sampleDataDisclaimer}
           </p>
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <SwipeRow className="grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-3">
             {currentJourneys.map((journey) => {
               const journeyDestinations = destinations.filter((d) =>
                 journey.destinationSlugs.includes(d.slug),
@@ -70,7 +71,7 @@ export default function CurrentJourneysPage() {
                 </div>
               );
             })}
-          </div>
+          </SwipeRow>
 
           <div className="mt-20 rounded-card border hairline bg-charcoal p-10 text-center md:p-16">
             <h2 className="font-display text-3xl md:text-4xl text-ivory">

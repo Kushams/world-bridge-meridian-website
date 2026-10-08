@@ -9,6 +9,7 @@ import { buildCalendarEntries, calendarSectionOrder } from "@/lib/calendarEntrie
 import { EVENTS_LAST_VERIFIED } from "@/data/events";
 import { LAST_VERIFIED as EXHIBITIONS_LAST_VERIFIED } from "@/data/exhibitions";
 import { themeImage } from "@/data/images";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 function todayIso() {
   return new Date().toISOString().slice(0, 10);
@@ -75,7 +76,7 @@ export function CalendarPage() {
 
       <section className="pb-10">
         <Container>
-          <div className="flex flex-wrap gap-3">
+          <div className="chip-row flex flex-wrap gap-3">
             <button
               type="button"
               onClick={() => setSection("all")}
@@ -108,11 +109,11 @@ export function CalendarPage() {
               {sectionsWithContent.map((s) => (
                 <div key={s.key}>
                   <h2 className="font-display text-2xl md:text-3xl text-ivory mb-8">{s.label}</h2>
-                  <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                  <SwipeRow className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                     {liveBySection.get(s.key)!.map((entry) => (
                       <CalendarEntryCard key={entry.slug} entry={entry} today={today} />
                     ))}
-                  </div>
+                  </SwipeRow>
                 </div>
               ))}
             </div>
@@ -138,13 +139,13 @@ export function CalendarPage() {
                   — hide
                 </span>
               </summary>
-              <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              <SwipeRow className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {past
                   .filter((entry) => section === "all" || entry.sectionKey === section)
                   .map((entry) => (
                     <CalendarEntryCard key={entry.slug} entry={entry} today={today} />
                   ))}
-              </div>
+              </SwipeRow>
             </details>
           </Container>
         </section>

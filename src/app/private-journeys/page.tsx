@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
 import { themeImage } from "@/data/images";
 import { company } from "@/data/company";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
   title: "Private Journeys",
@@ -66,7 +67,7 @@ export default function PrivateJourneysPage() {
             title="A starting point, not a fixed menu."
             description={`${company.sampleDataDisclaimer} Every private journey is designed from a private consultation — these are the kinds of journeys we're most often asked to build.`}
           />
-          <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <SwipeRow className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {concepts.map((c, i) => (
               <Reveal key={c.title} delay={i * 70}>
                 <div className="group">
@@ -92,7 +93,7 @@ export default function PrivateJourneysPage() {
                 </div>
               </Reveal>
             ))}
-          </div>
+          </SwipeRow>
         </Container>
       </section>
 

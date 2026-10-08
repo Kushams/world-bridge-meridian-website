@@ -1,6 +1,7 @@
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 const steps = [
   {
@@ -46,7 +47,7 @@ export function Concierge() {
             description="World Bridge Meridian coordinates a journey from first conversation through the trip itself — not a series of separate bookings handed between departments."
           />
         </Reveal>
-        <div className="mt-14 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+        <SwipeRow className="mt-14 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {steps.map((step, i) => (
             <Reveal key={step.number} delay={i * 90}>
               <div className="border-t hairline pt-6">
@@ -56,7 +57,7 @@ export function Concierge() {
               </div>
             </Reveal>
           ))}
-        </div>
+        </SwipeRow>
       </Container>
     </section>
   );

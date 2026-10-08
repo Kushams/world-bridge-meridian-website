@@ -4,6 +4,7 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { themeImage } from "@/data/images";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 const styles = [
   { label: "Luxury Travel", href: "/luxury-travel", image: themeImage("luxuryResort", 0) },
@@ -28,7 +29,7 @@ export function TravelStyles() {
             description="Every journey is shaped around the traveler — these are the shapes we build most often."
           />
         </Reveal>
-        <div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4">
+        <SwipeRow className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4">
           {styles.map((style, i) => (
             <Reveal key={style.href} delay={i * 60}>
               <Link href={style.href} className="group relative block aspect-square overflow-hidden rounded-card">
@@ -48,7 +49,7 @@ export function TravelStyles() {
               </Link>
             </Reveal>
           ))}
-        </div>
+        </SwipeRow>
       </Container>
     </section>
   );

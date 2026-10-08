@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { JournalArticle } from "@/data/types";
 import { JournalCard } from "@/components/cards/JournalCard";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export function JournalExplorer({ articles }: { articles: JournalArticle[] }) {
   const [category, setCategory] = useState<string>("all");
@@ -15,7 +16,7 @@ export function JournalExplorer({ articles }: { articles: JournalArticle[] }) {
 
   return (
     <div>
-      <div className="flex flex-wrap gap-3">
+      <div className="chip-row flex flex-wrap gap-3">
         <button
           onClick={() => setCategory("all")}
           className={`rounded-full border px-5 py-2 text-xs font-semibold uppercase tracking-wide transition-colors ${
@@ -37,11 +38,11 @@ export function JournalExplorer({ articles }: { articles: JournalArticle[] }) {
         ))}
       </div>
 
-      <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      <SwipeRow className="mt-10 grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-3">
         {filtered.map((article) => (
           <JournalCard key={article.slug} article={article} />
         ))}
-      </div>
+      </SwipeRow>
     </div>
   );
 }

@@ -11,14 +11,14 @@ export function Footer() {
 
   return (
     <footer className="mt-auto border-t hairline bg-charcoal">
-      <Container className="py-16 md:py-20">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.3fr_repeat(3,1fr)]">
+      <Container className="py-10 md:py-20">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.3fr_repeat(3,1fr)] lg:gap-12">
           <div>
             <Logo size="large" />
-            <p className="mt-6 max-w-xs text-sm text-stone leading-relaxed">
+            <p className="mt-4 max-w-xs text-sm text-stone leading-relaxed md:mt-6">
               {company.footerTagline}
             </p>
-            <div className="mt-6">
+            <div className="mt-4 md:mt-6">
               <p className="eyebrow mb-3">Journal Updates</p>
               <NewsletterForm />
             </div>
@@ -45,10 +45,34 @@ export function Footer() {
             </div>
           ))}
 
-          <FooterAccordion columns={footerColumns} />
+          <FooterAccordion
+            columns={[
+              ...footerColumns,
+              {
+                heading: "Contact",
+                links: [
+                  { label: "Contact Us", href: "/contact" },
+                  { label: "Plan Your Journey", href: "/plan-your-journey" },
+                  { label: company.email, href: `mailto:${company.email}` },
+                  ...(company.phone
+                    ? [{ label: company.phone, href: `tel:${company.phone.replace(/[^+\d]/g, "")}` }]
+                    : []),
+                ],
+              },
+              {
+                heading: "Payments",
+                links: [
+                  { label: "Payment Options", href: "/payments" },
+                  { label: "Bank Transfer", href: "/payments#bank-transfer" },
+                  { label: "Pay with Crypto", href: "/payments#cryptocurrency" },
+                ],
+              },
+            ]}
+          />
         </div>
 
-        <div className="mt-14 border-t hairline pt-10">
+        <div className="mt-10 hidden grid-cols-2 gap-6 border-t hairline pt-8 lg:grid lg:max-w-xl">
+         <div className="min-w-0">
           <p className="eyebrow mb-4">Contact</p>
           <ul className="space-y-2.5 text-sm text-ivory-dim">
             <li>
@@ -62,12 +86,7 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/payments" className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors">
-                Payment Options
-              </Link>
-            </li>
-            <li>
-              <a href={`mailto:${company.email}`} className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors">
+              <a href={`mailto:${company.email}`} className="inline-block -my-1.5 break-all py-1.5 hover:text-gold transition-colors">
                 {company.email}
               </a>
             </li>
@@ -80,9 +99,30 @@ export function Footer() {
               </a>
             </li>
           </ul>
+         </div>
+         <div className="min-w-0">
+          <p className="eyebrow mb-4">Payments</p>
+          <ul className="space-y-2.5 text-sm text-ivory-dim">
+            <li>
+              <Link href="/payments" className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors">
+                Payment Options
+              </Link>
+            </li>
+            <li>
+              <Link href="/payments#bank-transfer" className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors">
+                Bank Transfer
+              </Link>
+            </li>
+            <li>
+              <Link href="/payments#cryptocurrency" className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors">
+                Pay with Crypto
+              </Link>
+            </li>
+          </ul>
+         </div>
         </div>
 
-        <div className="mt-10 flex flex-col-reverse items-start gap-4 border-t hairline pt-8 text-xs text-stone-dim md:flex-row md:items-center md:justify-between">
+        <div className="mt-6 flex flex-col-reverse items-start gap-3 border-t hairline pt-5 md:mt-10 md:gap-4 md:pt-8 text-xs text-stone-dim md:flex-row md:items-center md:justify-between">
           <p>{company.copyrightLine(year)}</p>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
             {legalLinks.map((link) => (

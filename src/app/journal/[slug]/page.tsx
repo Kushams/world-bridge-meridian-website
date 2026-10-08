@@ -10,6 +10,7 @@ import { DestinationCard } from "@/components/cards/DestinationCard";
 import { formatDate } from "@/lib/format";
 import { SITE_URL, company } from "@/data/company";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export function generateStaticParams() {
   return journal.map((a) => ({ slug: a.slug }));
@@ -122,11 +123,11 @@ export default async function JournalArticlePage({
           {related.length > 0 ? (
             <div className="mt-20">
               <p className="eyebrow mb-6">Related Destinations</p>
-              <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+              <SwipeRow className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
                 {related.map((d) => (
                   <DestinationCard key={d.slug} destination={d} />
                 ))}
-              </div>
+              </SwipeRow>
             </div>
           ) : null}
 

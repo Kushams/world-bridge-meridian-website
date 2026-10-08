@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { ArtListingCard, formatDate } from "@/components/cards/ArtListingCard";
 import { listingsByCategory, LAST_VERIFIED, type ArtListing } from "@/data/exhibitions";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 function todayIso() {
   return new Date().toISOString().slice(0, 10);
@@ -68,11 +69,11 @@ export function ArtListingsPage({
       <section className="pb-16 md:pb-24">
         <Container>
           {live.length > 0 ? (
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <SwipeRow className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {live.map((listing) => (
                 <ArtListingCard key={listing.slug} listing={listing} today={today} />
               ))}
-            </div>
+            </SwipeRow>
           ) : (
             <p className="text-sm text-stone-dim">{emptyNote}</p>
           )}
@@ -92,11 +93,11 @@ export function ArtListingsPage({
                   — hide
                 </span>
               </summary>
-              <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              <SwipeRow className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {past.map((listing) => (
                   <ArtListingCard key={listing.slug} listing={listing} today={today} />
                 ))}
-              </div>
+              </SwipeRow>
             </details>
           </Container>
         </section>

@@ -16,6 +16,7 @@ import { travelStyles } from "@/data/travel-styles";
 import { themeImage } from "@/data/images";
 import Link from "next/link";
 import Image from "next/image";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
   title: "Explore",
@@ -45,11 +46,11 @@ export default function ExplorePage() {
         title="Travel packages worth a closer look."
         viewAllHref="/travel-packages"
       >
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <SwipeRow className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {featuredPackages.map((pkg) => (
             <PackageCard key={pkg.slug} pkg={pkg} />
           ))}
-        </div>
+        </SwipeRow>
       </CardSection>
 
       <CardSection
@@ -58,19 +59,19 @@ export default function ExplorePage() {
         viewAllHref="/destinations"
         tone="charcoal"
       >
-        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+        <SwipeRow className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
           {featuredDestinations.map((destination) => (
             <DestinationCard key={destination.slug} destination={destination} />
           ))}
-        </div>
+        </SwipeRow>
       </CardSection>
 
       <CardSection eyebrow="Cruises" title="Ocean and river journeys." viewAllHref="/cruises">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <SwipeRow className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {featuredCruises.map((cruise) => (
             <CruiseCard key={cruise.slug} cruise={cruise} />
           ))}
-        </div>
+        </SwipeRow>
       </CardSection>
 
       <CardSection
@@ -79,11 +80,11 @@ export default function ExplorePage() {
         viewAllHref="/experiences"
         tone="charcoal"
       >
-        <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+        <SwipeRow className="grid grid-cols-2 gap-6 md:grid-cols-4">
           {featuredExperiences.map((experience) => (
             <ExperienceCard key={experience.slug} experience={experience} />
           ))}
-        </div>
+        </SwipeRow>
       </CardSection>
 
       <section className="py-20 md:py-28">
@@ -112,7 +113,7 @@ export default function ExplorePage() {
         viewAllHref="/current-journeys"
         tone="charcoal"
       >
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <SwipeRow className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {seasonalJourneys.map((journey) => (
             <Link key={journey.slug} href="/current-journeys" className="group block">
               <div className="relative aspect-[4/5] overflow-hidden rounded-card">
@@ -134,7 +135,7 @@ export default function ExplorePage() {
               </div>
             </Link>
           ))}
-        </div>
+        </SwipeRow>
       </CardSection>
     </>
   );

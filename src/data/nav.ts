@@ -81,8 +81,16 @@ export const menuGroups: NavGroup[] = [
     links: [
       { label: "Contact Us", href: "/contact" },
       { label: "Plan Your Journey", href: "/plan-your-journey" },
-      { label: "Payment Options", href: "/payments" },
       { label: "Exhibition Travel Form", href: "/travel-details-form" },
+    ],
+  },
+  {
+    heading: "Payments",
+    links: [
+      { label: "Payment Options", href: "/payments" },
+      { label: "Bank Transfer", href: "/payments#bank-transfer" },
+      { label: "Pay with Crypto", href: "/payments#cryptocurrency" },
+      { label: "Payment Questions", href: "/payments#payment-questions" },
     ],
   },
   {

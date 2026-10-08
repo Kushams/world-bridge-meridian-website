@@ -10,6 +10,7 @@ import { packages } from "@/data/packages";
 import { destinations } from "@/data/destinations";
 import { reviews } from "@/data/reviews";
 import { TravelStyleSlug } from "@/data/types";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export function SpecialtyPage({
   eyebrow,
@@ -68,11 +69,11 @@ export function SpecialtyPage({
         <section className="py-16 md:py-24 bg-charcoal border-y hairline">
           <Container>
             <SectionHeading eyebrow="Featured Journeys" title="A few examples we've shaped" />
-            <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <SwipeRow className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {relatedPackages.map((pkg) => (
                 <PackageCard key={pkg.slug} pkg={pkg} />
               ))}
-            </div>
+            </SwipeRow>
           </Container>
         </section>
       ) : null}
@@ -81,11 +82,11 @@ export function SpecialtyPage({
         <section className="py-16 md:py-24">
           <Container>
             <SectionHeading eyebrow="Destinations" title="Where this travels well" />
-            <div className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+            <SwipeRow className="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
               {relatedDestinations.map((d) => (
                 <DestinationCard key={d.slug} destination={d} />
               ))}
-            </div>
+            </SwipeRow>
           </Container>
         </section>
       ) : null}
@@ -94,11 +95,11 @@ export function SpecialtyPage({
         <section className="py-16 md:py-24 bg-charcoal border-y hairline">
           <Container>
             <SectionHeading eyebrow="Reviews" title="What clients have said" />
-            <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+            <SwipeRow className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
               {relatedReviews.map((r) => (
                 <ReviewCard key={r.id} review={r} />
               ))}
-            </div>
+            </SwipeRow>
           </Container>
         </section>
       ) : null}

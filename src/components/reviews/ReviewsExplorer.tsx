@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Review, TravelStyleSlug } from "@/data/types";
 import { ReviewCard } from "@/components/cards/ReviewCard";
 import { travelStyleLabel } from "@/data/travel-styles";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export function ReviewsExplorer({ reviews }: { reviews: Review[] }) {
   const [style, setStyle] = useState<TravelStyleSlug | "all">("all");
@@ -42,11 +43,11 @@ export function ReviewsExplorer({ reviews }: { reviews: Review[] }) {
         ))}
       </div>
 
-      <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+      <SwipeRow className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
         {filtered.map((review) => (
           <ReviewCard key={review.id} review={review} />
         ))}
-      </div>
+      </SwipeRow>
     </div>
   );
 }

@@ -19,6 +19,7 @@ import { ReviewCard } from "@/components/cards/ReviewCard";
 import { reviewsForDestinationSlug } from "@/data/reviews";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { SITE_URL } from "@/data/company";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export function generateStaticParams() {
   return destinations.map((d) => ({ slug: d.slug }));
@@ -165,22 +166,22 @@ export default async function DestinationPage({
           {relatedPackages.length > 0 ? (
             <div className="mt-20">
               <SectionHeading eyebrow="Featured Journeys" title="Journeys in this destination" />
-              <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              <SwipeRow className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {relatedPackages.map((pkg) => (
                   <PackageCard key={pkg.slug} pkg={pkg} />
                 ))}
-              </div>
+              </SwipeRow>
             </div>
           ) : null}
 
           {relatedExperiences.length > 0 ? (
             <div className="mt-20">
               <SectionHeading eyebrow="Experiences" title={`Curated in ${destination.name}`} />
-              <div className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-4">
+              <SwipeRow className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-4">
                 {relatedExperiences.map((exp) => (
                   <ExperienceCard key={exp.slug} experience={exp} />
                 ))}
-              </div>
+              </SwipeRow>
             </div>
           ) : null}
 
@@ -218,11 +219,11 @@ export default async function DestinationPage({
                 eyebrow="Client Reviews"
                 title={`What Clients Say About ${destination.name}`}
               />
-              <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              <SwipeRow className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {relatedReviews.map((review) => (
                   <ReviewCard key={review.id} review={review} />
                 ))}
-              </div>
+              </SwipeRow>
               <div className="mt-8">
                 <Button href="/reviews" variant="outline">
                   Read All Reviews

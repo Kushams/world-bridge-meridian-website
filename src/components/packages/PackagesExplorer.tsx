@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { TravelPackage, TravelStyleSlug } from "@/data/types";
 import { travelStyles } from "@/data/travel-styles";
 import { PackageCard } from "@/components/cards/PackageCard";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export function PackagesExplorer({ packages }: { packages: TravelPackage[] }) {
   const [style, setStyle] = useState<TravelStyleSlug | "all">("all");
@@ -63,11 +64,11 @@ export function PackagesExplorer({ packages }: { packages: TravelPackage[] }) {
           .
         </p>
       ) : (
-        <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <SwipeRow className="mt-10 grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-3">
           {filtered.map((pkg) => (
             <PackageCard key={pkg.slug} pkg={pkg} />
           ))}
-        </div>
+        </SwipeRow>
       )}
     </div>
   );

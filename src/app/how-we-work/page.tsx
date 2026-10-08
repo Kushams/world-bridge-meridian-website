@@ -3,6 +3,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { themeImage } from "@/data/images";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
   title: "How We Work",
@@ -66,7 +67,7 @@ export default function HowWeWorkPage() {
 
       <section className="py-16 md:py-24">
         <Container>
-          <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+          <SwipeRow className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((step) => (
               <div key={step.number} className="border-t hairline pt-6">
                 <p className="font-display text-3xl text-gold">{step.number}</p>
@@ -74,7 +75,7 @@ export default function HowWeWorkPage() {
                 <p className="mt-2 text-sm text-stone leading-relaxed">{step.description}</p>
               </div>
             ))}
-          </div>
+          </SwipeRow>
         </Container>
       </section>
 

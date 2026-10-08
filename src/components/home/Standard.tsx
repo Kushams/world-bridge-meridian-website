@@ -1,6 +1,7 @@
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 const principles = [
   {
@@ -39,7 +40,7 @@ export function Standard() {
             title="The principles behind every journey we design."
           />
         </Reveal>
-        <div className="mt-14 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+        <SwipeRow className="mt-14 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           {principles.map((p, i) => (
             <Reveal key={p.title} delay={i * 80}>
               <div className="border-t hairline pt-6">
@@ -48,7 +49,7 @@ export function Standard() {
               </div>
             </Reveal>
           ))}
-        </div>
+        </SwipeRow>
       </Container>
     </section>
   );

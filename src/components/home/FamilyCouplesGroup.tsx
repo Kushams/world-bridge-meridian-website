@@ -4,6 +4,7 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
 import { themeImage } from "@/data/images";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 const tiles = [
   {
@@ -38,7 +39,7 @@ export function FamilyCouplesGroup() {
             className="mx-auto"
           />
         </Reveal>
-        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+        <SwipeRow className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
           {tiles.map((tile, i) => (
             <Reveal key={tile.href} delay={i * 100}>
               <Link href={tile.href} className="group block tap-shrink">
@@ -61,7 +62,7 @@ export function FamilyCouplesGroup() {
               </Link>
             </Reveal>
           ))}
-        </div>
+        </SwipeRow>
       </Container>
     </section>
   );

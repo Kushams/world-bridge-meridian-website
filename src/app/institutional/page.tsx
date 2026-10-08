@@ -4,6 +4,7 @@ import { SpecialtyPage } from "@/components/specialty/SpecialtyPage";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { themeImage } from "@/data/images";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
   title: "Institutional Travel",
@@ -118,14 +119,14 @@ export default function InstitutionalPage() {
       <section className="py-16 md:py-24 border-b hairline">
         <Container>
           <SectionHeading eyebrow="What We Coordinate" title="One program, coordinated end to end." />
-          <div className="mt-10 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          <SwipeRow className="mt-10 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {coordination.map((item) => (
               <div key={item.title} className="border-t hairline pt-5">
                 <h3 className="font-display text-lg text-ivory">{item.title}</h3>
                 <p className="mt-2 text-sm text-stone leading-relaxed">{item.description}</p>
               </div>
             ))}
-          </div>
+          </SwipeRow>
         </Container>
       </section>
 
@@ -135,7 +136,7 @@ export default function InstitutionalPage() {
             eyebrow="Request-for-Proposal Process"
             title="How a Group Travel Brief becomes a confirmed program."
           />
-          <div className="mt-10 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          <SwipeRow className="mt-10 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
             {rfpSteps.map((s) => (
               <div key={s.step}>
                 <p className="font-display text-3xl text-gold">{s.step}</p>
@@ -143,7 +144,7 @@ export default function InstitutionalPage() {
                 <p className="mt-2 text-sm text-stone leading-relaxed">{s.description}</p>
               </div>
             ))}
-          </div>
+          </SwipeRow>
         </Container>
       </section>
     </>

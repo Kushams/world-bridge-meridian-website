@@ -12,6 +12,7 @@ import { deriveInterestTags } from "@/lib/interestMatching";
 import { themeImage } from "@/data/images";
 import { TravelStyleSlug } from "@/data/types";
 import { track } from "@/lib/analytics";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 const regions = Array.from(new Set(destinations.map((d) => d.region)));
 
@@ -83,7 +84,7 @@ export function TravelByInterestPage() {
       <section className="py-10 border-b hairline">
         <Container>
           <p className="eyebrow mb-4">Region</p>
-          <div className="flex flex-wrap gap-3">
+          <div className="chip-row flex flex-wrap gap-3">
             <Chip active={selectedRegion === null} onClick={() => setSelectedRegion(null)}>
               All Regions
             </Chip>
@@ -95,7 +96,7 @@ export function TravelByInterestPage() {
           </div>
 
           <p className="eyebrow mb-4 mt-8">Journey Type</p>
-          <div className="flex flex-wrap gap-3">
+          <div className="chip-row flex flex-wrap gap-3">
             <Chip active={selectedStyle === null} onClick={() => setSelectedStyle(null)}>
               Any
             </Chip>
@@ -111,7 +112,7 @@ export function TravelByInterestPage() {
           </div>
 
           <p className="eyebrow mb-4 mt-8">Interests</p>
-          <div className="flex flex-wrap gap-3">
+          <div className="chip-row flex flex-wrap gap-3">
             {interestTags.map((tag) => (
               <Chip key={tag} active={selectedInterests.includes(tag)} onClick={() => toggleInterest(tag)}>
                 {tag}
@@ -151,11 +152,11 @@ export function TravelByInterestPage() {
           </div>
 
           {filtered.length > 0 ? (
-            <div className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+            <SwipeRow className="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map(({ destination }) => (
                 <DestinationCard key={destination.slug} destination={destination} />
               ))}
-            </div>
+            </SwipeRow>
           ) : (
             <p className="text-sm text-stone-dim">
               Nothing matches that exact combination yet — tell us what you have in mind directly

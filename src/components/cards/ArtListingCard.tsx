@@ -49,7 +49,7 @@ export function ArtListingCard({ listing, today }: { listing: ArtListing; today:
         isPast ? "opacity-70" : ""
       }`}
     >
-      <div className="relative h-48 w-full shrink-0">
+      <div className="relative h-32 w-full shrink-0 md:h-48">
         <Image
           src={listing.heroImage}
           alt="Gallery interior"
@@ -70,9 +70,9 @@ export function ArtListingCard({ listing, today }: { listing: ArtListing; today:
         <p className="mt-2 text-sm text-stone-dim">
           {formatDate(listing.startDate)} – {formatDate(listing.endDate)}
         </p>
-        <p className="mt-4 flex-1 text-sm text-stone leading-relaxed">{listing.description}</p>
+        <p className="mt-3 flex-1 text-sm text-stone leading-relaxed md:mt-4">{listing.description}</p>
 
-        <div className="mt-6 flex flex-wrap items-center gap-4 border-t hairline pt-5">
+        <div className="mt-4 flex flex-wrap items-center gap-4 border-t hairline pt-4 md:mt-6 md:pt-5">
           <a
             href={listing.sourceUrl}
             target="_blank"

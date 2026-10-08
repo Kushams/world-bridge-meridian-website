@@ -9,6 +9,7 @@ import {
   CULTURAL_ACCESS_LAST_VERIFIED,
 } from "@/data/culturalAccess";
 import { themeImage } from "@/data/images";
+import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
   title: "Cultural Access Programs",
@@ -58,11 +59,11 @@ export default function CulturalAccessPage() {
         <section className="pb-16 md:pb-20">
           <Container>
             <p className="eyebrow mb-6">Museum Membership & Patron Programs</p>
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <SwipeRow className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {museumPrograms.map((program) => (
                 <CulturalAccessCard key={program.slug} program={program} />
               ))}
-            </div>
+            </SwipeRow>
           </Container>
         </section>
       ) : null}
@@ -71,11 +72,11 @@ export default function CulturalAccessPage() {
         <section className="pb-16 md:pb-24">
           <Container>
             <p className="eyebrow mb-6">Opera & Ballet Patron Programs</p>
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <SwipeRow className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {operaPrograms.map((program) => (
                 <CulturalAccessCard key={program.slug} program={program} />
               ))}
-            </div>
+            </SwipeRow>
           </Container>
         </section>
       ) : null}

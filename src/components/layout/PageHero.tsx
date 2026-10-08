@@ -20,7 +20,7 @@ export function PageHero({
 }) {
   return (
     <section
-      className={`relative flex ${size === "sm" ? "min-h-[42vh]" : "min-h-[56vh]"} items-end overflow-hidden bg-charcoal`}
+      className={`relative flex ${size === "sm" ? "min-h-[34vh] md:min-h-[42vh]" : "min-h-[44vh] md:min-h-[56vh]"} items-end overflow-hidden bg-charcoal`}
     >
       {image ? (
         <div className="absolute inset-0">
@@ -38,7 +38,7 @@ export function PageHero({
       ) : (
         <div className="bg-grid-texture absolute inset-0 opacity-30" />
       )}
-      <Container className="relative pb-14 pt-36 md:pb-16">
+      <Container className="relative pb-10 pt-28 md:pb-16 md:pt-36">
         <p className={`eyebrow mb-4 ${image ? "eyebrow-on-photo" : ""}`}>{eyebrow}</p>
         <h1
           className={`max-w-3xl font-display text-4xl md:text-6xl lg:text-7xl leading-[1.04] tracking-[-0.02em] text-balance-pretty ${

@@ -272,3 +272,187 @@ h1.font-display,
     transform: scale(1);
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Compact phone layout. Sections were built with desktop-sized        */
+/* breathing room (up to 7rem top and bottom), which made every page   */
+/* many screens too long on a phone. Phones only — md: and up keep    */
+/* their original spacing.                                              */
+/* ------------------------------------------------------------------ */
+@media (max-width: 767px) {
+  section[class*="py-16"],
+  section[class*="py-20"],
+  section[class*="py-24"],
+  section[class*="py-28"] {
+    padding-top: 2.25rem;
+    padding-bottom: 2.25rem;
+  }
+  section[class*="pb-16"],
+  section[class*="pb-20"],
+  section[class*="pb-24"] {
+    padding-bottom: 2.25rem;
+  }
+  section[class*="pt-16"],
+  section[class*="pt-20"],
+  section[class*="pt-24"] {
+    padding-top: 2.25rem;
+  }
+  /* Large gaps between a section heading and its content. */
+  section [class*="mt-14"],
+  section [class*="mt-16"] {
+    margin-top: 1.75rem;
+  }
+  section [class*="mt-12"],
+  section [class*="mt-10"] {
+    margin-top: 1.5rem;
+  }
+  section [class*="gap-y-10"],
+  section [class*="gap-10"] {
+    row-gap: 1.5rem;
+  }
+  /* Filter chips: one swipeable line instead of a tall wrapped block. */
+  .chip-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    padding: 0 1.5rem 0.25rem;
+    scrollbar-width: none;
+  }
+  .chip-row::-webkit-scrollbar {
+    display: none;
+  }
+  .chip-row > * {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Swipe rows (see components/ui/SwipeRow). Card lists scroll sideways */
+/* on every screen size: one card and a peek of the next on phones,    */
+/* the usual 2-4 cards across on tablets and desktops. --n is how many */
+/* cards fit per view; SwipeRow sets --n-sm / --n-md / --n-lg from the */
+/* grid classes the list already had, so card widths match the old     */
+/* grid. Unlayered, so it wins over the grid utilities on the element. */
+/* ------------------------------------------------------------------ */
+.swipe-row {
+  --n: 1.28;
+  --sw-gap: 1rem;
+  position: relative;
+  display: flex;
+  gap: var(--sw-gap);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  margin-left: -1.5rem;
+  margin-right: -1.5rem;
+  padding: 0 1.5rem 0.5rem;
+}
+.swipe-row::-webkit-scrollbar {
+  display: none;
+}
+.swipe-row > * {
+  flex: 0 0 calc((100% - (var(--n) - 1) * var(--sw-gap)) / var(--n));
+  scroll-snap-align: start;
+  min-width: 0;
+}
+@media (min-width: 640px) {
+  .swipe-row {
+    --n: var(--n-sm, 2);
+    --sw-gap: 1.5rem;
+  }
+}
+@media (min-width: 768px) {
+  .swipe-row {
+    --n: var(--n-md, var(--n-sm, 2));
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+@media (min-width: 1024px) {
+  .swipe-row {
+    --n: var(--n-lg, var(--n-md, var(--n-sm, 2)));
+    --sw-gap: 2rem;
+  }
+}
+
+.swipe-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  min-height: 1.5rem;
+}
+.swipe-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.swipe-dot {
+  position: relative;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 9999px;
+  background: var(--color-line-strong);
+  transition: width 0.25s ease, background-color 0.25s ease;
+}
+/* Bigger invisible tap target around each small dot. */
+.swipe-dot::after {
+  content: "";
+  position: absolute;
+  inset: -0.55rem -0.3rem;
+}
+.swipe-dot-active {
+  width: 1.25rem;
+  background: var(--color-gold);
+}
+.swipe-counter {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--color-stone);
+  font-variant-numeric: tabular-nums;
+}
+.swipe-arrow {
+  display: none;
+  height: 2.25rem;
+  width: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid var(--color-line);
+  color: var(--color-ivory);
+  transition: border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+.swipe-arrow:hover:not(:disabled) {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+.swipe-arrow:disabled {
+  opacity: 0.35;
+}
+@media (min-width: 768px) {
+  .swipe-arrow {
+    display: inline-flex;
+  }
+}
+.swipe-viewall {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-ivory);
+  border: 1px solid var(--color-line);
+  border-radius: 9999px;
+  padding: 0.55rem 1.1rem;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.swipe-viewall:hover {
+  border-color: var(--color-gold);
+  color: var(--color-gold);
+}
+
