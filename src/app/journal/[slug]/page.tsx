@@ -60,9 +60,22 @@ export default async function JournalArticlePage({
     mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE_URL}/journal/${article.slug}` },
   };
 
+  const faqJsonLd = article.faqs?.length
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: article.faqs.map((f) => ({
+          "@type": "Question",
+          name: f.question,
+          acceptedAnswer: { "@type": "Answer", text: f.answer },
+        })),
+      }
+    : null;
+
   return (
     <>
       <JsonLd data={articleJsonLd} />
+      {faqJsonLd ? <JsonLd data={faqJsonLd} /> : null}
       <PageHero
         eyebrow={article.category}
         title={article.title}
@@ -91,6 +104,20 @@ export default async function JournalArticlePage({
               <p key={i}>{p}</p>
             ))}
           </div>
+
+          {article.faqs?.length ? (
+            <div className="mx-auto mt-16 max-w-2xl">
+              <h2 className="font-display text-2xl text-ivory">Quick Answers</h2>
+              <dl className="mt-6 divide-y divide-line border-y border-line">
+                {article.faqs.map((f) => (
+                  <div key={f.question} className="py-5">
+                    <dt className="font-semibold text-ivory">{f.question}</dt>
+                    <dd className="mt-2 text-stone leading-relaxed">{f.answer}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ) : null}
 
           {related.length > 0 ? (
             <div className="mt-20">
