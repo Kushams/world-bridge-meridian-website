@@ -49,7 +49,7 @@ const faqs = [
   },
   {
     q: "What payment methods do you accept?",
-    a: "Cryptocurrency (we've accepted it since 2015 — currently Bitcoin, USDT and Solana), card, and bank transfer. There's no online checkout on this site; payment details for whichever method you choose are confirmed with you directly once your journey is finalized. See our Payment Options page for detail, especially on how we handle cryptocurrency safely.",
+    a: "Bank transfer, arranged by the consultant assigned to your booking (including local-currency transfers through our regional payment intermediaries in many countries), and cryptocurrency, which we've accepted since 2015 — Bitcoin, Ethereum, USDT, USDC and Solana. There's no online checkout; payment details are confirmed with you directly once your journey is finalized. Our Payment Options page explains each method and includes a step-by-step guide to buying crypto in your country.",
   },
   {
     q: "Is my information secure?",
