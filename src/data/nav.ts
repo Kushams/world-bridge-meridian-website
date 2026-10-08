@@ -82,7 +82,7 @@ export const menuGroups: NavGroup[] = [
       { label: "Contact Us", href: "/contact" },
       { label: "Plan Your Journey", href: "/plan-your-journey" },
       { label: "Payment Options", href: "/payments" },
-      { label: "Travel Detail Form", href: "/travel-details-form" },
+      { label: "Exhibition Travel Form", href: "/travel-details-form" },
     ],
   },
   {

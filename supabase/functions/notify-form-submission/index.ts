@@ -26,7 +26,7 @@ const LABELS: Record<FormType, string> = {
   contact: "Contact enquiry",
   newsletter: "Newsletter signup",
   "journey-request": "Journey request",
-  "travel-details": "Travel detail & itinerary form",
+  "travel-details": "Exhibition travel itinerary form",
 };
 
 /** Submissions are attacker-controlled text going into an HTML email. */
@@ -118,7 +118,7 @@ Deno.serve(async (req: Request) => {
         record.form_type === "journey-request"
           ? "We've received your journey request — World Bridge Meridian"
           : record.form_type === "travel-details"
-            ? "We've received your travel details — World Bridge Meridian"
+            ? "We've received your travel itinerary form — World Bridge Meridian"
             : "Thank you for contacting World Bridge Meridian",
         `
           <p>Hi ${esc(record.name || "there")},</p>

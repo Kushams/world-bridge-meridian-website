@@ -108,11 +108,12 @@ export function ArtListingsPage({
             {title}
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-stone">
-            Tell us which show, city or dates you have in mind and we&apos;ll build the travel around it —
-            flights, stays and time for everything else the destination offers.
+            Complete our Exhibition Travel Itinerary Form with the show, city and dates you have in mind and
+            we&apos;ll build the travel around it — flights, stays, access and time for everything else the
+            destination offers.
           </p>
           <div className="mt-8">
-            <Button href="/plan-your-journey" size="lg">
+            <Button href="/travel-details-form" size="lg">
               {ctaLabel}
             </Button>
           </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, ReactNode, useState } from "react";
+import { FormEvent, ReactNode, useEffect, useState } from "react";
 import { company } from "@/data/company";
 import { track } from "@/lib/analytics";
 import { submitForm } from "@/lib/formSubmissions";
@@ -9,6 +9,21 @@ import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 const inputClass =
   "w-full rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory placeholder:text-stone-dim outline-none focus:border-gold";
 const labelClass = "mb-2 block text-xs uppercase tracking-wide text-stone";
+
+const EVENT_TYPES = ["Gallery exhibition", "Museum exhibition", "Art fair", "Other"];
+const ARRANGE_OPTIONS = [
+  "Exhibition / fair tickets",
+  "Private views & guided tours",
+  "Flights",
+  "Accommodation",
+  "Transfers & ground transport",
+  "Dining & cultural programme",
+];
+const TYPE_FROM_QUERY: Record<string, string> = {
+  gallery: "Gallery exhibition",
+  museum: "Museum exhibition",
+  fair: "Art fair",
+};
 
 const MAX_COMPANIONS = 8;
 const MAX_ITINERARY_ROWS = 20;
@@ -88,6 +103,25 @@ export function TravelDetailsForm() {
   const [itineraryRows, setItineraryRows] = useState(3);
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [turnstileReset, setTurnstileReset] = useState(0);
+  const [eventName, setEventName] = useState("");
+  const [eventType, setEventType] = useState("");
+  const [eventDates, setEventDates] = useState("");
+
+  // Prefill from an exhibition, museum or fair card ("Plan This Trip"). Read
+  // after mount, so the server-rendered HTML and first client render match.
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      const q = new URLSearchParams(window.location.search);
+      const ev = q.get("event");
+      if (ev) setEventName(ev.slice(0, 300));
+      const t = TYPE_FROM_QUERY[q.get("type") ?? ""];
+      if (t) setEventType(t);
+      const from = q.get("from");
+      const to = q.get("to");
+      if (from && to) setEventDates(`${ddmmyyyy(from)} – ${ddmmyyyy(to)}`);
+    });
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -131,6 +165,13 @@ export function TravelDetailsForm() {
       add(k, get(k));
     }
 
+    // Exhibition details (Part 2)
+    add("exhibition_or_event", eventName.trim());
+    add("event_type", eventType);
+    add("event_dates", eventDates.trim());
+    const arrange = form.getAll("arrange").map(String);
+    if (arrange.length) payload.please_arrange = arrange.join(", ");
+
     // Part 5 – Accompanying travelers
     for (let i = 1; i <= companions; i++) {
       const parts = [
@@ -165,7 +206,7 @@ export function TravelDetailsForm() {
       formType: "travel-details",
       name: fullName,
       email,
-      subject: `Travel Detail & Itinerary Form — ${fullName}`,
+      subject: `Exhibition Travel Itinerary Form — ${fullName}${eventName.trim() ? ` (${eventName.trim().slice(0, 80)})` : ""}`,
       message: get("special_requests") || undefined,
       payload,
       turnstileToken,
@@ -232,7 +273,55 @@ export function TravelDetailsForm() {
         </p>
       </Section>
 
-      <Section title="Part 2: Travel Preferences & Logistics">
+      <Section title="Part 2: Exhibition & Travel Preferences">
+        <div className="space-y-5">
+          <div>
+            <label htmlFor="exhibition_or_event" className={labelClass}>
+              Exhibition, museum or art fair you are travelling for
+            </label>
+            <input
+              id="exhibition_or_event"
+              name="exhibition_or_event"
+              type="text"
+              value={eventName}
+              onChange={(e) => setEventName(e.target.value)}
+              placeholder="e.g. Frieze London, or a show and venue"
+              className={inputClass}
+            />
+          </div>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div>
+              <p className={labelClass}>Type</p>
+              <div className="flex flex-wrap gap-x-6 gap-y-2">
+                {EVENT_TYPES.map((o) => (
+                  <label key={o} className="inline-flex items-center gap-2 text-sm text-ivory">
+                    <input
+                      type="radio"
+                      name="event_type"
+                      value={o}
+                      checked={eventType === o}
+                      onChange={() => setEventType(o)}
+                      className="accent-gold"
+                    />
+                    {o}
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label htmlFor="event_dates" className={labelClass}>Exhibition / fair dates</label>
+              <input
+                id="event_dates"
+                name="event_dates"
+                type="text"
+                value={eventDates}
+                onChange={(e) => setEventDates(e.target.value)}
+                className={inputClass}
+              />
+            </div>
+          </div>
+          <Choice label="What would you like us to arrange?" name="arrange" options={ARRANGE_OPTIONS} type="checkbox" />
+        </div>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
           <Field label="Preferred departure city / airport" name="departure_city" />
           <Field label="Preferred departure date" name="departure_date" type="date" />

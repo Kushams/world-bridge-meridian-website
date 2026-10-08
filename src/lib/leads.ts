@@ -56,6 +56,10 @@ export interface JourneyLead {
   travelPace: string;
   accommodationPreference: string;
   specialRequirements: string;
+  bedPreference: string;
+  dietaryRequirements: string;
+  allergies: string;
+  country: string;
   organize: string[];
   hearAboutUs: string;
   notes: string;
@@ -99,11 +103,15 @@ export function mailtoBody(lead: JourneyLead): string {
     `Preferred pace: ${lead.travelPace || "n/a"}`,
     `Accommodation preference: ${lead.accommodationPreference || "n/a"}`,
     `What to organize: ${lead.organize.join(", ") || "n/a"}`,
+    `Bed preference: ${lead.bedPreference || "n/a"}`,
+    `Dietary requirements: ${lead.dietaryRequirements || "n/a"}`,
+    `Allergies: ${lead.allergies || "n/a"}`,
     `Special requirements: ${lead.specialRequirements || "n/a"}`,
     ``,
     `Name: ${lead.name}`,
     `Email: ${lead.email}`,
     `Phone: ${lead.phone || "n/a"}`,
+    `Country: ${lead.country || "n/a"}`,
     `How they heard about us: ${lead.hearAboutUs || "n/a"}`,
     ``,
     `Additional notes: ${lead.notes || "n/a"}`,
@@ -134,6 +142,10 @@ function flattenForNetlify(lead: JourneyLead): Record<string, string> {
     travelPace: lead.travelPace,
     accommodationPreference: lead.accommodationPreference,
     specialRequirements: lead.specialRequirements,
+    bedPreference: lead.bedPreference,
+    dietaryRequirements: lead.dietaryRequirements,
+    allergies: lead.allergies,
+    country: lead.country,
     organize: lead.organize.join(", "),
     hearAboutUs: lead.hearAboutUs,
     notes: lead.notes,
