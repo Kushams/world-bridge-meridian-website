@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { DestinationCard } from "@/components/cards/DestinationCard";
 import { formatDate } from "@/lib/format";
 import { SITE_URL, company } from "@/data/company";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export function generateStaticParams() {
   return journal.map((a) => ({ slug: a.slug }));
@@ -48,6 +49,9 @@ export default async function JournalArticlePage({
     image: article.heroImage,
     datePublished: article.date,
     author: { "@type": "Organization", name: article.author },
+    dateModified: article.date,
+    articleSection: article.category,
+    url: `${SITE_URL}/journal/${article.slug}`,
     publisher: {
       "@type": "Organization",
       name: company.name,
@@ -58,10 +62,7 @@ export default async function JournalArticlePage({
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
-      />
+      <JsonLd data={articleJsonLd} />
       <PageHero
         eyebrow={article.category}
         title={article.title}

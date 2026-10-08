@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SITE_URL } from "@/data/company";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export function Breadcrumbs({
   items,
@@ -19,10 +20,7 @@ export function Breadcrumbs({
 
   return (
     <nav aria-label="Breadcrumb" className="text-xs text-stone-dim">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
+      <JsonLd data={breadcrumbJsonLd} />
       <ol className="flex flex-wrap items-center gap-2">
         {items.map((item, i) => (
           <li key={i} className="flex items-center gap-2">

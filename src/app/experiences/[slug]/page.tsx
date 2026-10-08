@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { experiences, getExperience } from "@/data/experiences";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { SITE_URL } from "@/data/company";
 import { getDestination } from "@/data/destinations";
 import { travelStyleLabel } from "@/data/travel-styles";
 import { PageHero } from "@/components/layout/PageHero";
@@ -40,6 +42,20 @@ export default async function ExperiencePage({
 
   return (
     <>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "TouristTrip",
+          name: experience.title,
+          description: experience.shortDescription,
+          url: `${SITE_URL}/experiences/${experience.slug}`,
+          image: experience.heroImage,
+          provider: { "@id": `${SITE_URL}/#organization` },
+          ...(destination
+            ? { itinerary: { "@type": "TouristDestination", name: destination.name, url: `${SITE_URL}/destinations/${destination.slug}` } }
+            : {}),
+        }}
+      />
       <PageHero
         eyebrow={experience.category}
         title={experience.title}

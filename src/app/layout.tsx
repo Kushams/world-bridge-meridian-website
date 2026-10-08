@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
-import { SITE_URL, company } from "@/data/company";
+import { SITE_URL, company, socialLinks } from "@/data/company";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { TouchRipple } from "@/components/motion/TouchRipple";
@@ -11,6 +11,7 @@ import { AttributionCapture } from "@/components/AttributionCapture";
 import { TawkChat } from "@/components/TawkChat";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { AuthProvider } from "@/lib/supabase/AuthProvider";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -49,21 +50,63 @@ export const metadata: Metadata = {
   },
 };
 
-const organizationJsonLd = {
+const organizationId = `${SITE_URL}/#organization`;
+
+const siteJsonLd = {
   "@context": "https://schema.org",
-  "@type": "TravelAgency",
-  name: company.name,
-  description: company.tagline,
-  url: SITE_URL,
-  logo: `${SITE_URL}/icon.svg`,
-  image: `${SITE_URL}/opengraph-image`,
-  email: company.email,
-  telephone: company.phone ?? undefined,
-  foundingDate: String(company.foundedYear),
-  founder: {
-    "@type": "Person",
-    name: company.founderName,
-  },
+  "@graph": [
+    {
+      "@type": "TravelAgency",
+      "@id": organizationId,
+      name: company.name,
+      alternateName: `${company.name} — ${company.legalPositioning}`,
+      description: company.tagline,
+      url: SITE_URL,
+      logo: `${SITE_URL}/icon.svg`,
+      image: `${SITE_URL}/opengraph-image`,
+      email: company.email,
+      telephone: company.phone ?? undefined,
+      foundingDate: String(company.foundedYear),
+      founder: {
+        "@type": "Person",
+        name: company.founderName,
+        jobTitle: company.founderTitle,
+      },
+      areaServed: "Worldwide",
+      currenciesAccepted: "USD, BTC, ETH, USDT, USDC, SOL",
+      paymentAccepted: "Cryptocurrency, Credit Card, Bank Transfer",
+      knowsAbout: [
+        "Bespoke travel",
+        "Luxury travel",
+        "Private journeys",
+        "Family travel",
+        "Honeymoons and couples travel",
+        "Group travel",
+        "Corporate travel",
+        "Cruises",
+        "Arts and cultural travel",
+        "Museum and exhibition travel",
+      ],
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer service",
+        email: company.email,
+        telephone: company.phone ?? undefined,
+        url: `${SITE_URL}/contact`,
+        availableLanguage: ["English"],
+      },
+      sameAs: socialLinks.flatMap((l) => (l.href ? [l.href] : [])),
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: company.name,
+      description: company.tagline,
+      inLanguage: "en",
+      publisher: { "@id": organizationId },
+    },
+  ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -73,10 +116,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${fraunces.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-ink text-ivory">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-        />
+        <JsonLd data={siteJsonLd} />
         <AuthProvider>
           <ScrollProgressBar />
           <TouchRipple />

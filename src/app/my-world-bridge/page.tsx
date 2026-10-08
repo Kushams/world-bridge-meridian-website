@@ -10,6 +10,7 @@ import { isSupabaseConfigured } from "@/lib/supabase/client";
 export const metadata: Metadata = {
   title: "My World Bridge",
   description: "Your World Bridge Meridian account — saved journeys, destinations, cruises and enquiries.",
+  robots: { index: false, follow: true },
 };
 
 const features = [
