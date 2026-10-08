@@ -11,6 +11,52 @@ const linkButton = "text-xs text-stone-dim underline transition-colors hover:tex
 
 type Mode = "sign-in" | "sign-up" | "link" | "forgot";
 
+/** Password input with a Show/Hide toggle so people can check what they typed. */
+function PasswordInput({
+  id,
+  value,
+  onChange,
+  placeholder,
+  visible,
+  onToggle,
+  autoComplete,
+}: {
+  id: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+  visible: boolean;
+  onToggle: () => void;
+  autoComplete: string;
+}) {
+  return (
+    <div className="relative">
+      <label htmlFor={id} className="sr-only">
+        {placeholder}
+      </label>
+      <input
+        id={id}
+        type={visible ? "text" : "password"}
+        required
+        minLength={8}
+        autoComplete={autoComplete}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className={`${inputClass} pr-16`}
+      />
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-pressed={visible}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs uppercase tracking-wide text-stone-dim transition-colors hover:text-ivory"
+      >
+        {visible ? "Hide" : "Show"}
+      </button>
+    </div>
+  );
+}
+
 /**
  * The signed-out side of /my-world-bridge: sign in, create an account, get an
  * emailed sign-in link, reset a password (and set the new one after following
@@ -36,6 +82,8 @@ export function AuthPanel() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [status, setStatus] = useState<"idle" | "submitting" | "sent" | "error">("idle");
   const [sentKind, setSentKind] = useState<"confirm" | "link" | "reset">("confirm");
   const [error, setError] = useState("");
@@ -59,6 +107,11 @@ export function AuthPanel() {
         <form
           onSubmit={async (e) => {
             e.preventDefault();
+            if (password !== confirmPassword) {
+              setStatus("error");
+              setError("The two passwords don't match.");
+              return;
+            }
             setStatus("submitting");
             const result = await updatePassword(password);
             if (!result.ok) {
@@ -68,18 +121,23 @@ export function AuthPanel() {
           }}
           className="mx-auto mt-6 max-w-sm space-y-4 text-left"
         >
-          <label htmlFor="auth-new-password" className="sr-only">
-            New password
-          </label>
-          <input
+          <PasswordInput
             id="auth-new-password"
-            type="password"
-            required
-            minLength={8}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={setPassword}
             placeholder="New password (min. 8 characters)"
-            className={inputClass}
+            visible={showPassword}
+            onToggle={() => setShowPassword((v) => !v)}
+            autoComplete="new-password"
+          />
+          <PasswordInput
+            id="auth-new-password-confirm"
+            value={confirmPassword}
+            onChange={setConfirmPassword}
+            placeholder="Confirm new password"
+            visible={showPassword}
+            onToggle={() => setShowPassword((v) => !v)}
+            autoComplete="new-password"
           />
           <button type="submit" disabled={status === "submitting"} className={primaryButton}>
             {status === "submitting" ? "Please wait…" : "Save New Password"}
@@ -126,8 +184,13 @@ export function AuthPanel() {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setStatus("submitting");
     setError("");
+    if (mode === "sign-up" && password !== confirmPassword) {
+      setStatus("error");
+      setError("The two passwords don't match.");
+      return;
+    }
+    setStatus("submitting");
 
     let result: { ok: boolean; error?: string };
     if (mode === "sign-up") result = await signUp({ fullName, email, phone, password });
@@ -162,9 +225,10 @@ export function AuthPanel() {
     link: "Send Sign-In Link",
     forgot: "Send Reset Link",
   }[mode];
-  const showPassword = mode === "sign-in" || mode === "sign-up";
+  const needsPassword = mode === "sign-in" || mode === "sign-up";
 
   function switchMode(next: Mode) {
+    setConfirmPassword("");
     setMode(next);
     setStatus("idle");
     setError("");
@@ -228,22 +292,29 @@ export function AuthPanel() {
             className={inputClass}
           />
         </div>
-        {showPassword ? (
-          <div>
-            <label htmlFor="auth-password" className="sr-only">
-              Password
-            </label>
-            <input
+        {needsPassword ? (
+          <>
+            <PasswordInput
               id="auth-password"
-              type="password"
-              required
-              minLength={8}
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={setPassword}
               placeholder="Password (min. 8 characters)"
-              className={inputClass}
+              visible={showPassword}
+              onToggle={() => setShowPassword((v) => !v)}
+              autoComplete={mode === "sign-up" ? "new-password" : "current-password"}
             />
-          </div>
+            {mode === "sign-up" ? (
+              <PasswordInput
+                id="auth-password-confirm"
+                value={confirmPassword}
+                onChange={setConfirmPassword}
+                placeholder="Confirm password"
+                visible={showPassword}
+                onToggle={() => setShowPassword((v) => !v)}
+                autoComplete="new-password"
+              />
+            ) : null}
+          </>
         ) : null}
         <button type="submit" disabled={status === "submitting"} className={primaryButton}>
           {status === "submitting" ? "Please wait…" : submitLabel}
