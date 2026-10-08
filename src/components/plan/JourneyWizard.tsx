@@ -32,6 +32,9 @@ interface FormState {
   budget: string;
   organize: string[];
   specialRequirements: string;
+  bedPreference: string;
+  dietaryRequirements: string;
+  allergies: string;
   name: string;
   email: string;
   phone: string;
@@ -58,6 +61,9 @@ const initialState: FormState = {
   budget: "",
   organize: [],
   specialRequirements: "",
+  bedPreference: "",
+  dietaryRequirements: "",
+  allergies: "",
   name: "",
   email: "",
   phone: "",
@@ -96,6 +102,8 @@ const accommodationOptions = [
   "No strong preference",
 ];
 
+const bedOptions = ["Single", "Double", "Twin", "No preference"];
+
 const organizeOptions = [
   "Accommodation",
   "Air travel coordination",
@@ -103,6 +111,7 @@ const organizeOptions = [
   "Transportation",
   "Activities",
   "Cultural experiences",
+  "Exhibition, museum or art fair access",
   "Dining",
   "Complete itinerary",
   "Everything",
@@ -188,6 +197,10 @@ export function JourneyWizard() {
       travelPace: form.travelPace,
       accommodationPreference: form.accommodationPreference,
       specialRequirements: form.specialRequirements,
+      bedPreference: form.bedPreference,
+      dietaryRequirements: form.dietaryRequirements,
+      allergies: form.allergies,
+      country: form.country,
       organize: form.organize,
       hearAboutUs: form.hearAboutUs,
       notes: form.additionalInfo,
@@ -235,7 +248,8 @@ export function JourneyWizard() {
         <p className="mx-auto mt-4 max-w-xl text-stone">
           A member of the World Bridge Meridian team will review your requirements and respond.
           This isn&apos;t a booking or availability confirmation — we&apos;ll follow up to talk through
-          what&apos;s possible.{" "}
+          what&apos;s possible. Once your journey is confirmed we&apos;ll send you our Travel Detail &amp;
+          Itinerary Form for passports, emergency contacts and any accompanying travelers.{" "}
           {deliveredVia === "mailto"
             ? "Your email app should have opened with a summary ready to send — if it didn't, please "
             : "If you don't hear from us soon, please "}
@@ -306,6 +320,13 @@ export function JourneyWizard() {
               placeholder="Tell us more (optional) — e.g. Italy, or a region you're drawn to"
               className="mt-6 w-full rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory placeholder:text-stone-dim outline-none focus:border-gold"
             />
+            <p className="mt-6 text-sm text-stone-dim">
+              Travelling for an exhibition, museum or art fair?{" "}
+              <a href="/travel-details-form" className="text-gold hover:text-ivory">
+                Use our Exhibition Travel Itinerary Form instead
+              </a>
+              .
+            </p>
           </fieldset>
         ) : null}
 
@@ -502,6 +523,23 @@ export function JourneyWizard() {
                 </button>
               ))}
             </div>
+            <p className="mb-2 mt-6 text-xs uppercase tracking-wide text-stone">Bed preference</p>
+            <div className="flex flex-wrap gap-3">
+              {bedOptions.map((opt) => (
+                <button
+                  type="button"
+                  key={opt}
+                  onClick={() => setForm({ ...form, bedPreference: opt })}
+                  className={`rounded-full border px-5 py-2.5 text-sm transition-colors ${
+                    form.bedPreference === opt
+                      ? "border-gold text-gold"
+                      : "border-line text-ivory-dim hover:border-gold"
+                  }`}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
           </fieldset>
         ) : null}
 
@@ -544,6 +582,31 @@ export function JourneyWizard() {
                   {opt}
                 </button>
               ))}
+            </div>
+            <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-xs uppercase tracking-wide text-stone">
+                  Dietary requirements (optional)
+                </label>
+                <input
+                  type="text"
+                  value={form.dietaryRequirements}
+                  onChange={(e) => setForm({ ...form, dietaryRequirements: e.target.value })}
+                  placeholder="e.g. vegetarian, vegan, gluten-free"
+                  className="w-full rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory placeholder:text-stone-dim outline-none focus:border-gold"
+                />
+              </div>
+              <div>
+                <label className="mb-2 block text-xs uppercase tracking-wide text-stone">
+                  Allergies (optional — please note severity)
+                </label>
+                <input
+                  type="text"
+                  value={form.allergies}
+                  onChange={(e) => setForm({ ...form, allergies: e.target.value })}
+                  className="w-full rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory placeholder:text-stone-dim outline-none focus:border-gold"
+                />
+              </div>
             </div>
             <label className="mb-2 mt-6 block text-xs uppercase tracking-wide text-stone">
               Special requirements (optional)

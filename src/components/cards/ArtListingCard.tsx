@@ -83,7 +83,16 @@ export function ArtListingCard({ listing, today }: { listing: ArtListing; today:
           </a>
           {!isPast ? (
             <div className="ml-auto">
-              <Button href="/plan-your-journey" variant="outline" size="md">
+              <Button
+                href={`/travel-details-form?${new URLSearchParams({
+                  event: `${listing.title} — ${listing.venue}, ${listing.city}`,
+                  type: listing.category,
+                  from: listing.startDate,
+                  to: listing.endDate,
+                }).toString()}`}
+                variant="outline"
+                size="md"
+              >
                 Plan This Trip
               </Button>
             </div>
