@@ -7,11 +7,80 @@ import { company } from "@/data/company";
 import { themeImage } from "@/data/images";
 import { CryptoPaymentPanel } from "@/components/payments/CryptoPaymentPanel";
 import { enabledCryptoPaymentOptions } from "@/data/cryptoPayments";
+import { cryptoBuyingSteps, cryptoGuideReviewed, cryptoRegions } from "@/data/cryptoBuyingGuide";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
+import { JsonLd } from "@/components/seo/JsonLd";
 
 export const metadata: Metadata = {
-  title: "Payment Options",
-  description: `How payment works with ${company.name}, including cryptocurrency, card, bank transfer and regional payment partners.`,
+  title: "Payment Options — Bank Transfer & Cryptocurrency",
+  description: `How payment works with ${company.name}: bank transfer arranged by your consultant, regional payment intermediaries, and cryptocurrency — with a country-by-country guide to buying crypto and sending it safely.`,
+};
+
+const sections = [
+  { id: "how-it-works", label: "How it works" },
+  { id: "bank-transfer", label: "Bank transfer" },
+  { id: "cryptocurrency", label: "Cryptocurrency" },
+  { id: "buy-crypto", label: "How to buy crypto" },
+  { id: "submit-payment", label: "Submit a payment" },
+  { id: "payment-questions", label: "Questions" },
+];
+
+const processSteps = [
+  {
+    title: "Your journey is confirmed",
+    body: "Your consultant finalizes the itinerary and price with you. Nothing is paid before that.",
+  },
+  {
+    title: "You receive payment instructions",
+    body: "Your assigned consultant sends the amount and the method — bank transfer, a regional intermediary, or cryptocurrency.",
+  },
+  {
+    title: "You pay",
+    body: "Transfer the agreed amount using only the details your consultant gave you, or the wallet addresses published on this page.",
+  },
+  {
+    title: "We confirm receipt",
+    body: "Our team verifies every payment and confirms it with you in writing before your bookings are secured.",
+  },
+];
+
+const cryptoAssets = Array.from(new Set(enabledCryptoPaymentOptions().map((o) => o.asset)));
+
+const paymentFaqs = [
+  {
+    question: `How do I pay ${company.name}?`,
+    answer: `Once your journey is confirmed, your assigned consultant sends payment instructions. You can pay by bank transfer arranged through your consultant, through one of our regional payment intermediaries in local currency, or in cryptocurrency (${cryptoAssets.join(", ")}). There is no online checkout.`,
+  },
+  {
+    question: "How do bank transfers work?",
+    answer:
+      "Bank transfers are arranged by the consultant assigned to your booking. They issue the transfer details for your specific booking — these are never published on the website. In many countries we work with vetted intermediaries who accept the transfer in your local currency.",
+  },
+  {
+    question: "How do I buy cryptocurrency to pay for my trip?",
+    answer:
+      "Open an account with a regulated exchange in your country, verify your identity, deposit local currency, buy the asset your consultant specified (stablecoins such as USDC or USDT are simplest), then withdraw to the World Bridge Meridian address on this page using the correct network. Submit the transaction ID with the form on the payments page.",
+  },
+  {
+    question: "What happens if I send crypto on the wrong network?",
+    answer:
+      "Funds sent on the wrong network or to the wrong address may be permanently lost. Always match the asset and network to the address shown on the payments page, and send a small test first for large payments.",
+  },
+  {
+    question: "How do I know a payment request is genuine?",
+    answer:
+      "We only ever request payment through the consultant assigned to your booking, and we only collect cryptocurrency at the addresses published on our payments page. If anyone asks you to pay a different person, company or address, contact us before paying.",
+  },
+];
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: paymentFaqs.map((f) => ({
+    "@type": "Question",
+    name: f.question,
+    acceptedAnswer: { "@type": "Answer", text: f.answer },
+  })),
 };
 
 export default function PaymentsPage() {
@@ -19,140 +88,267 @@ export default function PaymentsPage() {
 
   return (
     <>
+      <JsonLd data={faqJsonLd} />
       <PageHero
         eyebrow="Payments"
         title="How payment works."
-        description="World Bridge Meridian doesn't run an online checkout. Every journey is priced and confirmed with you directly before any payment is arranged — by cryptocurrency, card, bank transfer, or a regional payment partner where local currency makes that the better option."
+        description="There is no online checkout. Every journey is priced and confirmed with you first; your assigned consultant then arranges payment by bank transfer, through a regional intermediary in your local currency, or in cryptocurrency."
         image={themeImage("business", 1)}
         imageAlt="A workspace"
       />
 
-      <section className="py-16 md:py-24">
+      <nav aria-label="On this page" className="border-b hairline">
+        <Container className="flex gap-2 overflow-x-auto py-4">
+          {sections.map((s) => (
+            <a
+              key={s.id}
+              href={`#${s.id}`}
+              className="shrink-0 rounded-full border border-line px-4 py-2 text-sm text-ivory-dim transition-colors hover:border-gold hover:text-ivory"
+            >
+              {s.label}
+            </a>
+          ))}
+        </Container>
+      </nav>
+
+      <section id="how-it-works" className="scroll-mt-24 py-16 md:py-24">
+        <Container>
+          <SectionHeading eyebrow="How It Works" title="Four steps, always in this order." />
+          <ol className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {processSteps.map((step, i) => (
+              <li key={step.title} className="rounded-card border hairline p-6">
+                <p className="font-display text-3xl text-gold">{String(i + 1).padStart(2, "0")}</p>
+                <p className="mt-3 font-display text-lg text-ivory">{step.title}</p>
+                <p className="mt-2 text-sm text-stone leading-relaxed">{step.body}</p>
+              </li>
+            ))}
+          </ol>
+        </Container>
+      </section>
+
+      <section id="bank-transfer" className="scroll-mt-24 border-t hairline py-16 md:py-24">
         <Container>
           <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] [&>*]:min-w-0">
             <div>
-              <SectionHeading eyebrow="Cryptocurrency" title="We've accepted crypto since 2015." />
+              <SectionHeading eyebrow="Bank Transfer" title="Arranged by your consultant." />
               <div className="mt-6 space-y-4 text-base text-stone leading-relaxed">
                 <p>
-                  World Bridge Meridian has accepted cryptocurrency payments since {company.cryptoAcceptedSince}{" "}
-                  — well before it was common in travel. We currently support{" "}
-                  {company.cryptoCurrencies.join(", ")}.
-                </p>
-                {addressesPublished ? (
-                  <>
-                    <p>
-                      Amounts are never quoted here. Once your itinerary is finalized, your point of
-                      contact on our team confirms the exact amount and the asset and network to use for
-                      your booking directly with you. The wallet addresses shown further down this page
-                      are our own, published here so you can verify them — they are the only addresses we
-                      ever collect cryptocurrency at.
-                    </p>
-                    <p className="text-ivory">
-                      For your own protection: check the address you are about to send to against the one
-                      published on this page before you send anything. If a consultant, an email, a chat
-                      or a social account gives you an address that doesn&apos;t match, don&apos;t send to
-                      it — contact us first.
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <p>
-                      Amounts are never quoted here, and there is no address published on this page at the
-                      moment. Once your itinerary is finalized, your point of contact on our team sends
-                      payment instructions — the exact amount, asset, network and address for your booking
-                      — directly to you.
-                    </p>
-                    <p className="text-ivory">
-                      For your own protection: only ever send to an address you were given directly through
-                      a confirmed conversation about your own journey. If anything about a payment request
-                      seems off, contact us before sending anything.
-                    </p>
-                  </>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-6">
-              <div className="rounded-card border hairline p-6">
-                <p className="font-display text-lg text-ivory">Bank Transfer</p>
-                <p className="mt-2 text-sm text-stone leading-relaxed">
-                  Arranged directly with your consultant, with transfer details issued per booking
-                  rather than published on the site.
-                </p>
-              </div>
-              <div className="rounded-card border hairline p-6">
-                <p className="font-display text-lg text-ivory">No Card Details Collected</p>
-                <p className="mt-2 text-sm text-stone leading-relaxed">
-                  This site never collects a card number or bank detail. The only thing submitted here is
-                  a cryptocurrency transaction reference for a booking already confirmed with your
-                  consultant.
-                </p>
-              </div>
-              <div className="rounded-card border hairline p-6">
-                <p className="font-display text-lg text-ivory">Card &amp; Bank (Future)</p>
-                <p className="mt-2 text-sm text-stone leading-relaxed">
-                  Card and bank-transfer processing (e.g. Stripe) is not yet connected — cryptocurrency
-                  is our current payment method. This page will be updated the day that changes.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-16 border-t hairline pt-16">
-            <SectionHeading
-              eyebrow="Submit a Payment"
-              title="Crypto payment reference submission."
-            />
-            <p className="mt-4 max-w-2xl text-sm text-stone leading-relaxed">
-              {addressesPublished
-                ? "If your consultant has already sent you payment instructions for a confirmed booking, send to the address below for the agreed asset and network, then record your transaction reference here."
-                : "Once you have sent a payment for a confirmed booking, record your transaction reference here."}{" "}
-              Submitting a hash does not confirm payment — our team verifies every transaction manually
-              against the blockchain before it&apos;s marked confirmed.
-            </p>
-            <div className="mt-6 max-w-xl">
-              <CryptoPaymentPanel />
-            </div>
-          </div>
-
-          <div className="mt-16 grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] border-t hairline pt-16 [&>*]:min-w-0">
-            <div>
-              <SectionHeading
-                eyebrow="Local Currency"
-                title="Regional payment partners, where it makes sense."
-              />
-              <div className="mt-6 space-y-4 text-base text-stone leading-relaxed">
-                <p>
-                  In a number of markets, paying in US dollars or euros isn&apos;t practical for clients —
-                  currency controls, banking restrictions or simply preferring to pay in their own
-                  currency. For those bookings, we work with a small number of vetted regional payment
-                  partners — local companies and, in some markets, individual licensed agents — who
-                  collect payment in the local currency and remit it to World Bridge Meridian on the
-                  client&apos;s behalf.
+                  Every client is assigned a consultant, and bank transfers are arranged through them.
+                  Once your journey is confirmed, your consultant issues the transfer details for your
+                  specific booking — the amount, currency, beneficiary and reference to use. Bank
+                  details are never published on this website.
                 </p>
                 <p>
-                  This is arranged per booking, never speculatively. If it applies to your journey, your
-                  point of contact on our team will tell you directly, name the specific partner, and
-                  confirm the amount and currency before anything changes hands.
+                  We work with vetted payment intermediaries in many countries and regions. Where paying
+                  in US dollars or euros isn&apos;t practical — because of currency controls, banking
+                  restrictions, high international fees, or simply a preference for your own currency
+                  — your consultant can arrange for you to pay a local intermediary in your local
+                  currency, who then remits the payment to {company.name} on your behalf.
+                </p>
+                <p>
+                  This is arranged per booking. If an intermediary applies to your journey, your
+                  consultant will introduce them by name and confirm the amount and currency before
+                  anything changes hands.
                 </p>
                 <p className="text-ivory">
-                  The same rule applies here as with cryptocurrency: we will never direct you to pay
-                  anyone — a person or a company — that you weren&apos;t introduced to directly by your
-                  World Bridge Meridian contact for your specific booking. If you&apos;re contacted by
-                  anyone claiming to collect payment on our behalf outside of that, verify it with us
+                  For your protection: we will never ask you to pay a person, company or account you
+                  weren&apos;t introduced to by your assigned consultant for your booking. If anyone
+                  else contacts you claiming to collect payment for us, verify it at{" "}
+                  <a href={`mailto:${company.email}`} className="underline underline-offset-4">
+                    {company.email}
+                  </a>{" "}
                   before paying.
                 </p>
               </div>
             </div>
             <div className="space-y-6">
               <div className="rounded-card border hairline p-6">
-                <p className="font-display text-lg text-ivory">Not Every Booking</p>
+                <p className="font-display text-lg text-ivory">Details Issued Per Booking</p>
                 <p className="mt-2 text-sm text-stone leading-relaxed">
-                  Most clients simply pay us directly by card, bank transfer or cryptocurrency. Regional
-                  partners are used only where a client&apos;s local circumstances call for it.
+                  Always use the reference your consultant gives you, so your transfer is matched to
+                  your journey quickly.
+                </p>
+              </div>
+              <div className="rounded-card border hairline p-6">
+                <p className="font-display text-lg text-ivory">Local-Currency Intermediaries</p>
+                <p className="mt-2 text-sm text-stone leading-relaxed">
+                  Available in many markets across the Americas, Europe, the Middle East, Africa and
+                  Asia. Ask your consultant whether one is available in your country.
+                </p>
+              </div>
+              <div className="rounded-card border hairline p-6">
+                <p className="font-display text-lg text-ivory">No Card or Bank Details Collected</p>
+                <p className="mt-2 text-sm text-stone leading-relaxed">
+                  This site never asks for a card number or bank login. The only payment information
+                  submitted here is a cryptocurrency transaction reference.
                 </p>
               </div>
             </div>
+          </div>
+        </Container>
+      </section>
+
+      <section id="cryptocurrency" className="scroll-mt-24 border-t hairline py-16 md:py-24">
+        <Container>
+          <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] [&>*]:min-w-0">
+            <div>
+              <SectionHeading eyebrow="Cryptocurrency" title={`Accepted since ${company.cryptoAcceptedSince}.`} />
+              <div className="mt-6 space-y-4 text-base text-stone leading-relaxed">
+                <p>
+                  {company.name} has accepted cryptocurrency since {company.cryptoAcceptedSince} — well
+                  before it was common in travel. We currently accept {company.cryptoCurrencies.join(", ")}.
+                </p>
+                {addressesPublished ? (
+                  <>
+                    <p>
+                      Amounts are never quoted here. Once your itinerary is finalized, your consultant
+                      confirms the exact amount, asset and network for your booking. The wallet
+                      addresses in the payment form below are our own, published so you can verify
+                      them — they are the only addresses we ever collect cryptocurrency at.
+                    </p>
+                    <p className="text-ivory">
+                      Check the address you are about to send to against the one on this page. If a
+                      consultant, email, chat or social account gives you an address that doesn&apos;t
+                      match, don&apos;t send to it — contact us first.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p>
+                      Amounts are never quoted here, and no address is published on this page at the
+                      moment. Once your itinerary is finalized, your consultant sends payment
+                      instructions — the exact amount, asset, network and address for your booking.
+                    </p>
+                    <p className="text-ivory">
+                      Only ever send to an address you were given through a confirmed conversation about
+                      your own journey. If anything about a payment request seems off, contact us first.
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+            <div className="rounded-card border hairline p-6">
+              <p className="font-display text-lg text-ivory">Accepted Assets &amp; Networks</p>
+              <ul className="mt-4 divide-y divide-line">
+                {enabledCryptoPaymentOptions().map((o) => (
+                  <li key={o.id} className="flex items-center justify-between gap-4 py-2.5 text-sm">
+                    <span className="text-ivory">{o.asset}</span>
+                    <span className="text-right text-stone">{o.network}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 text-xs text-stone-dim leading-relaxed">
+                Send each asset only on the network listed. The wrong network can mean permanent loss.
+              </p>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      <section id="buy-crypto" className="scroll-mt-24 border-t hairline bg-charcoal py-16 md:py-24">
+        <Container>
+          <SectionHeading
+            eyebrow="Step-by-Step Guide"
+            title="How to buy crypto and send it to us."
+            description="New to cryptocurrency? Follow these steps, then find your country below for exchanges that are commonly used there."
+          />
+          <ol className="mt-12 grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-2">
+            {cryptoBuyingSteps.map((step, i) => (
+              <li key={step.title} className="flex gap-5">
+                <span
+                  aria-hidden
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gold/60 font-display text-gold"
+                >
+                  {i + 1}
+                </span>
+                <div>
+                  <p className="font-display text-lg text-ivory">{step.title}</p>
+                  <p className="mt-2 text-sm text-stone leading-relaxed">{step.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          <div className="mt-16">
+            <p className="eyebrow mb-6">Where to Buy, by Country</p>
+            <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
+              {cryptoRegions.map((r) => (
+                <details
+                  key={r.id}
+                  id={`buy-crypto-${r.id}`}
+                  className="group rounded-card border hairline bg-ink/40 p-6 open:border-gold/50"
+                >
+                  <summary className="flex cursor-pointer list-none items-start justify-between gap-4">
+                    <span>
+                      <span className="block font-display text-lg text-ivory">{r.region}</span>
+                      <span className="mt-1 block text-xs text-stone-dim">{r.countries}</span>
+                    </span>
+                    <span aria-hidden className="shrink-0 text-gold transition-transform group-open:rotate-45">
+                      +
+                    </span>
+                  </summary>
+                  <div className="mt-5 space-y-4 text-sm leading-relaxed">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.18em] text-stone-dim">Commonly used exchanges</p>
+                      <ul className="mt-2 flex flex-wrap gap-2">
+                        {r.exchanges.map((x) => (
+                          <li key={x} className="rounded-full border border-line px-3 py-1 text-ivory-dim">
+                            {x}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <ul className="list-disc space-y-1.5 pl-5 text-stone">
+                      {r.notes.map((n) => (
+                        <li key={n}>{n}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </details>
+              ))}
+            </div>
+            <p className="mt-6 max-w-3xl text-xs text-stone-dim leading-relaxed">
+              Exchanges are listed as commonly used examples, not endorsements or partners of{" "}
+              {company.name}. Availability, licensing and supported assets change — confirm the
+              provider is licensed where you live. Not financial or tax advice. Guide last reviewed{" "}
+              {cryptoGuideReviewed}. Country not listed, or can&apos;t buy crypto where you are? Ask your
+              consultant about bank transfer or a regional intermediary.
+            </p>
+          </div>
+        </Container>
+      </section>
+
+      <section id="submit-payment" className="scroll-mt-24 border-t hairline py-16 md:py-24">
+        <Container>
+          <SectionHeading eyebrow="Submit a Payment" title="Crypto payment reference submission." />
+          <p className="mt-4 max-w-2xl text-sm text-stone leading-relaxed">
+            {addressesPublished
+              ? "If your consultant has already sent you payment instructions for a confirmed booking, send to the address below for the agreed asset and network, then record your transaction reference here."
+              : "Once you have sent a payment for a confirmed booking, record your transaction reference here."}{" "}
+            Submitting a hash does not confirm payment — our team verifies every transaction manually
+            against the blockchain before it&apos;s marked confirmed.
+          </p>
+          <div className="mt-6 max-w-xl">
+            <CryptoPaymentPanel />
+          </div>
+        </Container>
+      </section>
+
+      <section id="payment-questions" className="scroll-mt-24 border-t hairline py-16 md:py-24">
+        <Container>
+          <SectionHeading eyebrow="Questions" title="Payment questions, answered." />
+          <div className="mt-10 max-w-3xl divide-y divide-line border-t hairline">
+            {paymentFaqs.map((f) => (
+              <details key={f.question} className="group py-6">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg text-ivory">
+                  {f.question}
+                  <span aria-hidden className="shrink-0 text-gold transition-transform group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-4 text-sm text-stone leading-relaxed">{f.answer}</p>
+              </details>
+            ))}
           </div>
         </Container>
       </section>
@@ -163,8 +359,8 @@ export default function PaymentsPage() {
             Ready to start planning?
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-stone">
-            Tell us about the journey you have in mind — payment, in whichever form you prefer, is arranged
-            once everything else is confirmed.
+            Tell us about the journey you have in mind — payment is arranged with your consultant once
+            everything else is confirmed.
           </p>
           <div className="mt-8">
             <Button href="/plan-your-journey" size="lg">
