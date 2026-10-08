@@ -59,12 +59,12 @@ function standardSteps(signUp: string, deposit: string): string[] {
 export const cryptoCountryGuides: CryptoCountryGuide[] = [
   {
     id: "us",
-    platforms: ["Coinbase", "Kraken", "Gemini"],
+    platforms: ["Coinbase", "Kraken", "Gemini", "PayPal", "eToro"],
     steps: standardSteps(
-      "Sign up on a US-regulated exchange (Coinbase, Kraken or Gemini).",
-      "Deposit USD by ACH bank transfer (cheapest) or debit card.",
+      "Sign up on a regulated exchange (Coinbase, Kraken or Gemini) — or use PayPal or eToro if you already have an account.",
+      "Add funds by ACH bank transfer (cheapest), debit card, or your PayPal balance.",
     ),
-    note: "In New York, use a provider licensed by NYDFS — Coinbase and Gemini both are.",
+    note: "PayPal can send BTC and ETH to an external address, but not every asset or network we accept — check with your consultant first. eToro isn't available in every state, and you send through the separate eToro Money app. In New York, use a provider licensed by NYDFS, such as Coinbase or Gemini.",
   },
   {
     id: "ca",
@@ -115,12 +115,12 @@ export const cryptoCountryGuides: CryptoCountryGuide[] = [
   },
   {
     id: "eu",
-    platforms: ["Coinbase", "Kraken", "Bitpanda", "Bitstamp"],
+    platforms: ["Coinbase", "Kraken", "Bitpanda", "eToro"],
     steps: standardSteps(
-      "Sign up on a MiCA-authorised exchange (Coinbase, Kraken, Bitpanda or Bitstamp).",
+      "Sign up on a MiCA-authorised exchange (Coinbase, Kraken, Bitpanda) or eToro.",
       "Deposit EUR (or your local currency) by SEPA bank transfer.",
     ),
-    note: "USDT is generally not available to EU/EEA customers under MiCA — pay with USDC, BTC or ETH instead.",
+    note: "ID checks often include a short video or selfie step. USDT is generally not available to EU/EEA customers under MiCA — pay with USDC, BTC or ETH instead. On eToro, you send crypto out through the separate eToro Money app.",
   },
   {
     id: "ch",

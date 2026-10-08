@@ -22,6 +22,7 @@ const sections = [
   { id: "bank-transfer", label: "Bank transfer" },
   { id: "cryptocurrency", label: "Cryptocurrency" },
   { id: "buy-crypto", label: "How to buy crypto" },
+  { id: "send-safely", label: "Sending safely" },
   { id: "submit-payment", label: "Submit a payment" },
   { id: "payment-questions", label: "Questions" },
 ];
@@ -191,10 +192,13 @@ export default function PaymentsPage() {
 
       <section id="cryptocurrency" className="scroll-mt-24 border-t hairline py-16 md:py-24">
         <Container>
-          <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] [&>*]:min-w-0">
+          <SectionHeading eyebrow="Cryptocurrency" title={`Accepted since ${company.cryptoAcceptedSince}.`} />
+          <div id="buy-crypto" className="mt-10 max-w-3xl scroll-mt-24">
+            <CryptoCountryGuide />
+          </div>
+          <div className="mt-16 grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] [&>*]:min-w-0">
             <div>
-              <SectionHeading eyebrow="Cryptocurrency" title={`Accepted since ${company.cryptoAcceptedSince}.`} />
-              <div className="mt-6 space-y-4 text-base text-stone leading-relaxed">
+              <div className="space-y-4 text-base text-stone leading-relaxed">
                 <p>
                   {company.name} has accepted cryptocurrency since {company.cryptoAcceptedSince} — well
                   before it was common in travel. We currently accept {company.cryptoCurrencies.join(", ")}.
@@ -246,18 +250,14 @@ export default function PaymentsPage() {
         </Container>
       </section>
 
-      <section id="buy-crypto" className="scroll-mt-24 border-t hairline bg-charcoal py-16 md:py-24">
+      <section id="send-safely" className="scroll-mt-24 border-t hairline bg-charcoal py-16 md:py-24">
         <Container>
           <SectionHeading
-            eyebrow="Step-by-Step Guide"
-            title="How to buy crypto and send it to us."
-            description="Pick your country for a licensed exchange and local funding method, then follow the steps below to send safely."
+            eyebrow="Sending Safely"
+            title="Step by step, from purchase to confirmation."
+            description="Whichever country you buy in, follow these steps so your payment arrives at the right address, on the right network."
           />
-          <div className="mt-12 max-w-3xl">
-            <CryptoCountryGuide />
-          </div>
-          <p className="eyebrow mt-16 mb-8">Sending Safely, Step by Step</p>
-          <ol className="grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-2">
+          <ol className="mt-12 grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-2">
             {cryptoBuyingSteps.map((step, i) => (
               <li key={step.title} className="flex gap-5">
                 <span
