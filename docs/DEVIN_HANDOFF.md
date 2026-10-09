@@ -26,7 +26,7 @@
 - Stack: Next.js (a newer version than you may know: **read `node_modules/next/dist/docs/` before writing Next code**, see `AGENTS.md`), TypeScript, Tailwind. Built as a static export (`npm run build:cloudflare`, `STATIC_EXPORT=true`) and served from **Cloudflare** (Workers static assets). Netlify and the old GitHub Pages deploy are no longer used. Cloudflare builds from `main`.
 - Backend: **Supabase** project `rkevnmqofvqdmjujlrvd` (eu-west-1), email via **Resend**, bot protection via **Cloudflare Turnstile**.
 - Checks every change must pass: `npm run lint`, `npx tsc --noEmit`, `npm run build`.
-- Pull requests merged so far: #12 (exhibitions data), #13 (exhibition travel form), #14 (mobile pages, swipe rows, menu, Stays, planner, customer accounts), #16 (hero fixes: eyebrow no longer blurred, swipe-row left gutter, hero load animations and stats row removed), #15 (this file).
+- Pull requests merged so far: #12 (exhibitions data), #13 (exhibition travel form), #14 (mobile pages, swipe rows, menu, Stays, planner, customer accounts), #16 (hero fixes: eyebrow no longer blurred, swipe-row left gutter, hero load animations and stats row removed), #15 (this file), #20 and #21 (payments page redesign).
 
 ## 1. What was done (all merged to `main`)
 
@@ -54,6 +54,11 @@
 - Journey wizard and exhibition form prefill from the profile; header and menu show the signed-in customer.
 - Code: `src/lib/supabase/AuthProvider.tsx`, `src/components/account/*`, `src/app/my-world-bridge/page.tsx`.
 - `AuthProvider` falls back to loading only `full_name, phone` if the new profile columns do not exist yet, so nothing breaks before you run the SQL.
+
+### Payments page (`/payments`, PRs #20 and #21)
+- Simplified: 4-step row, one always-visible safety notice (bank transfer and crypto), then a "How would you like to pay?" choice (Bank transfer / Cryptocurrency; the URL hash drives it, so `#cryptocurrency` and `#buy-crypto` open crypto).
+- Crypto path: Step 1 buy it, Step 2 get our address (currency -> network -> QR + address) and send, Step 3 paste the transaction reference. Wallet addresses in `src/data/cryptoPayments.ts` were **not** changed; all 9 QR codes were decoded and match.
+- Please include a real crypto-reference submission in your tests (it goes through `submitCryptoPayment` in `src/lib/cryptoPaymentSubmissions.ts` and the crypto notification email), and check the table/function/secrets it uses are intact.
 
 ## 2. Already applied to Supabase production
 
