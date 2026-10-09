@@ -426,25 +426,35 @@ export function TravelDetailsForm() {
         title="Part 6: Proposed Travel Itinerary Overview"
         note={`To be completed by your ${company.name} representative, or left blank for you to propose.`}
       >
-        <div className="space-y-4">
+        <p className="text-xs text-stone-dim">
+          Each row is one stop on your trip (a day, a city or an event). Add a row for each extra stop. Rows you leave empty are ignored.
+        </p>
+        <div className="hidden gap-3 sm:grid sm:grid-cols-[10rem_1fr_1.5fr_1fr]" aria-hidden>
+          {["Date", "Location / city", "Planned activity / cultural programme", "Accommodation / notes"].map((h) => (
+            <span key={h} className={labelClass}>{h}</span>
+          ))}
+        </div>
+        <div className="space-y-5 sm:space-y-3">
           {Array.from({ length: itineraryRows }, (_, idx) => {
             const i = idx + 1;
+            const lbl = "mb-1 block text-xs uppercase tracking-wide text-stone sm:sr-only";
             return (
-              <div key={i} className="grid grid-cols-1 gap-3 sm:grid-cols-[10rem_1fr_1.5fr_1fr]">
+              <div key={i} className="grid grid-cols-1 gap-3 rounded-card border hairline p-3 sm:grid-cols-[10rem_1fr_1.5fr_1fr] sm:border-0 sm:p-0">
+                <p className="text-xs font-semibold uppercase tracking-wide text-gold sm:hidden">Stop {i}</p>
                 <div>
-                  <label htmlFor={`it${i}_date`} className={labelClass}>Date</label>
+                  <label htmlFor={`it${i}_date`} className={lbl}>Date</label>
                   <input id={`it${i}_date`} name={`it${i}_date`} type="date" className={inputClass} />
                 </div>
                 <div>
-                  <label htmlFor={`it${i}_location`} className={labelClass}>Location / city</label>
+                  <label htmlFor={`it${i}_location`} className={lbl}>Location / city</label>
                   <input id={`it${i}_location`} name={`it${i}_location`} type="text" className={inputClass} />
                 </div>
                 <div>
-                  <label htmlFor={`it${i}_activity`} className={labelClass}>Planned activity / cultural programme</label>
+                  <label htmlFor={`it${i}_activity`} className={lbl}>Planned activity / cultural programme</label>
                   <input id={`it${i}_activity`} name={`it${i}_activity`} type="text" className={inputClass} />
                 </div>
                 <div>
-                  <label htmlFor={`it${i}_notes`} className={labelClass}>Accommodation / notes</label>
+                  <label htmlFor={`it${i}_notes`} className={lbl}>Accommodation / notes</label>
                   <input id={`it${i}_notes`} name={`it${i}_notes`} type="text" className={inputClass} />
                 </div>
               </div>
@@ -457,7 +467,7 @@ export function TravelDetailsForm() {
             onClick={() => setItineraryRows((n) => n + 1)}
             className="rounded-full border border-line px-5 py-2 text-xs uppercase tracking-wide text-ivory hover:border-gold"
           >
-            + Add row
+            + Add another stop
           </button>
         ) : null}
       </Section>
