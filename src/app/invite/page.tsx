@@ -31,7 +31,7 @@ const faqs = [
   { q: "What is the Invite Program?", a: `A way to introduce friends to ${company.name} and be rewarded when they travel. You each receive ${fmtUsd(INVITE_REWARD)} in Promo Credits.` },
   { q: "Who can my friend be?", a: `Anyone with a new account, created in the last ${INVITE_WINDOW_DAYS} days through your link, who has not booked with us before.` },
   { q: "When do I receive my reward?", a: `After your friend's journey of ${fmtUsd(INVITE_MIN_TRIP)} or more has been completed and paid for. Our team adds the credits to both accounts and you will see them in My World Bridge.` },
-  { q: "Do the rewards expire?", a: `Yes. They are Promo Credits and expire ${PROMO_VALID_DAYS} days after they are added. They can be used on bookings of US$2,000 or more, up to 5% of the booking. See the Travel Credit terms for the table.` },
+  { q: "Do the rewards expire?", a: `Yes. They are Promo Credits and expire ${PROMO_VALID_DAYS} days after they are added. They can be used on any booking, up to 25% of its price.` },
   { q: "My friend already has an account.", a: "Sorry, the invite only works for new accounts. Your friend needs to sign up through your link." },
   { q: "Where do I see how my invites are going?", a: "On this page, once you are signed in: friends who joined, who has completed a journey, and what you have earned." },
 ];

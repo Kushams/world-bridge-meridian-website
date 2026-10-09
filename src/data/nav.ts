@@ -92,6 +92,7 @@ export const menuGroups: NavGroup[] = [
       { label: "Pay with Crypto", href: "/payments#cryptocurrency" },
       { label: "Gift Cards", href: "/gift-cards" },
       { label: "Travel Credits", href: "/travel-credits" },
+      { label: "Rewards & Cashback", href: "/travel-credits#rewards" },
       { label: "Invite & Earn", href: "/invite" },
       { label: "Payment Questions", href: "/payments#payment-questions" },
     ],

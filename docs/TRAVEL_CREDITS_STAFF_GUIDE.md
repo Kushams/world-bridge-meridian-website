@@ -13,7 +13,7 @@ Unchanged: confirm the order, the codes are emailed. When redeemed the value bec
 ## Applying credits to a booking
 Run in the SQL editor (service role):
 - `select staff_apply_credits('customer@email', <standard_usd>, <promo_usd>, '<submission id or null>', 'note');`
-- Promo credits only on bookings of US$2,000+, max 5% of the booking in steps of US$100 (see the table on /travel-credits). Standard credits can cover up to 100%.
+- Promo credits: any booking, max 25% of the booking total (staff check this when applying). Standard credits can cover up to 100%.
 - Refund a cancelled booking: `select staff_refund_credits('customer@email', <usd>, '<submission id or null>', 'note')` (see the function in the SQL file). Promo credits already used are not refunded.
 
 ## Promo credits and vouchers
@@ -21,4 +21,8 @@ Run in the SQL editor (service role):
 - Make a voucher code: `select staff_create_voucher(100, 90, 180);` → send the code; the customer enters it under Travel Credits and gets Promo Credits.
 
 ## Invite Program
-When an invited friend's journey (US$3,000+) is completed and paid, find the row in `invites` and set `status` = **completed**. Both accounts automatically receive US$100 Promo Credits (90 days). Setting it twice does nothing.
+When an invited friend's journey (US$3,000+) is completed and paid, find the row in `invites` and set `status` = **completed**. Both accounts automatically receive US$500 Promo Credits (90 days). Setting it twice does nothing.
+
+## Cashback
+When a journey is completed and paid in full: `select staff_award_cashback('customer@email', <journey total usd>, '<submission id>', 'Italy trip');`
+US$5,000+ → 15%, US$15,000+ → 20%, US$30,000+ → 25%, added as Promo Credits (90 days). It refuses a second award for the same submission. Change the tiers in the SQL function and `src/lib/credits.ts` together.

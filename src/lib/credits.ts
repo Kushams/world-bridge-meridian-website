@@ -4,26 +4,21 @@ export const CREDIT_MIN = 500;
 export const CREDIT_MAX = 25000;
 export const CREDIT_PRESETS = [500, 1000, 2000, 3000, 5000, 10000] as const;
 
-/** Promo credits: only on bigger trips, in steps, and only a share of the trip. */
-export const PROMO_MIN_BOOKING = 2000;
-export const PROMO_STEP = 100;
-export const PROMO_SHARE = 0.05;
+/** Promo Credits (invite rewards, cashback, vouchers): usable on any booking, up to a share of it. */
+export const PROMO_MAX_SHARE = 0.25;
 export const PROMO_VALID_DAYS = 90;
 
-/** Largest amount of promo credits usable on one booking of this value. */
-export function promoMax(bookingUsd: number): number {
-  if (bookingUsd < PROMO_MIN_BOOKING) return 0;
-  return Math.floor((bookingUsd * PROMO_SHARE) / PROMO_STEP) * PROMO_STEP;
-}
+/** Largest amount of Promo Credits usable on one booking of this value. */
+export const promoMax = (bookingUsd: number) => Math.floor(bookingUsd * PROMO_MAX_SHARE);
 
-/** Rows for the redemption table in the terms. */
-export const PROMO_TIERS = [2000, 4000, 6000, 8000, 10000].map((from, i, all) => ({
-  from,
-  to: i < all.length - 1 ? all[i + 1] - 1 : null,
-  max: promoMax(from),
-}));
+/** Cashback on a completed journey, by journey total. Keep in step with staff_award_cashback(). */
+export const CASHBACK_TIERS = [
+  { from: 5000, pct: 15 },
+  { from: 15000, pct: 20 },
+  { from: 30000, pct: 25 },
+] as const;
 
-export const INVITE_REWARD = 100;
+export const INVITE_REWARD = 500;
 export const INVITE_MIN_TRIP = 3000;
 export const INVITE_WINDOW_DAYS = 30;
 

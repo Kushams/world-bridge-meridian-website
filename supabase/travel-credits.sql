@@ -5,7 +5,7 @@
 -- Model (same idea as Travala):
 --   * Standard credits: bought, refunded, or redeemed from a gift card. Never expire. 1 credit = US$1.
 --   * Promo credits:    given as promotions / vouchers / invite rewards. They expire, and
---                       some limits apply (see /travel-credits).
+--                       usable on any booking up to 25% of it (see /travel-credits).
 -- Everything a customer holds is a "bucket" with a balance; every use is a ledger line.
 -- Staff do the work with the helper functions below, in the SQL editor:
 --   select staff_apply_credits('client@email.com', 1500, 100, '<request id>', 'Italy trip');
@@ -35,7 +35,7 @@ create table if not exists public.travel_credit_buckets (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users (id) on delete cascade,
   kind text not null check (kind in ('standard', 'promo')),
-  source text not null check (source in ('purchase', 'gift_card', 'refund', 'promo', 'voucher', 'invite', 'adjustment')),
+  source text not null check (source in ('purchase', 'gift_card', 'refund', 'promo', 'voucher', 'invite', 'cashback', 'adjustment')),
   amount_cents integer not null check (amount_cents > 0),
   balance_cents integer not null check (balance_cents >= 0),
   expires_at timestamptz,
@@ -218,6 +218,28 @@ begin
 end;
 $fn$;
 
+-- Cashback: when a trip is completed and paid, staff award Promo Credits by trip total.
+--   US$5,000+ -> 15%,  US$15,000+ -> 20%,  US$30,000+ -> 25%   (90 days). Once per submission.
+create or replace function public.staff_award_cashback(p_email text, p_trip_usd numeric, p_submission uuid, p_note text default null)
+returns text language plpgsql security definer set search_path = public as $fn$
+declare uid uuid; pct numeric; cents int;
+begin
+  select id into uid from auth.users where lower(email) = lower(p_email);
+  if uid is null then raise exception 'No account for %', p_email; end if;
+  if p_submission is null then raise exception 'A submission id is required so cashback is only paid once'; end if;
+  if exists (select 1 from public.travel_credit_buckets where source = 'cashback' and source_ref = p_submission) then
+    raise exception 'Cashback was already awarded for this booking';
+  end if;
+  pct := case when p_trip_usd >= 30000 then 0.25 when p_trip_usd >= 15000 then 0.20 when p_trip_usd >= 5000 then 0.15 else 0 end;
+  if pct = 0 then return 'Trip is under US$5,000: no cashback tier'; end if;
+  cents := round(p_trip_usd * pct * 100);
+  insert into public.travel_credit_buckets (user_id, kind, source, amount_cents, balance_cents, expires_at, note, source_ref)
+  values (uid, 'promo', 'cashback', cents, cents, now() + interval '90 days', coalesce(p_note, 'Cashback on your journey'), p_submission);
+  return format('Awarded US$%s (%s%%) cashback', round(cents / 100.0, 2), pct * 100);
+end;
+$fn$;
+revoke all on function public.staff_award_cashback(text, numeric, uuid, text) from public, anon, authenticated;
+
 create or replace function public.staff_create_voucher(p_usd numeric, p_valid_days integer default 90, p_redeem_within_days integer default 60)
 returns text language plpgsql security definer set search_path = public as $fn$
 declare v text := public.gen_gift_code();
@@ -342,7 +364,7 @@ revoke all on function public.claim_invite(text) from public, anon;
 grant execute on function public.claim_invite(text) to authenticated;
 
 -- Staff set an invite's status to "completed" once the invited friend's qualifying
--- journey (US$3,000+) has been completed: both people receive US$100 of promo credits.
+-- journey (US$3,000+) has been completed: both people receive US$500 of promo credits.
 create or replace function public.reward_invite()
 returns trigger language plpgsql security definer set search_path = public as $fn$
 begin
@@ -350,8 +372,8 @@ begin
     new.completed_at := now();
     insert into public.travel_credit_buckets (user_id, kind, source, amount_cents, balance_cents, expires_at, note, source_ref)
     values
-      (new.inviter_id, 'promo', 'invite', 10000, 10000, now() + interval '90 days', 'Invite reward', new.id),
-      (new.invitee_id, 'promo', 'invite', 10000, 10000, now() + interval '90 days', 'Invite reward', new.id);
+      (new.inviter_id, 'promo', 'invite', 50000, 50000, now() + interval '90 days', 'Invite reward', new.id),
+      (new.invitee_id, 'promo', 'invite', 50000, 50000, now() + interval '90 days', 'Invite reward', new.id);
   end if;
   return new;
 end;

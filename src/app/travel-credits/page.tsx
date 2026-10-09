@@ -8,7 +8,7 @@ import { themeImage } from "@/data/images";
 import { company } from "@/data/company";
 import { creditTerms, creditTermsIntro } from "@/data/creditTerms";
 import { CreditsPurchase } from "@/components/credits/CreditsPurchase";
-import { CREDIT_MAX, CREDIT_MIN, PROMO_TIERS, PROMO_VALID_DAYS, fmtUsd } from "@/lib/credits";
+import { CREDIT_MAX, CREDIT_MIN, CASHBACK_TIERS, PROMO_MAX_SHARE, PROMO_VALID_DAYS, fmtUsd } from "@/lib/credits";
 
 export const metadata: Metadata = {
   title: "Travel Credits — Buy Today, Travel Tomorrow",
@@ -31,6 +31,14 @@ const faqs = [
   {
     q: "What is the difference between Travel Credits and Promo Credits?",
     a: "Travel Credits are money you have paid or been refunded: they never expire and can cover up to 100% of any booking. Promo Credits are rewards: they expire, apply to larger bookings only, and are capped per booking.",
+  },
+  {
+    q: "How do Promo Credits work?",
+    a: `They are free credits from us (cashback, invite rewards, vouchers). Each batch lasts ${PROMO_VALID_DAYS} days from the day we give it. You can use them on any booking, up to ${Math.round(PROMO_MAX_SHARE * 100)}% of its price, for example up to ${fmtUsd(1000)} on a ${fmtUsd(4000)} journey. Unused Promo Credits expire.`,
+  },
+  {
+    q: "How does cashback work?",
+    a: `When a journey of ${fmtUsd(CASHBACK_TIERS[0].from)} or more is completed and paid, you get ${CASHBACK_TIERS.map((t) => `${t.pct}% from ${fmtUsd(t.from)}`).join(", ")} back as Promo Credits.`,
   },
   {
     q: "I have a gift card or voucher code.",
@@ -76,6 +84,27 @@ export default function TravelCreditsPage() {
         </Container>
       </section>
 
+      <section id="rewards" className="scroll-mt-24 border-t hairline py-12 md:py-20">
+        <Container>
+          <SectionHeading eyebrow="Rewards" title="Travel more, get cashback." />
+          <p className="mt-4 max-w-2xl text-sm text-stone leading-relaxed">
+            When a journey is completed and paid, we add a percentage of its total to your wallet as Promo Credits. They last {PROMO_VALID_DAYS} days from the day we give them, and you can use them on any booking, up to {Math.round(PROMO_MAX_SHARE * 100)}% of its price.
+          </p>
+          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+            {CASHBACK_TIERS.map((t) => (
+              <div key={t.from} className="rounded-card border hairline p-6">
+                <p className="font-display text-4xl text-gold">{t.pct}%</p>
+                <p className="mt-2 text-sm text-ivory">back on journeys of {fmtUsd(t.from)} or more</p>
+                <p className="mt-1 text-xs text-stone-dim">e.g. {fmtUsd(t.from)} journey → {fmtUsd((t.from * t.pct) / 100)} in Promo Credits</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-6">
+            <Button href="/invite" variant="outline">Also earn by inviting friends</Button>
+          </div>
+        </Container>
+      </section>
+
       <section id="credit-faq" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>
           <SectionHeading eyebrow="Questions" title="Travel Credit questions, answered." />
@@ -102,25 +131,6 @@ export default function TravelCreditsPage() {
               <li key={t}>{t}</li>
             ))}
           </ol>
-          <div className="mt-8 overflow-hidden rounded-card border hairline">
-            <table className="w-full text-sm">
-              <caption className="border-b hairline p-4 text-left text-xs font-semibold uppercase tracking-wide text-ivory">
-                Promo Credits you can use on one booking
-              </caption>
-              <thead className="text-left text-xs uppercase tracking-wide text-stone">
-                <tr><th className="p-3 font-medium">Booking total</th><th className="p-3 font-medium">Most Promo Credits</th></tr>
-              </thead>
-              <tbody className="divide-y divide-line">
-                <tr><td className="p-3 text-stone">Less than {fmtUsd(PROMO_TIERS[0].from)}</td><td className="p-3 text-ivory">Not available</td></tr>
-                {PROMO_TIERS.map((t) => (
-                  <tr key={t.from}>
-                    <td className="p-3 text-stone">{t.to ? `${fmtUsd(t.from)} to ${fmtUsd(t.to)}` : `${fmtUsd(t.from)} or more`}</td>
-                    <td className="p-3 text-ivory">{t.to ? fmtUsd(t.max) : `${fmtUsd(t.max)}, then +${fmtUsd(100)} for every ${fmtUsd(2000)} more`}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
           <p className="mt-6 text-sm text-stone-dim">
             Also see the <Link href="/terms" className="underline underline-offset-4">Terms &amp; Booking Conditions</Link> and the{" "}
             <Link href="/gift-card-terms" className="underline underline-offset-4">gift card terms</Link>.
