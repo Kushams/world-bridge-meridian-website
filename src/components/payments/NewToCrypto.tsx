@@ -6,8 +6,8 @@ import { cryptoGuideReviewed } from "@/data/cryptoBuyingGuide";
 
 /** Same journey as the payments page, but for a purchase made on this site: no consultant step. */
 const purchaseSteps = [
-  { title: "Choose your amount first", body: "Pick the gift card or Travel Credits amount in the form above. The form then shows the exact amount to pay, the asset (for example USDC) and the network." },
-  { title: "Open an account with a regulated exchange", body: "Choose an exchange that is licensed or registered where you live (pick your country above). Sign up with your legal name and complete identity verification, usually a photo ID and a selfie. It can take minutes or a few days, so do it early." },
+  { title: "Choose your amount first", body: "Pick the gift card or Travel Credits amount in the form below. The form then shows the exact amount to pay, the asset (for example USDC) and the network." },
+  { title: "Open an account with a regulated exchange", body: "Choose an exchange that is licensed or registered where you live (pick your country below). Sign up with your legal name and complete identity verification, usually a photo ID and a selfie. It can take minutes or a few days, so do it early." },
   { title: "Add money in your local currency", body: "Deposit funds by bank transfer, debit card or a local payment method. Bank transfers are usually the cheapest; cards are faster but cost more." },
   { title: "Buy the cryptocurrency shown in the form", body: "Stablecoins (USDC or USDT) are the simplest because they track the US dollar. Buy the asset the form shows, and enough to cover the exchange's network fee on top." },
   { title: "Withdraw to our address on the right network", body: "Choose Send or Withdraw on your exchange, then copy our address from the form (or scan the QR code) and pick the same network the form shows. Check the first and last few characters. A wrong address or network can lose the money for good." },

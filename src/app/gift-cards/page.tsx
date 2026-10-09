@@ -15,14 +15,6 @@ export const metadata: Metadata = {
   description: `Give the gift of travel. ${company.name} gift cards never expire, can be bought with cryptocurrency, and are used toward bespoke journeys.`,
 };
 
-const steps = [
-  { title: "Sign in", body: "Create a free account with Google or email, or sign in." },
-  { title: "Choose", body: "Pick a design and an amount from US$500." },
-  { title: "Pay", body: "Pay in cryptocurrency and paste your transaction ID." },
-  { title: "We verify", body: "Our team checks your payment on the blockchain." },
-  { title: "Delivered", body: "The gift card code is emailed to you or your recipient." },
-];
-
 const faqs = [
   { q: "Does a gift card expire?", a: "No. Gift cards never expire." },
   { q: "What can I use it on?", a: `Journeys and services from ${company.name}. When you book, your consultant applies the balance and tells you what remains.` },
@@ -44,19 +36,7 @@ export default function GiftCardsPage() {
         size="sm"
       />
 
-      <section className="py-12 md:py-16">
-        <Container>
-          <ol className="grid grid-cols-2 gap-3 md:grid-cols-5">
-            {steps.map((s, i) => (
-              <li key={s.title} className="rounded-card border hairline p-4">
-                <p className="font-display text-2xl text-gold">{i + 1}</p>
-                <p className="mt-1 font-display text-lg text-ivory">{s.title}</p>
-                <p className="mt-1 text-sm text-stone leading-relaxed">{s.body}</p>
-              </li>
-            ))}
-          </ol>
-        </Container>
-      </section>
+      <NewToCrypto what="buy a gift card" />
 
       <section id="buy" className="scroll-mt-24 pb-16 md:pb-24">
         <Container>
@@ -68,8 +48,6 @@ export default function GiftCardsPage() {
           </div>
         </Container>
       </section>
-
-      <NewToCrypto what="buy a gift card" />
 
       <section id="redeem" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">

@@ -1,13 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { useAuth } from "@/lib/supabase/AuthProvider";
 import { ProfileHero } from "./ProfileHero";
 import { DocumentsPanel } from "./DocumentsPanel";
 import { EnquiriesPanel } from "./EnquiriesPanel";
 import { ProfileForm } from "./ProfileForm";
 import { TravelCreditsPanel } from "./TravelCreditsPanel";
-import { UploadsPanel } from "./UploadsPanel";
 import { SavedJourneysPanel } from "./SavedJourneysPanel";
 import { MobileCollapse } from "@/components/ui/MobileCollapse";
 
@@ -69,69 +68,95 @@ function DeleteAccount() {
   );
 }
 
-/** The signed-in side of /my-world-bridge: profile, enquiries, saved journeys. */
-export function AccountDashboard() {
+type Tab = "profile" | "wallet";
+const WALLET_HASHES = new Set(["wallet", "travel-credits", "gift-cards", "redeem-code"]);
 
-  const links = [
-    { href: "#travel-credits", label: "Wallet" },
-    { href: "#enquiries", label: "My Enquiries" },
-    { href: "#documents", label: "Itineraries & Documents" },
-    { href: "#send-documents", label: "Send Us Documents" },
-    { href: "#saved", label: "Saved Journeys" },
-    { href: "#profile-form", label: "Profile" },
-  ];
+function subscribeHash(cb: () => void) {
+  window.addEventListener("hashchange", cb);
+  return () => window.removeEventListener("hashchange", cb);
+}
+const currentTab = (): Tab => (WALLET_HASHES.has(window.location.hash.slice(1)) ? "wallet" : "profile");
+
+/** The signed-in side of /my-world-bridge: two tabs, Profile (details, enquiries, saved) and Wallet. */
+export function AccountDashboard() {
+  const tab = useSyncExternalStore(subscribeHash, currentTab, () => "profile" as Tab);
+
+  // Links such as /my-world-bridge#redeem-code open the Wallet tab; once it has rendered, scroll to the spot.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id) return;
+    const t = setTimeout(() => document.getElementById(id)?.scrollIntoView({ block: "start" }), 50);
+    return () => clearTimeout(t);
+  }, [tab]);
+
+  function choose(next: Tab) {
+    if (next === tab) return;
+    window.history.pushState(null, "", `${window.location.pathname}#${next}`);
+    window.dispatchEvent(new HashChangeEvent("hashchange"));
+    document.getElementById("account-tabs")?.scrollIntoView({ block: "start" });
+  }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       <ProfileHero />
 
-      <nav aria-label="Account sections" className="chip-row flex flex-wrap gap-3">
-        {links.map((l) => (
-          <a
-            key={l.href}
-            href={l.href}
-            className="rounded-full border border-line px-5 py-2 text-xs font-semibold uppercase tracking-wide text-ivory-dim transition-colors hover:border-gold hover:text-gold"
+      <div className="sticky top-[4.4rem] z-30 -mx-1 bg-ink/95 px-1 py-2 backdrop-blur">
+      <div id="account-tabs" role="tablist" aria-label="Account sections" className="scroll-mt-40 grid grid-cols-2 gap-1 rounded-full border border-line bg-ink p-1 sm:inline-grid sm:min-w-[22rem]">
+        {(["profile", "wallet"] as const).map((t) => (
+          <button
+            key={t}
+            type="button"
+            role="tab"
+            id={`tab-${t}`}
+            aria-selected={tab === t}
+            aria-controls={`panel-${t}`}
+            onClick={() => choose(t)}
+            className={`rounded-full px-6 py-2.5 text-xs font-semibold uppercase tracking-wide transition-colors ${
+              tab === t ? "bg-ivory text-ink" : "text-ivory-dim hover:text-gold"
+            }`}
           >
-            {l.label}
-          </a>
+            {t === "profile" ? "Profile" : "Wallet"}
+          </button>
         ))}
-      </nav>
-
-      <Section id="travel-credits" eyebrow="My Wallet" title="Your credits, rewards and gift cards">
-        <span id="gift-cards" />
-        <TravelCreditsPanel />
-      </Section>
-
-      <Section id="enquiries" eyebrow="My Enquiries" title="Where your requests stand">
-        <EnquiriesPanel />
-      </Section>
-
-      <Section id="documents" eyebrow="Itineraries & Documents" title="Your travel documents">
-        <DocumentsPanel />
-      </Section>
-
-      <Section id="send-documents" eyebrow="Send Us Documents" title="Passports and other files">
-        <UploadsPanel />
-      </Section>
-
-      <Section id="saved" eyebrow="Saved Journeys" title="Your shortlist">
-        <SavedJourneysPanel />
-      </Section>
-
-      <Section id="profile" eyebrow="Your Profile" title="Details and preferences">
-        <p className="-mt-3 mb-2 max-w-2xl text-sm text-stone leading-relaxed">
-          Keep these up to date and our journey planner and travel forms will fill them in for you.
-        </p>
-        <MobileCollapse label="Edit my details">
-          <div id="profile-form" className="scroll-mt-28">
-            <ProfileForm />
-          </div>
-        </MobileCollapse>
-      </Section>
-
-      <div className="border-t hairline pt-8">
-        <DeleteAccount />
       </div>
+      </div>
+
+      {tab === "wallet" ? (
+        <div role="tabpanel" id="panel-wallet" aria-labelledby="tab-wallet" className="space-y-10">
+          <span id="travel-credits" />
+          <span id="gift-cards" />
+          <TravelCreditsPanel />
+        </div>
+      ) : (
+        <div role="tabpanel" id="panel-profile" aria-labelledby="tab-profile" className="space-y-10">
+          <Section id="profile" eyebrow="Your Profile" title="Details and preferences">
+            <p className="-mt-3 mb-2 max-w-2xl text-sm text-stone leading-relaxed">
+              Keep these up to date and our journey planner and travel forms will fill them in for you.
+            </p>
+            <MobileCollapse label="Edit my details">
+              <div id="profile-form" className="scroll-mt-28">
+                <ProfileForm />
+              </div>
+            </MobileCollapse>
+          </Section>
+
+          <Section id="enquiries" eyebrow="My Enquiries" title="Where your requests stand">
+            <EnquiriesPanel />
+          </Section>
+
+          <Section id="documents" eyebrow="Itineraries & Documents" title="Your travel documents">
+            <DocumentsPanel />
+          </Section>
+
+          <Section id="saved" eyebrow="Saved Journeys" title="Your shortlist">
+            <SavedJourneysPanel />
+          </Section>
+
+          <div className="border-t hairline pt-8">
+            <DeleteAccount />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

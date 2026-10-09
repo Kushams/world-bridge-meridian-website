@@ -1,5 +1,6 @@
 "use client";
 
+import { UploadsPanel } from "@/components/account/UploadsPanel";
 import { FormEvent, ReactNode, useEffect, useRef, useState } from "react";
 import { company } from "@/data/company";
 import { track } from "@/lib/analytics";
@@ -294,10 +295,10 @@ export function TravelDetailsForm() {
           <Field label="UK ETA status (if applicable)" name="uk_eta_status" />
           <Choice label="Passport photo page attached?" name="passport_photo_attached" options={["Yes", "No"]} />
         </div>
-        <p className="text-xs text-stone-dim">
-          If you haven&apos;t sent a copy of your passport photo page yet, your representative will tell you
-          how to share it securely.
-        </p>
+        <div className="rounded-card border hairline p-5">
+          <p className="mb-3 text-sm font-semibold text-ivory">Upload your passport photo page here</p>
+          <UploadsPanel />
+        </div>
       </Section>
 
       <Section title="Part 2: Exhibition & Travel Preferences">
