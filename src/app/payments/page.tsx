@@ -6,6 +6,7 @@ import { MobileCollapse } from "@/components/ui/MobileCollapse";
 import { Button } from "@/components/ui/Button";
 import { company } from "@/data/company";
 import { themeImage } from "@/data/images";
+import { PaymentMethods } from "@/components/payments/PaymentMethods";
 import { CryptoPaymentPanel } from "@/components/payments/CryptoPaymentPanel";
 import { enabledCryptoPaymentOptions } from "@/data/cryptoPayments";
 import { cryptoBuyingSteps, cryptoGuideReviewed } from "@/data/cryptoBuyingGuide";
@@ -94,12 +95,12 @@ export default function PaymentsPage() {
       <section id="how-it-works" className="scroll-mt-24 py-12 md:py-20">
         <Container>
           <SectionHeading eyebrow="Step by step" title="Four steps, always in this order." />
-          <ol className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="mt-6 grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
             {processSteps.map((step, i) => (
-              <li key={step.title} className="flex gap-4 rounded-card border hairline p-5 lg:block">
-                <span className="font-display text-3xl text-gold">{i + 1}</span>
-                <span className="block">
-                  <span className="block font-display text-lg text-ivory lg:mt-3">{step.title}</span>
+              <li key={step.title} className="flex gap-3">
+                <span className="font-display text-2xl leading-none text-gold">{i + 1}</span>
+                <span>
+                  <span className="block font-display text-lg leading-tight text-ivory">{step.title}</span>
                   <span className="mt-1 block text-sm text-stone leading-relaxed">{step.body}</span>
                 </span>
               </li>
@@ -123,46 +124,15 @@ export default function PaymentsPage() {
         </div>
       </Container>
 
-      {/* 3. Pick a method */}
-      <section className="py-12 md:py-20">
+      {/* 3. Pick a method — one choice, one path */}
+      <section className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>
           <SectionHeading eyebrow="Your choice" title="How would you like to pay?" />
-          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
-            <a
-              href="#bank-transfer"
-              className="group rounded-card border hairline p-6 transition-colors hover:border-gold md:p-8"
-            >
-              <p className="font-display text-2xl text-ivory">Bank transfer</p>
-              <p className="mt-2 text-sm text-stone leading-relaxed">
-                Your consultant sends the details. You can pay in your own currency through a local
-                intermediary if that&apos;s easier.
-              </p>
-              <span className="mt-5 inline-block text-sm font-semibold uppercase tracking-wide text-gold group-hover:underline">
-                See how it works →
-              </span>
-            </a>
-            <a
-              href="#cryptocurrency"
-              className="group rounded-card border hairline p-6 transition-colors hover:border-gold md:p-8"
-            >
-              <p className="font-display text-2xl text-ivory">Cryptocurrency</p>
-              <p className="mt-2 text-sm text-stone leading-relaxed">
-                {cryptoAssets.join(", ")}. New to crypto? We show you where to buy it in your country, step
-                by step.
-              </p>
-              <span className="mt-5 inline-block text-sm font-semibold uppercase tracking-wide text-gold group-hover:underline">
-                See how it works →
-              </span>
-            </a>
-          </div>
-          <p className="mt-4 text-sm text-stone-dim">Not sure which? Ask your consultant — they&apos;ll recommend the simplest one for you.</p>
-        </Container>
-      </section>
-
-      {/* 4. Bank transfer */}
-      <section id="bank-transfer" className="scroll-mt-24 border-t hairline py-12 md:py-20">
-        <Container>
-          <SectionHeading eyebrow="Option 1" title="Bank transfer." />
+          <div className="mt-8">
+            <PaymentMethods
+              bank={
+                <div>
+          <SectionHeading eyebrow="Bank transfer" title="How it works." />
           <ul className="mt-6 max-w-2xl space-y-3 text-base text-stone leading-relaxed">
             <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Your consultant sends the <span className="text-ivory">amount, currency, beneficiary and reference</span> for your booking.</span></li>
             <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Bank details are <span className="text-ivory">never published</span> on this website.</span></li>
@@ -190,15 +160,13 @@ export default function PaymentsPage() {
               </p>
             </div>
           </MobileCollapse>
-        </Container>
-      </section>
-
-      {/* 5. Crypto: buy -> send -> tell us */}
-      <section id="cryptocurrency" className="scroll-mt-24 border-t hairline py-12 md:py-20">
-        <Container>
+                </div>
+              }
+              crypto={
+                <div>
           <SectionHeading
-            eyebrow="Option 2"
-            title="Cryptocurrency."
+            eyebrow="Cryptocurrency"
+            title="Buy it, send it, tell us."
             description={`Accepted since ${company.cryptoAcceptedSince}: ${company.cryptoCurrencies.join(", ")}. Three steps: buy it, send it, tell us you've sent it.`}
           />
           <p className="mt-4 max-w-2xl text-sm text-stone leading-relaxed">
@@ -270,6 +238,11 @@ export default function PaymentsPage() {
               </div>
             </MobileCollapse>
           </div>
+                </div>
+              }
+            />
+          </div>
+          <p className="mt-10 text-sm text-stone-dim">Not sure which? Ask your consultant — they&apos;ll recommend the simplest one for you.</p>
         </Container>
       </section>
 
