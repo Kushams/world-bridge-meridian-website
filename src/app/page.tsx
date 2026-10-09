@@ -1,6 +1,5 @@
 import { Hero } from "@/components/home/Hero";
 import { PlannerBand } from "@/components/home/PlannerBand";
-import { BrandPoster } from "@/components/home/BrandPoster";
 import { Philosophy } from "@/components/home/Philosophy";
 import { CorePaths } from "@/components/home/CorePaths";
 import { StatsBand } from "@/components/home/StatsBand";
@@ -43,7 +42,6 @@ export default function Home() {
       <Hero />
       <PlannerBand />
       <Philosophy />
-      <BrandPoster />
       <StatsBand />
 
       {/* Journey discovery: how can WBM travel with me */}
