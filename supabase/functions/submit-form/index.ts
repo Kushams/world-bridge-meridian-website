@@ -8,7 +8,7 @@ const TURNSTILE_SECRET_KEY = Deno.env.get("TURNSTILE_SECRET_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-const FORM_TYPES = ["contact", "newsletter", "journey-request", "travel-details"] as const;
+const FORM_TYPES = ["contact", "newsletter", "journey-request", "travel-details", "gift-card"] as const;
 type FormType = (typeof FORM_TYPES)[number];
 
 interface SubmitBody {

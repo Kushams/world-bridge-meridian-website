@@ -90,6 +90,7 @@ export const menuGroups: NavGroup[] = [
       { label: "Payment Options", href: "/payments" },
       { label: "Bank Transfer", href: "/payments#bank-transfer" },
       { label: "Pay with Crypto", href: "/payments#cryptocurrency" },
+      { label: "Gift Cards", href: "/gift-cards" },
       { label: "Payment Questions", href: "/payments#payment-questions" },
     ],
   },
@@ -105,6 +106,7 @@ export const menuGroups: NavGroup[] = [
 export const legalLinks: NavLink[] = [
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" },
+  { label: "Gift Card Terms", href: "/gift-card-terms" },
   { label: "Cookies", href: "/cookies" },
 ];
 

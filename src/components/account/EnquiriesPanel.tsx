@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/AuthProvider";
+import { usdFromCents } from "@/lib/giftCards";
 
 type Status = "received" | "in_review" | "proposal_sent" | "confirmed" | "closed";
 
 interface Enquiry {
   id: string;
-  form_type: "contact" | "journey-request" | "travel-details";
+  form_type: "contact" | "journey-request" | "travel-details" | "gift-card";
   subject: string | null;
   submitted_at: string;
   status: Status;
@@ -27,6 +28,7 @@ const TYPE_LABEL: Record<Enquiry["form_type"], string> = {
   contact: "Message",
   "journey-request": "Journey request",
   "travel-details": "Exhibition travel form",
+  "gift-card": "Gift card order",
 };
 
 const fmt = (iso: string) =>
@@ -60,6 +62,8 @@ export function EnquiriesPanel() {
   const { user } = useAuth();
   const [items, setItems] = useState<Enquiry[] | null>(null);
   const [failed, setFailed] = useState(false);
+  /** Gift card value applied to each enquiry, in cents (spends are negative ledger rows). */
+  const [applied, setApplied] = useState<Record<string, number>>({});
 
   useEffect(() => {
     const supabase = getSupabaseClient();
@@ -73,7 +77,24 @@ export function EnquiriesPanel() {
       .then(({ data, error }) => {
         if (cancelled) return;
         if (error) setFailed(true);
-        else setItems((data ?? []) as Enquiry[]);
+        else {
+          const rows = (data ?? []) as Enquiry[];
+          setItems(rows);
+          // Which enquiries had gift card value applied (RLS: only the owner's cards are visible).
+          supabase
+            .from("gift_card_ledger")
+            .select("submission_id, delta_cents")
+            .in("submission_id", rows.map((r) => r.id))
+            .then(({ data: led }) => {
+              if (cancelled) return;
+              const sums: Record<string, number> = {};
+              for (const l of led ?? []) {
+                const id = l.submission_id as string | null;
+                if (id) sums[id] = (sums[id] ?? 0) - (l.delta_cents as number);
+              }
+              setApplied(sums);
+            });
+        }
       });
     return () => {
       cancelled = true;
@@ -116,6 +137,9 @@ export function EnquiriesPanel() {
             {e.status !== "received" ? ` · updated ${fmt(e.status_updated_at)}` : ""}
           </p>
           <StatusTrack status={e.status} />
+          {applied[e.id] > 0 ? (
+            <p className="mt-4 text-xs text-gold">Gift card applied: {usdFromCents(applied[e.id])}</p>
+          ) : null}
         </li>
       ))}
     </ul>
