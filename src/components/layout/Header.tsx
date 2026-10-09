@@ -62,15 +62,19 @@ export function Header() {
               <Link
                 href="/my-world-bridge"
                 aria-label={`My account (${displayName(user, profile)})`}
-                className="hidden rounded-full transition-opacity hover:opacity-80 md:block"
+                className="rounded-full ring-1 ring-transparent transition hover:ring-gold"
               >
                 <Avatar url={avatarUrl(user, profile)} name={displayName(user, profile)} />
               </Link>
-            ) : null}
+            ) : (
+              <Link href="/my-world-bridge" className="hidden whitespace-nowrap px-2 text-xs font-semibold uppercase tracking-[0.14em] text-ivory-dim transition-colors hover:text-gold md:block">
+                Sign in
+              </Link>
+            )}
             <div className="hidden md:block">
               <Button href="/plan-your-journey">Design My Journey</Button>
             </div>
-            <div className="md:hidden">
+            <div className={user ? "hidden" : "md:hidden"}>
               <Button href="/plan-your-journey" className="!px-4 !py-2.5 !text-xs">
                 Plan
               </Button>

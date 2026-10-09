@@ -152,7 +152,7 @@ export function NavOverlay({
               <Avatar url={avatarUrl(user, profile)} name={displayName(user, profile)} className="h-9 w-9 text-sm" />
               <span className="min-w-0">
                 <span className="block truncate text-sm text-ivory">{displayName(user, profile)}</span>
-                <span className="block text-xs text-stone-dim">View my account</span>
+                <span className="block text-xs text-stone-dim">View my profile & wallet</span>
               </span>
             </Link>
           ) : null}
