@@ -77,6 +77,8 @@ export default function TravelCreditsPage() {
         </Container>
       </section>
 
+      <NewToCrypto what="buy Travel Credits" />
+
       <section id="buy" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>
           <SectionHeading eyebrow="Buy" title="Buy Travel Credits."
@@ -87,8 +89,6 @@ export default function TravelCreditsPage() {
           </div>
         </Container>
       </section>
-
-      <NewToCrypto what="buy Travel Credits" />
 
       <section id="rewards" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>
