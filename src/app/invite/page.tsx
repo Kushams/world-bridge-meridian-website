@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { FaqList } from "@/components/ui/Accordion";
 import { Button } from "@/components/ui/Button";
 import { themeImage } from "@/data/images";
 import { company } from "@/data/company";
@@ -86,17 +87,7 @@ export default function InvitePage() {
       <section id="invite-faq" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>
           <SectionHeading eyebrow="Questions" title="Invite Program questions, answered." />
-          <div className="mt-8 max-w-3xl divide-y divide-line border-t hairline">
-            {faqs.map((f) => (
-              <details key={f.q} className="group py-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg text-ivory">
-                  {f.q}
-                  <span aria-hidden className="shrink-0 text-gold transition-transform group-open:rotate-45">+</span>
-                </summary>
-                <p className="mt-3 text-sm text-stone leading-relaxed">{f.a}</p>
-              </details>
-            ))}
-          </div>
+          <FaqList items={faqs} className="mt-8 max-w-3xl" />
           <p className="mt-8 text-sm text-stone-dim">
             Read the full <Link href="/invite-terms" className="underline underline-offset-4">Invite Program terms</Link>.
           </p>

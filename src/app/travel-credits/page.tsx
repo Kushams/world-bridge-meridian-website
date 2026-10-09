@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
+import { NewToCrypto } from "@/components/payments/NewToCrypto";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { FaqList } from "@/components/ui/Accordion";
 import { Button } from "@/components/ui/Button";
 import { themeImage } from "@/data/images";
 import { company } from "@/data/company";
@@ -77,12 +79,16 @@ export default function TravelCreditsPage() {
 
       <section id="buy" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>
-          <SectionHeading eyebrow="Buy" title="Buy Travel Credits." />
+          <SectionHeading eyebrow="Buy" title="Buy Travel Credits."
+            description={<>Paying in crypto. <a href="#new-to-crypto" className="underline underline-offset-4">New to crypto? See how to buy it in your country.</a></>}
+          />
           <div className="mt-8">
             <CreditsPurchase />
           </div>
         </Container>
       </section>
+
+      <NewToCrypto what="buy Travel Credits" />
 
       <section id="rewards" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>
@@ -108,17 +114,7 @@ export default function TravelCreditsPage() {
       <section id="credit-faq" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>
           <SectionHeading eyebrow="Questions" title="Travel Credit questions, answered." />
-          <div className="mt-8 max-w-3xl divide-y divide-line border-t hairline">
-            {faqs.map((f) => (
-              <details key={f.q} className="group py-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg text-ivory">
-                  {f.q}
-                  <span aria-hidden className="shrink-0 text-gold transition-transform group-open:rotate-45">+</span>
-                </summary>
-                <p className="mt-3 text-sm text-stone leading-relaxed">{f.a}</p>
-              </details>
-            ))}
-          </div>
+          <FaqList items={faqs} className="mt-8 max-w-3xl" />
         </Container>
       </section>
 

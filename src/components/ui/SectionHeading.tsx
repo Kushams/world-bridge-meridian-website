@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { BlurTitle } from "@/components/motion/BlurTitle";
 
 export function SectionHeading({
   eyebrow,
@@ -28,7 +29,7 @@ export function SectionHeading({
         </p>
       ) : null}
       <h2 className="display-xl font-display text-[2.1rem] md:text-5xl lg:text-6xl leading-[1.04] tracking-[-0.02em] text-ivory text-balance-pretty">
-        {title}
+        {typeof title === "string" ? <BlurTitle text={title} /> : title}
       </h2>
       {description ? (
         <p className="mt-5 text-base md:text-lg text-stone leading-relaxed">

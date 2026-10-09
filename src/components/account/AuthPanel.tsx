@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { PasswordStrength } from "./PasswordStrength";
 import { useAuth } from "@/lib/supabase/AuthProvider";
 
 const inputClass =
@@ -303,6 +304,7 @@ export function AuthPanel() {
               onToggle={() => setShowPassword((v) => !v)}
               autoComplete={mode === "sign-up" ? "new-password" : "current-password"}
             />
+            {mode === "sign-up" ? <PasswordStrength password={password} /> : null}
             {mode === "sign-up" ? (
               <PasswordInput
                 id="auth-password-confirm"
