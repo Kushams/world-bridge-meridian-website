@@ -8,7 +8,6 @@ import { FaqList } from "@/components/ui/Accordion";
 import { Button } from "@/components/ui/Button";
 import { themeImage } from "@/data/images";
 import { company } from "@/data/company";
-import { creditTerms, creditTermsIntro } from "@/data/creditTerms";
 import { CreditsPurchase } from "@/components/credits/CreditsPurchase";
 import { CREDIT_MAX, CREDIT_MIN, CASHBACK_TIERS, PROMO_MAX_SHARE, PROMO_VALID_DAYS, fmtUsd } from "@/lib/credits";
 
@@ -118,18 +117,12 @@ export default function TravelCreditsPage() {
         </Container>
       </section>
 
-      <section id="credit-terms" className="scroll-mt-24 border-t hairline py-12 md:py-20">
+      <section className="border-t hairline py-10 md:py-14">
         <Container className="max-w-3xl">
-          <SectionHeading eyebrow="Terms" title="Travel Credit & Promo Credit terms." />
-          <p className="mt-4 text-sm text-stone leading-relaxed">{creditTermsIntro}</p>
-          <ol className="mt-6 list-decimal space-y-3 pl-5 text-sm text-stone leading-relaxed marker:text-gold">
-            {creditTerms.map((t) => (
-              <li key={t}>{t}</li>
-            ))}
-          </ol>
-          <p className="mt-6 text-sm text-stone-dim">
-            Also see the <Link href="/terms" className="underline underline-offset-4">Terms &amp; Booking Conditions</Link> and the{" "}
-            <Link href="/gift-card-terms" className="underline underline-offset-4">gift card terms</Link>.
+          <p className="text-sm text-stone leading-relaxed">
+            Read the full <Link href="/travel-credit-terms" className="underline underline-offset-4">Travel Credit &amp; Promo Credit terms</Link>, the{" "}
+            <Link href="/gift-card-terms" className="underline underline-offset-4">gift card terms</Link> and the{" "}
+            <Link href="/terms" className="underline underline-offset-4">Terms &amp; Booking Conditions</Link>.
           </p>
         </Container>
       </section>

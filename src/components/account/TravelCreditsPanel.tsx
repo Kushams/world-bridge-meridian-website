@@ -244,7 +244,7 @@ export function TravelCreditsPanel() {
         </div>
         {result ? <p role="status" className={`mt-3 text-sm ${result.ok ? "text-gold" : "text-red-500"}`}>{result.text}</p> : null}
         <p className="mt-3 text-xs text-stone-dim">
-          Read the <Link href="/travel-credits#credit-terms" className="underline underline-offset-4">Travel Credit terms</Link>.
+          Read the <Link href="/travel-credit-terms" className="underline underline-offset-4">Travel Credit terms</Link>.
         </p>
       </form>
 

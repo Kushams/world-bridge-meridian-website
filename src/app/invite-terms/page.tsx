@@ -30,7 +30,7 @@ export default function InviteTermsPage() {
             ))}
           </ol>
           <p className="mt-8 text-sm text-stone-dim">
-            See also the <Link href="/travel-credits#credit-terms" className="underline underline-offset-4">Travel Credit terms</Link>,{" "}
+            See also the <Link href="/travel-credit-terms" className="underline underline-offset-4">Travel Credit terms</Link>,{" "}
             the <Link href="/terms" className="underline underline-offset-4">Terms &amp; Booking Conditions</Link> and the{" "}
             <Link href="/invite" className="underline underline-offset-4">Invite Program</Link>.
           </p>
