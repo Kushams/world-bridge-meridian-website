@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/Button";
 import { themeImage } from "@/data/images";
 import { company } from "@/data/company";
 import { InvitePanel } from "@/components/invite/InvitePanel";
-import { INVITE_MIN_TRIP, INVITE_REWARD, INVITE_WINDOW_DAYS, PROMO_VALID_DAYS, fmtUsd } from "@/lib/credits";
+import { INVITE_MIN_TRIP, INVITE_REWARD, fmtUsd } from "@/lib/credits";
+import { faqInvite } from "@/data/pageFaqs";
 
 export const metadata: Metadata = {
   title: `Invite Program — Give ${fmtUsd(INVITE_REWARD)}, Get ${fmtUsd(INVITE_REWARD)}`,
@@ -28,14 +29,6 @@ const steps = [
   { t: "You both earn", b: `Our team adds ${fmtUsd(INVITE_REWARD)} in Promo Credits to each of your accounts.` },
 ];
 
-const faqs = [
-  { q: "What is the Invite Program?", a: `A way to introduce friends to ${company.name} and be rewarded when they travel. You each receive ${fmtUsd(INVITE_REWARD)} in Promo Credits.` },
-  { q: "Who can my friend be?", a: `Anyone with a new account, created in the last ${INVITE_WINDOW_DAYS} days through your link, who has not booked with us before.` },
-  { q: "When do I receive my reward?", a: `After your friend's journey of ${fmtUsd(INVITE_MIN_TRIP)} or more has been completed and paid for. Our team adds the credits to both accounts and you will see them in My World Bridge.` },
-  { q: "Do the rewards expire?", a: `Yes. They are Promo Credits and expire ${PROMO_VALID_DAYS} days after they are added. They can be used on any booking, up to 25% of its price.` },
-  { q: "My friend already has an account.", a: "Sorry, the invite only works for new accounts. Your friend needs to sign up through your link." },
-  { q: "Where do I see how my invites are going?", a: "On this page, once you are signed in: friends who joined, who has completed a journey, and what you have earned." },
-];
 
 export default function InvitePage() {
   return (
@@ -87,7 +80,7 @@ export default function InvitePage() {
       <section id="invite-faq" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>
           <SectionHeading eyebrow="Questions" title="Invite Program questions, answered." />
-          <FaqList items={faqs} className="mt-8 max-w-3xl" />
+          <FaqList items={faqInvite} className="mt-8 max-w-3xl" />
           <p className="mt-8 text-sm text-stone-dim">
             Read the full <Link href="/invite-terms" className="underline underline-offset-4">Invite Program terms</Link>.
           </p>

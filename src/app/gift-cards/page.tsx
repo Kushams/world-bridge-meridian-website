@@ -9,20 +9,13 @@ import { Button } from "@/components/ui/Button";
 import { themeImage } from "@/data/images";
 import { company } from "@/data/company";
 import { GiftCardPurchase } from "@/components/gift-cards/GiftCardPurchase";
+import { faqGiftCards } from "@/data/pageFaqs";
 
 export const metadata: Metadata = {
   title: "Travel Gift Cards — Pay with Crypto",
   description: `Give the gift of travel. ${company.name} gift cards never expire, can be bought with cryptocurrency, and are used toward bespoke journeys.`,
 };
 
-const faqs = [
-  { q: "Does a gift card expire?", a: "No. Gift cards never expire." },
-  { q: "What can I use it on?", a: `Journeys and services from ${company.name}. When you book, your consultant applies the balance and tells you what remains.` },
-  { q: "How do I redeem a code?", a: "Sign in to My World Bridge, open Travel Credits and enter the code. The value becomes Travel Credits in your account, which never expire." },
-  { q: "Can I get a refund?", a: "Gift cards are not refundable or exchangeable for cash once issued, except where the law requires. Full details are in the gift card terms." },
-  { q: "How long does it take?", a: "We issue the card once your payment is verified on the blockchain. You'll get an email as soon as it's done." },
-  { q: "I need more than US$25,000.", a: `Email ${company.email} and your consultant will arrange it.` },
-];
 
 export default function GiftCardsPage() {
   return (
@@ -64,7 +57,7 @@ export default function GiftCardsPage() {
       <section id="gift-card-questions" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>
           <SectionHeading eyebrow="Questions" title="Gift card questions, answered." />
-          <FaqList items={faqs} className="mt-8 max-w-3xl" />
+          <FaqList items={faqGiftCards} className="mt-8 max-w-3xl" />
           <p className="mt-6 text-sm text-stone-dim">
             Read the full <Link href="/gift-card-terms" className="underline underline-offset-4">gift card terms &amp; conditions</Link>.
           </p>

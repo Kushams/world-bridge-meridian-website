@@ -56,6 +56,7 @@ export const menuGroups: NavGroup[] = [
       { label: "Art Fairs", href: "/art-fairs" },
       { label: "Cultural Access Programs", href: "/cultural-access" },
       { label: "Travel Calendar", href: "/calendar" },
+      { label: "Exhibition Travel Itinerary Form", href: "/travel-details-form" },
     ],
   },
   {
@@ -81,7 +82,6 @@ export const menuGroups: NavGroup[] = [
     links: [
       { label: "Contact Us", href: "/contact" },
       { label: "Plan Your Journey", href: "/plan-your-journey" },
-      { label: "Exhibition Travel Form", href: "/travel-details-form" },
     ],
   },
   {

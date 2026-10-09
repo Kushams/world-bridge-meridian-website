@@ -41,6 +41,13 @@ export default function ArtsCulturePage() {
                 </Link>
               ))}
             </div>
+            <p className="mt-6 text-sm text-stone">
+              Travelling for an exhibition, museum show or art fair?{" "}
+              <Link href="/travel-details-form" className="text-gold underline underline-offset-4 hover:text-ivory">
+                Plan it with our Exhibition Travel Itinerary Form
+              </Link>
+              .
+            </p>
           </Container>
         </div>
       }
