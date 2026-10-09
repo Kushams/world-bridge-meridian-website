@@ -12,13 +12,6 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-const features = [
-  {
-    title: "Itineraries & Documents",
-    description: "Access confirmed itineraries and travel documents in one place.",
-  },
-];
-
 export default function MyWorldBridgePage() {
   return (
     <>
@@ -60,18 +53,6 @@ export default function MyWorldBridgePage() {
               </div>
             </div>
           )}
-
-          <div className="mt-20">
-            <p className="eyebrow mb-8 text-center">Coming Next</p>
-            <div className="mx-auto grid max-w-xl grid-cols-1 gap-8">
-              {features.map((f) => (
-                <div key={f.title} className="border-t hairline pt-5">
-                  <h3 className="font-display text-lg text-ivory">{f.title}</h3>
-                  <p className="mt-2 text-sm text-stone leading-relaxed">{f.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
         </Container>
       </section>
     </>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { displayName, initials, useAuth } from "@/lib/supabase/AuthProvider";
+import { DocumentsPanel } from "./DocumentsPanel";
 import { EnquiriesPanel } from "./EnquiriesPanel";
 import { ProfileForm, profileCompleteness } from "./ProfileForm";
 import { SavedJourneysPanel } from "./SavedJourneysPanel";
@@ -73,6 +74,7 @@ export function AccountDashboard() {
 
   const links = [
     { href: "#enquiries", label: "My Enquiries" },
+    { href: "#documents", label: "Itineraries & Documents" },
     { href: "#saved", label: "Saved Journeys" },
     { href: "#profile-form", label: "Profile" },
   ];
@@ -124,6 +126,10 @@ export function AccountDashboard() {
 
       <Section id="enquiries" eyebrow="My Enquiries" title="Where your requests stand">
         <EnquiriesPanel />
+      </Section>
+
+      <Section id="documents" eyebrow="Itineraries & Documents" title="Your travel documents">
+        <DocumentsPanel />
       </Section>
 
       <Section id="saved" eyebrow="Saved Journeys" title="Your shortlist">
