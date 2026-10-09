@@ -1,3 +1,4 @@
+import { Accordion } from "@/components/ui/Accordion";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CryptoCountryGuide } from "@/components/payments/CryptoCountryGuide";
@@ -27,28 +28,34 @@ export function NewToCrypto({ what }: { what: string }) {
           title="How to buy and send it, step by step."
           description={`Never paid with crypto? You can still ${what}. Open the 7 steps below, then pick your country to see where to buy.`}
         />
-        <details className="group mt-8 max-w-3xl rounded-card border hairline">
-          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-display text-lg text-ivory">
-            The 7 steps to buy and send crypto
-            <span aria-hidden className="shrink-0 text-gold transition-transform group-open:rotate-45">+</span>
-          </summary>
-          <div className="border-t hairline p-5">
-            <p className="text-sm text-stone-dim">
-              For gift cards and credits you choose the amount yourself and our address appears in the form: there is no consultant step.
-            </p>
-            <ol className="mt-5 space-y-5">
-              {purchaseSteps.map((step, i) => (
-                <li key={step.title} className="flex gap-4">
-                  <span className="font-display text-2xl text-gold">{i + 1}</span>
-                  <div>
-                    <p className="font-display text-lg text-ivory">{step.title}</p>
-                    <p className="mt-1 text-sm text-stone leading-relaxed">{step.body}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-        </details>
+        <div className="mt-8 max-w-3xl rounded-card border hairline px-5">
+          <Accordion
+            className="!border-t-0"
+            items={[
+              {
+                title: "The 7 steps to buy and send crypto",
+                content: (
+                  <>
+                    <p className="text-stone-dim">
+                      For gift cards and credits you choose the amount yourself and our address appears in the form: there is no consultant step.
+                    </p>
+                    <ol className="mt-5 space-y-5">
+                      {purchaseSteps.map((step, i) => (
+                        <li key={step.title} className="flex gap-4">
+                          <span className="font-display text-2xl text-gold">{i + 1}</span>
+                          <div>
+                            <p className="font-display text-lg text-ivory">{step.title}</p>
+                            <p className="mt-1 text-sm text-stone leading-relaxed">{step.body}</p>
+                          </div>
+                        </li>
+                      ))}
+                    </ol>
+                  </>
+                ),
+              },
+            ]}
+          />
+        </div>
 
         <div className="mt-4 max-w-3xl">
           <CryptoCountryGuide />

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/PageHero";
+import { FaqList } from "@/components/ui/Accordion";
 import { Container } from "@/components/ui/Container";
 import { SITE_URL, company } from "@/data/company";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -89,19 +90,7 @@ export default function FaqPage() {
       />
       <section className="py-16 md:py-24">
         <Container>
-          <div className="mx-auto max-w-3xl divide-y divide-line border-t hairline">
-            {faqs.map((item) => (
-              <details key={item.q} className="group py-6">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg text-ivory">
-                  {item.q}
-                  <span className="shrink-0 text-gold transition-transform group-open:rotate-45">
-                    +
-                  </span>
-                </summary>
-                <p className="mt-4 text-sm text-stone leading-relaxed">{item.a}</p>
-              </details>
-            ))}
-          </div>
+          <FaqList items={faqs} className="mx-auto max-w-3xl" />
         </Container>
       </section>
     </>
