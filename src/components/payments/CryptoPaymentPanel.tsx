@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode";
 import { company } from "@/data/company";
 import { enabledCryptoPaymentOptions, type CryptoPaymentOption } from "@/data/cryptoPayments";
+import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { submitCryptoPayment, type SubmissionFailure } from "@/lib/cryptoPaymentSubmissions";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { track } from "@/lib/analytics";
@@ -63,6 +64,8 @@ function PaymentDetails({
   const [status, setStatus] = useState<"idle" | "submitting" | "submitted" | "error">("idle");
   const [error, setError] = useState("");
   const [failure, setFailure] = useState<SubmissionFailure>("unavailable");
+  const [token, setToken] = useState<string | null>(null);
+  const [resetKey, setResetKey] = useState(0);
 
   useEffect(() => {
     const address = selected.walletAddress;
@@ -85,7 +88,10 @@ function PaymentDetails({
       transactionHash: txHash,
       payerName,
       payerEmail,
+      turnstileToken: token,
     });
+    setToken(null);
+    setResetKey((k) => k + 1);
 
     if (result.ok) {
       setStatus("submitted");
@@ -230,6 +236,7 @@ function PaymentDetails({
             />
           </div>
         </div>
+        <TurnstileWidget onToken={setToken} resetKey={resetKey} />
         <button
           type="submit"
           disabled={status === "submitting"}
@@ -242,7 +249,7 @@ function PaymentDetails({
             <p className="text-xs text-red-400">
               {failure === "duplicate"
                 ? "We've already received this transaction reference — it's with our team for verification, no need to submit it again."
-                : failure === "throttled"
+                : failure === "throttled" || failure === "verification"
                   ? error
                   : `We couldn't record your reference automatically (${error}). Your payment is unaffected — send us the reference directly and our team will verify it.`}
             </p>

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/AuthProvider";
 import { fmtUsd } from "@/lib/credits";
+import { redeemGiftCard } from "@/lib/redeemGiftCard";
+import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { GiftCardPreview } from "@/components/gift-cards/GiftCardPreview";
 import type { GiftDesign } from "@/lib/giftCards";
 
@@ -59,6 +61,8 @@ export function TravelCreditsPanel() {
   const [copied, setCopied] = useState<string | null>(null);
   const [code, setCode] = useState("");
   const [busy, setBusy] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+  const [resetKey, setResetKey] = useState(0);
   const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
 
   const load = useCallback(async () => {
@@ -85,10 +89,11 @@ export function TravelCreditsPanel() {
     if (!supabase || busy || !code.trim()) return;
     setBusy(true);
     setResult(null);
-    const { data, error } = await supabase.rpc("redeem_gift_card", { p_code: code });
+    const { row, error } = await redeemGiftCard(code, token);
     setBusy(false);
-    const row = Array.isArray(data) ? data[0] : data;
-    if (error || !row) return setResult({ ok: false, text: "We couldn't check that code just now. Please try again." });
+    setToken(null);
+    setResetKey((k) => k + 1);
+    if (error || !row) return setResult({ ok: false, text: error ?? "We couldn't check that code just now. Please try again." });
     setResult({ ok: row.ok, text: row.message });
     if (row.ok) {
       setCode("");
@@ -242,6 +247,7 @@ export function TravelCreditsPanel() {
             {busy ? "Checking…" : "Redeem"}
           </button>
         </div>
+        <div className="mt-3"><TurnstileWidget onToken={setToken} resetKey={resetKey} /></div>
         {result ? <p role="status" className={`mt-3 text-sm ${result.ok ? "text-gold" : "text-red-500"}`}>{result.text}</p> : null}
         <p className="mt-3 text-xs text-stone-dim">
           Read the <Link href="/travel-credits#credit-terms" className="underline underline-offset-4">Travel Credit terms</Link>.
