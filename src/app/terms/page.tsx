@@ -89,7 +89,7 @@ export default function TermsPage() {
               <p>
                 Gift cards, Travel Credits, Promo Credits and Invite Program rewards follow the rules in
                 our <Link href="/gift-card-terms" className="text-gold hover:text-ivory">gift card terms</Link>,{" "}
-                <Link href="/travel-credits#credit-terms" className="text-gold hover:text-ivory">Travel Credit terms</Link> and{" "}
+                <Link href="/travel-credit-terms" className="text-gold hover:text-ivory">Travel Credit terms</Link> and{" "}
                 <Link href="/invite-terms" className="text-gold hover:text-ivory">Invite Program terms</Link>.
                 In short: credits are US dollars usable only toward our journeys, are not cash or
                 transferable, and Promo Credits expire. If those terms and these ever differ on one of

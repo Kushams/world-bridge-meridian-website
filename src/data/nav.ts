@@ -115,6 +115,7 @@ export const menuGroups: NavGroup[] = [
 export const legalLinks: NavLink[] = [
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" },
+  { label: "Travel Credit Terms", href: "/travel-credit-terms" },
   { label: "Gift Card Terms", href: "/gift-card-terms" },
   { label: "Invite Terms", href: "/invite-terms" },
   { label: "Cookies", href: "/cookies" },

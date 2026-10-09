@@ -52,6 +52,7 @@ const staticRoutes = [
   "/payments",
   "/gift-cards",
   "/gift-card-terms",
+  "/travel-credit-terms",
   "/travel-credits",
   "/invite",
   "/invite-terms",

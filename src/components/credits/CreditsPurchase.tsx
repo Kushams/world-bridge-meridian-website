@@ -155,7 +155,7 @@ function CreditsForm() {
         <label className="flex gap-3 text-sm text-stone leading-relaxed">
           <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} className="mt-1 h-4 w-4 shrink-0 accent-[#a8863b]" />
           <span>
-            I acknowledge and agree to the <Link href="/travel-credits#credit-terms" target="_blank" className="text-ivory underline underline-offset-4">Travel Credit terms</Link>.
+            I acknowledge and agree to the <Link href="/travel-credit-terms" target="_blank" className="text-ivory underline underline-offset-4">Travel Credit terms</Link>.
           </span>
         </label>
         <TurnstileWidget onToken={setToken} resetKey={reset} />
