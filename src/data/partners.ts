@@ -1,7 +1,7 @@
 import { Partner } from "./types";
 
 /**
- * No specific named partners have been confirmed. Categories only — do not
+ * No named hospitality partners have been confirmed. (Crypto exchanges and wallets are in cryptoPartners.ts, confirmed by the owner.) Categories only — do not
  * add a named hotel, airline, cruise line, or DMC here without written
  * confirmation from that partner.
  */

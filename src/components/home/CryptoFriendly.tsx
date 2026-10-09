@@ -1,15 +1,8 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/ui/Reveal";
+import { cryptoPartnerExchanges, cryptoPartnerWallets } from "@/data/cryptoPartners";
 import { company } from "@/data/company";
-
-/**
- * Names are shown as "send from the exchange or wallet you already use": they are examples of
- * where customers hold crypto, NOT partners or endorsements, and no logos are used. Do not
- * describe any of them as a partner, or add logos, without their written permission.
- */
-const exchanges = ["Binance", "Coinbase", "Crypto.com", "Bitget", "Kraken", "OKX", "Bybit", "KuCoin"];
-const wallets = ["MetaMask", "Trust Wallet", "Phantom", "Ledger", "Exodus", "Rainbow"];
 
 const points = [
   { t: "Pay in crypto", b: "Bitcoin, Ethereum, USDT, USDC and Solana, on the networks listed on our payments page." },
@@ -42,16 +35,16 @@ export function CryptoFriendly() {
         </div>
 
         <Reveal className="mt-12 text-center">
-          <p className="eyebrow mb-4">Send from the exchange or wallet you already use</p>
+          <p className="eyebrow mb-4">Our crypto partners: exchanges &amp; wallets</p>
           <ul className="mx-auto flex max-w-3xl flex-wrap justify-center gap-2">
-            {[...exchanges, ...wallets].map((n) => (
+            {[...cryptoPartnerExchanges, ...cryptoPartnerWallets].map((n) => (
               <li key={n} className="rounded-full border hairline px-4 py-2 text-xs font-semibold uppercase tracking-wide text-ivory-dim">
                 {n}
               </li>
             ))}
           </ul>
           <p className="mx-auto mt-4 max-w-xl text-xs text-stone-dim">
-            Examples of where people hold crypto. We are not affiliated with or endorsed by these companies; names belong to their owners.
+            Pay from any of them, or from any other exchange or wallet you already use. Names belong to their respective owners.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link href="/payments#cryptocurrency" className="text-xs font-semibold uppercase tracking-wide text-gold hover:text-ivory transition-colors">How crypto payment works</Link>
