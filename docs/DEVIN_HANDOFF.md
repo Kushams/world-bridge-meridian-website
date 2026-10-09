@@ -1,13 +1,24 @@
 # Handoff for Devin: finish the Supabase side and verify the live site
 
-> **Access and keys.** The owner is happy to paste secret keys and tokens **directly to you in chat** (Supabase,
-> Resend, Turnstile secret, Cloudflare API token, etc.). **Ask for whatever you need rather than working around its
-> absence.** You then do the work yourself, including Cloudflare (section 3a), using the Cloudflare API or
-> `wrangler` with a token the owner gives you. If you still cannot do a Cloudflare step, give the owner exact
-> numbered instructions and wait for them to confirm.
+> **Access and keys.** The owner keeps their keys saved in **Devin's own Secrets / environment variables** (not in
+> this repo), so you should already have them. **First, check which of these you can read** (names only, never print
+> values) and list any that are missing:
+>
+> | Secret name | Used for |
+> |---|---|
+> | `SUPABASE_ACCESS_TOKEN` | Supabase management API / CLI (project `rkevnmqofvqdmjujlrvd`) |
+> | `SUPABASE_DB_PASSWORD` or a Postgres connection string | running SQL |
+> | `SUPABASE_SERVICE_ROLE_KEY` | RLS tests, reading `form_submissions` |
+> | `RESEND_API_KEY` | email function secret and test sends |
+> | `NOTIFY_SHARED_SECRET`, `TURNSTILE_SECRET_KEY` | edge function secrets |
+> | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | Workers/Pages deployments, build variables, Turnstile |
+> | `GITHUB_TOKEN` (optional) | opening PRs for code fixes |
+>
+> If anything you need is missing, **stop and tell the owner exactly which secret name to add under Devin ->
+> Settings -> Secrets**, and what permission/scope it needs. Do not ask them to paste values into chat. If you still
+> cannot do a step, give the owner exact numbered instructions and wait for their confirmation.
 > One firm rule: **never write any key, token or secret into the repo, a commit, a PR, a file or a log.** Put secrets
-> only into Supabase function secrets / Vault or Cloudflare build variables. Keys pasted in chat are the owner's
-> choice; rotate them afterwards if the owner asks.
+> only into Supabase function secrets / Vault or Cloudflare build variables.
 
 ## 0. Project facts
 
@@ -64,9 +75,9 @@
 8. **Deploy check (owner does the Cloudflare part, see 3a):** ask the owner to confirm Cloudflare built `main` after PRs #14-#16. You can check by browsing the live site that `/`, `/stays`, `/payments`, `/exhibitions`, `/my-world-bridge` load on a phone, (the owner confirms the env vars in 3a). Run PageSpeed Insights on the home page and report mobile scores (local tests showed ~+4% JS and no slowdown, but real numbers were never measured).
 9. **Real-account test:** sign up with a real test email -> confirm -> sign in -> edit profile (check it saves) -> submit a journey request with the same email -> see it under My enquiries -> change `status` in the Table Editor -> see the track update -> sign out -> "Email me a sign-in link" -> "Forgot password" -> delete the test account.
 
-## 3a. Cloudflare steps (you do them if the owner gives you a token, otherwise guide the owner)
+## 3a. Cloudflare steps (you do them with your saved Cloudflare token)
 
-Ask the owner for a Cloudflare API token (scopes: Workers/Pages edit, Turnstile edit) and the account ID if needed. Then:
+Use `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` from your saved secrets (needs Workers/Pages edit and Turnstile edit). If absent, tell the owner to add them. Then:
 
 1. Workers & Pages -> the website project -> **Deployments**: confirm the latest deployment is built from `main`,
    shows **Success**, and is newer than the merge of PR #16. If it failed, read the build log, diagnose it, and fix
