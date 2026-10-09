@@ -3,7 +3,7 @@
 import { FunctionsHttpError } from "@supabase/supabase-js";
 import { getSupabaseClient } from "@/lib/supabase/client";
 
-export type FormType = "contact" | "newsletter" | "journey-request" | "travel-details" | "gift-card";
+export type FormType = "contact" | "newsletter" | "journey-request" | "travel-details" | "gift-card" | "travel-credits";
 
 export interface FormSubmissionInput {
   formType: FormType;

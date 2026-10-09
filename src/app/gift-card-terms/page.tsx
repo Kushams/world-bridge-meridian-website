@@ -20,7 +20,7 @@ const sections: { title: string; body: string[] }[] = [
   {
     title: "2. Buying a gift card",
     body: [
-      "Gift cards are sold in US dollars. Each card is worth at least US$500, and the total of one order must be between US$500 and US$25,000. For larger amounts, contact us.",
+      "You need a registered account to buy a gift card. Gift cards are sold in US dollars. Each card is worth at least US$500, and the total of one order must be between US$500 and US$25,000. For larger amounts, contact us.",
       "Gift cards are paid for in cryptocurrency, using one of the assets and networks listed on the order page and one of our published wallet addresses. You must send payment from a wallet you control, on the network you selected, and paste the transaction ID into the order form.",
       "An order is not complete until our team has verified your payment on the blockchain. If the amount we receive does not match your order, we will contact you before issuing anything. Network fees are charged by the network and exchange you use, and are not part of the gift card value.",
     ],
@@ -35,14 +35,14 @@ const sections: { title: string; body: string[] }[] = [
   {
     title: "4. Redeeming a gift card",
     body: [
-      "To redeem a card, sign in to your My World Bridge account, open Gift cards, and enter the code. Once a code is redeemed, the card is linked to that account and cannot be moved to another.",
+      "To redeem a card, sign in to your My World Bridge account, open Travel Credits, and enter the code. The value is added to your account as Travel Credits (which never expire) and the code cannot be used again or moved to another account.",
       "Anyone who holds a code can redeem it, so keep it private. We apply the card to the first account that redeems it.",
     ],
   },
   {
     title: "5. Using your balance",
     body: [
-      `A gift card balance can be used toward journeys and services provided by ${company.name}. Your consultant applies the balance when you book and confirms the amount used and what remains. Every use appears in your account history.`,
+      `Once redeemed, a gift card is held as Travel Credits and can be used toward journeys and services provided by ${company.name}. Your consultant applies the balance when you book and confirms the amount used and what remains. Every use appears in your account history.`,
       "You can use a card in more than one booking until the balance reaches zero. If a booking costs more than your balance, you pay the difference using one of our payment methods. If it costs less, the rest stays on the card.",
     ],
   },

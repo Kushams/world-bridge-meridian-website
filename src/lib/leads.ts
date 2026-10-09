@@ -63,9 +63,9 @@ export interface JourneyLead {
   organize: string[];
   hearAboutUs: string;
   notes: string;
-  /** The customer asked to use their gift card balance toward this journey. */
-  useGiftCard?: boolean;
-  giftCardBalanceUsd?: string;
+  /** The customer asked to use their Travel Credits toward this journey. */
+  useCredits?: boolean;
+  creditsBalanceUsd?: string;
   source: string;
   campaign: string;
   landingPage: string;
@@ -152,8 +152,8 @@ function flattenForNetlify(lead: JourneyLead): Record<string, string> {
     organize: lead.organize.join(", "),
     hearAboutUs: lead.hearAboutUs,
     notes: lead.notes,
-    use_gift_card: lead.useGiftCard ? "yes" : "",
-    gift_card_balance_usd: lead.useGiftCard ? (lead.giftCardBalanceUsd ?? "") : "",
+    use_travel_credits: lead.useCredits ? "yes" : "",
+    travel_credits_balance_usd: lead.useCredits ? (lead.creditsBalanceUsd ?? "") : "",
     source: lead.source,
     campaign: lead.campaign,
     landingPage: lead.landingPage,

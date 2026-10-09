@@ -1,13 +1,15 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
-import QRCode from "qrcode";
+import { FormEvent, useRef, useState } from "react";
 import Link from "next/link";
 import { company } from "@/data/company";
 import { enabledCryptoPaymentOptions } from "@/data/cryptoPayments";
 import { submitForm } from "@/lib/formSubmissions";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/supabase/AuthProvider";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
+import { AccountGate } from "@/components/account/AccountGate";
+import { CryptoPayStep } from "@/components/payments/CryptoPayStep";
 import { GiftCardPreview } from "./GiftCardPreview";
 import { track } from "@/lib/analytics";
 import { GIFT_DESIGNS, GIFT_MAX_QTY, GIFT_MAX_TOTAL, GIFT_MIN, GIFT_PRESETS, usd, type GiftDesign } from "@/lib/giftCards";
@@ -28,22 +30,44 @@ function Step({ n, title, children }: { n: number; title: string; children: Reac
   );
 }
 
+/** Buying a gift card needs an account: sign up or sign in first (email or Google). */
 export function GiftCardPurchase() {
-  const options = enabledCryptoPaymentOptions();
+  if (!isSupabaseConfigured || enabledCryptoPaymentOptions().length === 0) {
+    return (
+      <div className="rounded-card border hairline bg-charcoal p-8 text-center">
+        <p className="eyebrow mb-3">Gift cards</p>
+        <h3 className="font-display text-xl text-ivory">Online purchase isn&apos;t open yet</h3>
+        <p className="mx-auto mt-3 max-w-md text-sm text-stone leading-relaxed">
+          To buy a gift card now, email{" "}
+          <a className="underline" href={`mailto:${company.email}`}>{company.email}</a> and your consultant will arrange it.
+        </p>
+      </div>
+    );
+  }
+  return (
+    <AccountGate
+      title="Create an account to buy a gift card"
+      intro="It takes a minute. Your account keeps your orders, receipts and Travel Credits together, and lets us verify your payment securely."
+    >
+      <GiftCardForm />
+    </AccountGate>
+  );
+}
+
+function GiftCardForm() {
+  const { user, profile } = useAuth();
   const [design, setDesign] = useState<GiftDesign>("classic");
   const [preset, setPreset] = useState<number | null>(500);
   const [amountText, setAmountText] = useState("500");
   const [qtyText, setQtyText] = useState("1");
-  const [first, setFirst] = useState("");
-  const [last, setLast] = useState("");
-  const [email, setEmail] = useState("");
+  const [first, setFirst] = useState(() => (profile?.full_name ?? "").split(" ")[0] ?? "");
+  const [last, setLast] = useState(() => (profile?.full_name ?? "").split(" ").slice(1).join(" "));
+  const email = user?.email ?? "";
   const [asGift, setAsGift] = useState(false);
   const [rName, setRName] = useState("");
   const [rEmail, setREmail] = useState("");
   const [msg, setMsg] = useState("");
-  const [asset, setAsset] = useState<string>("");
-  const [optionId, setOptionId] = useState<string>("");
-  const [qr, setQr] = useState<string | null>(null);
+  const [optionId, setOptionId] = useState("");
   const [txHash, setTxHash] = useState("");
   const [agree, setAgree] = useState(false);
   const [token, setToken] = useState<string | null>(null);
@@ -52,6 +76,7 @@ export function GiftCardPurchase() {
   const [error, setError] = useState("");
   const top = useRef<HTMLDivElement>(null);
 
+  const selected = enabledCryptoPaymentOptions().find((o) => o.id === optionId) ?? null;
   const amount = Number(amountText);
   const qty = Number(qtyText);
   const total = amount * qty;
@@ -59,47 +84,15 @@ export function GiftCardPurchase() {
   const qtyOk = Number.isInteger(qty) && qty >= 1 && qty <= GIFT_MAX_QTY;
   const totalOk = amountOk && qtyOk && total <= GIFT_MAX_TOTAL;
 
-  const assets = useMemo(() => Array.from(new Set(options.map((o) => o.asset))), [options]);
-  const networks = options.filter((o) => o.asset === asset);
-  const selected = options.find((o) => o.id === optionId) ?? null;
-
-  useEffect(() => {
-    const addr = selected?.walletAddress;
-    if (!addr) return;
-    let live = true;
-    QRCode.toDataURL(addr, { margin: 1, width: 200 })
-      .then((u) => live && setQr(u))
-      .catch(() => live && setQr(null));
-    return () => {
-      live = false;
-    };
-  }, [selected?.walletAddress]);
-
-  if (!isSupabaseConfigured || options.length === 0) {
-    return (
-      <div className="rounded-card border hairline bg-charcoal p-8 text-center">
-        <p className="eyebrow mb-3">Gift cards</p>
-        <h3 className="font-display text-xl text-ivory">Online purchase isn&apos;t open yet</h3>
-        <p className="mx-auto mt-3 max-w-md text-sm text-stone leading-relaxed">
-          To buy a gift card now, email{" "}
-          <a className="underline" href={`mailto:${company.email}`}>
-            {company.email}
-          </a>{" "}
-          and your consultant will arrange it.
-        </p>
-      </div>
-    );
-  }
-
   if (status === "sent") {
     return (
       <div className="rounded-card border hairline bg-charcoal p-8 text-center md:p-12">
         <p className="eyebrow mb-3">Order received</p>
         <h3 className="font-display text-2xl text-ivory md:text-3xl">Thank you</h3>
         <p className="mx-auto mt-4 max-w-lg text-sm text-stone leading-relaxed">
-          We&apos;ve received your order for {qty} gift card{qty > 1 ? "s" : ""} of {usd(amount)}. Our team now
-          verifies your payment on the blockchain. As soon as it&apos;s confirmed, the gift card code
-          {qty > 1 ? "s are" : " is"} emailed to {asGift ? rEmail : email}. You&apos;ll get a confirmation at {email} too.
+          We&apos;ve received your order for {qty} gift card{qty > 1 ? "s" : ""} of {usd(amount)}. Our team now verifies your payment on
+          the blockchain. As soon as it&apos;s confirmed, the gift card code{qty > 1 ? "s are" : " is"} emailed to {asGift ? rEmail : email}.
+          You&apos;ll get a confirmation at {email} too.
         </p>
       </div>
     );
@@ -118,7 +111,7 @@ export function GiftCardPurchase() {
     const result = await submitForm({
       formType: "gift-card",
       name: `${first} ${last}`.trim(),
-      email: email.trim(),
+      email,
       subject: `Gift card order — ${qty} × ${usd(amount)} (${selected.asset} ${selected.network})`,
       message: asGift ? msg.trim() || undefined : undefined,
       payload: {
@@ -208,8 +201,7 @@ export function GiftCardPurchase() {
           </div>
           <p className="text-xs text-stone-dim">
             Minimum {usd(GIFT_MIN)} per card. The total of all cards must be between {usd(GIFT_MIN)} and {usd(GIFT_MAX_TOTAL)}.
-            For higher amounts, email{" "}
-            <a className="underline" href={`mailto:${company.email}`}>{company.email}</a>.
+            For higher amounts, email <a className="underline" href={`mailto:${company.email}`}>{company.email}</a>.
           </p>
         </Step>
 
@@ -225,8 +217,9 @@ export function GiftCardPurchase() {
             </div>
           </div>
           <div>
-            <label htmlFor="gc-email" className={label}>Email address</label>
-            <input id="gc-email" type="email" required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} className={field} />
+            <label htmlFor="gc-email" className={label}>Account email</label>
+            <input id="gc-email" type="email" readOnly value={email} className={`${field} opacity-70`} />
+            <p className="mt-1 text-xs text-stone-dim">Your receipt goes to your account email.</p>
           </div>
           <label className="flex items-center gap-3 text-sm text-ivory">
             <input type="checkbox" checked={asGift} onChange={(e) => setAsGift(e.target.checked)} className="h-4 w-4 accent-[#a8863b]" />
@@ -254,64 +247,14 @@ export function GiftCardPurchase() {
         </Step>
 
         <Step n={3} title="Pay with cryptocurrency">
-          <div>
-            <label htmlFor="gc-asset" className={label}>Cryptocurrency</label>
-            <select
-              id="gc-asset"
-              value={asset}
-              onChange={(e) => {
-                const a = e.target.value;
-                setAsset(a);
-                const nets = options.filter((o) => o.asset === a);
-                setOptionId(nets.length === 1 ? nets[0].id : "");
-              }}
-              className={field}
-            >
-              <option value="">Select a cryptocurrency</option>
-              {assets.map((a) => (
-                <option key={a} value={a}>{a}</option>
-              ))}
-            </select>
-          </div>
-          {networks.length > 1 ? (
-            <div>
-              <label htmlFor="gc-net" className={label}>Network</label>
-              <select id="gc-net" value={optionId} onChange={(e) => setOptionId(e.target.value)} className={field}>
-                <option value="">Select a network</option>
-                {networks.map((o) => (
-                  <option key={o.id} value={o.id}>{o.network}</option>
-                ))}
-              </select>
-            </div>
-          ) : null}
-          {selected ? (
-            <div className="rounded-card border hairline p-5 text-center">
-              {qr ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={qr} alt={`QR code for our ${selected.displayName} address`} width={160} height={160} className="mx-auto rounded-control bg-white" />
-              ) : null}
-              <p className="mt-4 text-xs uppercase tracking-wide text-stone">{selected.displayName} — {selected.network} network</p>
-              <p className="mt-2 break-all font-mono text-sm text-ivory">{selected.walletAddress}</p>
-              <button
-                type="button"
-                onClick={() => navigator.clipboard?.writeText(selected.walletAddress ?? "")}
-                className="mt-3 rounded-full border hairline px-4 py-2 text-xs font-semibold uppercase tracking-wide text-ivory hover:bg-ivory hover:text-ink"
-              >
-                Copy address
-              </button>
-              <p className="mt-4 text-sm text-ivory">
-                Send the equivalent of <b>{totalOk ? usd(total) : "your total"}</b> in {selected.asset} on the {selected.network} network.
-              </p>
-              <p className="mt-1 text-xs text-stone-dim">
-                Use only this network. The wrong network can mean permanent loss. If the amount we receive differs from your order,
-                we&apos;ll contact you before issuing anything.
-              </p>
-            </div>
-          ) : null}
-          <div>
-            <label htmlFor="gc-hash" className={label}>Transaction ID (after you&apos;ve sent payment)</label>
-            <input id="gc-hash" value={txHash} onChange={(e) => setTxHash(e.target.value)} placeholder="Paste the transaction hash / TxID" className={field} />
-          </div>
+          <CryptoPayStep
+            idPrefix="gc"
+            totalLabel={totalOk ? usd(total) : null}
+            optionId={optionId}
+            onOption={setOptionId}
+            txHash={txHash}
+            onTxHash={setTxHash}
+          />
         </Step>
 
         <div className="space-y-4 border-t hairline pt-8">

@@ -16,7 +16,7 @@ import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { getAttribution } from "@/lib/attribution";
 import { track } from "@/lib/analytics";
 import { useAuth } from "@/lib/supabase/AuthProvider";
-import { useGiftBalance } from "@/lib/useGiftBalance";
+import { useCreditBalance } from "@/lib/useCreditBalance";
 import { usdFromCents } from "@/lib/giftCards";
 
 interface FormState {
@@ -161,7 +161,7 @@ export function JourneyWizard() {
   // Fill what we already know from a signed-in customer's profile — once,
   // and never over anything already typed or pre-filled from a search.
   const { user, profile } = useAuth();
-  const giftCents = useGiftBalance();
+  const giftCents = useCreditBalance();
   const [useGift, setUseGift] = useState(false);
   const [prefilledFor, setPrefilledFor] = useState<string | null>(null);
   if (user && profile && prefilledFor !== user.id) {
@@ -235,8 +235,8 @@ export function JourneyWizard() {
       organize: form.organize,
       hearAboutUs: form.hearAboutUs,
       notes: form.additionalInfo,
-      useGiftCard: useGift && giftCents > 0,
-      giftCardBalanceUsd: giftCents > 0 ? (giftCents / 100).toFixed(2) : "",
+      useCredits: useGift && giftCents > 0,
+      creditsBalanceUsd: giftCents > 0 ? (giftCents / 100).toFixed(2) : "",
       source: "journey_wizard",
       campaign: attribution.utm_campaign ?? "",
       landingPage: attribution.landingPage,
@@ -716,7 +716,7 @@ export function JourneyWizard() {
                   className="mt-1 h-4 w-4 shrink-0 accent-[#a8863b]"
                 />
                 <span>
-                  Use my gift card balance ({usdFromCents(giftCents)}) toward this journey.
+                  Use my Travel Credits ({usdFromCents(giftCents)}) toward this journey.
                   <span className="block text-xs text-stone">Your consultant applies it when your booking is confirmed and tells you what remains to pay.</span>
                 </span>
               </label>

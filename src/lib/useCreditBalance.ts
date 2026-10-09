@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/AuthProvider";
 
-/** Total of the signed-in customer's active gift card balances, in cents (0 if none). */
-export function useGiftBalance(): number {
+/** The signed-in customer's usable Travel Credits + unexpired Promo Credits, in cents (0 if none). */
+export function useCreditBalance(): number {
   const { user } = useAuth();
   const [owned, setOwned] = useState<{ userId: string; cents: number } | null>(null);
 
@@ -14,12 +14,15 @@ export function useGiftBalance(): number {
     if (!supabase || !user) return;
     let live = true;
     supabase
-      .from("gift_cards")
-      .select("balance_cents")
-      .eq("status", "active")
+      .from("travel_credit_buckets")
+      .select("balance_cents, expires_at")
       .then(({ data }) => {
         if (!live) return;
-        const cents = (data ?? []).reduce((sum, c) => sum + (c.balance_cents as number), 0);
+        const now = Date.now();
+        const rows = Array.isArray(data) ? data : [];
+        const cents = rows
+          .filter((b) => !b.expires_at || new Date(b.expires_at as string).getTime() > now)
+          .reduce((sum, b) => sum + (b.balance_cents as number), 0);
         setOwned({ userId: user.id, cents });
       });
     return () => {

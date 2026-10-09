@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
+import Link from "next/link";
 import { company } from "@/data/company";
 
 export const metadata: Metadata = {
@@ -56,7 +57,63 @@ export default function TermsPage() {
               <p>
                 Bookings are confirmed only once agreed directly between you and World Bridge
                 Meridian, including agreed pricing, deposit and payment terms, and any supplier
-                conditions that apply. We do not process payments through this website.
+                conditions that apply. We do not take payments through this website: you pay as agreed with your consultant, by the options on our Payments page.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="mb-3 font-display text-xl text-ivory">Your Account</h2>
+              <p>
+                You need an account (Google or email) to buy gift cards or Travel Credits, to join the
+                Invite Program, and to see your requests and documents in My World Bridge. Give us
+                accurate details, keep your sign-in secure, and tell us at once if you think someone else
+                has used your account. You are responsible for what happens under it. You can delete your
+                account at any time from My World Bridge; any Credits held are lost when you do.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="mb-3 font-display text-xl text-ivory">Cryptocurrency Payments</h2>
+              <p>
+                Where you pay in cryptocurrency, send the exact asset on the exact network shown, to the
+                address shown, and share the transaction ID. Blockchain transfers cannot be reversed: a
+                payment sent to the wrong address, network or asset may be lost and is not our
+                responsibility. We confirm payments by hand, which can take time, and amounts are
+                converted to US dollars at the value when we confirm. Any bank, network or exchange fees
+                are yours to bear.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="mb-3 font-display text-xl text-ivory">Gift Cards, Travel Credits &amp; Invite Rewards</h2>
+              <p>
+                Gift cards, Travel Credits, Promo Credits and Invite Program rewards follow the rules in
+                our <Link href="/gift-card-terms" className="text-gold hover:text-ivory">gift card terms</Link>,{" "}
+                <Link href="/travel-credits#credit-terms" className="text-gold hover:text-ivory">Travel Credit terms</Link> and{" "}
+                <Link href="/invite-terms" className="text-gold hover:text-ivory">Invite Program terms</Link>.
+                In short: credits are US dollars usable only toward our journeys, are not cash or
+                transferable, and Promo Credits expire. If those terms and these ever differ on one of
+                those products, the specific terms apply to it.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="mb-3 font-display text-xl text-ivory">Your Documents &amp; Personal Data</h2>
+              <p>
+                Passports and other documents you upload are kept privately and are visible only to you and
+                our team, for the purpose of arranging your travel. See our{" "}
+                <Link href="/privacy" className="text-gold hover:text-ivory">Privacy Policy</Link> for how we use
+                and protect personal data.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="mb-3 font-display text-xl text-ivory">Acceptable Use</h2>
+              <p>
+                Do not misuse the website or your account: no fraud or money laundering, no attempt to
+                break or overload our systems, no false identities or duplicate accounts to claim rewards,
+                and no use that breaks the law. We may suspend an account and void related credits or
+                rewards where we reasonably suspect misuse.
               </p>
             </div>
 
@@ -116,6 +173,23 @@ export default function TermsPage() {
                 While we take care in selecting partners and organizing journeys, World Bridge
                 Meridian is not liable for the acts, errors, omissions, or delays of independent
                 third-party suppliers.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="mb-3 font-display text-xl text-ivory">Changes to These Terms</h2>
+              <p>
+                We may update these terms from time to time. The version published here applies from the
+                date shown. Continuing to use the website or your account after a change means you accept
+                it; changes do not alter a booking already confirmed in writing.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="mb-3 font-display text-xl text-ivory">Governing Law</h2>
+              <p>
+                The governing law and courts that apply to these terms will be published here once
+                confirmed for our operating jurisdiction.
               </p>
             </div>
 

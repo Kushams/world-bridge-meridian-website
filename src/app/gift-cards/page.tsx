@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 const steps = [
+  { title: "Sign in", body: "Create a free account with Google or email, or sign in." },
   { title: "Choose", body: "Pick a design and an amount from US$500." },
   { title: "Pay", body: "Pay in cryptocurrency and paste your transaction ID." },
   { title: "We verify", body: "Our team checks your payment on the blockchain." },
@@ -23,7 +24,7 @@ const steps = [
 const faqs = [
   { q: "Does a gift card expire?", a: "No. Gift cards never expire." },
   { q: "What can I use it on?", a: `Journeys and services from ${company.name}. When you book, your consultant applies the balance and tells you what remains.` },
-  { q: "How do I redeem a code?", a: "Sign in to My World Bridge, open Gift cards and enter the code. The balance and its history then stay in your account." },
+  { q: "How do I redeem a code?", a: "Sign in to My World Bridge, open Travel Credits and enter the code. The value becomes Travel Credits in your account, which never expire." },
   { q: "Can I get a refund?", a: "Gift cards are not refundable or exchangeable for cash once issued, except where the law requires. Full details are in the gift card terms." },
   { q: "How long does it take?", a: "We issue the card once your payment is verified on the blockchain. You'll get an email as soon as it's done." },
   { q: "I need more than US$25,000.", a: `Email ${company.email} and your consultant will arrange it.` },
@@ -43,7 +44,7 @@ export default function GiftCardsPage() {
 
       <section className="py-12 md:py-16">
         <Container>
-          <ol className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          <ol className="grid grid-cols-2 gap-3 md:grid-cols-5">
             {steps.map((s, i) => (
               <li key={s.title} className="rounded-card border hairline p-4">
                 <p className="font-display text-2xl text-gold">{i + 1}</p>
