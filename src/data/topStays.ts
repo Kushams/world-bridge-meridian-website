@@ -7,7 +7,9 @@ import { themeImage, type ImageTheme } from "./images";
  * Meridian is not affiliated with, endorsed by, or in a partnership with
  * any of them, and no rate or availability is implied. Photography is
  * illustrative, not of the property. Confirm every detail on the
- * property's own website; see partners.ts for what is actually confirmed.
+ * property's own website. Descriptions were fact-checked against official and
+ * reputable sources in October 2026 (re-check before relying on openings or
+ * closures); see partners.ts for what is actually confirmed.
  */
 export type StayContinent =
   | "Europe"
@@ -108,13 +110,13 @@ export const notableStays: NotableStay[] = [
   {
     slug: "belmond-cipriani-venice",
     continent: "Europe",
-    name: "Belmond Hotel Cipriani",
+    name: "Hotel Cipriani, A Belmond Hotel",
     place: "Giudecca, Venice",
-    kind: "Resort Hotel",
+    kind: "Luxury Hotel",
     destinationSlug: "venice",
     heroImage: themeImage("coastal" as ImageTheme, 1),
     description:
-      "A secluded address on the island of Giudecca, with gardens and a pool across the lagoon from St Mark's.",
+      "A secluded address on the island of Giudecca, with gardens and a pool, facing St Mark's across the water. Closed for renovation; due to reopen on 1 June 2027.",
   },
   {
     slug: "the-gritti-palace-venice",
@@ -185,7 +187,7 @@ export const notableStays: NotableStay[] = [
   {
     slug: "hotel-grande-bretagne-athens",
     continent: "Europe",
-    name: "Hotel Grande Bretagne",
+    name: "Hotel Grande Bretagne, a Luxury Collection Hotel",
     place: "Syntagma Square, Athens",
     kind: "Historic Hotel",
     destinationSlug: "athens",
@@ -301,7 +303,7 @@ export const notableStays: NotableStay[] = [
     destinationSlug: "toronto",
     heroImage: themeImage("cityscape" as ImageTheme, 4),
     description:
-      "In Yorkville, next to the Royal Ontario Museum and some of Toronto's best shopping and dining.",
+      "In Yorkville, a short walk from the Royal Ontario Museum and some of Toronto's best shopping and dining.",
   },
   {
     slug: "rosewood-hotel-georgia-vancouver",
@@ -328,12 +330,12 @@ export const notableStays: NotableStay[] = [
   {
     slug: "copacabana-palace-rio",
     continent: "South America",
-    name: "Belmond Copacabana Palace",
+    name: "Copacabana Palace, A Belmond Hotel",
     place: "Copacabana, Rio de Janeiro",
     kind: "Beachfront Landmark",
     heroImage: themeImage("tropicalBeach" as ImageTheme, 2),
     description:
-      "A white Art Deco icon on Copacabana beach, with a famous pool and views of the Atlantic.",
+      "A white landmark on Copacabana beach, with a famous pool and views of the Atlantic.",
   },
   {
     slug: "alvear-palace-buenos-aires",
@@ -348,7 +350,7 @@ export const notableStays: NotableStay[] = [
   {
     slug: "belmond-monasterio-cusco",
     continent: "South America",
-    name: "Belmond Hotel Monasterio",
+    name: "Monasterio, a Belmond Hotel",
     place: "Historic centre, Cusco",
     kind: "Monastery Hotel",
     heroImage: themeImage("culturalHeritage" as ImageTheme, 7),
@@ -358,7 +360,7 @@ export const notableStays: NotableStay[] = [
   {
     slug: "belmond-sanctuary-lodge-machu-picchu",
     continent: "South America",
-    name: "Belmond Sanctuary Lodge",
+    name: "Sanctuary Lodge, a Belmond Hotel",
     place: "Machu Picchu, Peru",
     kind: "Mountain Lodge",
     heroImage: themeImage("mountainNature" as ImageTheme, 3),
@@ -477,12 +479,12 @@ export const notableStays: NotableStay[] = [
     slug: "metropole-hanoi",
     continent: "Asia",
     name: "Sofitel Legend Metropole Hanoi",
-    place: "Old Quarter area, Hanoi",
+    place: "Hoan Kiem, Hanoi",
     kind: "Colonial Landmark",
     destinationSlug: "hanoi",
     heroImage: themeImage("culturalHeritage" as ImageTheme, 9),
     description:
-      "A French colonial hotel dating from 1901, close to the Hanoi Opera House and Old Quarter.",
+      "A French colonial hotel dating from 1901, in Hanoi's French Quarter, a short walk from the Opera House and Hoan Kiem Lake.",
   },
   {
     slug: "burj-al-arab-dubai",
@@ -493,18 +495,18 @@ export const notableStays: NotableStay[] = [
     destinationSlug: "dubai",
     heroImage: themeImage("desertArchitecture" as ImageTheme, 1),
     description:
-      "The sail-shaped landmark on its own island off Jumeirah Beach, one of Dubai's most recognisable buildings.",
+      "The sail-shaped landmark on its own island off Jumeirah Beach, one of Dubai's most recognisable buildings. The hotel is closed for a restoration expected to last until around late 2027.",
   },
   {
     slug: "emirates-palace-abu-dhabi",
     continent: "Middle East",
-    name: "Emirates Palace Mandarin Oriental",
+    name: "Emirates Palace Mandarin Oriental, Abu Dhabi",
     place: "Corniche, Abu Dhabi",
     kind: "Palace Hotel",
     destinationSlug: "abu-dhabi",
     heroImage: themeImage("desertArchitecture" as ImageTheme, 2),
     description:
-      "A palace-style hotel on Abu Dhabi's coast, a short drive from the Sheikh Zayed Grand Mosque.",
+      "A palace-style hotel on the western end of Abu Dhabi's Corniche, with a private beachfront and a short drive from downtown.",
   },
   {
     slug: "mandarin-oriental-doha",
