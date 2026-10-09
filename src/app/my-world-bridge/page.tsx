@@ -20,7 +20,7 @@ export default function MyWorldBridgePage() {
         title="Your World Bridge Meridian account"
         description={
           isSupabaseConfigured
-            ? "Sign in to save journeys across every device, or keep browsing without an account — saved journeys work either way."
+            ? "Your profile, wallet, enquiries and travel documents in one place. Sign in or create a free account to get started."
             : "Account sign-in isn't connected yet, but saved journeys work right now — stored in this browser, no account required."
         }
         image={themeImage("business", 3)}

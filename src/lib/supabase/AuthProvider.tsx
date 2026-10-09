@@ -33,6 +33,7 @@ export interface Profile {
   bed_preference: string | null;
   dietary_requirements: string | null;
   allergies: string | null;
+  avatar_url: string | null;
 }
 
 export type ProfilePatch = Partial<Profile>;
@@ -116,9 +117,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       bed_preference: null,
       dietary_requirements: null,
       allergies: null,
+      avatar_url: null,
     };
     const fullColumns =
-      "full_name, phone, home_city, nationality, preferred_contact, travel_styles, interests, travel_pace, bed_preference, dietary_requirements, allergies";
+      "full_name, phone, home_city, nationality, preferred_contact, travel_styles, interests, travel_pace, bed_preference, dietary_requirements, allergies, avatar_url";
     (async () => {
       const first = await supabase.from("profiles").select(fullColumns).eq("id", userId).maybeSingle();
       let data: unknown = first.data;
@@ -260,6 +262,12 @@ export function displayName(user: User | null, profile: Profile | null): string 
   const full = profile?.full_name?.trim() || (user?.user_metadata?.full_name as string | undefined)?.trim();
   if (full) return full;
   return user?.email?.split("@")[0] ?? "";
+}
+
+/** Profile photo: the one they uploaded, else the picture from their Google account, else none (initials are shown). */
+export function avatarUrl(user: User | null, profile: Profile | null): string | null {
+  const meta = user?.user_metadata as { avatar_url?: string; picture?: string } | undefined;
+  return profile?.avatar_url || meta?.avatar_url || meta?.picture || null;
 }
 
 export function initials(name: string): string {

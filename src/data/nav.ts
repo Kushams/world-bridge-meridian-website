@@ -92,7 +92,6 @@ export const menuGroups: NavGroup[] = [
       { label: "Travel Credits", href: "/travel-credits" },
       { label: "Invite Program", href: "/invite" },
       { label: "Rewards & Cashback", href: "/travel-credits#rewards" },
-      { label: "My Wallet", href: "/my-world-bridge#travel-credits" },
     ],
   },
   {
