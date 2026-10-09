@@ -33,7 +33,7 @@ export function Header() {
         <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-4 sm:px-6 md:px-10 py-4">
           <Logo className="min-w-0 sm:shrink-0" />
 
-          <nav aria-label="Primary" className="hidden min-[1440px]:flex items-center gap-7 min-[1600px]:gap-9">
+          <nav aria-label="Primary" className="hidden min-[1440px]:flex items-center gap-7 min-[1600px]:gap-9 ml-6 mr-8">
             {primaryNav.map((link) => (
               <Link
                 key={link.href}

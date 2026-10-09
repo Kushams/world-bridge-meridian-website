@@ -14,7 +14,6 @@ export const primaryNav: NavLink[] = [
   { label: "Journal", href: "/journal" },
   { label: "About Us", href: "/about" },
   { label: "Gifts & Credits", href: "/travel-credits" },
-  { label: "My Profile", href: "/my-world-bridge" },
 ];
 
 export const menuGroups: NavGroup[] = [
