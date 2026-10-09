@@ -11,6 +11,10 @@
  * else in the data layer needs to change.
  */
 
+export function unsplashPhoto(id: string, w = 1600, q = 80) {
+  return unsplash(id, w, q);
+}
+
 function unsplash(id: string, w = 1600, q = 80) {
   return `https://images.unsplash.com/photo-${id}?w=${w}&q=${q}&auto=format&fit=crop`;
 }

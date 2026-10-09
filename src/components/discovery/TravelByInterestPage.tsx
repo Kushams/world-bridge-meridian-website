@@ -133,7 +133,7 @@ export function TravelByInterestPage() {
                   {filtered.length === 1 ? "match" : "matches"}
                 </>
               ) : (
-                `Showing all ${destinations.length} destinations — select a region, journey type or interest to narrow it down.`
+                `Showing all ${destinations.length}+ destinations — select a region, journey type or interest to narrow it down. Anywhere else, just ask.`
               )}
             </p>
             {activeSummary.length > 0 ? (

@@ -68,7 +68,11 @@ export function DestinationsExplorer({ destinations }: { destinations: Destinati
           ))}
         </select>
         <p className="text-xs text-stone-dim md:ml-auto">
-          {filtered.length} destination{filtered.length === 1 ? "" : "s"}
+          {filtered.length === destinations.length ? (
+            <>{destinations.length}+ destinations · don&apos;t see yours? <a href="/plan-your-journey" className="text-gold underline underline-offset-4">Request any destination</a></>
+          ) : (
+            <>{filtered.length} destination{filtered.length === 1 ? "" : "s"}</>
+          )}
         </p>
       </div>
 
