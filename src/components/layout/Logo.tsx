@@ -14,7 +14,7 @@ export function Logo({
   return (
     <Link
       href="/"
-      className={`group inline-flex items-center ${large ? "gap-5" : "gap-3"} ${className}`}
+      className={`group inline-flex items-center ${large ? "gap-5" : "gap-2 sm:gap-3"} ${className}`}
     >
       <Image
         src={localImage("/images/brand/emblem.png")}
@@ -23,12 +23,14 @@ export function Logo({
         width={348}
         height={312}
         priority
-        className={large ? "h-16 w-auto shrink-0 md:h-20" : "h-9 w-auto shrink-0 md:h-10"}
+        className={large ? "h-14 w-auto shrink-0 sm:h-16 md:h-20" : "h-8 w-auto shrink-0 sm:h-9 md:h-10"}
       />
-      <span className="flex flex-col leading-tight">
+      <span className="flex min-w-0 flex-col leading-tight">
         <span
-          className={`whitespace-nowrap font-display uppercase text-ivory ${
-            large ? "text-xl tracking-[0.04em] md:text-2xl" : "text-base tracking-[0.06em] md:text-lg"
+          className={`font-display uppercase text-ivory ${
+            large
+              ? "text-lg leading-tight tracking-[0.04em] sm:whitespace-nowrap sm:text-xl md:text-2xl"
+              : "max-w-[6rem] text-[0.8rem] leading-[1.15] sm:max-w-none tracking-[0.06em] sm:whitespace-nowrap sm:text-base sm:leading-tight md:text-lg"
           }`}
         >
           World Bridge Meridian
