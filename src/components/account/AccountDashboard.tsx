@@ -5,6 +5,7 @@ import { displayName, initials, useAuth } from "@/lib/supabase/AuthProvider";
 import { DocumentsPanel } from "./DocumentsPanel";
 import { EnquiriesPanel } from "./EnquiriesPanel";
 import { ProfileForm, profileCompleteness } from "./ProfileForm";
+import { UploadsPanel } from "./UploadsPanel";
 import { SavedJourneysPanel } from "./SavedJourneysPanel";
 import { MobileCollapse } from "@/components/ui/MobileCollapse";
 
@@ -75,6 +76,7 @@ export function AccountDashboard() {
   const links = [
     { href: "#enquiries", label: "My Enquiries" },
     { href: "#documents", label: "Itineraries & Documents" },
+    { href: "#send-documents", label: "Send Us Documents" },
     { href: "#saved", label: "Saved Journeys" },
     { href: "#profile-form", label: "Profile" },
   ];
@@ -130,6 +132,10 @@ export function AccountDashboard() {
 
       <Section id="documents" eyebrow="Itineraries & Documents" title="Your travel documents">
         <DocumentsPanel />
+      </Section>
+
+      <Section id="send-documents" eyebrow="Send Us Documents" title="Passports and other files">
+        <UploadsPanel />
       </Section>
 
       <Section id="saved" eyebrow="Saved Journeys" title="Your shortlist">
