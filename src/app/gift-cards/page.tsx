@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
+import { NewToCrypto } from "@/components/payments/NewToCrypto";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
@@ -58,12 +59,16 @@ export default function GiftCardsPage() {
 
       <section id="buy" className="scroll-mt-24 pb-16 md:pb-24">
         <Container>
-          <SectionHeading eyebrow="Buy" title="Order a gift card." />
+          <SectionHeading eyebrow="Buy" title="Order a gift card."
+            description={<>Paying in crypto. <a href="#new-to-crypto" className="underline underline-offset-4">New to crypto? See how to buy it in your country.</a></>}
+          />
           <div className="mt-8">
             <GiftCardPurchase />
           </div>
         </Container>
       </section>
+
+      <NewToCrypto what="buy a gift card" />
 
       <section id="redeem" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">

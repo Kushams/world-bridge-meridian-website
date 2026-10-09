@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
+import { NewToCrypto } from "@/components/payments/NewToCrypto";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
@@ -77,12 +78,16 @@ export default function TravelCreditsPage() {
 
       <section id="buy" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>
-          <SectionHeading eyebrow="Buy" title="Buy Travel Credits." />
+          <SectionHeading eyebrow="Buy" title="Buy Travel Credits."
+            description={<>Paying in crypto. <a href="#new-to-crypto" className="underline underline-offset-4">New to crypto? See how to buy it in your country.</a></>}
+          />
           <div className="mt-8">
             <CreditsPurchase />
           </div>
         </Container>
       </section>
+
+      <NewToCrypto what="buy Travel Credits" />
 
       <section id="rewards" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>
