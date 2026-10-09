@@ -8,6 +8,7 @@ import { TouchRipple } from "@/components/motion/TouchRipple";
 import { ScrollProgressBar } from "@/components/motion/ScrollProgressBar";
 import { PageTransition } from "@/components/motion/PageTransition";
 import { AttributionCapture } from "@/components/AttributionCapture";
+import { SignInPopup } from "@/components/account/SignInPopup";
 import { InviteClaimer } from "@/components/invite/InviteClaimer";
 import { TawkChat } from "@/components/TawkChat";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
@@ -117,6 +118,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <TouchRipple />
           <AttributionCapture />
           <InviteClaimer />
+          <SignInPopup />
           <a
             href="#main-content"
             className="sr-only focus:not-sr-only focus:fixed focus:left-6 focus:top-6 focus:z-50 focus:rounded-full focus:bg-ivory focus:px-5 focus:py-3 focus:text-xs focus:font-semibold focus:uppercase focus:tracking-wide focus:text-ink"

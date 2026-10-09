@@ -1,3 +1,4 @@
+import { AccountGate } from "@/components/account/AccountGate";
 import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
@@ -23,7 +24,7 @@ export default function PlanYourJourneyPage() {
       />
       <section className="py-16 md:py-24">
         <Container className="max-w-3xl">
-          <JourneyWizard />
+          <AccountGate title="Sign in to plan your journey" intro="Create a free account (Google or email) so your consultant can reach you and you can follow your request."><JourneyWizard /></AccountGate>
         </Container>
       </section>
     </>

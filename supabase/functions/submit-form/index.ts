@@ -10,7 +10,7 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 const FORM_TYPES = ["contact", "newsletter", "journey-request", "travel-details", "gift-card", "travel-credits"] as const;
 // Money forms need a signed-in customer with a confirmed email.
-const ACCOUNT_REQUIRED: readonly string[] = ["gift-card", "travel-credits"];
+const ACCOUNT_REQUIRED: readonly string[] = ["gift-card", "travel-credits", "journey-request", "contact", "travel-details"];
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 type FormType = (typeof FORM_TYPES)[number];
 

@@ -1,3 +1,4 @@
+import { AccountGate } from "@/components/account/AccountGate";
 import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
@@ -26,7 +27,7 @@ export default function TravelDetailsFormPage() {
       <section className="py-16 md:py-24">
         <Container>
           <div className="mx-auto max-w-4xl">
-            <TravelDetailsForm />
+            <AccountGate title="Sign in to send your travel details" intro="Create a free account (Google or email) so we can match this form to your itinerary and documents."><TravelDetailsForm /></AccountGate>
           </div>
         </Container>
       </section>
