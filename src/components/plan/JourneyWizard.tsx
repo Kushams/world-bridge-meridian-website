@@ -16,6 +16,8 @@ import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { getAttribution } from "@/lib/attribution";
 import { track } from "@/lib/analytics";
 import { useAuth } from "@/lib/supabase/AuthProvider";
+import { useGiftBalance } from "@/lib/useGiftBalance";
+import { usdFromCents } from "@/lib/giftCards";
 
 interface FormState {
   destinationMode: string;
@@ -159,6 +161,8 @@ export function JourneyWizard() {
   // Fill what we already know from a signed-in customer's profile — once,
   // and never over anything already typed or pre-filled from a search.
   const { user, profile } = useAuth();
+  const giftCents = useGiftBalance();
+  const [useGift, setUseGift] = useState(false);
   const [prefilledFor, setPrefilledFor] = useState<string | null>(null);
   if (user && profile && prefilledFor !== user.id) {
     setPrefilledFor(user.id);
@@ -231,6 +235,8 @@ export function JourneyWizard() {
       organize: form.organize,
       hearAboutUs: form.hearAboutUs,
       notes: form.additionalInfo,
+      useGiftCard: useGift && giftCents > 0,
+      giftCardBalanceUsd: giftCents > 0 ? (giftCents / 100).toFixed(2) : "",
       source: "journey_wizard",
       campaign: attribution.utm_campaign ?? "",
       landingPage: attribution.landingPage,
@@ -701,6 +707,20 @@ export function JourneyWizard() {
                 />
               </div>
             </div>
+            {giftCents > 0 ? (
+              <label className="mt-6 flex gap-3 rounded-card border border-gold/50 bg-gold/5 p-4 text-sm text-ivory">
+                <input
+                  type="checkbox"
+                  checked={useGift}
+                  onChange={(e) => setUseGift(e.target.checked)}
+                  className="mt-1 h-4 w-4 shrink-0 accent-[#a8863b]"
+                />
+                <span>
+                  Use my gift card balance ({usdFromCents(giftCents)}) toward this journey.
+                  <span className="block text-xs text-stone">Your consultant applies it when your booking is confirmed and tells you what remains to pay.</span>
+                </span>
+              </label>
+            ) : null}
             <div className="mt-6">
               <p className="mb-2 text-xs uppercase tracking-wide text-stone">
                 Preferred Contact Method

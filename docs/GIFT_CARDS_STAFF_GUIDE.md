@@ -33,9 +33,20 @@ Table Editor → **gift_card_ledger** → **Insert row**:
 - `card_id`: the card's `id` from the **gift_cards** table
 - `delta_cents`: a **negative** number in cents (US$200 → `-20000`)
 - `note`: what it was used for (the client sees this), e.g. "Italy journey deposit"
+- `submission_id`: the client's request (its `id` in **form_submissions**). Fill this in: the client then sees
+  "Gift card applied: US$200" on that enquiry.
 
 The balance updates automatically. The client sees the new balance and the line in their history. Supabase will refuse
 a use that is bigger than the balance. To add value back (a correction), insert a positive number.
+
+## 5b. Seeing who has a balance
+Table Editor → the view **client_gift_balances** lists every client's email and remaining balance. When a client ticks
+"Use my gift card balance" on a journey request, the request in **form_submissions** shows `use_gift_card = yes` and
+their balance at that moment (check the view for the live figure).
+
+## 5c. If a trip paid with a gift card is cancelled
+The value returns to the card, not to the client as crypto or cash. Insert a **positive** row in **gift_card_ledger**
+for the same card (e.g. `+20000`, note "Italy journey cancelled"), with the same `submission_id`.
 
 ## 6. Problems
 - **Lost code:** look up the card in **gift_cards** by the buyer or recipient email. If you are sure it is the right

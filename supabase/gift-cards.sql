@@ -46,6 +46,8 @@ create table if not exists public.gift_card_ledger (
   card_id uuid not null references public.gift_cards (id) on delete cascade,
   delta_cents integer not null check (delta_cents <> 0),
   note text,
+  -- Optional: the client's request this spend belongs to (shown on their enquiry).
+  submission_id uuid references public.form_submissions (id) on delete set null,
   created_at timestamptz not null default now()
 );
 alter table public.gift_card_ledger enable row level security;
@@ -205,3 +207,13 @@ begin
   return new;
 end;
 $fn$;
+
+-- 9. For consultants: every client's remaining gift card balance, by email.
+-- Table Editor shows views too. Locked down so clients and the public cannot read it.
+create or replace view public.client_gift_balances as
+  select u.email, sum(c.balance_cents) / 100.0 as balance_usd, count(*) as cards
+  from public.gift_cards c
+  join auth.users u on u.id = c.owner_user_id
+  where c.status = 'active'
+  group by u.email;
+revoke all on public.client_gift_balances from anon, authenticated;

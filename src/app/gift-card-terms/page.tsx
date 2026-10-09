@@ -60,6 +60,7 @@ const sections: { title: string; body: string[] }[] = [
     title: "8. Refunds",
     body: [
       "Once a gift card has been issued, it is not refundable and cannot be returned or exchanged, except where the law requires.",
+      "If a booking that was paid for, wholly or partly, with a gift card is cancelled, the amount that was paid by gift card is returned to the card's balance, not paid out in cryptocurrency or cash. Any other part of the booking is handled under the cancellation terms that apply to it.",
       "Before a card is issued, contact us straight away if you made a mistake, such as a wrong amount or the wrong network. We will help where we reasonably can, but we cannot recover funds sent to a wrong address or on a wrong network that we do not control.",
     ],
   },
