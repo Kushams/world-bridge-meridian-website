@@ -86,15 +86,21 @@ export const menuGroups: NavGroup[] = [
     ],
   },
   {
+    heading: "Gift Cards & Credits",
+    links: [
+      { label: "Gift Cards", href: "/gift-cards" },
+      { label: "Travel Credits", href: "/travel-credits" },
+      { label: "Invite Program", href: "/invite" },
+      { label: "Rewards & Cashback", href: "/travel-credits#rewards" },
+      { label: "My Wallet", href: "/my-world-bridge#travel-credits" },
+    ],
+  },
+  {
     heading: "Payments",
     links: [
       { label: "Payment Options", href: "/payments" },
       { label: "Bank Transfer", href: "/payments#bank-transfer" },
       { label: "Pay with Crypto", href: "/payments#cryptocurrency" },
-      { label: "Gift Cards", href: "/gift-cards" },
-      { label: "Travel Credits", href: "/travel-credits" },
-      { label: "Rewards & Cashback", href: "/travel-credits#rewards" },
-      { label: "Invite & Earn", href: "/invite" },
       { label: "Payment Questions", href: "/payments#payment-questions" },
     ],
   },

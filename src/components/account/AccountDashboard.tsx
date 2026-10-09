@@ -78,7 +78,7 @@ export function AccountDashboard() {
     { href: "#enquiries", label: "My Enquiries" },
     { href: "#documents", label: "Itineraries & Documents" },
     { href: "#send-documents", label: "Send Us Documents" },
-    { href: "#travel-credits", label: "Travel Credits" },
+    { href: "#travel-credits", label: "My Wallet" },
     { href: "#saved", label: "Saved Journeys" },
     { href: "#profile-form", label: "Profile" },
   ];
@@ -140,7 +140,7 @@ export function AccountDashboard() {
         <UploadsPanel />
       </Section>
 
-      <Section id="travel-credits" eyebrow="Travel Credits" title="Your credits and gift cards">
+      <Section id="travel-credits" eyebrow="My Wallet" title="Your credits, rewards and gift cards">
         <span id="gift-cards" />
         <TravelCreditsPanel />
       </Section>
