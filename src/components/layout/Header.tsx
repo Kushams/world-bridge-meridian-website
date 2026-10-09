@@ -30,14 +30,14 @@ export function Header() {
         }`}
       >
         <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-6 md:px-10 py-4">
-          <Logo />
+          <Logo className="shrink-0" />
 
-          <nav className="hidden lg:flex items-center gap-8">
+          <nav aria-label="Primary" className="hidden min-[1440px]:flex items-center gap-7 min-[1600px]:gap-9">
             {primaryNav.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="font-sans text-xs font-semibold uppercase tracking-[0.15em] text-ivory-dim hover:text-gold transition-colors"
+                className="whitespace-nowrap font-sans text-xs font-semibold uppercase tracking-[0.14em] text-ivory-dim hover:text-gold transition-colors"
               >
                 {link.label}
               </Link>
