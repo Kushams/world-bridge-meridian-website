@@ -25,26 +25,35 @@ export function NewToCrypto({ what }: { what: string }) {
         <SectionHeading
           eyebrow="New to crypto?"
           title="How to buy and send it, step by step."
-          description={`Never paid with crypto? You can still ${what}. Pick your country for where to buy, then follow the steps.`}
+          description={`Never paid with crypto? You can still ${what}. Open the 7 steps below, then pick your country to see where to buy.`}
         />
-        <div className="mt-8 max-w-3xl">
+        <details className="group mt-8 max-w-3xl rounded-card border hairline">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-display text-lg text-ivory">
+            The 7 steps to buy and send crypto
+            <span aria-hidden className="shrink-0 text-gold transition-transform group-open:rotate-45">+</span>
+          </summary>
+          <div className="border-t hairline p-5">
+            <p className="text-sm text-stone-dim">
+              For gift cards and credits you choose the amount yourself and our address appears in the form: there is no consultant step.
+            </p>
+            <ol className="mt-5 space-y-5">
+              {purchaseSteps.map((step, i) => (
+                <li key={step.title} className="flex gap-4">
+                  <span className="font-display text-2xl text-gold">{i + 1}</span>
+                  <div>
+                    <p className="font-display text-lg text-ivory">{step.title}</p>
+                    <p className="mt-1 text-sm text-stone leading-relaxed">{step.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </details>
+
+        <div className="mt-4 max-w-3xl">
           <CryptoCountryGuide />
         </div>
-        <p className="mt-4 max-w-3xl text-sm text-stone-dim">
-          For gift cards and credits you choose the amount yourself and our address appears in the form: there is no consultant step. The country tips above are general; follow the steps below.
-        </p>
-        <ol className="mt-10 max-w-3xl space-y-5">
-          {purchaseSteps.map((step, i) => (
-            <li key={step.title} className="flex gap-4">
-              <span className="font-display text-2xl text-gold">{i + 1}</span>
-              <div>
-                <p className="font-display text-lg text-ivory">{step.title}</p>
-                <p className="mt-1 text-sm text-stone leading-relaxed">{step.body}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-        <p className="mt-6 max-w-3xl text-xs text-stone-dim">
+        <p className="mt-4 max-w-3xl text-xs text-stone-dim">
           Exchanges are examples, not endorsements. Availability and rules change by country: guide last reviewed {cryptoGuideReviewed}. Stuck? Email us and we&apos;ll help at any step.
         </p>
       </Container>
