@@ -1,5 +1,5 @@
-export const GIFT_PRESETS = [50, 100, 500, 1000, 2000, 5000] as const;
-export const GIFT_MIN = 50;
+export const GIFT_PRESETS = [500, 1000, 2000, 3000, 5000, 10000] as const;
+export const GIFT_MIN = 500;
 export const GIFT_MAX_TOTAL = 25000;
 export const GIFT_MAX_QTY = 100;
 

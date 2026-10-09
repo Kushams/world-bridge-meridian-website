@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 const steps = [
-  { title: "Choose", body: "Pick a design and an amount from US$50." },
+  { title: "Choose", body: "Pick a design and an amount from US$500." },
   { title: "Pay", body: "Pay in cryptocurrency and paste your transaction ID." },
   { title: "We verify", body: "Our team checks your payment on the blockchain." },
   { title: "Delivered", body: "The gift card code is emailed to you or your recipient." },

@@ -20,7 +20,7 @@ const sections: { title: string; body: string[] }[] = [
   {
     title: "2. Buying a gift card",
     body: [
-      "Gift cards are sold in US dollars. Each card is worth at least US$50, and the total of one order must be between US$50 and US$25,000. For larger amounts, contact us.",
+      "Gift cards are sold in US dollars. Each card is worth at least US$500, and the total of one order must be between US$500 and US$25,000. For larger amounts, contact us.",
       "Gift cards are paid for in cryptocurrency, using one of the assets and networks listed on the order page and one of our published wallet addresses. You must send payment from a wallet you control, on the network you selected, and paste the transaction ID into the order form.",
       "An order is not complete until our team has verified your payment on the blockchain. If the amount we receive does not match your order, we will contact you before issuing anything. Network fees are charged by the network and exchange you use, and are not part of the gift card value.",
     ],

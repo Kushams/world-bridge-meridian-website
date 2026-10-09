@@ -22,7 +22,7 @@ Set the row's **status** to **confirmed** (Table Editor, dropdown). That alone:
 - emails each code to the recipient (or to the buyer if it is not a gift) and a receipt to the buyer.
 
 It only happens once: setting *confirmed* again will not make duplicates. If the amount or quantity in the payload is
-outside US$50 to US$25,000 total, Supabase refuses with a clear message; fix the payload or contact the buyer.
+outside US$500 to US$25,000 total, Supabase refuses with a clear message; fix the payload or contact the buyer.
 
 ## 4. When a client redeems
 The client signs in → **My World Bridge → Gift cards** → enters the code. The card is then linked to their account and

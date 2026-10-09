@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Newsreader, Montserrat } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { SITE_URL, company, socialLinks } from "@/data/company";
 import { Header } from "@/components/layout/Header";
@@ -13,16 +13,10 @@ import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { AuthProvider } from "@/lib/supabase/AuthProvider";
 import { JsonLd } from "@/components/seo/JsonLd";
 
-const newsreader = Newsreader({
-  variable: "--font-newsreader",
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  axes: ["opsz"],
-});
-
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -113,7 +107,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${newsreader.variable} ${montserrat.variable} h-full antialiased`}
+      className={`${montserrat.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-ink text-ivory">
         <JsonLd data={siteJsonLd} />
