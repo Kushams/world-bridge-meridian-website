@@ -5,6 +5,7 @@ import { displayName, initials, useAuth } from "@/lib/supabase/AuthProvider";
 import { DocumentsPanel } from "./DocumentsPanel";
 import { EnquiriesPanel } from "./EnquiriesPanel";
 import { ProfileForm, profileCompleteness } from "./ProfileForm";
+import { GiftCardsPanel } from "./GiftCardsPanel";
 import { UploadsPanel } from "./UploadsPanel";
 import { SavedJourneysPanel } from "./SavedJourneysPanel";
 import { MobileCollapse } from "@/components/ui/MobileCollapse";
@@ -77,6 +78,7 @@ export function AccountDashboard() {
     { href: "#enquiries", label: "My Enquiries" },
     { href: "#documents", label: "Itineraries & Documents" },
     { href: "#send-documents", label: "Send Us Documents" },
+    { href: "#gift-cards", label: "Gift Cards" },
     { href: "#saved", label: "Saved Journeys" },
     { href: "#profile-form", label: "Profile" },
   ];
@@ -136,6 +138,10 @@ export function AccountDashboard() {
 
       <Section id="send-documents" eyebrow="Send Us Documents" title="Passports and other files">
         <UploadsPanel />
+      </Section>
+
+      <Section id="gift-cards" eyebrow="Gift Cards" title="Redeem and track your balance">
+        <GiftCardsPanel />
       </Section>
 
       <Section id="saved" eyebrow="Saved Journeys" title="Your shortlist">

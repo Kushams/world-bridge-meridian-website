@@ -9,7 +9,7 @@ const NOTIFY_SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
 const FROM_EMAIL = "World Bridge Meridian <enquiries@worldbridgemeridian.group>";
 const INTERNAL_EMAIL = "info@worldbridgemeridian.group";
 
-type FormType = "contact" | "newsletter" | "journey-request" | "travel-details";
+type FormType = "contact" | "newsletter" | "journey-request" | "travel-details" | "gift-card";
 
 interface FormRecord {
   id: string;
@@ -27,6 +27,7 @@ const LABELS: Record<FormType, string> = {
   newsletter: "Newsletter signup",
   "journey-request": "Journey request",
   "travel-details": "Exhibition travel itinerary form",
+  "gift-card": "Gift card order — check the crypto payment, then set status to confirmed",
 };
 
 /** Submissions are attacker-controlled text going into an HTML email. */
@@ -119,10 +120,12 @@ Deno.serve(async (req: Request) => {
           ? "We've received your journey request — World Bridge Meridian"
           : record.form_type === "travel-details"
             ? "We've received your travel itinerary form — World Bridge Meridian"
-            : "Thank you for contacting World Bridge Meridian",
+            : record.form_type === "gift-card"
+              ? "We've received your gift card order — World Bridge Meridian"
+              : "Thank you for contacting World Bridge Meridian",
         `
           <p>Hi ${esc(record.name || "there")},</p>
-          <p>Thank you for reaching out. Your ${record.form_type === "journey-request" ? "journey request" : record.form_type === "travel-details" ? "travel detail form" : "message"} has reached our team and a consultant will be in touch personally.</p>
+          <p>Thank you for reaching out. Your ${record.form_type === "journey-request" ? "journey request" : record.form_type === "travel-details" ? "travel detail form" : record.form_type === "gift-card" ? "gift card order" : "message"} has reached our team and ${record.form_type === "gift-card" ? "we will verify your payment on the blockchain, then email the gift card code(s)." : "a consultant will be in touch personally."}</p>
           ${record.message ? `<p style="color:#666">Your message:</p><blockquote style="white-space:pre-wrap;border-left:2px solid #ddd;padding-left:12px;color:#666">${esc(record.message)}</blockquote>` : ""}
           <p>— World Bridge Meridian</p>
         `,
