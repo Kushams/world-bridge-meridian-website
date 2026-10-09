@@ -1,5 +1,10 @@
 # Handoff for Devin: finish the Supabase side and verify the live site
 
+> **Division of work.** You (Devin) have access to **Supabase only**. You do **not** have Cloudflare access.
+> Do every Supabase task below yourself. For anything on Cloudflare (section 3a), **do not attempt it:
+> tell the owner exactly what to click or paste, and wait for them to confirm.** You also cannot read the
+> live site's build settings, so ask the owner to confirm those values.
+
 You are picking up work on the World Bridge Meridian website. Claude Code (a coding assistant)
 built and merged the code. **Your job is the parts it could not do or was blocked from doing:
 Supabase database/auth/functions configuration, deployment checks and end-to-end verification.**
@@ -11,7 +16,7 @@ You have the access Claude did not. Please read this whole file first, then do t
 - Stack: Next.js (a newer version than you may know: **read `node_modules/next/dist/docs/` before writing Next code**, see `AGENTS.md`), TypeScript, Tailwind. Built as a static export (`npm run build:cloudflare`, `STATIC_EXPORT=true`) and served from **Cloudflare** (Workers static assets). Netlify and the old GitHub Pages deploy are no longer used. Cloudflare builds from `main`.
 - Backend: **Supabase** project `rkevnmqofvqdmjujlrvd` (eu-west-1), email via **Resend**, bot protection via **Cloudflare Turnstile**.
 - Checks every change must pass: `npm run lint`, `npx tsc --noEmit`, `npm run build`.
-- Pull requests merged so far: #12 (exhibitions data), #13 (exhibition travel form), #14 (mobile pages, swipe rows, menu, Stays, planner, customer accounts).
+- Pull requests merged so far: #12 (exhibitions data), #13 (exhibition travel form), #14 (mobile pages, swipe rows, menu, Stays, planner, customer accounts), #16 (hero fixes: eyebrow no longer blurred, swipe-row left gutter, hero load animations and stats row removed), #15 (this file).
 
 ## 1. What was done (all merged to `main`)
 
@@ -29,7 +34,7 @@ You have the access Claude did not. Please read this whole file first, then do t
 - Pages were up to 32 phone-screens long. Now mostly 2.5-5. Compact section spacing on phones, shorter heroes, tap-to-expand footer link groups, collapsible long sections on `/payments` (`MobileCollapse`).
 - `SwipeRow` (`src/components/ui/SwipeRow.tsx`) turns card grids into swipe rows on every screen size (peeking next card, dots or "n / total", arrows on tablet/desktop, "Show all" on lists > 6). Desktop keeps the same cards-per-row as the old grids. Text of 50 pages was diffed against the live site: nothing lost.
 - New menu (`NavOverlay`): sticky header, "Popular" tiles, tile links, **Journeys group open by default**, **Payments is its own group** (not under Contact). Header has a "Plan" pill on phones.
-- Home: 10-step planner band under the hero (`PlannerBand`), hero shows 4 stats on phones.
+- Home: 10-step planner band under the hero (`PlannerBand`). The hero stats row and hero load animations were removed at the owner's request; scroll reveals remain.
 - Stays (`/stays`): new "Top places to stay, around the world" section (`src/data/topStays.ts`, 48 named properties by continent, **Africa intentionally excluded**), clear "not affiliated, photos illustrative" note. Existing generic sample stays kept under "Stay Styles". Descriptions were written from general knowledge, **not individually fact-checked**.
 - Journey wizard (`/plan-your-journey`, 10 steps) now also asks bed preference, dietary requirements, allergies; points art travelers to the exhibition form.
 
@@ -57,8 +62,29 @@ You have the access Claude did not. Please read this whole file first, then do t
 5. **Verify the form pipeline end to end** (never confirmed with a real submission): submit `/travel-details-form` on the live site with Turnstile -> a `travel-details` row appears in `form_submissions` -> the team email arrives at `info@worldbridgemeridian.group` and the traveler gets the confirmation. Confirm function secrets exist: `RESEND_API_KEY`, `NOTIFY_SHARED_SECRET`, `TURNSTILE_SECRET_KEY`, and the Vault secrets from `supabase/hardening.sql` / `forms.sql`. Check whether `supabase/turnstile.sql` (drops the anon insert policy) has been applied; if not, tell the owner.
 6. **RLS test matrix** for `form_submissions` after the SQL: anon sees nothing; a signed-in user with a confirmed email sees only their own non-newsletter rows; a user with an unconfirmed email sees nothing; no one but the service role can update `status`. Also confirm `profiles` RLS still limits each user to their own row.
 7. **Staff workflow:** the owner will change each request's stage with the `status` dropdown in the Supabase Table Editor (they chose this over building an admin page). Optionally save a Table Editor view of recent `form_submissions` sorted by `submitted_at`. Do not build an admin page unless asked.
-8. **Deploy check:** confirm Cloudflare built `main` after PR #14, that `/`, `/stays`, `/payments`, `/exhibitions`, `/my-world-bridge` load on a phone, and that `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY` are set in the Cloudflare build env. Run PageSpeed Insights on the home page and report mobile scores (local tests showed ~+4% JS and no slowdown, but real numbers were never measured).
+8. **Deploy check (owner does the Cloudflare part, see 3a):** ask the owner to confirm Cloudflare built `main` after PRs #14-#16. You can check by browsing the live site that `/`, `/stays`, `/payments`, `/exhibitions`, `/my-world-bridge` load on a phone, (the owner confirms the env vars in 3a). Run PageSpeed Insights on the home page and report mobile scores (local tests showed ~+4% JS and no slowdown, but real numbers were never measured).
 9. **Real-account test:** sign up with a real test email -> confirm -> sign in -> edit profile (check it saves) -> submit a journey request with the same email -> see it under My enquiries -> change `status` in the Table Editor -> see the track update -> sign out -> "Email me a sign-in link" -> "Forgot password" -> delete the test account.
+
+## 3a. Cloudflare steps the OWNER does (you tell them what to do)
+
+You cannot access Cloudflare. Give the owner these as plain, numbered instructions and wait for their answer:
+
+1. Cloudflare dashboard -> Workers & Pages -> the website project -> **Deployments**: confirm the latest
+   deployment is built from `main`, shows **Success**, and is newer than the merge of PR #16. If it failed, ask the
+   owner to paste the build log to you and diagnose it (code fixes go through a PR).
+2. Same project -> **Settings -> Variables and secrets (build)**: confirm these exist with non-empty values:
+   `NEXT_PUBLIC_SUPABASE_URL` (`https://rkevnmqofvqdmjujlrvd.supabase.co`), `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   (the project's anon/publishable key, which you can read in Supabase), `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, and
+   `STATIC_EXPORT=true` if the build command relies on it. Tell the owner the exact values to paste for the
+   Supabase ones. Never ask them to paste secret keys into chat or into the repo.
+3. If any variable was added or changed: **Deployments -> Retry / redeploy**, because `NEXT_PUBLIC_*` values are
+   baked in at build time.
+4. Turnstile: Cloudflare dashboard -> Turnstile -> confirm the widget's allowed hostnames include
+   `worldbridgemeridian.com`.
+5. Only if the owner wants Google sign-in: after you enable the Google provider in Supabase, ask them to add
+   `NEXT_PUBLIC_GOOGLE_SIGNIN=true` to the build variables and redeploy.
+6. Ask the owner to open the live site on their phone and check: the home hero (no blurred line, no stats row),
+   swipe rows start with a small left gap, `/my-world-bridge` loads, then report back.
 
 ## 4. Owner decisions and constraints (please respect)
 
