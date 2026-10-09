@@ -27,7 +27,7 @@ export function Logo({
       />
       <span className="flex flex-col leading-tight">
         <span
-          className={`font-display uppercase text-ivory ${
+          className={`whitespace-nowrap font-display uppercase text-ivory ${
             large ? "text-xl tracking-[0.04em] md:text-2xl" : "text-base tracking-[0.06em] md:text-lg"
           }`}
         >
