@@ -71,7 +71,7 @@
 html {
   scroll-behavior: smooth;
   /* Everything is sized in rem, so this one value scales text and spacing together (16px is the browser default). */
-  font-size: 15px;
+  font-size: 14px;
 }
 
 @media (prefers-reduced-motion: reduce) {
