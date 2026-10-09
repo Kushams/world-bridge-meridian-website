@@ -3,6 +3,7 @@ import { Container } from "@/components/ui/Container";
 import { Marquee } from "@/components/motion/Marquee";
 import { Reveal } from "@/components/ui/Reveal";
 import { cryptoPartnerExchanges, cryptoPartnerWallets } from "@/data/cryptoPartners";
+import { PartnerChip } from "@/components/ui/PartnerChip";
 import { company } from "@/data/company";
 
 const points = [
@@ -38,8 +39,8 @@ export function CryptoFriendly() {
         <Reveal className="mt-12 text-center">
           <p className="eyebrow mb-4">Our crypto partners: exchanges &amp; wallets</p>
           <div className="mx-auto max-w-5xl space-y-3">
-            <Marquee items={cryptoPartnerExchanges} label="Crypto exchanges we work with" seconds={38} />
-            <Marquee items={cryptoPartnerWallets} label="Crypto wallets we work with" seconds={34} reverse />
+            <Marquee items={cryptoPartnerExchanges.map((p) => ({ key: p.name, node: <PartnerChip partner={p} /> }))} label="Crypto exchanges we work with" seconds={38} />
+            <Marquee items={cryptoPartnerWallets.map((p) => ({ key: p.name, node: <PartnerChip partner={p} /> }))} label="Crypto wallets we work with" seconds={34} reverse />
           </div>
           <p className="mx-auto mt-4 max-w-xl text-xs text-stone-dim">
             Pay from any of them, or from any other exchange or wallet you already use. Names belong to their respective owners.

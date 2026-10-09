@@ -4,6 +4,7 @@ import { Container } from "@/components/ui/Container";
 import { partners, partnersStatement } from "@/data/partners";
 import { themeImage } from "@/data/images";
 import { cryptoPartnerExchanges, cryptoPartnerWallets } from "@/data/cryptoPartners";
+import { PartnerChip } from "@/components/ui/PartnerChip";
 import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
@@ -51,8 +52,8 @@ export default function PartnersPage() {
               <div key={g.t}>
                 <h3 className="font-display text-lg text-ivory">{g.t}</h3>
                 <ul className="mt-3 flex flex-wrap gap-2">
-                  {g.l.map((n) => (
-                    <li key={n} className="rounded-full border hairline px-4 py-2 text-xs font-semibold uppercase tracking-wide text-ivory-dim">{n}</li>
+                  {g.l.map((p) => (
+                    <li key={p.name} className="marquee-logo"><PartnerChip partner={p} /></li>
                   ))}
                 </ul>
               </div>
