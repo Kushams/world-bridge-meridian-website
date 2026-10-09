@@ -14,7 +14,7 @@ export const primaryNav: NavLink[] = [
   { label: "Journal", href: "/journal" },
   { label: "About Us", href: "/about" },
   { label: "Gifts & Credits", href: "/travel-credits" },
-  { label: "My World Bridge", href: "/my-world-bridge" },
+  { label: "My Profile", href: "/my-world-bridge" },
 ];
 
 export const menuGroups: NavGroup[] = [
@@ -104,9 +104,9 @@ export const menuGroups: NavGroup[] = [
     ],
   },
   {
-    heading: "My World Bridge",
+    heading: "My Profile",
     links: [
-      { label: "My Account", href: "/my-world-bridge" },
+      { label: "My Profile", href: "/my-world-bridge" },
       { label: "Compare Journeys", href: "/compare" },
     ],
   },
@@ -158,7 +158,7 @@ export const footerColumns: NavGroup[] = [
       { label: "Careers", href: "/careers" },
       { label: "Reviews", href: "/reviews" },
       { label: "FAQs", href: "/faq" },
-      { label: "My World Bridge", href: "/my-world-bridge" },
+      { label: "My Profile", href: "/my-world-bridge" },
     ],
   },
 ];
