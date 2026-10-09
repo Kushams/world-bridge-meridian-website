@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Newsreader, Inter } from "next/font/google";
+import { Newsreader, Montserrat } from "next/font/google";
 import "./globals.css";
 import { SITE_URL, company, socialLinks } from "@/data/company";
 import { Header } from "@/components/layout/Header";
@@ -20,8 +20,8 @@ const newsreader = Newsreader({
   axes: ["opsz"],
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
 });
 
@@ -113,7 +113,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${newsreader.variable} ${inter.variable} h-full antialiased`}
+      className={`${newsreader.variable} ${montserrat.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-ink text-ivory">
         <JsonLd data={siteJsonLd} />

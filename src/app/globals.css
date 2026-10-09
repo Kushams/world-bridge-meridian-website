@@ -40,7 +40,7 @@
   --color-gold-bright: #d9ab63;
 
   --font-display: var(--font-newsreader), Georgia, serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
 
   --radius-card: 1.25rem;
   --radius-control: 0.6rem;
