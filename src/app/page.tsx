@@ -11,6 +11,7 @@ import { TravelStyles } from "@/components/home/TravelStyles";
 import { FeatureBanner } from "@/components/home/FeatureBanner";
 import { FamilyCouplesGroup } from "@/components/home/FamilyCouplesGroup";
 import { WhyWorldBridge } from "@/components/home/WhyWorldBridge";
+import { GiftsAndCredits } from "@/components/home/GiftsAndCredits";
 import { CryptoFriendly } from "@/components/home/CryptoFriendly";
 import { PartnersStrip } from "@/components/home/PartnersStrip";
 import { FinalCta } from "@/components/home/FinalCta";
@@ -154,6 +155,7 @@ export default function Home() {
         reverse
       />
 
+      <GiftsAndCredits />
       <CryptoFriendly />
       <PartnersStrip />
 
