@@ -59,7 +59,17 @@ Deno.serve(async (req: Request) => {
   try {
     const payload = await req.json();
     const record: FormRecord = payload.record ?? payload;
-    const message = MESSAGES[record.status];
+    // A confirmed Travel Credits purchase gets its own message; other statuses on those rows are silent.
+    const message =
+      record.form_type === "travel-credits"
+        ? record.status === "confirmed"
+          ? {
+              subject: "Your Travel Credits have been added — World Bridge Meridian",
+              headline: "Your Travel Credits are ready",
+              body: "We've verified your payment and added the credits to your account. Your consultant can apply them to your next journey.",
+            }
+          : undefined
+        : MESSAGES[record.status];
     if (!message || !record.email) {
       return new Response(JSON.stringify({ ok: true, skipped: true }), {
         headers: { "Content-Type": "application/json" },

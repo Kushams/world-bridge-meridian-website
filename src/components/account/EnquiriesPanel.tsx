@@ -10,7 +10,7 @@ type Status = "received" | "in_review" | "proposal_sent" | "confirmed" | "closed
 
 interface Enquiry {
   id: string;
-  form_type: "contact" | "journey-request" | "travel-details" | "gift-card";
+  form_type: "contact" | "journey-request" | "travel-details" | "gift-card" | "travel-credits";
   subject: string | null;
   submitted_at: string;
   status: Status;
@@ -29,6 +29,7 @@ const TYPE_LABEL: Record<Enquiry["form_type"], string> = {
   "journey-request": "Journey request",
   "travel-details": "Exhibition travel form",
   "gift-card": "Gift card order",
+  "travel-credits": "Travel Credits purchase",
 };
 
 const fmt = (iso: string) =>
@@ -82,7 +83,7 @@ export function EnquiriesPanel() {
           setItems(rows);
           // Which enquiries had gift card value applied (RLS: only the owner's cards are visible).
           supabase
-            .from("gift_card_ledger")
+            .from("travel_credit_ledger")
             .select("submission_id, delta_cents")
             .in("submission_id", rows.map((r) => r.id))
             .then(({ data: led }) => {
@@ -138,7 +139,7 @@ export function EnquiriesPanel() {
           </p>
           <StatusTrack status={e.status} />
           {applied[e.id] > 0 ? (
-            <p className="mt-4 text-xs text-gold">Gift card applied: {usdFromCents(applied[e.id])}</p>
+            <p className="mt-4 text-xs text-gold">Travel Credits applied: {usdFromCents(applied[e.id])}</p>
           ) : null}
         </li>
       ))}

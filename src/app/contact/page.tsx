@@ -1,3 +1,4 @@
+import { AccountGate } from "@/components/account/AccountGate";
 import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
@@ -24,7 +25,7 @@ export default function ContactPage() {
       <section className="py-16 md:py-24">
         <Container>
           <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1.3fr_1fr] [&>*]:min-w-0">
-            <ContactForm />
+            <AccountGate title="Sign in to contact us" intro="Create a free account (Google or email) to message your consultant. You can also email us directly at any time."><ContactForm /></AccountGate>
 
             <div className="space-y-10">
               <div>

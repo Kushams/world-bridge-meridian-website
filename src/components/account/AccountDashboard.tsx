@@ -5,7 +5,7 @@ import { displayName, initials, useAuth } from "@/lib/supabase/AuthProvider";
 import { DocumentsPanel } from "./DocumentsPanel";
 import { EnquiriesPanel } from "./EnquiriesPanel";
 import { ProfileForm, profileCompleteness } from "./ProfileForm";
-import { GiftCardsPanel } from "./GiftCardsPanel";
+import { TravelCreditsPanel } from "./TravelCreditsPanel";
 import { UploadsPanel } from "./UploadsPanel";
 import { SavedJourneysPanel } from "./SavedJourneysPanel";
 import { MobileCollapse } from "@/components/ui/MobileCollapse";
@@ -40,7 +40,7 @@ function DeleteAccount() {
     <div className="max-w-md rounded-card border hairline p-5">
       <p className="text-sm text-ivory">Delete your account?</p>
       <p className="mt-2 text-xs text-stone leading-relaxed">
-        This removes your profile and saved journeys for good. Enquiries you&apos;ve already sent stay
+        This removes your profile and saved journeys for good, and any Travel Credits or Promo Credits you hold are lost with it. Enquiries you&apos;ve already sent stay
         on file with our team so we can finish looking after them.
       </p>
       <div className="mt-4 flex flex-wrap gap-3">
@@ -78,7 +78,7 @@ export function AccountDashboard() {
     { href: "#enquiries", label: "My Enquiries" },
     { href: "#documents", label: "Itineraries & Documents" },
     { href: "#send-documents", label: "Send Us Documents" },
-    { href: "#gift-cards", label: "Gift Cards" },
+    { href: "#travel-credits", label: "Travel Credits" },
     { href: "#saved", label: "Saved Journeys" },
     { href: "#profile-form", label: "Profile" },
   ];
@@ -140,8 +140,9 @@ export function AccountDashboard() {
         <UploadsPanel />
       </Section>
 
-      <Section id="gift-cards" eyebrow="Gift Cards" title="Redeem and track your balance">
-        <GiftCardsPanel />
+      <Section id="travel-credits" eyebrow="Travel Credits" title="Your credits and gift cards">
+        <span id="gift-cards" />
+        <TravelCreditsPanel />
       </Section>
 
       <Section id="saved" eyebrow="Saved Journeys" title="Your shortlist">

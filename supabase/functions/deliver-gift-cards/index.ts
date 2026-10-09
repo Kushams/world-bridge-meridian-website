@@ -11,7 +11,7 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const FROM_EMAIL = "World Bridge Meridian <enquiries@worldbridgemeridian.group>";
 const REPLY_TO = "info@worldbridgemeridian.group";
-const REDEEM_URL = "https://worldbridgemeridian.com/my-world-bridge#gift-cards";
+const REDEEM_URL = "https://worldbridgemeridian.com/my-world-bridge#travel-credits";
 
 function esc(value: unknown): string {
   return String(value ?? "")
@@ -61,7 +61,7 @@ Deno.serve(async (req: Request) => {
           <p>${isGift ? `${esc(c.purchaser_name || "Someone")} has sent you` : "Here is"} a World Bridge Meridian gift card worth <b>${usd(c.amount_cents)}</b>. It never expires.</p>
           ${c.message ? `<blockquote style="border-left:2px solid #ddd;margin:16px 0;padding-left:12px;color:#555;white-space:pre-wrap">${esc(c.message)}</blockquote>` : ""}
           <p style="margin:20px 0"><span style="display:inline-block;background:#1c1a17;color:#fff;font:600 20px/1 monospace;letter-spacing:2px;padding:14px 20px;border-radius:10px">${esc(c.code)}</span></p>
-          <p>To use it, sign in (or create an account) at <a href="${REDEEM_URL}">My World Bridge</a> and enter the code under <b>Gift cards</b>. The balance can be used toward World Bridge Meridian journeys and services; your consultant applies it when you book.</p>
+          <p>To use it, sign in (or create an account) at <a href="${REDEEM_URL}">My World Bridge</a> and enter the code under <b>Travel Credits</b>. The value is added to your Travel Credits, which never expire and can be used toward World Bridge Meridian journeys and services; your consultant applies them when you book.</p>
           <p style="color:#888;font-size:13px">Keep this code private: anyone who has it can add the card to their account. Terms: https://worldbridgemeridian.com/gift-card-terms</p>`),
       );
       if (ok) {

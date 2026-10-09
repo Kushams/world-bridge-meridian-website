@@ -91,6 +91,9 @@ export const menuGroups: NavGroup[] = [
       { label: "Bank Transfer", href: "/payments#bank-transfer" },
       { label: "Pay with Crypto", href: "/payments#cryptocurrency" },
       { label: "Gift Cards", href: "/gift-cards" },
+      { label: "Travel Credits", href: "/travel-credits" },
+      { label: "Rewards & Cashback", href: "/travel-credits#rewards" },
+      { label: "Invite & Earn", href: "/invite" },
       { label: "Payment Questions", href: "/payments#payment-questions" },
     ],
   },
@@ -107,6 +110,7 @@ export const legalLinks: NavLink[] = [
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" },
   { label: "Gift Card Terms", href: "/gift-card-terms" },
+  { label: "Invite Terms", href: "/invite-terms" },
   { label: "Cookies", href: "/cookies" },
 ];
 

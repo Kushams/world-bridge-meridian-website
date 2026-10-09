@@ -20,7 +20,7 @@ create table if not exists public.gift_cards (
   id uuid primary key default gen_random_uuid(),
   code text not null unique,
   submission_id uuid references public.form_submissions (id) on delete set null,
-  amount_cents integer not null check (amount_cents between 5000 and 2500000),
+  amount_cents integer not null check (amount_cents between 50000 and 2500000),
   balance_cents integer not null check (balance_cents >= 0),
   currency text not null default 'USD',
   design text not null default 'classic',
@@ -149,8 +149,8 @@ begin
 
   amt := nullif(new.payload ->> 'amount', '')::numeric;
   qty := nullif(new.payload ->> 'quantity', '')::int;
-  if amt is null or qty is null or amt < 50 or qty < 1 or qty > 100 or amt * qty > 25000 then
-    raise exception 'Gift card amount or quantity is out of range (50 to 25,000 USD in total). Check the payload.';
+  if amt is null or qty is null or amt < 500 or qty < 1 or qty > 100 or amt * qty > 25000 then
+    raise exception 'Gift card amount or quantity is out of range (500 to 25,000 USD in total). Check the payload.';
   end if;
 
   for i in 1..qty loop

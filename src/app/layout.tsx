@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Newsreader, Montserrat } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import { SITE_URL, company, socialLinks } from "@/data/company";
 import { Header } from "@/components/layout/Header";
@@ -8,21 +8,17 @@ import { TouchRipple } from "@/components/motion/TouchRipple";
 import { ScrollProgressBar } from "@/components/motion/ScrollProgressBar";
 import { PageTransition } from "@/components/motion/PageTransition";
 import { AttributionCapture } from "@/components/AttributionCapture";
+import { SignInPopup } from "@/components/account/SignInPopup";
+import { InviteClaimer } from "@/components/invite/InviteClaimer";
 import { TawkChat } from "@/components/TawkChat";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { AuthProvider } from "@/lib/supabase/AuthProvider";
 import { JsonLd } from "@/components/seo/JsonLd";
 
-const newsreader = Newsreader({
-  variable: "--font-newsreader",
-  subsets: ["latin"],
-  style: ["normal", "italic"],
-  axes: ["opsz"],
-});
-
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -113,7 +109,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${newsreader.variable} ${montserrat.variable} h-full antialiased`}
+      className={`${montserrat.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-ink text-ivory">
         <JsonLd data={siteJsonLd} />
@@ -121,6 +117,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <ScrollProgressBar />
           <TouchRipple />
           <AttributionCapture />
+          <InviteClaimer />
+          <SignInPopup />
           <a
             href="#main-content"
             className="sr-only focus:not-sr-only focus:fixed focus:left-6 focus:top-6 focus:z-50 focus:rounded-full focus:bg-ivory focus:px-5 focus:py-3 focus:text-xs focus:font-semibold focus:uppercase focus:tracking-wide focus:text-ink"

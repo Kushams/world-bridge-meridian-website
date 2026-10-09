@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 // Original wording written for World Bridge Meridian. Have a qualified lawyer
-// review it (especially section 13, governing law) before relying on it.
+// review it (especially section 13, governing law: it says "an EU member state" until the exact country is chosen) before relying on it.
 const sections: { title: string; body: string[] }[] = [
   {
     title: "1. About these terms",
@@ -20,7 +20,7 @@ const sections: { title: string; body: string[] }[] = [
   {
     title: "2. Buying a gift card",
     body: [
-      "Gift cards are sold in US dollars. Each card is worth at least US$50, and the total of one order must be between US$50 and US$25,000. For larger amounts, contact us.",
+      "You need a registered account to buy a gift card. Gift cards are sold in US dollars. Each card is worth at least US$500, and the total of one order must be between US$500 and US$25,000. For larger amounts, contact us.",
       "Gift cards are paid for in cryptocurrency, using one of the assets and networks listed on the order page and one of our published wallet addresses. You must send payment from a wallet you control, on the network you selected, and paste the transaction ID into the order form.",
       "An order is not complete until our team has verified your payment on the blockchain. If the amount we receive does not match your order, we will contact you before issuing anything. Network fees are charged by the network and exchange you use, and are not part of the gift card value.",
     ],
@@ -35,14 +35,14 @@ const sections: { title: string; body: string[] }[] = [
   {
     title: "4. Redeeming a gift card",
     body: [
-      "To redeem a card, sign in to your My World Bridge account, open Gift cards, and enter the code. Once a code is redeemed, the card is linked to that account and cannot be moved to another.",
+      "To redeem a card, sign in to your My World Bridge account, open Travel Credits, and enter the code. The value is added to your account as Travel Credits (which never expire) and the code cannot be used again or moved to another account.",
       "Anyone who holds a code can redeem it, so keep it private. We apply the card to the first account that redeems it.",
     ],
   },
   {
     title: "5. Using your balance",
     body: [
-      `A gift card balance can be used toward journeys and services provided by ${company.name}. Your consultant applies the balance when you book and confirms the amount used and what remains. Every use appears in your account history.`,
+      `Once redeemed, a gift card is held as Travel Credits and can be used toward journeys and services provided by ${company.name}. Your consultant applies the balance when you book and confirms the amount used and what remains. Every use appears in your account history.`,
       "You can use a card in more than one booking until the balance reaches zero. If a booking costs more than your balance, you pay the difference using one of our payment methods. If it costs less, the rest stays on the card.",
     ],
   },
@@ -92,7 +92,7 @@ const sections: { title: string; body: string[] }[] = [
   {
     title: "13. Governing law and disputes",
     body: [
-      `${company.name}'s operating jurisdiction and governing law will be published here once confirmed. Until then, please contact us first with any question or complaint and we will work to resolve it.`,
+      `These terms are governed by the laws of the European Union member state in which ${company.name} is established, and disputes go to the courts of that state. If you are a consumer, you also keep the mandatory consumer protections of the country where you live, and the right to bring a claim in its courts where the law gives you that right. Please contact us first with any question or complaint and we will work to resolve it.`,
     ],
   },
   {

@@ -3,6 +3,7 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { partners, partnersStatement } from "@/data/partners";
 import { themeImage } from "@/data/images";
+import { cryptoPartnerExchanges, cryptoPartnerWallets } from "@/data/cryptoPartners";
 import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
@@ -35,6 +36,28 @@ export default function PartnersPage() {
               </div>
             ))}
           </SwipeRow>
+        </Container>
+      </section>
+
+      <section className="border-t hairline py-16 md:py-24">
+        <Container>
+          <p className="eyebrow mb-3">Crypto Partners</p>
+          <h2 className="font-display text-2xl text-ivory md:text-3xl">Exchanges &amp; wallets we work with</h2>
+          <p className="mt-3 max-w-2xl text-sm text-stone leading-relaxed">
+            We accept cryptocurrency for journeys, gift cards and Travel Credits, and work with the exchanges and wallets our customers already use.
+          </p>
+          <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2">
+            {[{ t: "Exchanges", l: cryptoPartnerExchanges }, { t: "Wallets", l: cryptoPartnerWallets }].map((g) => (
+              <div key={g.t}>
+                <h3 className="font-display text-lg text-ivory">{g.t}</h3>
+                <ul className="mt-3 flex flex-wrap gap-2">
+                  {g.l.map((n) => (
+                    <li key={n} className="rounded-full border hairline px-4 py-2 text-xs font-semibold uppercase tracking-wide text-ivory-dim">{n}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </Container>
       </section>
     </>
