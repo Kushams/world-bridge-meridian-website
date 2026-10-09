@@ -188,8 +188,11 @@ export default function TermsPage() {
             <div>
               <h2 className="mb-3 font-display text-xl text-ivory">Governing Law</h2>
               <p>
-                The governing law and courts that apply to these terms will be published here once
-                confirmed for our operating jurisdiction.
+                These terms are governed by the laws of the European Union member state in which{" "}
+                {company.name} is established, and disputes go to the courts of that state. If you
+                are a consumer, you also keep the mandatory consumer protections of the country where
+                you live, and the right to bring a claim in its courts where the law gives you that
+                right.
               </p>
             </div>
 

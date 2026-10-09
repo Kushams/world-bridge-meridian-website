@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 // Original wording written for World Bridge Meridian. Have a qualified lawyer
-// review it (especially section 13, governing law) before relying on it.
+// review it (especially section 13, governing law: it says "an EU member state" until the exact country is chosen) before relying on it.
 const sections: { title: string; body: string[] }[] = [
   {
     title: "1. About these terms",
@@ -92,7 +92,7 @@ const sections: { title: string; body: string[] }[] = [
   {
     title: "13. Governing law and disputes",
     body: [
-      `${company.name}'s operating jurisdiction and governing law will be published here once confirmed. Until then, please contact us first with any question or complaint and we will work to resolve it.`,
+      `These terms are governed by the laws of the European Union member state in which ${company.name} is established, and disputes go to the courts of that state. If you are a consumer, you also keep the mandatory consumer protections of the country where you live, and the right to bring a claim in its courts where the law gives you that right. Please contact us first with any question or complaint and we will work to resolve it.`,
     ],
   },
   {
