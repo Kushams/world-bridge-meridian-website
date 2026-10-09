@@ -29,8 +29,8 @@ export function Header() {
           scrolled || menuOpen ? "hairline shadow-sm" : "border-transparent"
         }`}
       >
-        <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-6 md:px-10 py-4">
-          <Logo className="shrink-0" />
+        <div className="mx-auto flex w-full max-w-[1400px] items-center justify-between px-4 sm:px-6 md:px-10 py-4">
+          <Logo className="min-w-0 sm:shrink-0" />
 
           <nav aria-label="Primary" className="hidden min-[1440px]:flex items-center gap-7 min-[1600px]:gap-9">
             {primaryNav.map((link) => (
@@ -44,7 +44,7 @@ export function Header() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
