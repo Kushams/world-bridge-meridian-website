@@ -1,14 +1,13 @@
 # Handoff for Devin: finish the Supabase side and verify the live site
 
-> **Division of work.** You (Devin) have access to **Supabase only**. You do **not** have Cloudflare access.
-> Do every Supabase task below yourself. For anything on Cloudflare (section 3a), **do not attempt it:
-> tell the owner exactly what to click or paste, and wait for them to confirm.** You also cannot read the
-> live site's build settings, so ask the owner to confirm those values.
-
-You are picking up work on the World Bridge Meridian website. Claude Code (a coding assistant)
-built and merged the code. **Your job is the parts it could not do or was blocked from doing:
-Supabase database/auth/functions configuration, deployment checks and end-to-end verification.**
-You have the access Claude did not. Please read this whole file first, then do the checklist at the bottom.
+> **Access and keys.** The owner is happy to paste secret keys and tokens **directly to you in chat** (Supabase,
+> Resend, Turnstile secret, Cloudflare API token, etc.). **Ask for whatever you need rather than working around its
+> absence.** You then do the work yourself, including Cloudflare (section 3a), using the Cloudflare API or
+> `wrangler` with a token the owner gives you. If you still cannot do a Cloudflare step, give the owner exact
+> numbered instructions and wait for them to confirm.
+> One firm rule: **never write any key, token or secret into the repo, a commit, a PR, a file or a log.** Put secrets
+> only into Supabase function secrets / Vault or Cloudflare build variables. Keys pasted in chat are the owner's
+> choice; rotate them afterwards if the owner asks.
 
 ## 0. Project facts
 
@@ -65,26 +64,23 @@ You have the access Claude did not. Please read this whole file first, then do t
 8. **Deploy check (owner does the Cloudflare part, see 3a):** ask the owner to confirm Cloudflare built `main` after PRs #14-#16. You can check by browsing the live site that `/`, `/stays`, `/payments`, `/exhibitions`, `/my-world-bridge` load on a phone, (the owner confirms the env vars in 3a). Run PageSpeed Insights on the home page and report mobile scores (local tests showed ~+4% JS and no slowdown, but real numbers were never measured).
 9. **Real-account test:** sign up with a real test email -> confirm -> sign in -> edit profile (check it saves) -> submit a journey request with the same email -> see it under My enquiries -> change `status` in the Table Editor -> see the track update -> sign out -> "Email me a sign-in link" -> "Forgot password" -> delete the test account.
 
-## 3a. Cloudflare steps the OWNER does (you tell them what to do)
+## 3a. Cloudflare steps (you do them if the owner gives you a token, otherwise guide the owner)
 
-You cannot access Cloudflare. Give the owner these as plain, numbered instructions and wait for their answer:
+Ask the owner for a Cloudflare API token (scopes: Workers/Pages edit, Turnstile edit) and the account ID if needed. Then:
 
-1. Cloudflare dashboard -> Workers & Pages -> the website project -> **Deployments**: confirm the latest
-   deployment is built from `main`, shows **Success**, and is newer than the merge of PR #16. If it failed, ask the
-   owner to paste the build log to you and diagnose it (code fixes go through a PR).
-2. Same project -> **Settings -> Variables and secrets (build)**: confirm these exist with non-empty values:
-   `NEXT_PUBLIC_SUPABASE_URL` (`https://rkevnmqofvqdmjujlrvd.supabase.co`), `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   (the project's anon/publishable key, which you can read in Supabase), `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, and
-   `STATIC_EXPORT=true` if the build command relies on it. Tell the owner the exact values to paste for the
-   Supabase ones. Never ask them to paste secret keys into chat or into the repo.
-3. If any variable was added or changed: **Deployments -> Retry / redeploy**, because `NEXT_PUBLIC_*` values are
-   baked in at build time.
-4. Turnstile: Cloudflare dashboard -> Turnstile -> confirm the widget's allowed hostnames include
-   `worldbridgemeridian.com`.
-5. Only if the owner wants Google sign-in: after you enable the Google provider in Supabase, ask them to add
+1. Workers & Pages -> the website project -> **Deployments**: confirm the latest deployment is built from `main`,
+   shows **Success**, and is newer than the merge of PR #16. If it failed, read the build log, diagnose it, and fix
+   through a PR (never push straight to `main`).
+2. Confirm these **build variables** exist with non-empty values: `NEXT_PUBLIC_SUPABASE_URL`
+   (`https://rkevnmqofvqdmjujlrvd.supabase.co`), `NEXT_PUBLIC_SUPABASE_ANON_KEY` (the project's anon/publishable key,
+   readable in Supabase), `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, and `STATIC_EXPORT=true` if the build command needs it.
+   Set any that are missing.
+3. After adding or changing any variable, **trigger a redeploy**, because `NEXT_PUBLIC_*` values are baked in at build time.
+4. Turnstile: confirm the widget's allowed hostnames include `worldbridgemeridian.com`.
+5. Only if the owner wants Google sign-in: after you enable the Google provider in Supabase, add
    `NEXT_PUBLIC_GOOGLE_SIGNIN=true` to the build variables and redeploy.
-6. Ask the owner to open the live site on their phone and check: the home hero (no blurred line, no stats row),
-   swipe rows start with a small left gap, `/my-world-bridge` loads, then report back.
+6. Ask the owner to open the live site on their phone and check: the home hero (no blurred line, no stats row), swipe
+   rows start with a small left gap, `/my-world-bridge` loads, then report back.
 
 ## 4. Owner decisions and constraints (please respect)
 
