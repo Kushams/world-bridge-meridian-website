@@ -58,6 +58,8 @@ export default function GiftCardsPage() {
         </Container>
       </section>
 
+      <NewToCrypto what="buy a gift card" />
+
       <section id="buy" className="scroll-mt-24 pb-16 md:pb-24">
         <Container>
           <SectionHeading eyebrow="Buy" title="Order a gift card."
@@ -68,8 +70,6 @@ export default function GiftCardsPage() {
           </div>
         </Container>
       </section>
-
-      <NewToCrypto what="buy a gift card" />
 
       <section id="redeem" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
