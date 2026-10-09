@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { company } from "@/data/company";
-import { themeImage } from "@/data/images";
+import { homeHeroImage } from "@/data/images";
 import { Parallax } from "@/components/motion/Parallax";
 import { HeroBlurTransition } from "@/components/layout/HeroBlurTransition";
 
@@ -12,8 +12,8 @@ export function Hero() {
       <div className="absolute inset-0 overflow-hidden">
         <Parallax offset={70} className="absolute -top-[12%] -bottom-[12%] left-0 right-0">
           <Image
-            src={themeImage("culturalHeritage", 6, 2000)}
-            alt="Machu Picchu rising through the morning mist, representative of World Bridge Meridian's curated journeys"
+            src={homeHeroImage()}
+            alt="Whitewashed steps leading down to the deep blue sea, representative of World Bridge Meridian's curated journeys"
             fill
             priority
             sizes="100vw"

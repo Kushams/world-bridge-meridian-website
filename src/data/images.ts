@@ -170,6 +170,11 @@ export function themeImage(theme: ImageTheme, index = 0, size?: number) {
   return unsplash(id, size);
 }
 
+/** Bright, high-contrast photo for the home page hero (white steps above a deep blue Aegean). */
+export function homeHeroImage(size = 2000) {
+  return unsplash("1533105079780-92b9be482077", size, 85);
+}
+
 export function themeGallery(theme: ImageTheme, count = 4, offset = 0) {
   const bucket = IMAGE_BANK[theme];
   return Array.from({ length: count }, (_, i) =>
