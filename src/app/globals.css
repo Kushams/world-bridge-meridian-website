@@ -39,8 +39,8 @@
   --color-on-photo-line: rgba(248, 244, 234, 0.4);
   --color-gold-bright: #d9ab63;
 
-  --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-newsreader), Georgia, serif;
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
 
   --radius-card: 1.25rem;
   --radius-control: 0.6rem;
@@ -169,25 +169,19 @@ body {
 
 /* ------------------------------------------------------------------ */
 /* Display typography                                                  */
-/* Fraunces is loaded as a variable font. Large display sizes get the  */
-/* high optical size and a touch of WONK so headlines read as editorial */
-/* rather than as scaled-up body serif; small serif text stays plain.  */
+/* Newsreader (a refined text/display serif) is loaded as a variable   */
+/* font with an optical-size axis, so headlines get finer detail at     */
+/* large sizes and body-sized serif text stays sturdy.                  */
 /* ------------------------------------------------------------------ */
 
 .font-display {
-  font-variation-settings:
-    "opsz" 72,
-    "SOFT" 12,
-    "WONK" 0;
+  font-weight: 400;
   letter-spacing: -0.005em;
 }
 
 h1.font-display,
 .display-xl {
-  font-variation-settings:
-    "opsz" 144,
-    "SOFT" 20,
-    "WONK" 1;
+  letter-spacing: -0.015em;
 }
 
 /* A rule that hangs above a section heading, used to give sections a
@@ -206,12 +200,8 @@ h1.font-display,
 }
 
 .figure-lg {
-  font-variation-settings:
-    "opsz" 144,
-    "SOFT" 0,
-    "WONK" 0;
   font-variant-numeric: lining-nums tabular-nums;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 
 .bg-grid-texture {
