@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { displayName, initials, useAuth } from "@/lib/supabase/AuthProvider";
+import { useAuth } from "@/lib/supabase/AuthProvider";
+import { ProfileHero } from "./ProfileHero";
 import { DocumentsPanel } from "./DocumentsPanel";
 import { EnquiriesPanel } from "./EnquiriesPanel";
-import { ProfileForm, profileCompleteness } from "./ProfileForm";
+import { ProfileForm } from "./ProfileForm";
 import { TravelCreditsPanel } from "./TravelCreditsPanel";
 import { UploadsPanel } from "./UploadsPanel";
 import { SavedJourneysPanel } from "./SavedJourneysPanel";
@@ -70,51 +71,19 @@ function DeleteAccount() {
 
 /** The signed-in side of /my-world-bridge: profile, enquiries, saved journeys. */
 export function AccountDashboard() {
-  const { user, profile, signOut } = useAuth();
-  const name = displayName(user, profile);
-  const done = profileCompleteness(profile);
 
   const links = [
+    { href: "#travel-credits", label: "Wallet" },
     { href: "#enquiries", label: "My Enquiries" },
     { href: "#documents", label: "Itineraries & Documents" },
     { href: "#send-documents", label: "Send Us Documents" },
-    { href: "#travel-credits", label: "My Wallet" },
     { href: "#saved", label: "Saved Journeys" },
     { href: "#profile-form", label: "Profile" },
   ];
 
   return (
     <div className="space-y-10">
-      <div className="flex flex-col gap-6 rounded-card border hairline bg-charcoal p-6 sm:flex-row sm:items-center sm:p-8">
-        <span
-          aria-hidden
-          className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-gold/60 font-display text-2xl text-gold"
-        >
-          {initials(name)}
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="eyebrow mb-1">Welcome back</p>
-          <h2 className="truncate font-display text-2xl text-ivory md:text-3xl">{name}</h2>
-          <p className="truncate text-sm text-stone-dim">{user?.email}</p>
-          {done < 100 ? (
-            <div className="mt-3 max-w-xs">
-              <div className="flex justify-between text-[0.65rem] uppercase tracking-wide text-stone-dim">
-                <span>Profile {done}% complete</span>
-              </div>
-              <div className="mt-1 h-1 rounded-full bg-line">
-                <div className="h-1 rounded-full bg-gold transition-all" style={{ width: `${done}%` }} />
-              </div>
-            </div>
-          ) : null}
-        </div>
-        <button
-          type="button"
-          onClick={() => signOut()}
-          className="self-start rounded-full border hairline px-6 py-3 text-xs font-semibold uppercase tracking-wide text-ivory transition-colors hover:bg-ivory hover:text-ink sm:self-center"
-        >
-          Sign Out
-        </button>
-      </div>
+      <ProfileHero />
 
       <nav aria-label="Account sections" className="chip-row flex flex-wrap gap-3">
         {links.map((l) => (
@@ -128,6 +97,11 @@ export function AccountDashboard() {
         ))}
       </nav>
 
+      <Section id="travel-credits" eyebrow="My Wallet" title="Your credits, rewards and gift cards">
+        <span id="gift-cards" />
+        <TravelCreditsPanel />
+      </Section>
+
       <Section id="enquiries" eyebrow="My Enquiries" title="Where your requests stand">
         <EnquiriesPanel />
       </Section>
@@ -138,11 +112,6 @@ export function AccountDashboard() {
 
       <Section id="send-documents" eyebrow="Send Us Documents" title="Passports and other files">
         <UploadsPanel />
-      </Section>
-
-      <Section id="travel-credits" eyebrow="My Wallet" title="Your credits, rewards and gift cards">
-        <span id="gift-cards" />
-        <TravelCreditsPanel />
       </Section>
 
       <Section id="saved" eyebrow="Saved Journeys" title="Your shortlist">

@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Avatar } from "@/components/account/Avatar";
 import { Logo } from "./Logo";
 import { NavOverlay } from "./NavOverlay";
 import { Button } from "@/components/ui/Button";
 import { primaryNav } from "@/data/nav";
 import { SearchOverlay } from "@/components/search/SearchOverlay";
-import { displayName, initials, useAuth } from "@/lib/supabase/AuthProvider";
+import { avatarUrl, displayName, useAuth } from "@/lib/supabase/AuthProvider";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -61,9 +62,9 @@ export function Header() {
               <Link
                 href="/my-world-bridge"
                 aria-label={`My account (${displayName(user, profile)})`}
-                className="hidden h-11 w-11 items-center justify-center rounded-full border border-gold/60 font-display text-sm text-gold transition-colors hover:bg-gold hover:text-ink md:flex"
+                className="hidden rounded-full transition-opacity hover:opacity-80 md:block"
               >
-                {initials(displayName(user, profile))}
+                <Avatar url={avatarUrl(user, profile)} name={displayName(user, profile)} />
               </Link>
             ) : null}
             <div className="hidden md:block">

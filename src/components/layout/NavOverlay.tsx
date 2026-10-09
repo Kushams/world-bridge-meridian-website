@@ -1,12 +1,13 @@
 "use client";
 
+import { Avatar } from "@/components/account/Avatar";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { menuGroups, legalLinks } from "@/data/nav";
 import { company } from "@/data/company";
 import { Button } from "@/components/ui/Button";
-import { displayName, initials, useAuth } from "@/lib/supabase/AuthProvider";
+import { avatarUrl, displayName, useAuth } from "@/lib/supabase/AuthProvider";
 
 /** Quick-access tiles at the top of the menu; every one also lives in a group below. */
 const popularLinks = [
@@ -148,12 +149,7 @@ export function NavOverlay({
               onClick={onClose}
               className="mt-4 flex items-center gap-3 rounded-card border border-line px-4 py-3 transition-colors hover:border-gold"
             >
-              <span
-                aria-hidden
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/60 font-display text-sm text-gold"
-              >
-                {initials(displayName(user, profile))}
-              </span>
+              <Avatar url={avatarUrl(user, profile)} name={displayName(user, profile)} className="h-9 w-9 text-sm" />
               <span className="min-w-0">
                 <span className="block truncate text-sm text-ivory">{displayName(user, profile)}</span>
                 <span className="block text-xs text-stone-dim">View my account</span>

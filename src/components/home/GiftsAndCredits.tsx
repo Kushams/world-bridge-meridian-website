@@ -75,7 +75,7 @@ export function GiftsAndCredits() {
           </Reveal>
         </div>
         <p className="mt-6 text-sm text-stone-dim">
-          You need a free account to buy. Your wallet, gift cards and rewards live in <Link href="/my-world-bridge#travel-credits" className="underline underline-offset-4">My World Bridge → My Wallet</Link>.
+          You need a free account to buy. Your wallet, gift cards and rewards live in <Link href="/my-world-bridge#travel-credits" className="underline underline-offset-4">your profile → Wallet</Link>.
         </p>
       </Container>
     </section>
