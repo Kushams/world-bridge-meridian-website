@@ -29,9 +29,9 @@ type Step = "currency" | "network" | "details";
 
 function CheckoutSteps({ current }: { current: Step }) {
   const steps: { key: Step; label: string }[] = [
-    { key: "currency", label: "1. Currency" },
-    { key: "network", label: "2. Network" },
-    { key: "details", label: "3. Send Payment" },
+    { key: "currency", label: "Currency" },
+    { key: "network", label: "Network" },
+    { key: "details", label: "Our address" },
   ];
   return (
     <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-stone-dim">
@@ -154,37 +154,44 @@ function PaymentDetails({
         ) : null}
       </div>
 
-      <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-[auto_1fr] sm:items-start">
+      <div className="mt-6 flex flex-col items-center text-center">
         {qrDataUrl ? (
           // QR code encodes only the public wallet address — safe to display.
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={qrDataUrl}
             alt={`QR code for ${selected.displayName} address`}
-            width={140}
-            height={140}
+            width={180}
+            height={180}
+            className="rounded-control bg-white"
           />
         ) : null}
-        <div>
-          <p className="text-xs uppercase tracking-wide text-stone">
-            {selected.displayName} — {selected.network} network
-          </p>
-          <p className="mt-2 break-all font-mono text-sm text-ivory">{selected.walletAddress}</p>
-          <div className="mt-3">
-            <CopyAddressButton address={selected.walletAddress ?? ""} />
-          </div>
+        <p className="mt-5 text-xs uppercase tracking-wide text-stone">
+          {selected.displayName} — {selected.network} network
+        </p>
+        <p className="mt-2 max-w-full break-all font-mono text-sm text-ivory">{selected.walletAddress}</p>
+        <div className="mt-3">
+          <CopyAddressButton address={selected.walletAddress ?? ""} />
         </div>
       </div>
 
-      <p className="mt-6 text-sm text-ivory">
+      <p className="mt-6 text-center text-sm text-ivory">
         Send only {selected.asset} on the {selected.network} network to this address. Sending an
         unsupported asset or using the wrong network may result in permanent loss.
       </p>
-      <p className="mt-2 text-sm text-stone">
+      <p className="mt-2 text-center text-sm text-stone">
         Send the exact amount agreed with your World Bridge Meridian consultant for your booking.
       </p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4 border-t hairline pt-6">
+        <div>
+          <p className="font-display text-xl text-gold">Step 3 · After you&apos;ve sent it</p>
+          <p className="mt-1 text-sm text-stone leading-relaxed">
+            Copy the transaction ID (also called the hash or TxID) from your exchange and paste it here.
+            Submitting it doesn&apos;t confirm payment — our team checks every transaction on the
+            blockchain and confirms it with you.
+          </p>
+        </div>
         <div>
           <label htmlFor="cp-hash" className="mb-2 block text-xs uppercase tracking-wide text-stone">
             Transaction Hash

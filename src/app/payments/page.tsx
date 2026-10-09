@@ -38,6 +38,11 @@ const processSteps = [
   },
 ];
 
+// The guide's seven steps, split to match the page: buy (1-4) and send (5-6). The
+// last (record the reference) is explained inside the payment form as Step 3.
+const buyingTips = cryptoBuyingSteps.slice(0, 4);
+const sendingTips = cryptoBuyingSteps.slice(4, 6);
+
 const cryptoAssets = Array.from(new Set(enabledCryptoPaymentOptions().map((o) => o.asset)));
 
 const paymentFaqs = [
@@ -179,7 +184,7 @@ export default function PaymentsPage() {
           <SectionHeading
             eyebrow="Cryptocurrency"
             title="Buy it, send it, tell us."
-            description={`Accepted since ${company.cryptoAcceptedSince}: ${company.cryptoCurrencies.join(", ")}. Three steps: buy it, send it, tell us you've sent it.`}
+            description={`Accepted since ${company.cryptoAcceptedSince}: ${company.cryptoCurrencies.join(", ")}. Three steps: buy it, send it to our address, then tell us you've sent it.`}
           />
           <p className="mt-4 max-w-2xl text-sm text-stone leading-relaxed">
             {addressesPublished
@@ -189,34 +194,44 @@ export default function PaymentsPage() {
 
           <div id="buy-crypto" className="mt-10 scroll-mt-24">
             <p className="font-display text-xl text-gold">Step 1 · Buy it</p>
+            <p className="mt-1 text-sm text-stone">Pick your country to see where to buy, then follow the general tips.</p>
             <div className="mt-5 max-w-3xl">
               <CryptoCountryGuide />
             </div>
+            <MobileCollapse label="General buying tips" openLabel="Hide buying tips">
+              <ul className="mt-2 max-w-3xl space-y-4">
+                {buyingTips.map((step) => (
+                  <li key={step.title}>
+                    <p className="font-display text-lg text-ivory">{step.title}</p>
+                    <p className="mt-1 text-sm text-stone leading-relaxed">{step.body}</p>
+                  </li>
+                ))}
+              </ul>
+            </MobileCollapse>
           </div>
 
           <div id="send-safely" className="mt-12 scroll-mt-24">
-            <p className="font-display text-xl text-gold">Step 2 · Send it safely</p>
-            <p className="mt-1 text-sm text-stone">Follow these in order so it reaches the right address on the right network.</p>
-            <MobileCollapse label="Show the sending steps">
-              <ol className="mt-4 grid grid-cols-1 gap-x-12 gap-y-6 md:grid-cols-2">
-                {cryptoBuyingSteps.map((step, i) => (
-                  <li key={step.title} className="flex gap-4">
-                    <span
-                      aria-hidden
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/60 font-display text-gold"
-                    >
-                      {i + 1}
-                    </span>
-                    <div>
-                      <p className="font-display text-lg text-ivory">{step.title}</p>
-                      <p className="mt-1 text-sm text-stone leading-relaxed">{step.body}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-              <div className="mt-8 max-w-md rounded-card border hairline p-5">
-                <p className="font-display text-lg text-ivory">Accepted assets &amp; networks</p>
-                <ul className="mt-3 divide-y divide-line">
+            <p className="font-display text-xl text-gold">Step 2 · Get our address and send</p>
+            <p className="mt-1 max-w-2xl text-sm text-stone leading-relaxed">
+              Choose the currency and network below. We&apos;ll show our address (copy it or scan the QR code), then
+              send from your exchange.
+            </p>
+            <ul className="mt-4 max-w-3xl space-y-3">
+              {sendingTips.map((step) => (
+                <li key={step.title} className="flex gap-3 text-sm text-stone leading-relaxed">
+                  <span aria-hidden className="text-gold">✓</span>
+                  <span>
+                    <span className="text-ivory">{step.title}.</span> {step.body}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div id="submit-payment" className="mt-6 max-w-xl scroll-mt-24">
+              <CryptoPaymentPanel />
+            </div>
+            <MobileCollapse label="Accepted assets & networks" openLabel="Hide accepted assets">
+              <div className="mt-2 max-w-md rounded-card border hairline p-5">
+                <ul className="divide-y divide-line">
                   {enabledCryptoPaymentOptions().map((o) => (
                     <li key={o.id} className="flex items-center justify-between gap-4 py-2 text-sm">
                       <span className="text-ivory">{o.asset}</span>
@@ -228,28 +243,16 @@ export default function PaymentsPage() {
                   Send each asset only on the network listed. The wrong network can mean permanent loss.
                 </p>
               </div>
-              <p className="mt-6 max-w-3xl text-xs text-stone-dim leading-relaxed">
-                Exchanges are listed as commonly used examples, not endorsements or partners of {company.name}.
-                Availability, licensing and supported assets change — confirm the provider is licensed where
-                you live. Not financial or tax advice. Guide last reviewed {cryptoGuideReviewed}. Country not
-                listed, or can&apos;t buy crypto where you are? Ask your consultant about bank transfer or a
-                regional intermediary.
-              </p>
             </MobileCollapse>
           </div>
 
-          <div id="submit-payment" className="mt-12 scroll-mt-24">
-            <p className="font-display text-xl text-gold">Step 3 · Tell us you&apos;ve sent it</p>
-            <p className="mt-1 max-w-2xl text-sm text-stone leading-relaxed">
-              Record your transaction reference below. Submitting it doesn&apos;t confirm payment — our team
-              checks every transaction against the blockchain before it&apos;s marked confirmed.
-            </p>
-            <MobileCollapse label="Open the payment reference form">
-              <div className="mt-4 max-w-xl">
-                <CryptoPaymentPanel />
-              </div>
-            </MobileCollapse>
-          </div>
+          <p className="mt-10 max-w-3xl text-xs text-stone-dim leading-relaxed">
+            Exchanges are listed as commonly used examples, not endorsements or partners of {company.name}.
+            Availability, licensing and supported assets change — confirm the provider is licensed where you
+            live. Not financial or tax advice. Guide last reviewed {cryptoGuideReviewed}. Country not listed,
+            or can&apos;t buy crypto where you are? Ask your consultant about bank transfer or a regional
+            intermediary.
+          </p>
                 </div>
               }
             />

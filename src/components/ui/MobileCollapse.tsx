@@ -10,10 +10,13 @@ import { ReactNode, useEffect, useRef } from "react";
  */
 export function MobileCollapse({
   label = "Show details",
+  openLabel = "Hide details",
   defaultOpen = false,
   children,
 }: {
   label?: string;
+  /** Text of the bar while open. */
+  openLabel?: string;
   /** Start open on phones too (for content that should be visible at a glance). */
   defaultOpen?: boolean;
   children: ReactNode;
@@ -42,7 +45,7 @@ export function MobileCollapse({
     <details ref={ref} open className="group md:contents">
       <summary className="mt-6 flex cursor-pointer list-none items-center justify-between rounded-card border hairline px-5 py-3.5 text-sm font-semibold uppercase tracking-wide text-ivory md:hidden">
         <span className="group-open:hidden">{label}</span>
-        <span className="hidden group-open:inline">Hide details</span>
+        <span className="hidden group-open:inline">{openLabel}</span>
         <span aria-hidden className="text-gold transition-transform group-open:rotate-45">
           +
         </span>
