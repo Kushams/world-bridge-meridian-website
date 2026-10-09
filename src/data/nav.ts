@@ -13,6 +13,7 @@ export const primaryNav: NavLink[] = [
   { label: "Journey Stories", href: "/journey-stories" },
   { label: "Journal", href: "/journal" },
   { label: "About Us", href: "/about" },
+  { label: "Gifts & Credits", href: "/travel-credits" },
   { label: "My World Bridge", href: "/my-world-bridge" },
 ];
 
