@@ -69,8 +69,9 @@ export function DocumentsPanel() {
     const supabase = getSupabaseClient();
     if (!supabase || !folder) return;
     setOpening(doc.name);
-    // Short-lived link: it expires, so a forwarded URL stops working.
-    const { data } = await supabase.storage.from(BUCKET).createSignedUrl(`${folder}/${doc.name}`, 120);
+    // The document itself never expires. Each tap makes a fresh private link, valid for an
+    // hour so a PDF can reload or be downloaded; a copied link stops working after that.
+    const { data } = await supabase.storage.from(BUCKET).createSignedUrl(`${folder}/${doc.name}`, 3600);
     setOpening(null);
     if (data?.signedUrl) window.open(data.signedUrl, "_blank", "noopener");
     else setFailed(true);
