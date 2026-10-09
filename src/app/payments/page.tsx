@@ -6,6 +6,7 @@ import { MobileCollapse } from "@/components/ui/MobileCollapse";
 import { Button } from "@/components/ui/Button";
 import { company } from "@/data/company";
 import { themeImage } from "@/data/images";
+import { PaymentMethods } from "@/components/payments/PaymentMethods";
 import { CryptoPaymentPanel } from "@/components/payments/CryptoPaymentPanel";
 import { enabledCryptoPaymentOptions } from "@/data/cryptoPayments";
 import { cryptoBuyingSteps, cryptoGuideReviewed } from "@/data/cryptoBuyingGuide";
@@ -17,16 +18,6 @@ export const metadata: Metadata = {
   title: "Payment Options — Bank Transfer & Cryptocurrency",
   description: `How payment works with ${company.name}: bank transfer arranged by your consultant, regional payment intermediaries, and cryptocurrency — with a country-by-country guide to buying crypto and sending it safely.`,
 };
-
-const sections = [
-  { id: "how-it-works", label: "How it works" },
-  { id: "bank-transfer", label: "Bank transfer" },
-  { id: "cryptocurrency", label: "Cryptocurrency" },
-  { id: "buy-crypto", label: "How to buy crypto" },
-  { id: "send-safely", label: "Sending safely" },
-  { id: "submit-payment", label: "Submit a payment" },
-  { id: "payment-questions", label: "Questions" },
-];
 
 const processSteps = [
   {
@@ -95,261 +86,198 @@ export default function PaymentsPage() {
       <PageHero
         eyebrow="Payments"
         title="How payment works."
-        description="There is no online checkout. Every journey is priced and confirmed with you first; your assigned consultant then arranges payment by bank transfer, through a regional intermediary in your local currency, or in cryptocurrency."
+        description="No online checkout, no card details. We confirm your journey first, then your consultant tells you exactly how to pay."
         image={themeImage("business", 1)}
         imageAlt="A workspace"
       />
 
-      <nav aria-label="On this page" className="border-b hairline">
-        <Container className="flex gap-2 overflow-x-auto py-4">
-          {sections.map((s) => (
-            <a
-              key={s.id}
-              href={`#${s.id}`}
-              className="shrink-0 rounded-full border border-line px-4 py-2 text-sm text-ivory-dim transition-colors hover:border-gold hover:text-ivory"
-            >
-              {s.label}
-            </a>
-          ))}
+      {/* 1. The whole process, one compact row */}
+      <section id="how-it-works" className="scroll-mt-24 pt-10 md:pt-14">
+        <Container>
+          <p className="eyebrow">How it works</p>
+          <ol className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4">
+            {processSteps.map((step, i) => (
+              <li key={step.title} className="flex items-center gap-3 rounded-card border hairline px-4 py-3">
+                <span className="font-display text-2xl leading-none text-gold">{i + 1}</span>
+                <span className="text-sm leading-snug text-ivory">{step.title}</span>
+              </li>
+            ))}
+          </ol>
+          <details className="group mt-3">
+            <summary className="flex w-fit cursor-pointer list-none items-center gap-2 text-sm text-stone underline underline-offset-4">
+              What happens at each step
+              <span aria-hidden className="text-gold transition-transform group-open:rotate-45">+</span>
+            </summary>
+            <ol className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {processSteps.map((step, i) => (
+                <li key={step.title} className="text-sm text-stone leading-relaxed">
+                  <span className="text-ivory">{i + 1}. {step.title}.</span> {step.body}
+                </li>
+              ))}
+            </ol>
+          </details>
         </Container>
-      </nav>
+      </section>
 
-      <Container className="pt-10">
-        <a
-          href="#buy-crypto"
-          className="group flex flex-col gap-4 rounded-card border border-gold/50 bg-gold/5 p-6 transition-colors hover:border-gold sm:flex-row sm:items-center sm:justify-between md:p-8"
-        >
-          <span>
-            <span className="block font-display text-xl text-ivory md:text-2xl">
-              Paying with crypto for the first time?
-            </span>
-            <span className="mt-2 block text-sm text-stone leading-relaxed">
-              Choose your country and we&apos;ll show you, in five simple steps, where to buy it and how
-              to send it to us. No experience needed.
-            </span>
-          </span>
-          <span className="shrink-0 rounded-full bg-ivory px-6 py-3 text-sm font-semibold uppercase tracking-wide text-ink transition-opacity group-hover:opacity-90">
-            Start here
-          </span>
-        </a>
+      {/* 2. Safety — always visible, covers both methods */}
+      <Container className="pt-6">
+        <div className="rounded-card border border-gold/50 bg-gold/5 p-5 md:p-6">
+          <p className="font-display text-lg text-ivory md:text-xl">
+            Bank transfer or crypto: pay only where your consultant tells you.
+          </p>
+          <p className="mt-2 text-sm text-stone leading-relaxed">
+            We never ask you to pay a person, company, bank account or wallet address you weren&apos;t given by
+            your assigned consultant. If anyone else asks for payment on our behalf, check with us first at{" "}
+            <a href={`mailto:${company.email}`} className="text-ivory underline underline-offset-4">
+              {company.email}
+            </a>
+            .
+          </p>
+        </div>
       </Container>
 
-      <section id="how-it-works" className="scroll-mt-24 py-16 md:py-24">
+      {/* 3. Pick a method — one choice, one path */}
+      <section className="scroll-mt-24 py-10 md:py-16">
         <Container>
-          <SectionHeading eyebrow="How It Works" title="Four steps, always in this order." />
-          <ol className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {processSteps.map((step, i) => (
-              <li key={step.title} className="rounded-card border hairline p-6">
-                <p className="font-display text-3xl text-gold">{String(i + 1).padStart(2, "0")}</p>
-                <p className="mt-3 font-display text-lg text-ivory">{step.title}</p>
-                <p className="mt-2 text-sm text-stone leading-relaxed">{step.body}</p>
-              </li>
-            ))}
-          </ol>
-        </Container>
-      </section>
-
-      <section id="bank-transfer" className="scroll-mt-24 border-t hairline py-16 md:py-24">
-        <Container>
-          <SectionHeading eyebrow="Bank Transfer" title="Arranged by your consultant." className="md:hidden" />
-          <MobileCollapse label="Show bank transfer details" defaultOpen>
-          <div className="grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] [&>*]:min-w-0">
-            <div>
-              <SectionHeading eyebrow="Bank Transfer" title="Arranged by your consultant." className="hidden md:block" />
-              <div className="mt-6 space-y-4 text-base text-stone leading-relaxed">
-                <p>
-                  Every client is assigned a consultant, and bank transfers are arranged through them.
-                  Once your journey is confirmed, your consultant issues the transfer details for your
-                  specific booking — the amount, currency, beneficiary and reference to use. Bank
-                  details are never published on this website.
-                </p>
-                <p>
-                  We work with vetted payment intermediaries in many countries and regions. Where paying
-                  in US dollars or euros isn&apos;t practical — because of currency controls, banking
-                  restrictions, high international fees, or simply a preference for your own currency
-                  — your consultant can arrange for you to pay a local intermediary in your local
-                  currency, who then remits the payment to {company.name} on your behalf.
-                </p>
-                <p>
-                  This is arranged per booking. If an intermediary applies to your journey, your
-                  consultant will introduce them by name and confirm the amount and currency before
-                  anything changes hands.
-                </p>
-                <p className="text-ivory">
-                  For your protection: we will never ask you to pay a person, company or account you
-                  weren&apos;t introduced to by your assigned consultant for your booking. If anyone
-                  else contacts you claiming to collect payment for us, verify it at{" "}
-                  <a href={`mailto:${company.email}`} className="underline underline-offset-4">
-                    {company.email}
-                  </a>{" "}
-                  before paying.
-                </p>
-              </div>
-            </div>
-            <div className="space-y-6">
-              <div className="rounded-card border hairline p-6">
-                <p className="font-display text-lg text-ivory">Details Issued Per Booking</p>
-                <p className="mt-2 text-sm text-stone leading-relaxed">
-                  Always use the reference your consultant gives you, so your transfer is matched to
-                  your journey quickly.
-                </p>
-              </div>
-              <div className="rounded-card border hairline p-6">
-                <p className="font-display text-lg text-ivory">Local-Currency Intermediaries</p>
-                <p className="mt-2 text-sm text-stone leading-relaxed">
-                  Available in many countries. Ask your consultant whether one is available where
-                  you are.
-                </p>
-              </div>
-              <div className="rounded-card border hairline p-6">
-                <p className="font-display text-lg text-ivory">No Card or Bank Details Collected</p>
-                <p className="mt-2 text-sm text-stone leading-relaxed">
-                  This site never asks for a card number or bank login. The only payment information
-                  submitted here is a cryptocurrency transaction reference.
-                </p>
-              </div>
-            </div>
-          </div>
-          </MobileCollapse>
-        </Container>
-      </section>
-
-      <section id="cryptocurrency" className="scroll-mt-24 border-t hairline py-16 md:py-24">
-        <Container>
-          <SectionHeading eyebrow="Cryptocurrency" title={`Accepted since ${company.cryptoAcceptedSince}.`} />
-          <MobileCollapse label="Show how to buy & send crypto">
-          <div id="buy-crypto" className="mt-10 max-w-3xl scroll-mt-24">
-            <CryptoCountryGuide />
-          </div>
-          <div className="mt-16 grid grid-cols-1 gap-16 lg:grid-cols-[1.4fr_1fr] [&>*]:min-w-0">
-            <div>
-              <div className="space-y-4 text-base text-stone leading-relaxed">
-                <p>
-                  {company.name} has accepted cryptocurrency since {company.cryptoAcceptedSince} — well
-                  before it was common in travel. We currently accept {company.cryptoCurrencies.join(", ")}.
-                </p>
-                {addressesPublished ? (
-                  <>
-                    <p>
-                      Amounts are never quoted here. Once your itinerary is finalized, your consultant
-                      confirms the exact amount, asset and network for your booking. The wallet
-                      addresses in the payment form below are our own, published so you can verify
-                      them — they are the only addresses we ever collect cryptocurrency at.
-                    </p>
-                    <p className="text-ivory">
-                      Check the address you are about to send to against the one on this page. If a
-                      consultant, email, chat or social account gives you an address that doesn&apos;t
-                      match, don&apos;t send to it — contact us first.
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <p>
-                      Amounts are never quoted here, and no address is published on this page at the
-                      moment. Once your itinerary is finalized, your consultant sends payment
-                      instructions — the exact amount, asset, network and address for your booking.
-                    </p>
-                    <p className="text-ivory">
-                      Only ever send to an address you were given through a confirmed conversation about
-                      your own journey. If anything about a payment request seems off, contact us first.
-                    </p>
-                  </>
-                )}
-              </div>
-            </div>
-            <div className="rounded-card border hairline p-6">
-              <p className="font-display text-lg text-ivory">Accepted Assets &amp; Networks</p>
-              <ul className="mt-4 divide-y divide-line">
-                {enabledCryptoPaymentOptions().map((o) => (
-                  <li key={o.id} className="flex items-center justify-between gap-4 py-2.5 text-sm">
-                    <span className="text-ivory">{o.asset}</span>
-                    <span className="text-right text-stone">{o.network}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 text-xs text-stone-dim leading-relaxed">
-                Send each asset only on the network listed. The wrong network can mean permanent loss.
+          <SectionHeading eyebrow="Your choice" title="How would you like to pay?" />
+          <div className="mt-8">
+            <PaymentMethods
+              bank={
+                <div>
+          <SectionHeading eyebrow="Bank transfer" title="How it works." />
+          <ul className="mt-6 max-w-2xl space-y-3 text-base text-stone leading-relaxed">
+            <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Your consultant sends the <span className="text-ivory">amount, currency, beneficiary and reference</span> for your booking.</span></li>
+            <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Bank details are <span className="text-ivory">never published</span> on this website.</span></li>
+            <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Can&apos;t easily pay in dollars or euros? You may be able to pay a <span className="text-ivory">local intermediary in your own currency</span>.</span></li>
+            <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Always use the <span className="text-ivory">reference your consultant gives you</span>, so we match your payment quickly.</span></li>
+          </ul>
+          <MobileCollapse label="More about local-currency payment">
+            <div className="mt-2 max-w-3xl space-y-4 text-sm text-stone leading-relaxed md:text-base">
+              <p>
+                Every client is assigned a consultant, and bank transfers are arranged through them. We work
+                with vetted payment intermediaries in many countries and regions. Where paying in US dollars
+                or euros isn&apos;t practical — because of currency controls, banking restrictions, high
+                international fees, or simply a preference for your own currency — your consultant can
+                arrange for you to pay a local intermediary in your local currency, who then remits the
+                payment to {company.name} on your behalf.
+              </p>
+              <p>
+                This is arranged per booking. If an intermediary applies to your journey, your consultant
+                will introduce them by name and confirm the amount and currency before anything changes
+                hands. Ask your consultant whether one is available where you are.
+              </p>
+              <p>
+                This site never asks for a card number or bank login. The only payment information
+                submitted here is a cryptocurrency transaction reference.
               </p>
             </div>
-          </div>
           </MobileCollapse>
-        </Container>
-      </section>
-
-      <section id="send-safely" className="scroll-mt-24 border-t hairline bg-charcoal py-16 md:py-24">
-        <Container>
-          <SectionHeading
-            eyebrow="Sending Safely"
-            title="Step by step, from purchase to confirmation."
-            description="Whichever country you buy in, follow these steps so your payment arrives at the right address, on the right network."
-          />
-          <MobileCollapse label="Show the step-by-step">
-          <ol className="mt-12 grid grid-cols-1 gap-x-12 gap-y-8 md:grid-cols-2">
-            {cryptoBuyingSteps.map((step, i) => (
-              <li key={step.title} className="flex gap-5">
-                <span
-                  aria-hidden
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gold/60 font-display text-gold"
-                >
-                  {i + 1}
-                </span>
-                <div>
-                  <p className="font-display text-lg text-ivory">{step.title}</p>
-                  <p className="mt-2 text-sm text-stone leading-relaxed">{step.body}</p>
                 </div>
-              </li>
-            ))}
-          </ol>
-
-          <p className="mt-12 max-w-3xl text-xs text-stone-dim leading-relaxed">
-              Exchanges are listed as commonly used examples, not endorsements or partners of{" "}
-              {company.name}. Availability, licensing and supported assets change — confirm the
-              provider is licensed where you live. Not financial or tax advice. Guide last reviewed{" "}
-              {cryptoGuideReviewed}. Country not listed, or can&apos;t buy crypto where you are? Ask your
-              consultant about bank transfer or a regional intermediary.
-            </p>
-          </MobileCollapse>
-        </Container>
-      </section>
-
-      <section id="submit-payment" className="scroll-mt-24 border-t hairline py-16 md:py-24">
-        <Container>
-          <SectionHeading eyebrow="Submit a Payment" title="Crypto payment reference submission." />
+              }
+              crypto={
+                <div>
+          <SectionHeading
+            eyebrow="Cryptocurrency"
+            title="Buy it, send it, tell us."
+            description={`Accepted since ${company.cryptoAcceptedSince}: ${company.cryptoCurrencies.join(", ")}. Three steps: buy it, send it, tell us you've sent it.`}
+          />
           <p className="mt-4 max-w-2xl text-sm text-stone leading-relaxed">
             {addressesPublished
-              ? "If your consultant has already sent you payment instructions for a confirmed booking, send to the address below for the agreed asset and network, then record your transaction reference here."
-              : "Once you have sent a payment for a confirmed booking, record your transaction reference here."}{" "}
-            Submitting a hash does not confirm payment — our team verifies every transaction manually
-            against the blockchain before it&apos;s marked confirmed.
+              ? "Amounts are never quoted here. Once your itinerary is final, your consultant confirms the exact amount, asset and network. The wallet addresses on this page are our own — they are the only addresses we ever collect cryptocurrency at. If an address from anyone else doesn't match, don't send to it; contact us first."
+              : "Amounts are never quoted here, and no address is published on this page at the moment. Once your itinerary is final, your consultant sends the exact amount, asset, network and address for your booking. Only send to an address you were given through a confirmed conversation about your own journey."}
           </p>
-          <MobileCollapse label="Open the payment reference form">
-            <div className="mt-6 max-w-xl">
-              <CryptoPaymentPanel />
+
+          <div id="buy-crypto" className="mt-10 scroll-mt-24">
+            <p className="font-display text-xl text-gold">Step 1 · Buy it</p>
+            <div className="mt-5 max-w-3xl">
+              <CryptoCountryGuide />
             </div>
-          </MobileCollapse>
+          </div>
+
+          <div id="send-safely" className="mt-12 scroll-mt-24">
+            <p className="font-display text-xl text-gold">Step 2 · Send it safely</p>
+            <p className="mt-1 text-sm text-stone">Follow these in order so it reaches the right address on the right network.</p>
+            <MobileCollapse label="Show the sending steps">
+              <ol className="mt-4 grid grid-cols-1 gap-x-12 gap-y-6 md:grid-cols-2">
+                {cryptoBuyingSteps.map((step, i) => (
+                  <li key={step.title} className="flex gap-4">
+                    <span
+                      aria-hidden
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-gold/60 font-display text-gold"
+                    >
+                      {i + 1}
+                    </span>
+                    <div>
+                      <p className="font-display text-lg text-ivory">{step.title}</p>
+                      <p className="mt-1 text-sm text-stone leading-relaxed">{step.body}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              <div className="mt-8 max-w-md rounded-card border hairline p-5">
+                <p className="font-display text-lg text-ivory">Accepted assets &amp; networks</p>
+                <ul className="mt-3 divide-y divide-line">
+                  {enabledCryptoPaymentOptions().map((o) => (
+                    <li key={o.id} className="flex items-center justify-between gap-4 py-2 text-sm">
+                      <span className="text-ivory">{o.asset}</span>
+                      <span className="text-right text-stone">{o.network}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-3 text-xs text-stone-dim leading-relaxed">
+                  Send each asset only on the network listed. The wrong network can mean permanent loss.
+                </p>
+              </div>
+              <p className="mt-6 max-w-3xl text-xs text-stone-dim leading-relaxed">
+                Exchanges are listed as commonly used examples, not endorsements or partners of {company.name}.
+                Availability, licensing and supported assets change — confirm the provider is licensed where
+                you live. Not financial or tax advice. Guide last reviewed {cryptoGuideReviewed}. Country not
+                listed, or can&apos;t buy crypto where you are? Ask your consultant about bank transfer or a
+                regional intermediary.
+              </p>
+            </MobileCollapse>
+          </div>
+
+          <div id="submit-payment" className="mt-12 scroll-mt-24">
+            <p className="font-display text-xl text-gold">Step 3 · Tell us you&apos;ve sent it</p>
+            <p className="mt-1 max-w-2xl text-sm text-stone leading-relaxed">
+              Record your transaction reference below. Submitting it doesn&apos;t confirm payment — our team
+              checks every transaction against the blockchain before it&apos;s marked confirmed.
+            </p>
+            <MobileCollapse label="Open the payment reference form">
+              <div className="mt-4 max-w-xl">
+                <CryptoPaymentPanel />
+              </div>
+            </MobileCollapse>
+          </div>
+                </div>
+              }
+            />
+          </div>
+          <p className="mt-10 text-sm text-stone-dim">Not sure which? Ask your consultant — they&apos;ll recommend the simplest one for you.</p>
         </Container>
       </section>
 
-      <section id="payment-questions" className="scroll-mt-24 border-t hairline py-16 md:py-24">
+      <section id="payment-questions" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>
           <SectionHeading eyebrow="Questions" title="Payment questions, answered." />
-          <div className="mt-10 max-w-3xl divide-y divide-line border-t hairline">
+          <div className="mt-8 max-w-3xl divide-y divide-line border-t hairline">
             {paymentFaqs.map((f) => (
-              <details key={f.question} className="group py-6">
+              <details key={f.question} className="group py-5">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-lg text-ivory">
                   {f.question}
                   <span aria-hidden className="shrink-0 text-gold transition-transform group-open:rotate-45">
                     +
                   </span>
                 </summary>
-                <p className="mt-4 text-sm text-stone leading-relaxed">{f.answer}</p>
+                <p className="mt-3 text-sm text-stone leading-relaxed">{f.answer}</p>
               </details>
             ))}
           </div>
         </Container>
       </section>
 
-      <section className="py-20 md:py-28 bg-charcoal border-t hairline">
+      <section className="border-t hairline bg-charcoal py-14 md:py-24">
         <Container className="text-center">
           <h2 className="mx-auto max-w-2xl font-display text-3xl md:text-4xl text-ivory text-balance-pretty">
             Ready to start planning?
