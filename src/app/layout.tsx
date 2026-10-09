@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Newsreader, Inter } from "next/font/google";
 import "./globals.css";
 import { SITE_URL, company, socialLinks } from "@/data/company";
 import { Header } from "@/components/layout/Header";
@@ -13,11 +13,11 @@ import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { AuthProvider } from "@/lib/supabase/AuthProvider";
 import { JsonLd } from "@/components/seo/JsonLd";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
   subsets: ["latin"],
   style: ["normal", "italic"],
-  axes: ["SOFT", "WONK", "opsz"],
+  axes: ["opsz"],
 });
 
 const inter = Inter({
@@ -113,7 +113,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${inter.variable} h-full antialiased`}
+      className={`${newsreader.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-ink text-ivory">
         <JsonLd data={siteJsonLd} />
