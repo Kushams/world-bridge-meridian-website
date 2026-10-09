@@ -29,9 +29,9 @@ type Step = "currency" | "network" | "details";
 
 function CheckoutSteps({ current }: { current: Step }) {
   const steps: { key: Step; label: string }[] = [
-    { key: "currency", label: "1. Currency" },
-    { key: "network", label: "2. Network" },
-    { key: "details", label: "3. Send Payment" },
+    { key: "currency", label: "Currency" },
+    { key: "network", label: "Network" },
+    { key: "details", label: "Our address" },
   ];
   return (
     <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-stone-dim">
@@ -185,6 +185,14 @@ function PaymentDetails({
       </p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4 border-t hairline pt-6">
+        <div>
+          <p className="font-display text-xl text-gold">Step 3 · After you&apos;ve sent it</p>
+          <p className="mt-1 text-sm text-stone leading-relaxed">
+            Copy the transaction ID (also called the hash or TxID) from your exchange and paste it here.
+            Submitting it doesn&apos;t confirm payment — our team checks every transaction on the
+            blockchain and confirms it with you.
+          </p>
+        </div>
         <div>
           <label htmlFor="cp-hash" className="mb-2 block text-xs uppercase tracking-wide text-stone">
             Transaction Hash
