@@ -91,31 +91,43 @@ export default function PaymentsPage() {
         imageAlt="A workspace"
       />
 
-      {/* 1. The whole process, at a glance */}
-      <section id="how-it-works" className="scroll-mt-24 py-12 md:py-20">
+      {/* 1. The whole process, one compact row */}
+      <section id="how-it-works" className="scroll-mt-24 pt-10 md:pt-14">
         <Container>
-          <SectionHeading eyebrow="Step by step" title="Four steps, always in this order." />
-          <ol className="mt-6 grid grid-cols-1 gap-x-8 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
+          <p className="eyebrow">How it works</p>
+          <ol className="mt-4 grid grid-cols-2 gap-2 md:grid-cols-4">
             {processSteps.map((step, i) => (
-              <li key={step.title} className="flex gap-3">
+              <li key={step.title} className="flex items-center gap-3 rounded-card border hairline px-4 py-3">
                 <span className="font-display text-2xl leading-none text-gold">{i + 1}</span>
-                <span>
-                  <span className="block font-display text-lg leading-tight text-ivory">{step.title}</span>
-                  <span className="mt-1 block text-sm text-stone leading-relaxed">{step.body}</span>
-                </span>
+                <span className="text-sm leading-snug text-ivory">{step.title}</span>
               </li>
             ))}
           </ol>
+          <details className="group mt-3">
+            <summary className="flex w-fit cursor-pointer list-none items-center gap-2 text-sm text-stone underline underline-offset-4">
+              What happens at each step
+              <span aria-hidden className="text-gold transition-transform group-open:rotate-45">+</span>
+            </summary>
+            <ol className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {processSteps.map((step, i) => (
+                <li key={step.title} className="text-sm text-stone leading-relaxed">
+                  <span className="text-ivory">{i + 1}. {step.title}.</span> {step.body}
+                </li>
+              ))}
+            </ol>
+          </details>
         </Container>
       </section>
 
-      {/* 2. Safety, once, up front */}
-      <Container>
-        <div className="rounded-card border border-gold/50 bg-gold/5 p-6 md:p-8">
-          <p className="font-display text-xl text-ivory md:text-2xl">Pay only where your consultant tells you.</p>
-          <p className="mt-2 text-sm text-stone leading-relaxed md:text-base">
-            We never ask you to pay a person, company or account you weren&apos;t introduced to by your
-            assigned consultant. If anyone else asks for payment on our behalf, check with us first at{" "}
+      {/* 2. Safety — always visible, covers both methods */}
+      <Container className="pt-6">
+        <div className="rounded-card border border-gold/50 bg-gold/5 p-5 md:p-6">
+          <p className="font-display text-lg text-ivory md:text-xl">
+            Bank transfer or crypto: pay only where your consultant tells you.
+          </p>
+          <p className="mt-2 text-sm text-stone leading-relaxed">
+            We never ask you to pay a person, company, bank account or wallet address you weren&apos;t given by
+            your assigned consultant. If anyone else asks for payment on our behalf, check with us first at{" "}
             <a href={`mailto:${company.email}`} className="text-ivory underline underline-offset-4">
               {company.email}
             </a>
@@ -125,7 +137,7 @@ export default function PaymentsPage() {
       </Container>
 
       {/* 3. Pick a method — one choice, one path */}
-      <section className="scroll-mt-24 border-t hairline py-12 md:py-20">
+      <section className="scroll-mt-24 py-10 md:py-16">
         <Container>
           <SectionHeading eyebrow="Your choice" title="How would you like to pay?" />
           <div className="mt-8">
