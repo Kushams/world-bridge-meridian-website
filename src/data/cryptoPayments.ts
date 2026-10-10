@@ -40,6 +40,15 @@ export const cryptoPaymentOptions: CryptoPaymentOption[] = [
     notes: "Confirmed by WBM.",
   },
   {
+    id: "eth-base",
+    asset: "ETH",
+    network: "Base",
+    displayName: "Ethereum (ETH) — Base",
+    walletAddress: "0xDF425b9854e0EBa3C79b75A57b08c4016E03A269",
+    enabled: true,
+    notes: "Confirmed by WBM.",
+  },
+  {
     id: "usdt-tron",
     asset: "USDT",
     network: "Tron (TRC20)",
