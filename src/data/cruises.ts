@@ -1,5 +1,5 @@
 import { Cruise } from "./types";
-import { themeGallery, themeImage } from "./images";
+import { unsplashPhoto } from "./images";
 
 /**
  * All cruise records are SAMPLE / INDICATIVE data pending live supplier
@@ -18,8 +18,8 @@ export const cruises: Cruise[] = [
     departurePort: "Barcelona, Spain",
     travelPeriod: "May – October",
     cabinCategories: ["Interior", "Ocean View", "Balcony", "Suite"],
-    heroImage: themeImage("cruiseAndSea", 0),
-    gallery: themeGallery("cruiseAndSea", 2, 0),
+    heroImage: unsplashPhoto("1617170788899-ef9587d6e63f"),
+    gallery: [unsplashPhoto("1559599746-8823b38544c6"), unsplashPhoto("1656919638963-f4abf3a3b8cc")],
     description: [
       "A classic western Mediterranean route calling at Barcelona, the French Riviera, and the Italian coast, with a full day in Rome via Civitavecchia.",
       "This itinerary suits first-time cruisers wanting the essential Mediterranean ports without a longer commitment.",
@@ -46,8 +46,8 @@ export const cruises: Cruise[] = [
     departurePort: "Athens (Piraeus), Greece",
     travelPeriod: "April – November",
     cabinCategories: ["Ocean View", "Balcony", "Suite"],
-    heroImage: themeImage("coastal", 0),
-    gallery: themeGallery("coastal", 2, 0),
+    heroImage: unsplashPhoto("1580855453606-7a02774c686c"),
+    gallery: [unsplashPhoto("1565741561459-ba864f895829"), unsplashPhoto("1536013024313-3e13fffc3e11")],
     description: [
       "A slower-paced island-hopping route through the Cyclades and Dodecanese with two calls on the Turkish coast, aboard a smaller ship able to reach less-crowded ports.",
       "This is the itinerary we most often pair with a pre- or post-cruise stay in Athens or Santorini.",
@@ -74,8 +74,8 @@ export const cruises: Cruise[] = [
     departurePort: "Miami, Florida",
     travelPeriod: "November – April",
     cabinCategories: ["Interior", "Ocean View", "Balcony", "Suite"],
-    heroImage: themeImage("tropicalBeach", 1),
-    gallery: themeGallery("tropicalBeach", 2, 1),
+    heroImage: unsplashPhoto("1717541262982-731503ac4dc2"),
+    gallery: [unsplashPhoto("1599640842225-85d111c60e6b"), unsplashPhoto("1628789405368-0715d5f8df4e")],
     description: [
       "A southern Caribbean route reaching further than the standard western itinerary, calling at Aruba, Curaçao and Barbados alongside classic ports.",
       "Family-friendly onboard programming runs throughout.",
@@ -102,8 +102,8 @@ export const cruises: Cruise[] = [
     departurePort: "Seattle, Washington",
     travelPeriod: "May – September",
     cabinCategories: ["Interior", "Ocean View", "Balcony", "Suite"],
-    heroImage: themeImage("mountainNature", 0),
-    gallery: themeGallery("mountainNature", 2, 0),
+    heroImage: unsplashPhoto("1673114819432-1aa36952dd3e"),
+    gallery: [unsplashPhoto("1605978208410-c3deb0fab40d"), unsplashPhoto("1657682899797-5692d871dd0e")],
     description: [
       "A classic Inside Passage route reaching Glacier Bay and Tracy Arm Fjord, with calls at Juneau, Skagway and Ketchikan.",
       "Best combined with a land extension into Denali for clients with additional time.",
@@ -131,8 +131,8 @@ export const cruises: Cruise[] = [
     departurePort: "Southampton, United Kingdom",
     travelPeriod: "May – August",
     cabinCategories: ["Ocean View", "Balcony", "Suite"],
-    heroImage: themeImage("mountainNature", 2),
-    gallery: themeGallery("mountainNature", 2, 2),
+    heroImage: unsplashPhoto("1698307781486-7c63dadf5fb7"),
+    gallery: [unsplashPhoto("1722450132734-a2e503bd0751"), unsplashPhoto("1705512604302-3dc9d171832c")],
     description: [
       "A fjord-focused route reaching Geirangerfjord and the North Cape's midnight sun, departing and returning from the UK.",
       "This is a strong fit for clients drawn to Norway's scenery over its cities.",
@@ -160,8 +160,8 @@ export const cruises: Cruise[] = [
     departurePort: "Copenhagen, Denmark",
     travelPeriod: "May – September",
     cabinCategories: ["Ocean View", "Balcony", "Suite"],
-    heroImage: themeImage("cityscape", 18),
-    gallery: themeGallery("cityscape", 2, 18),
+    heroImage: unsplashPhoto("1643594265713-b09d4c6a57d9"),
+    gallery: [unsplashPhoto("1659446964539-49c15eefab1a"), unsplashPhoto("1659446964286-c72e550829e2")],
     description: [
       "An in-depth Baltic itinerary with an overnight call in St. Petersburg, allowing two full days for the Hermitage and Peterhof.",
       "This is one of our most content-rich itineraries for arts-and-culture travelers.",
@@ -189,8 +189,8 @@ export const cruises: Cruise[] = [
     departurePort: "Dubai, United Arab Emirates",
     travelPeriod: "November – March",
     cabinCategories: ["Interior", "Ocean View", "Balcony", "Suite"],
-    heroImage: themeImage("cityscape", 3),
-    gallery: themeGallery("cityscape", 2, 3),
+    heroImage: unsplashPhoto("1788129115128-7c16448e0eb3"),
+    gallery: [unsplashPhoto("1788129115359-a6e69de8c30d"), unsplashPhoto("1761341063556-80cb742411b6")],
     description: [
       "A Gulf itinerary pairing Dubai and Abu Dhabi with calls in Oman, well-suited to clients extending a UAE land journey.",
       "Winter departures avoid the Gulf's summer heat.",
@@ -218,8 +218,8 @@ export const cruises: Cruise[] = [
     departurePort: "Singapore",
     travelPeriod: "February – April, October – December",
     cabinCategories: ["Ocean View", "Balcony", "Suite"],
-    heroImage: themeImage("cityscape", 4),
-    gallery: themeGallery("cityscape", 2, 4),
+    heroImage: unsplashPhoto("1643029891412-92f9a81a8c16"),
+    gallery: [unsplashPhoto("1675111066042-9baa4c343157"), unsplashPhoto("1663602020492-ee3aea145f2b")],
     description: [
       "A longer repositioning-style route through Southeast Asia, connecting Singapore to Hong Kong via Vietnam and Taiwan.",
       "Suits clients with more time who want a slower introduction to the region.",
@@ -246,8 +246,8 @@ export const cruises: Cruise[] = [
     departurePort: "Sydney, Australia",
     travelPeriod: "November – March",
     cabinCategories: ["Interior", "Ocean View", "Balcony", "Suite"],
-    heroImage: themeImage("culturalHeritage", 2),
-    gallery: themeGallery("cityscape", 2, 11),
+    heroImage: unsplashPhoto("1591640040362-f55d95a6b2bc"),
+    gallery: [unsplashPhoto("1584877161648-bb58a3cf4e13"), unsplashPhoto("1628789405368-0715d5f8df4e")],
     description: [
       "A round-trip from Sydney reaching Milford Sound and New Zealand's South Island fjords, with a full day of scenic cruising.",
       "Southern hemisphere summer sailing avoids New Zealand's colder months.",
@@ -274,8 +274,8 @@ export const cruises: Cruise[] = [
     departurePort: "Amsterdam, Netherlands",
     travelPeriod: "April – October",
     cabinCategories: ["Standard Stateroom", "Balcony Stateroom", "Suite"],
-    heroImage: themeImage("cityscape", 18),
-    gallery: themeGallery("cityscape", 2, 18),
+    heroImage: unsplashPhoto("1692110899720-eb959f1e58bc"),
+    gallery: [unsplashPhoto("1660507249367-157f75c81760"), unsplashPhoto("1640265225639-6cc10eddae74")],
     description: [
       "A classic Rhine itinerary from Amsterdam to Basel, passing through the Rhine Gorge's castles and vineyards, with daily shore excursions included as standard on river sailings.",
       "Best for clients who prefer fewer, deeper stops over a longer port list.",
@@ -302,8 +302,8 @@ export const cruises: Cruise[] = [
     departurePort: "Southampton, United Kingdom",
     travelPeriod: "April – November",
     cabinCategories: ["Interior", "Ocean View", "Balcony", "Suite"],
-    heroImage: themeImage("cruiseAndSea", 1),
-    gallery: themeGallery("cruiseAndSea", 1, 1),
+    heroImage: unsplashPhoto("1585793753011-397e6e4668d6"),
+    gallery: [unsplashPhoto("1628789405368-0715d5f8df4e"), unsplashPhoto("1656504862878-804f431ea3b4")],
     description: [
       "A traditional westbound crossing with no port calls — sea days, formal dinners, and a genuinely different pace than a port-intensive itinerary.",
       "A distinctive choice for clients who want the crossing itself as the experience.",
@@ -329,8 +329,8 @@ export const cruises: Cruise[] = [
     departurePort: "Rome (Civitavecchia), Italy",
     travelPeriod: "May – September",
     cabinCategories: ["Suite", "Owner's Suite"],
-    heroImage: themeImage("coastal", 2),
-    gallery: themeGallery("coastal", 2, 2),
+    heroImage: unsplashPhoto("1748039617343-ce68427583c2"),
+    gallery: [unsplashPhoto("1656919638963-f4abf3a3b8cc"), unsplashPhoto("1725908914158-fe6376e6eb72")],
     description: [
       "An all-suite, small-capacity itinerary reaching quieter ports along the Amalfi Coast, Sicily and Sardinia, with an emphasis on culinary programming onboard.",
       "This is our top recommendation for clients wanting a genuinely elevated Mediterranean cruise experience.",
@@ -358,8 +358,8 @@ export const cruises: Cruise[] = [
     departurePort: "Fort Lauderdale, Florida",
     travelPeriod: "Year-round",
     cabinCategories: ["Interior", "Ocean View", "Balcony", "Family Suite"],
-    heroImage: themeImage("tropicalBeach", 1),
-    gallery: themeGallery("peopleTravel", 2, 2),
+    heroImage: unsplashPhoto("1548574505-12caf0050b5b"),
+    gallery: [unsplashPhoto("1548574505-5e239809ee19"), unsplashPhoto("1685101260406-5c7ad28ca00b")],
     description: [
       "A western Caribbean route on a large ship with extensive family programming, private-island beach day, and connecting family staterooms.",
       "Our standard recommendation for a first family cruise.",
@@ -387,8 +387,8 @@ export const cruises: Cruise[] = [
     departurePort: "Miami, Florida",
     travelPeriod: "Year-round",
     cabinCategories: ["Ocean View", "Balcony", "Suite"],
-    heroImage: themeImage("peopleTravel", 1),
-    gallery: themeGallery("peopleTravel", 2, 1),
+    heroImage: unsplashPhoto("1725777578904-88e5fe963151"),
+    gallery: [unsplashPhoto("1585793753011-397e6e4668d6"), unsplashPhoto("1656504862878-804f431ea3b4")],
     description: [
       "A shorter, adults-focused western Caribbean itinerary — a natural fit for a honeymoon extension or a couples-only long weekend at sea.",
       "Onboard programming skews toward quieter, adults-oriented experiences.",
