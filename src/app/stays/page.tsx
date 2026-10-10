@@ -37,7 +37,7 @@ export default function StaysPage() {
             Well-known properties in the destinations we plan journeys to, grouped by continent. They are
             shown as examples of respected places to stay, not as partners: World Bridge Meridian is not
             affiliated with or endorsed by any property named here, and no rate or availability is implied.
-            Photography is illustrative. Tell us where you&apos;re going and we&apos;ll shape the right stay
+            Photos credited beneath an image show the property itself; the others show its destination. Tell us where you&apos;re going and we&apos;ll shape the right stay
             around your journey.
           </p>
           <div className="chip-row mt-6 flex flex-wrap gap-3">
@@ -73,6 +73,16 @@ export default function StaysPage() {
                           className="object-cover"
                         />
                       </div>
+                      {stay.credit && stay.creditUrl ? (
+                        <a
+                          href={stay.creditUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-1.5 block truncate text-[0.65rem] text-stone-dim hover:text-gold"
+                        >
+                          Photo: {stay.credit}
+                        </a>
+                      ) : null}
                       <div className="mt-4">
                         <p className="eyebrow !text-[0.65rem] mb-1">
                           {stay.kind} · {stay.place}

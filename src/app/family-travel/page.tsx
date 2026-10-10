@@ -15,7 +15,7 @@ export default function FamilyTravelPage() {
       title="Journeys that work for every generation."
       intro="From toddlers to grandparents, we build in the pacing, accommodation and activities that keep a family trip enjoyable for everyone in it."
       heroImage={themeImage("peopleTravel", 1)}
-      heroImageAlt="A parent and child at sunset"
+      heroImageAlt="A family walking together at sunset"
       travelStyle="family"
       examples={[
         "Family holidays",

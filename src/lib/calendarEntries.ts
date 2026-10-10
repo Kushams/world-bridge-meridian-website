@@ -72,6 +72,7 @@ export const calendarSectionOrder: { key: string; label: string }[] = [
   { key: "film", label: eventCategoryLabels.film },
   { key: "design", label: eventCategoryLabels.design },
   { key: "fashion", label: eventCategoryLabels.fashion },
+  { key: "cultural", label: eventCategoryLabels.cultural },
 ];
 
 export function buildCalendarEntries(): CalendarEntry[] {

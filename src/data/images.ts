@@ -87,7 +87,7 @@ export const IMAGE_BANK = {
     "1590050752117-238cb0fb12b1", // dock over water, sunset
   ],
   tropicalBeach: [
-    "1548574505-5e239809ee19", // overwater villas, aerial
+    "1760429613920-97150368ed79", // turquoise beach with palm trees, aerial
     "1519046904884-53103b34b206", // beach, palm trees and hammock
     "1509233725247-49e657c54213", // beach, palm trees, clear water
     "1571003123894-1f0594d2b5d9", // overwater villas, dusk
@@ -108,7 +108,7 @@ export const IMAGE_BANK = {
     "1547471080-7cc2caa01a7e", // acacia tree silhouette, savanna sunset
   ],
   cruiseAndSea: [
-    "1512100356356-de1b84283e18", // seaplane, tropical aerial
+    "1599640842225-85d111c60e6b", // cruise ship docked at a tropical beach
     "1719423324139-04edfa77ea0d", // cruise ship bow, aerial top-down, emerald water
     "1540206395-68808572332f", // ocean wave, aerial
     "1590050752117-238cb0fb12b1", // dock over water, sunset
@@ -122,14 +122,14 @@ export const IMAGE_BANK = {
   ],
   peopleTravel: [
     "1494774157365-9e04c6720e47", // couple silhouette, sunset
-    "1476234251651-f353703a034d", // parent carrying child, sunset
+    "1756982477661-107a1c72c8fd", // family walking on a tree-lined path at sunset
     "1484712401471-05c7215830eb", // friends celebrating outdoors
     "1502086223501-7ea6ecd79368", // children playing in a forest
     "1543269865-cbf427effbad", // friends talking at a café
     "1522673607200-164d1b6ce486", // wedding chairs on a lawn
   ],
   luxuryResort: [
-    "1548574505-5e239809ee19", // overwater villas, aerial
+    "1590523277543-a94d2e4eb00b", // overwater villas, aerial
     "1540541338287-41700207dee6", // resort pool, aerial
     "1571896349842-33c89424de2d", // infinity pool at dusk
     "1602002418082-a4443e081dd1", // curved infinity pool over ocean

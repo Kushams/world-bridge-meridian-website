@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ArtListingsPage } from "@/components/specialty/ArtListingsPage";
-import { themeImage } from "@/data/images";
+import { unsplashPhoto } from "@/data/images";
 
 export const metadata: Metadata = {
   title: "Museum Exhibitions",
@@ -14,7 +14,7 @@ export default function MuseumsPage() {
       eyebrow="Arts & Culture"
       title="Museum exhibitions worth traveling for."
       intro="Major current and upcoming exhibitions at leading museums around the world — separate from our gallery listings, since a museum retrospective and a commercial gallery show call for a different kind of trip."
-      heroImage={themeImage("culturalHeritage", 6)}
+      heroImage={unsplashPhoto("1575223970966-76ae61ee7838")}
       heroImageAlt="A museum gallery interior"
       category="museum"
       ctaLabel="Plan a Museum Trip"

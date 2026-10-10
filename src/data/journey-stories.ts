@@ -1,5 +1,5 @@
 import { JourneyStory } from "./types";
-import { themeGallery, themeImage } from "./images";
+import { unsplashPhoto, themeImage } from "./images";
 
 /**
  * Journey Stories are editorial, magazine-style treatments of journeys we
@@ -14,12 +14,8 @@ export const journeyStories: JourneyStory[] = [
     duration: "10 Days",
     travelerType: "Family",
     travelStyles: ["arts-culture", "family"],
-    heroImage: themeImage("culturalHeritage", 0),
-    gallery: [
-      themeImage("culturalHeritage", 0),
-      themeImage("culturalHeritage", 7),
-      themeImage("culturalHeritage", 8),
-    ],
+    heroImage: unsplashPhoto("1687817997684-c9335cce7c5c"),
+    gallery: [unsplashPhoto("1653987255814-3b4c05832660"), unsplashPhoto("1663143050642-69240b347b2b"), unsplashPhoto("1733688716116-cea7b29693e4")],
     overview: [
       "Italy rewards travelers who slow down enough to actually look. This journey threads Rome, Florence and Venice together not as a checklist of monuments, but as a study in how art, architecture and daily life have shaped each other for two thousand years.",
       "Mornings are spent with a private guide in front of the work that matters — the Sistine Chapel before the crowds, the Uffizi's Botticelli room, a quiet campo in Venice most visitors never find. Afternoons are left open.",
@@ -101,8 +97,8 @@ export const journeyStories: JourneyStory[] = [
     duration: "9 Days",
     travelerType: "Couple",
     travelStyles: ["adventure", "luxury"],
-    heroImage: themeImage("safari", 0),
-    gallery: themeGallery("safari", 2, 0),
+    heroImage: unsplashPhoto("1618811308896-d279d72fdf4d"),
+    gallery: [unsplashPhoto("1626894169601-482d26b23f35"), unsplashPhoto("1721155227599-bfb5e8913fc4"), unsplashPhoto("1578326626553-39f72c545b07")],
     overview: [
       "This journey pairs two of Southern Africa's most distinct landscapes: Cape Town's coastline and wine country, and the raw scale of Victoria Falls. It's a journey about contrast — city and wilderness, ocean and river, table-set dinners and open-air safari drives.",
       "We connect the two with a private charter flight rather than a commercial connection with a long layover, keeping the pace intact.",
@@ -141,8 +137,8 @@ export const journeyStories: JourneyStory[] = [
     duration: "8 Days",
     travelerType: "Couple",
     travelStyles: ["romance", "cultural"],
-    heroImage: themeImage("coastal", 0),
-    gallery: themeGallery("coastal", 4, 0),
+    heroImage: unsplashPhoto("1672622851784-0dbd3df4c088"),
+    gallery: [unsplashPhoto("1669203408570-4140ee21f211"), unsplashPhoto("1658780986409-a406f44bfc8d")],
     overview: [
       "This is a journey built around doing less, better. A few days in Athens with the Acropolis and its museum, then a slow ferry crossing to Santorini for a week with almost nothing scheduled beyond a sunset dinner reservation and a private caldera sail.",
       "We deliberately avoid stacking islands — the whole point of this itinerary is the pace, not the number of stamps.",

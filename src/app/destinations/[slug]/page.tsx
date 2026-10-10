@@ -206,7 +206,7 @@ export default async function DestinationPage({
             </div>
 
             <div>
-              <SectionHeading eyebrow="Sample Itinerary" title="How the days might unfold" />
+              <SectionHeading eyebrow="Itinerary" title="How the days might unfold" />
               <div className="mt-6">
                 <ItineraryTimeline days={destination.sampleItinerary} />
               </div>

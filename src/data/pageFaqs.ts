@@ -54,7 +54,7 @@ export const faqMain: FaqItem[] = [
   },
   {
     q: "Do you have live availability for cruises and hotels shown on the site?",
-    a: "Not yet for every listing. Cruise sailings and some current journeys shown on the site are sample or indicative data pending live supplier integration — these are clearly labeled. Availability is always confirmed at enquiry.",
+    a: "Not yet for every listing. Cruise sailings and current journeys shown on the site are indicative. Availability and final pricing are always confirmed at enquiry.",
   },
 ];
 

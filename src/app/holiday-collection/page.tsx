@@ -93,7 +93,7 @@ export default function HolidayCollectionPage() {
       <section className="py-16 md:py-24">
         <Container>
           <SectionHeading
-            eyebrow="Illustrative Concepts"
+            eyebrow="Journey Concepts"
             title="A starting point for the season."
             description={`${company.sampleDataDisclaimer} Every holiday journey is designed from a private consultation — these are the kinds of journeys we're most often asked to build around the season.`}
           />

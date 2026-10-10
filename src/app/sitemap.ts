@@ -32,6 +32,7 @@ const staticRoutes = [
   "/museums",
   "/art-fairs",
   "/cultural-access",
+  "/events",
   "/calendar",
   "/journey-stories",
   "/private-journeys",

@@ -1,5 +1,5 @@
 import { TravelPackage } from "./types";
-import { themeGallery, themeImage } from "./images";
+import { unsplashPhoto, themeGallery, themeImage } from "./images";
 
 export const packages: TravelPackage[] = [
   {
@@ -9,8 +9,8 @@ export const packages: TravelPackage[] = [
     travelStyles: ["family", "cultural"],
     duration: "10 days / 9 nights",
     travelerType: "Family",
-    heroImage: themeImage("culturalHeritage", 0),
-    gallery: themeGallery("culturalHeritage", 4, 0),
+    heroImage: unsplashPhoto("1687817997684-c9335cce7c5c"),
+    gallery: [unsplashPhoto("1663143050642-69240b347b2b"), unsplashPhoto("1733688716116-cea7b29693e4")],
     shortDescription:
       "A three-city Italy journey paced for families, mixing ancient history with gelato breaks and countryside afternoons.",
     overview: [
@@ -49,8 +49,8 @@ export const packages: TravelPackage[] = [
     travelStyles: ["food-wine", "romance"],
     duration: "9 days / 8 nights",
     travelerType: "Couple",
-    heroImage: themeImage("foodAndWine", 0),
-    gallery: themeGallery("foodAndWine", 3, 0),
+    heroImage: unsplashPhoto("1756365951512-b15739bfbf4c"),
+    gallery: [unsplashPhoto("1723916687481-8b64bbfb56e1"), unsplashPhoto("1727509416623-c12e9f7b87f8"), unsplashPhoto("1560493676-04071c5f467b")],
     shortDescription:
       "A slow-paced journey through two of Europe's great food regions, built around markets, wineries and cooking classes.",
     overview: [
@@ -76,8 +76,8 @@ export const packages: TravelPackage[] = [
     travelStyles: ["romance", "luxury"],
     duration: "8 days / 7 nights",
     travelerType: "Couple",
-    heroImage: themeImage("coastal", 0),
-    gallery: themeGallery("coastal", 3, 0),
+    heroImage: unsplashPhoto("1672622851784-0dbd3df4c088"),
+    gallery: [unsplashPhoto("1669203408570-4140ee21f211"), unsplashPhoto("1658780986409-a406f44bfc8d")],
     shortDescription: "Athens' history followed by caldera-view days in Santorini — our most-booked honeymoon route.",
     overview: [
       "Two nights in Athens is enough to see the essentials without cutting into island time, and the balance of this itinerary sits firmly in Santorini, where the pace slows to sunset dinners and boat excursions.",
@@ -102,8 +102,8 @@ export const packages: TravelPackage[] = [
     travelStyles: ["cultural", "food-wine"],
     duration: "11 days / 10 nights",
     travelerType: "Couple",
-    heroImage: themeImage("cityscape", 13),
-    gallery: themeGallery("cityscape", 3, 13),
+    heroImage: unsplashPhoto("1686560663630-890ee2005c47"),
+    gallery: [unsplashPhoto("1686560663650-8b8f6284a033"), unsplashPhoto("1574236170880-fbbca132d83d")],
     shortDescription: "Tokyo and Kyoto, connected by the Shinkansen, built for a first-time visit done properly.",
     overview: [
       "This is the itinerary we recommend most often for a first trip to Japan — enough time in Tokyo to go beyond the obvious, and enough time in Kyoto for the temples and gardens to actually sink in.",
@@ -129,8 +129,8 @@ export const packages: TravelPackage[] = [
     travelStyles: ["adventure", "luxury"],
     duration: "10 days / 9 nights",
     travelerType: "Couple",
-    heroImage: themeImage("safari", 0),
-    gallery: themeGallery("safari", 2, 0),
+    heroImage: unsplashPhoto("1704104502747-24e356eccb58"),
+    gallery: [unsplashPhoto("1673667618335-face21a8b1a8"), unsplashPhoto("1720005979515-60f2fa091fad")],
     shortDescription: "A safari through the Masai Mara followed by a beach close in Zanzibar.",
     overview: [
       "This itinerary is built around the migration season when possible, with three lodge changes through the Mara for varied game-viewing terrain, followed by a beach stay to close the trip.",
@@ -156,8 +156,8 @@ export const packages: TravelPackage[] = [
     travelStyles: ["cultural", "food-wine"],
     duration: "9 days / 8 nights",
     travelerType: "Couple",
-    heroImage: themeImage("cityscape", 10),
-    gallery: themeGallery("cityscape", 3, 10),
+    heroImage: unsplashPhoto("1578095172812-dcc191c5aed8"),
+    gallery: [unsplashPhoto("1585208798174-6cedd86e019a"), unsplashPhoto("1567437890326-0084ea9d99e9")],
     shortDescription: "Gaudí's Barcelona and Lisbon's hillside streets, joined by a short flight.",
     overview: [
       "Barcelona and Lisbon are different enough — Catalan modernism against Portuguese fado and tile work — that pairing them makes for a genuinely varied nine days.",
@@ -208,8 +208,8 @@ export const packages: TravelPackage[] = [
     travelStyles: ["luxury", "adventure", "food-wine"],
     duration: "10 days / 9 nights",
     travelerType: "Couple",
-    heroImage: themeImage("mountainNature", 8),
-    gallery: themeGallery("coastal", 2, 4),
+    heroImage: unsplashPhoto("1721155227599-bfb5e8913fc4"),
+    gallery: [unsplashPhoto("1626894169601-482d26b23f35"), unsplashPhoto("1489676138048-ba1786a7f026"), unsplashPhoto("1669093970508-608873ede961")],
     shortDescription: "South Africa's most complete single-country journey: city, wine country and safari.",
     overview: [
       "This itinerary moves from Cape Town's city energy into the slower pace of the Winelands, then closes with a private safari lodge in the Eastern Cape.",
@@ -234,8 +234,8 @@ export const packages: TravelPackage[] = [
     travelStyles: ["cultural", "adventure"],
     duration: "9 days / 8 nights",
     travelerType: "Group",
-    heroImage: themeImage("desertArchitecture", 0),
-    gallery: themeGallery("culturalHeritage", 2, 2),
+    heroImage: unsplashPhoto("1742158626626-446bdc84dc37"),
+    gallery: [unsplashPhoto("1570135460237-510ca82c6781"), unsplashPhoto("1772580310425-63f2290c2ba7")],
     shortDescription: "Marrakech's medina, the Atlas Mountains, and a night under the Sahara's stars.",
     overview: [
       "This itinerary threads together Morocco's imperial cities with a genuine desert excursion — a night in a Sahara camp is the centerpiece, reached via the Atlas Mountains.",
@@ -261,8 +261,8 @@ export const packages: TravelPackage[] = [
     travelStyles: ["wellness", "relaxation"],
     duration: "7 days / 6 nights",
     travelerType: "Solo or Couple",
-    heroImage: themeImage("tropicalBeach", 2),
-    gallery: themeGallery("mountainNature", 3, 5),
+    heroImage: unsplashPhoto("1682406187130-84561b4e0e78"),
+    gallery: [unsplashPhoto("1559628233-eb1b1a45564b"), unsplashPhoto("1544367567-0f2fcb009e0b")],
     shortDescription: "A week in Ubud built around yoga, spa treatments and rice-terrace mornings.",
     overview: [
       "This is a genuinely restorative itinerary — daily yoga, spa treatments, and enough unstructured time that clients leave rested rather than needing a second vacation to recover.",
@@ -287,8 +287,8 @@ export const packages: TravelPackage[] = [
     travelStyles: ["arts-culture", "luxury"],
     duration: "4 days / 3 nights",
     travelerType: "Couple",
-    heroImage: themeImage("cityscape", 5),
-    gallery: themeGallery("cityscape", 2, 5),
+    heroImage: unsplashPhoto("1653987255814-3b4c05832660"),
+    gallery: [unsplashPhoto("1569783721854-33a99b4c0bae"), unsplashPhoto("1606819717115-9159c900370b")],
     shortDescription: "A concentrated New York weekend built around museums and a Lincoln Center evening.",
     overview: [
       "This short-break itinerary is built for clients who want a serious arts-and-culture weekend rather than a general city visit — the Met, MoMA, and a Lincoln Center performance are the anchors.",
@@ -313,8 +313,8 @@ export const packages: TravelPackage[] = [
     travelStyles: ["business"],
     duration: "5 days / 4 nights",
     travelerType: "Corporate",
-    heroImage: themeImage("coastal", 3),
-    gallery: themeGallery("coastal", 2, 3),
+    heroImage: unsplashPhoto("1599069158346-684fee0e414a"),
+    gallery: [unsplashPhoto("1585208798174-6cedd86e019a"), unsplashPhoto("1513377888081-794d8e958972")],
     shortDescription: "A structured corporate retreat combining meeting space with Lisbon's coastal setting.",
     overview: [
       "This template pairs dedicated meeting space with enough downtime and local experiences that a corporate retreat doesn't feel like an extended conference.",

@@ -6,7 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
-import { themeImage } from "@/data/images";
+import { themeImage, unsplashPhoto } from "@/data/images";
 import { company } from "@/data/company";
 import { SwipeRow } from "@/components/ui/SwipeRow";
 
@@ -39,13 +39,13 @@ const occasions = [
     title: "Family Celebration in Barcelona",
     occasion: "Family Reunions",
     description: "Multi-generational trips built around a single milestone — a big birthday, an anniversary, a reunion.",
-    image: themeImage("peopleTravel", 5),
+    image: unsplashPhoto("1578095172812-dcc191c5aed8"),
   },
   {
     title: "Graduation Journey Through Europe",
     occasion: "Graduations",
     description: "A first serious trip to mark a real milestone, before the next chapter starts.",
-    image: themeImage("adventure", 0),
+    image: unsplashPhoto("1627556704290-2b1f5853ff78"),
   },
   {
     title: "A Retirement, Marked Properly",
@@ -63,7 +63,7 @@ const occasions = [
     title: "A Corporate Retreat in the Mediterranean",
     occasion: "Corporate Retreats",
     description: "Team travel that's actually worth leaving the office for — see also Corporate Travel and Institutional Travel.",
-    image: themeImage("business", 2),
+    image: unsplashPhoto("1770929356217-cc70b66b30c2"),
   },
 ];
 
@@ -81,7 +81,7 @@ export default function OccasionsPage() {
       <section className="py-16 md:py-24">
         <Container>
           <SectionHeading
-            eyebrow="Illustrative Journeys"
+            eyebrow="Journeys for Every Occasion"
             title="Starting points, not a fixed menu."
             description={`${company.sampleDataDisclaimer} Every journey is designed from a private consultation around your specific occasion.`}
           />

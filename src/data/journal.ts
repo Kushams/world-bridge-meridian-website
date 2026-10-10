@@ -1,5 +1,5 @@
 import { JournalArticle } from "./types";
-import { themeImage } from "./images";
+import { themeImage, unsplashPhoto } from "./images";
 
 export const journalCategories = [
   "Destinations",
@@ -22,7 +22,7 @@ export const journal: JournalArticle[] = [
     date: "2026-10-08",
     author: "World Bridge Meridian Editorial",
     readingTime: "6 min read",
-    heroImage: themeImage("luxuryResort", 1),
+    heroImage: unsplashPhoto("1692895591954-451050db22fd"),
     excerpt:
       "A bespoke travel planner designs a journey around you rather than selling you a package. Here's what that work involves, and when it's worth paying for.",
     body: [
@@ -59,7 +59,7 @@ export const journal: JournalArticle[] = [
     date: "2026-10-06",
     author: "World Bridge Meridian Editorial",
     readingTime: "7 min read",
-    heroImage: themeImage("culturalHeritage", 2),
+    heroImage: unsplashPhoto("1686560663630-890ee2005c47"),
     excerpt:
       "Temples, tea, craft and food: how to shape a first or return trip to Japan around culture rather than checklists.",
     body: [
@@ -169,7 +169,7 @@ export const journal: JournalArticle[] = [
     date: "2026-09-30",
     author: "World Bridge Meridian Editorial",
     readingTime: "4 min read",
-    heroImage: themeImage("business", 0),
+    heroImage: unsplashPhoto("1692895591954-451050db22fd"),
     excerpt:
       "Yes. World Bridge Meridian has accepted cryptocurrency since 2015. Here's exactly how a crypto payment for a journey works, and how to stay safe.",
     body: [
@@ -238,7 +238,7 @@ export const journal: JournalArticle[] = [
     date: "2025-12-15",
     author: "World Bridge Meridian Editorial",
     readingTime: "5 min read",
-    heroImage: themeImage("mountainNature", 3),
+    heroImage: unsplashPhoto("1748016276313-7f9b25de7376"),
     excerpt: "The word gets used loosely across the travel industry. Here's what it means when we use it.",
     body: [
       "A bespoke journey, to us, means the itinerary is built from your specific interests and constraints outward — not selected from a fixed catalog of packages and lightly adjusted.",
@@ -269,7 +269,7 @@ export const journal: JournalArticle[] = [
     date: "2025-11-05",
     author: "World Bridge Meridian Editorial",
     readingTime: "6 min read",
-    heroImage: themeImage("culturalHeritage", 5),
+    heroImage: unsplashPhoto("1761563071832-e548e022a706"),
     excerpt: "Some collections are large enough, and specific enough, to justify a dedicated journey.",
     body: [
       "The Uffizi in Florence rewards more than a single pass — a private early-access morning followed by a return visit later in the trip lets the collection breathe rather than blur together.",
@@ -317,7 +317,7 @@ export const journal: JournalArticle[] = [
     date: "2025-09-02",
     author: "World Bridge Meridian Editorial",
     readingTime: "5 min read",
-    heroImage: themeImage("cityscape", 10),
+    heroImage: unsplashPhoto("1758797316165-986ec92e7ad2"),
     excerpt: "The structural choices that separate a good offsite from a tedious one.",
     body: [
       "The retreats that work best block meeting time into focused morning sessions, leaving afternoons genuinely free rather than filling them with mandatory group activities.",
@@ -349,7 +349,7 @@ export const journal: JournalArticle[] = [
     date: "2025-07-30",
     author: "World Bridge Meridian Editorial",
     readingTime: "4 min read",
-    heroImage: themeImage("cityscape", 13),
+    heroImage: unsplashPhoto("1598957232485-fab51e0ed7e8"),
     excerpt: "Bloom dates shift every year — here's how we plan around the uncertainty.",
     body: [
       "Cherry blossom bloom dates in Tokyo typically fall in late March to early April, but the exact window shifts year to year and can only be forecast reliably a few weeks in advance.",
@@ -365,7 +365,7 @@ export const journal: JournalArticle[] = [
     date: "2025-06-19",
     author: "World Bridge Meridian Editorial",
     readingTime: "3 min read",
-    heroImage: themeImage("cruiseAndSea", 0),
+    heroImage: unsplashPhoto("1543797414-a0c3ad076f7c"),
     excerpt: "A short note on how we think about our role in a client's journey.",
     body: [
       "We're often asked why we don't operate more like a conventional booking site — search a flight, search a hotel, check out. The honest answer is that the parts of a trip clients remember rarely come from a single transaction.",
@@ -380,7 +380,7 @@ export const journal: JournalArticle[] = [
     date: "2025-05-12",
     author: "World Bridge Meridian Editorial",
     readingTime: "5 min read",
-    heroImage: themeImage("mountainNature", 8),
+    heroImage: unsplashPhoto("1721155227599-bfb5e8913fc4"),
     excerpt: "A realistic breakdown of how to split time between the city, the Winelands and a safari extension.",
     body: [
       "Three nights in Cape Town is enough for Table Mountain, the Waterfront and Cape Point, without feeling rushed. Two nights is workable but tight if weather affects the cable car.",

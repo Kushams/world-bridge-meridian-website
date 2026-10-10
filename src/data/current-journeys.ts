@@ -1,5 +1,5 @@
 import { CurrentJourney } from "./types";
-import { themeImage } from "./images";
+import { unsplashPhoto, themeImage } from "./images";
 
 /**
  * These are SAMPLE / INDICATIVE journeys, not a live availability feed —
@@ -14,7 +14,7 @@ export const currentJourneys: CurrentJourney[] = [
     travelPeriod: "June – August 2026",
     duration: "8–12 days",
     travelType: "Family / Couples",
-    heroImage: themeImage("cityscape", 1),
+    heroImage: unsplashPhoto("1743880475189-e36f80868bcc"),
     indicativePricing: { label: "From", amount: 2650, currency: "USD", unit: "per person" },
     status: "Indicative Journey",
   },
@@ -25,9 +25,9 @@ export const currentJourneys: CurrentJourney[] = [
     travelPeriod: "May – October 2026",
     duration: "7–10 nights",
     travelType: "Cruise",
-    heroImage: themeImage("cruiseAndSea", 0),
+    heroImage: unsplashPhoto("1617170788899-ef9587d6e63f"),
     indicativePricing: { label: "From", amount: 1650, currency: "USD", unit: "per person" },
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "christmas-in-europe",
@@ -36,7 +36,7 @@ export const currentJourneys: CurrentJourney[] = [
     travelPeriod: "December 2026",
     duration: "6–8 days",
     travelType: "Family / Couples",
-    heroImage: themeImage("cityscape", 9),
+    heroImage: unsplashPhoto("1761273075473-889349a92fa3"),
     indicativePricing: { label: "From", amount: 2450, currency: "USD", unit: "per person" },
     status: "Indicative Journey",
   },
@@ -47,9 +47,9 @@ export const currentJourneys: CurrentJourney[] = [
     travelPeriod: "December 2026 – March 2027",
     duration: "7–8 nights",
     travelType: "Cruise / Beach",
-    heroImage: themeImage("tropicalBeach", 1),
+    heroImage: unsplashPhoto("1760429613920-97150368ed79"),
     indicativePricing: { label: "From", amount: 1850, currency: "USD", unit: "per person" },
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "barcelona-family-journey",
@@ -58,7 +58,7 @@ export const currentJourneys: CurrentJourney[] = [
     travelPeriod: "Year-round",
     duration: "5–7 days",
     travelType: "Family",
-    heroImage: themeImage("cityscape", 10),
+    heroImage: unsplashPhoto("1578095172812-dcc191c5aed8"),
     indicativePricing: { label: "From", amount: 2250, currency: "USD", unit: "per person" },
     status: "Enquiry-Based Journey",
   },
@@ -69,7 +69,7 @@ export const currentJourneys: CurrentJourney[] = [
     travelPeriod: "Year-round",
     duration: "4–6 days",
     travelType: "Arts & Culture",
-    heroImage: themeImage("cityscape", 1),
+    heroImage: unsplashPhoto("1587648415693-4a5362b2ce41"),
     indicativePricing: { label: "From", amount: 2750, currency: "USD", unit: "per person" },
     status: "Enquiry-Based Journey",
   },
@@ -80,7 +80,7 @@ export const currentJourneys: CurrentJourney[] = [
     travelPeriod: "Year-round",
     duration: "4–5 days",
     travelType: "Couples",
-    heroImage: themeImage("culturalHeritage", 0),
+    heroImage: unsplashPhoto("1552832230-c0197dd311b5"),
     indicativePricing: { label: "From", amount: 2450, currency: "USD", unit: "per person" },
     status: "Enquiry-Based Journey",
   },
@@ -102,7 +102,7 @@ export const currentJourneys: CurrentJourney[] = [
     travelPeriod: "Late March – Early April 2027",
     duration: "10–11 days",
     travelType: "Cultural",
-    heroImage: themeImage("cityscape", 13),
+    heroImage: unsplashPhoto("1598957232485-fab51e0ed7e8"),
     indicativePricing: { label: "From", amount: 3150, currency: "USD", unit: "per person" },
     status: "Indicative Journey",
   },
@@ -113,9 +113,9 @@ export const currentJourneys: CurrentJourney[] = [
     travelPeriod: "July – October 2026",
     duration: "9–10 days",
     travelType: "Adventure",
-    heroImage: themeImage("safari", 0),
+    heroImage: unsplashPhoto("1673667618335-face21a8b1a8"),
     indicativePricing: { label: "From", amount: 4250, currency: "USD", unit: "per person" },
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
 ];
 

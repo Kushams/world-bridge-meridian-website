@@ -110,7 +110,7 @@ function buildIndex(): SearchItem[] {
       type: "Event",
       title: e.title,
       subtitle: `${eventCategoryLabels[e.category]} · ${e.city}`,
-      href: "/calendar",
+      href: "/events",
       image: e.heroImage,
       keywords: `${e.title} ${e.organizer} ${e.city} ${e.country} ${eventCategoryLabels[e.category]}`.toLowerCase(),
     });

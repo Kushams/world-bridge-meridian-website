@@ -37,9 +37,6 @@ export function ReviewCard({ review }: { review: Review }) {
           <p className="text-stone">
             {review.destination} · {travelStyleLabel(review.tripType)} · {review.year}
           </p>
-          <p className="mt-2 text-xs uppercase tracking-wide text-stone-dim">
-            Sample testimonial
-          </p>
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
-import { themeImage } from "@/data/images";
+import { unsplashPhoto } from "@/data/images";
 import { flightProvider } from "@/lib/providers";
 import type { CabinClass, TripType } from "@/lib/providers/types";
 import { track } from "@/lib/analytics";
@@ -73,7 +73,7 @@ export function FlightSearchPage() {
         eyebrow="Flight Search"
         title="Search flights, then let us design the journey around them."
         description="See real airline options for your route and dates. World Bridge Meridian doesn't sell tickets directly — once you've found a flight worth building a trip around, we take it from there."
-        image={themeImage("mountainNature", 1)}
+        image={unsplashPhoto("1545132147-d037e6c54cfd")}
         imageAlt="An aircraft wing above clouds"
         size="sm"
       />

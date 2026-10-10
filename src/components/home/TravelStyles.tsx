@@ -3,14 +3,14 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/ui/Reveal";
-import { themeImage } from "@/data/images";
+import { themeImage, unsplashPhoto } from "@/data/images";
 import { SwipeRow } from "@/components/ui/SwipeRow";
 
 const styles = [
   { label: "Luxury Travel", href: "/luxury-travel", image: themeImage("luxuryResort", 0) },
   { label: "Bespoke Journeys", href: "/bespoke", image: themeImage("mountainNature", 1) },
   { label: "Private Journeys", href: "/private-journeys", image: themeImage("luxuryResort", 2) },
-  { label: "Arts & Culture", href: "/arts-culture", image: themeImage("culturalHeritage", 3) },
+  { label: "Arts & Culture", href: "/arts-culture", image: unsplashPhoto("1512540452972-baac55d40ef1", 1000) },
   { label: "Family Travel", href: "/family-travel", image: themeImage("peopleTravel", 1) },
   { label: "Couples Travel", href: "/couples-travel", image: themeImage("peopleTravel", 0) },
   { label: "Group Travel", href: "/group-travel", image: themeImage("peopleTravel", 2) },

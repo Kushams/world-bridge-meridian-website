@@ -6,7 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { Reveal } from "@/components/ui/Reveal";
-import { themeImage } from "@/data/images";
+import { themeImage, unsplashPhoto } from "@/data/images";
 import { company } from "@/data/company";
 import { SwipeRow } from "@/components/ui/SwipeRow";
 
@@ -25,7 +25,7 @@ const concepts = [
   {
     title: "Private Italian Art Journey",
     description: "Private after-hours access and art-historian guiding across Rome, Florence and Venice, without a group itinerary to work around.",
-    image: themeImage("culturalHeritage", 3),
+    image: unsplashPhoto("1687817997684-c9335cce7c5c"),
   },
   {
     title: "Private African Safari",
@@ -35,12 +35,12 @@ const concepts = [
   {
     title: "Private Family Celebration",
     description: "A milestone birthday, anniversary or multi-generational reunion, built around a single villa or private property buyout.",
-    image: themeImage("peopleTravel", 3),
+    image: unsplashPhoto("1756982477661-107a1c72c8fd"),
   },
   {
     title: "Private Yacht Journey",
     description: "A chartered yacht itinerary through the Greek Islands, the Adriatic or the Caribbean, crewed and provisioned to your preferences.",
-    image: themeImage("cruiseAndSea", 1),
+    image: unsplashPhoto("1777684862302-7c0973a30095"),
   },
   {
     title: "Private European Cultural Journey",
@@ -63,7 +63,7 @@ export default function PrivateJourneysPage() {
       <section className="py-16 md:py-24">
         <Container>
           <SectionHeading
-            eyebrow="Illustrative Concepts"
+            eyebrow="Journey Concepts"
             title="A starting point, not a fixed menu."
             description={`${company.sampleDataDisclaimer} Every private journey is designed from a private consultation — these are the kinds of journeys we're most often asked to build.`}
           />

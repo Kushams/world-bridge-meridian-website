@@ -1,5 +1,5 @@
 import { Stay } from "./types";
-import { themeImage } from "./images";
+import { unsplashPhoto } from "./images";
 
 /**
  * Generic, descriptive stay entries — not real named hotel brands. No
@@ -11,7 +11,7 @@ export const stays: Stay[] = [
     name: "Five-Star Midtown Hotel with Skyline Views",
     category: "Luxury Hotels",
     destinationSlug: "new-york",
-    heroImage: themeImage("cityscape", 5),
+    heroImage: unsplashPhoto("1609945648638-cefddce6e6d8"),
     description: "A well-located Midtown property with skyline-facing rooms and easy access to the museum district.",
   },
   {
@@ -19,7 +19,7 @@ export const stays: Stay[] = [
     name: "Elegant Left Bank Hotel",
     category: "Boutique Hotels",
     destinationSlug: "paris",
-    heroImage: themeImage("cityscape", 1),
+    heroImage: unsplashPhoto("1646355798343-75c4194b59c7"),
     description: "A quietly luxurious hotel on the Left Bank, walkable to the Musée d'Orsay and Saint-Germain.",
   },
   {
@@ -27,7 +27,7 @@ export const stays: Stay[] = [
     name: "Caldera-View Suites with Private Plunge Pools",
     category: "Resorts",
     destinationSlug: "santorini",
-    heroImage: themeImage("coastal", 0),
+    heroImage: unsplashPhoto("1672622851784-0dbd3df4c088"),
     description: "Cliffside suites in Oia with uninterrupted caldera views, most with a private plunge pool.",
   },
   {
@@ -35,7 +35,7 @@ export const stays: Stay[] = [
     name: "Restored Countryside Villa in Chianti",
     category: "Villas",
     destinationSlug: "florence",
-    heroImage: themeImage("mountainNature", 4),
+    heroImage: unsplashPhoto("1756365951512-b15739bfbf4c"),
     description: "A private villa among Chianti's vineyards, suited to families and small groups wanting space.",
   },
   {
@@ -43,7 +43,7 @@ export const stays: Stay[] = [
     name: "Family Suites Near Central Park",
     category: "Family-Friendly Stays",
     destinationSlug: "new-york",
-    heroImage: themeImage("peopleTravel", 2),
+    heroImage: unsplashPhoto("1631499545782-7d09b3a7dcf7"),
     description: "Connecting and multi-room suites within walking distance of Central Park and the museum mile.",
   },
   {
@@ -51,7 +51,7 @@ export const stays: Stay[] = [
     name: "Restored Riad in the Marrakech Medina",
     category: "Cultural-Located Stays",
     destinationSlug: "marrakech",
-    heroImage: themeImage("desertArchitecture", 0),
+    heroImage: unsplashPhoto("1628642004970-1da51c8c7dec"),
     description: "A traditional riad with a private courtyard, steps from the souks and Jemaa el-Fnaa.",
   },
   {
@@ -59,7 +59,7 @@ export const stays: Stay[] = [
     name: "Overwater Villa with Private Pool",
     category: "Resorts",
     destinationSlug: "maldives",
-    heroImage: themeImage("tropicalBeach", 1),
+    heroImage: unsplashPhoto("1590523277543-a94d2e4eb00b"),
     description: "A private overwater villa with direct lagoon access and a plunge pool over the reef.",
   },
   {
@@ -67,7 +67,7 @@ export const stays: Stay[] = [
     name: "Traditional Ryokan with Private Onsen",
     category: "Cultural-Located Stays",
     destinationSlug: "kyoto",
-    heroImage: themeImage("culturalHeritage", 4),
+    heroImage: unsplashPhoto("1682787283049-d37de81646b4"),
     description: "A traditional ryokan near Gion, with kaiseki dinners served in-room and a private onsen bath.",
   },
   {
@@ -75,7 +75,7 @@ export const stays: Stay[] = [
     name: "Winelands Estate Lodge",
     category: "Boutique Hotels",
     destinationSlug: "cape-town",
-    heroImage: themeImage("mountainNature", 8),
+    heroImage: unsplashPhoto("1489676138048-ba1786a7f026"),
     description: "A small estate lodge among Stellenbosch's vineyards, with vineyard views from every room.",
   },
   {
@@ -83,7 +83,7 @@ export const stays: Stay[] = [
     name: "Luxury Tented Safari Camp",
     category: "Resorts",
     destinationSlug: "nairobi",
-    heroImage: themeImage("safari", 1),
+    heroImage: unsplashPhoto("1535759554012-8cbbc491f0b7"),
     description: "A small luxury tented camp within the Masai Mara, with private guiding and full-board dining.",
   },
   {
@@ -91,7 +91,7 @@ export const stays: Stay[] = [
     name: "Harbor-View Hotel Near Circular Quay",
     category: "Luxury Hotels",
     destinationSlug: "sydney",
-    heroImage: themeImage("culturalHeritage", 2),
+    heroImage: unsplashPhoto("1590716209211-ea74d5f63573"),
     description: "A harbor-facing hotel within walking distance of the Opera House and Circular Quay.",
   },
   {
@@ -99,7 +99,7 @@ export const stays: Stay[] = [
     name: "Private Pool Villa in Ubud",
     category: "Villas",
     destinationSlug: "bali",
-    heroImage: themeImage("tropicalBeach", 2),
+    heroImage: unsplashPhoto("1675657144361-98ae33e6b6f9"),
     description: "A private villa set among rice terraces, with daily housekeeping and an in-villa pool.",
   },
   {
@@ -107,7 +107,7 @@ export const stays: Stay[] = [
     name: "Balcony Stateroom, Rhine River Vessel",
     category: "Cruise Accommodation",
     destinationSlug: "amsterdam",
-    heroImage: themeImage("cityscape", 18),
+    heroImage: unsplashPhoto("1772292192270-862979c924c8"),
     description: "A private-balcony stateroom aboard a boutique river vessel sailing the Rhine.",
   },
   {
@@ -115,7 +115,7 @@ export const stays: Stay[] = [
     name: "Beachfront Resort, Northeast Coast",
     category: "Resorts",
     destinationSlug: "zanzibar",
-    heroImage: themeImage("tropicalBeach", 0),
+    heroImage: unsplashPhoto("1760429613920-97150368ed79"),
     description: "A beachfront resort on Zanzibar's quieter northeast coast, with direct beach access.",
   },
 ];

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ArtListingsPage } from "@/components/specialty/ArtListingsPage";
-import { themeImage } from "@/data/images";
+import { unsplashPhoto } from "@/data/images";
 
 export const metadata: Metadata = {
   title: "Art Fairs",
@@ -14,7 +14,7 @@ export default function ArtFairsPage() {
       eyebrow="Arts & Culture"
       title="Art fairs worth traveling for."
       intro="The major international art fairs — the handful of weeks a year when a city's gallery scene, collectors and artists all converge at once."
-      heroImage={themeImage("culturalHeritage", 12)}
+      heroImage={unsplashPhoto("1743119844808-fefd446de533")}
       heroImageAlt="A busy art fair hall"
       category="fair"
       ctaLabel="Plan an Art Fair Trip"
