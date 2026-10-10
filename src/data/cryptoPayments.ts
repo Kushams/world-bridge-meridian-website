@@ -201,24 +201,6 @@ export const cryptoPaymentOptions: CryptoPaymentOption[] = [
     enabled: true,
     notes: "Confirmed by WBM. No destination tag is needed.",
   },
-  {
-    id: "doge-dogecoin",
-    asset: "DOGE",
-    network: "Dogecoin",
-    displayName: "Dogecoin (DOGE)",
-    walletAddress: "D9ZvJd3wk783FTAZ5XVcPmDSd6iqQRNQAU",
-    enabled: true,
-    notes: "Confirmed by WBM.",
-  },
-  {
-    id: "bch-bitcoincash",
-    asset: "BCH",
-    network: "Bitcoin Cash",
-    displayName: "Bitcoin Cash (BCH)",
-    walletAddress: "qzhpljrj3kljh9vm0lttxz5f0fl47y66zsu0rkqtdn",
-    enabled: true,
-    notes: "Confirmed by WBM.",
-  },
 ];
 
 export function enabledCryptoPaymentOptions(): CryptoPaymentOption[] {
