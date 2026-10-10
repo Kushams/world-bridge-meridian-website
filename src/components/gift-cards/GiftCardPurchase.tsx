@@ -250,6 +250,7 @@ function GiftCardForm() {
           <CryptoPayStep
             idPrefix="gc"
             totalLabel={totalOk ? usd(total) : null}
+            amountUsd={totalOk ? total : null}
             optionId={optionId}
             onOption={setOptionId}
             txHash={txHash}

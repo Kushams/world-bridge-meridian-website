@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import QRCode from "qrcode";
 import { enabledCryptoPaymentOptions } from "@/data/cryptoPayments";
+import { WALLET_PAY_TOKENS } from "@/data/walletConnect";
+import { canPayWithWallet, payWithWallet } from "@/lib/walletPay";
 
 const field =
   "w-full rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory placeholder:text-stone-dim outline-none focus:border-gold";
@@ -16,6 +18,7 @@ const label = "mb-2 block text-xs uppercase tracking-wide text-stone";
 export function CryptoPayStep({
   idPrefix,
   totalLabel,
+  amountUsd,
   optionId,
   onOption,
   txHash,
@@ -24,6 +27,8 @@ export function CryptoPayStep({
   idPrefix: string;
   /** e.g. "US$1,000.00" or null while the amount is invalid. */
   totalLabel: string | null;
+  /** The same total as a number, so a connected wallet can send it exactly. */
+  amountUsd?: number | null;
   optionId: string;
   onOption: (id: string) => void;
   txHash: string;
@@ -35,6 +40,25 @@ export function CryptoPayStep({
   const [asset, setAsset] = useState<string>(selected?.asset ?? "");
   const [qr, setQr] = useState<string | null>(null);
   const networks = options.filter((o) => o.asset === asset);
+  const [walletBusy, setWalletBusy] = useState(false);
+  const [walletMsg, setWalletMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const cents = amountUsd && amountUsd > 0 ? Math.round(amountUsd * 100) : 0;
+  const walletReady = canPayWithWallet(selected) && cents > 0;
+
+  async function payFromWallet() {
+    if (!selected || !walletReady || walletBusy) return;
+    setWalletBusy(true);
+    setWalletMsg(null);
+    try {
+      const hash = await payWithWallet(selected, cents);
+      onTxHash(hash);
+      setWalletMsg({ ok: true, text: "Payment sent. Your transaction ID has been filled in below. Now submit the form so we can verify it." });
+    } catch (e) {
+      setWalletMsg({ ok: false, text: e instanceof Error ? e.message : "Something went wrong. Nothing was sent." });
+    } finally {
+      setWalletBusy(false);
+    }
+  }
 
   useEffect(() => {
     const addr = selected?.walletAddress;
@@ -102,6 +126,25 @@ export function CryptoPayStep({
             Use only this network. The wrong network can mean permanent loss. If the amount we receive differs from your order,
             we&apos;ll contact you before issuing anything.
           </p>
+        </div>
+      ) : null}
+      {selected && canPayWithWallet(selected) ? (
+        <div className="rounded-card border hairline p-5">
+          <p className="text-sm font-semibold text-ivory">Or pay straight from your wallet</p>
+          <p className="mt-1 text-xs text-stone leading-relaxed">
+            Connect Trust Wallet, MetaMask or another wallet. It will ask you to approve sending {totalLabel ?? "your total"} in {selected.asset} on {WALLET_PAY_TOKENS[selected.id]?.chainName}.
+            Check the amount and network in your wallet before you approve.
+          </p>
+          <button
+            type="button"
+            disabled={!walletReady || walletBusy}
+            onClick={payFromWallet}
+            className="mt-3 rounded-full bg-ivory px-6 py-2.5 text-xs font-semibold uppercase tracking-wide text-ink hover:opacity-90 disabled:opacity-50"
+          >
+            {walletBusy ? "Waiting for your wallet…" : "Pay with my wallet"}
+          </button>
+          {!walletReady ? <p className="mt-2 text-xs text-stone-dim">Choose a valid amount above first.</p> : null}
+          {walletMsg ? <p role="status" className={`mt-3 text-xs ${walletMsg.ok ? "text-gold" : "text-red-500"}`}>{walletMsg.text}</p> : null}
         </div>
       ) : null}
       <div>

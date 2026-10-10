@@ -148,7 +148,7 @@ function CreditsForm() {
 
       <section className="space-y-4 border-t hairline pt-8">
         <h3 className="font-display text-xl text-ivory md:text-2xl"><span className="mr-2 text-gold">2.</span>Pay with cryptocurrency</h3>
-        <CryptoPayStep idPrefix="tc" totalLabel={amountOk ? fmtUsd(amount) : null} optionId={optionId} onOption={setOptionId} txHash={txHash} onTxHash={setTxHash} />
+        <CryptoPayStep idPrefix="tc" totalLabel={amountOk ? fmtUsd(amount) : null} amountUsd={amountOk ? amount : null} optionId={optionId} onOption={setOptionId} txHash={txHash} onTxHash={setTxHash} />
       </section>
 
       <div className="space-y-4 border-t hairline pt-8">
