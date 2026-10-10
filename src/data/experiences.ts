@@ -1,5 +1,5 @@
 import { Experience } from "./types";
-import { themeImage } from "./images";
+import { themeImage, unsplashPhoto } from "./images";
 
 export const experiences: Experience[] = [
   {
@@ -7,7 +7,7 @@ export const experiences: Experience[] = [
     title: "An Evening at the Rome Opera",
     category: "Opera",
     destinationSlug: "rome",
-    heroImage: themeImage("culturalHeritage", 5),
+    heroImage: unsplashPhoto("1783184020041-02014528554c"),
     shortDescription: "Private box seating at Teatro dell'Opera, arranged around the season's program.",
     description: [
       "We arrange preferred seating and, where available, a private box for a performance at Rome's opera house, paired with a pre-theatre dinner nearby.",
@@ -20,7 +20,7 @@ export const experiences: Experience[] = [
     title: "Private Early Access: The Uffizi Gallery",
     category: "Museums",
     destinationSlug: "florence",
-    heroImage: themeImage("culturalHeritage", 6),
+    heroImage: unsplashPhoto("1761563071832-e548e022a706"),
     shortDescription: "A private-guided morning through the Uffizi before public opening hours.",
     description: [
       "We arrange early access to the Uffizi with a private art historian guide, ahead of the museum's public opening — the galleries at their quietest.",
@@ -32,7 +32,7 @@ export const experiences: Experience[] = [
     title: "Private Tea Ceremony in Kyoto",
     category: "Culture",
     destinationSlug: "kyoto",
-    heroImage: themeImage("culturalHeritage", 4),
+    heroImage: unsplashPhoto("1682787283049-d37de81646b4"),
     shortDescription: "A traditional tea ceremony hosted in a private setting with an English-speaking host.",
     description: [
       "A quiet, unhurried introduction to the Japanese tea ceremony, hosted in a traditional setting away from Kyoto's more visited temples.",
@@ -44,7 +44,7 @@ export const experiences: Experience[] = [
     title: "Private Cooking Class in the Tuscan Countryside",
     category: "Food & Wine",
     destinationSlug: "florence",
-    heroImage: themeImage("foodAndWine", 0),
+    heroImage: unsplashPhoto("1634151739970-bba3910d0d36"),
     shortDescription: "A hands-on pasta and regional cooking class at a countryside farmhouse.",
     description: [
       "A morning market visit followed by a private cooking class at a Tuscan farmhouse, ending with the meal you've prepared over a long lunch.",
@@ -56,7 +56,7 @@ export const experiences: Experience[] = [
     title: "Champagne House Cellar Tasting",
     category: "Food & Wine",
     destinationSlug: "paris",
-    heroImage: themeImage("foodAndWine", 2),
+    heroImage: unsplashPhoto("1562663729-4971d6802f4a"),
     shortDescription: "A private cellar tour and tasting at a Champagne house, with transportation from Paris.",
     description: [
       "A day trip from Paris into Champagne, including a private cellar tour and tasting arranged around the house's availability.",
@@ -68,7 +68,7 @@ export const experiences: Experience[] = [
     title: "Guided Walking Safari, Masai Mara",
     category: "Adventure",
     destinationSlug: "nairobi",
-    heroImage: themeImage("safari", 1),
+    heroImage: unsplashPhoto("1720005979515-60f2fa091fad"),
     shortDescription: "A guided walking safari led by a professional local guide, alongside standard game drives.",
     description: [
       "For clients wanting more than a vehicle-based safari, we arrange a guided walking excursion with an experienced local guide — a different, closer perspective on the bush.",
@@ -80,7 +80,7 @@ export const experiences: Experience[] = [
     title: "Overnight Sahara Desert Camp",
     category: "Adventure",
     destinationSlug: "marrakech",
-    heroImage: themeImage("desertArchitecture", 0),
+    heroImage: unsplashPhoto("1613169620329-6785c004d900"),
     shortDescription: "A camel trek to a private desert camp, with dinner under the stars.",
     description: [
       "An overnight stay in a private Sahara camp, reached by camel at sunset, with a traditional dinner and stargazing before returning the following morning.",
@@ -92,7 +92,7 @@ export const experiences: Experience[] = [
     title: "Private Catamaran Sunset Sail",
     category: "Romantic Experiences",
     destinationSlug: "santorini",
-    heroImage: themeImage("coastal", 0),
+    heroImage: unsplashPhoto("1631390905176-6cf10f5e804c"),
     shortDescription: "A private catamaran along the caldera, timed for sunset.",
     description: [
       "A private sailing excursion around Santorini's caldera, with swimming stops and a sunset dinner served onboard.",
@@ -128,7 +128,7 @@ export const experiences: Experience[] = [
     title: "Sydney Opera House Backstage Tour",
     category: "Opera",
     destinationSlug: "sydney",
-    heroImage: themeImage("culturalHeritage", 2),
+    heroImage: unsplashPhoto("1590716209211-ea74d5f63573"),
     shortDescription: "A guided backstage tour paired with evening performance tickets where available.",
     description: [
       "A behind-the-scenes look at one of the world's most recognizable performance venues, paired with tickets to that evening's program when available.",
@@ -140,7 +140,7 @@ export const experiences: Experience[] = [
     title: "Private Bosphorus Boat Crossing",
     category: "Culture",
     destinationSlug: "istanbul",
-    heroImage: themeImage("culturalHeritage", 8),
+    heroImage: unsplashPhoto("1686071973008-e9e7a14bc20b"),
     shortDescription: "A private boat crossing between Istanbul's European and Asian shores.",
     description: [
       "A private boat, rather than the public ferry, crossing the Bosphorus with stops for photographs and a waterside lunch.",
@@ -152,7 +152,7 @@ export const experiences: Experience[] = [
     title: "Guided Dim Sum & Market Tour",
     category: "Food & Wine",
     destinationSlug: "hong-kong",
-    heroImage: themeImage("foodAndWine", 3),
+    heroImage: unsplashPhoto("1523905330026-b8bd1f5f320e"),
     shortDescription: "A morning of dim sum houses and wet markets with a local food guide.",
     description: [
       "A guided morning moving between traditional dim sum houses and Hong Kong's wet markets, led by a local food specialist.",
@@ -164,7 +164,7 @@ export const experiences: Experience[] = [
     title: "Private Winelands Estate Tasting",
     category: "Food & Wine",
     destinationSlug: "cape-town",
-    heroImage: themeImage("foodAndWine", 2),
+    heroImage: unsplashPhoto("1489676138048-ba1786a7f026"),
     shortDescription: "A private tasting and cellar tour at a Stellenbosch wine estate.",
     description: [
       "A private, guided tasting at a Cape Winelands estate, including a cellar tour and a pairing lunch overlooking the vineyards.",
@@ -176,7 +176,7 @@ export const experiences: Experience[] = [
     title: "Private Gaudí Architecture Tour",
     category: "Architecture",
     destinationSlug: "barcelona",
-    heroImage: themeImage("cityscape", 10),
+    heroImage: unsplashPhoto("1579282240050-352db0a14c21"),
     shortDescription: "A private architectural historian's tour through Gaudí's Barcelona.",
     description: [
       "A private-guided day through Gaudí's major works, with skip-the-line access arranged at the Sagrada Família.",
@@ -188,7 +188,7 @@ export const experiences: Experience[] = [
     title: "Private Sushi Masterclass",
     category: "Food & Wine",
     destinationSlug: "tokyo",
-    heroImage: themeImage("foodAndWine", 1),
+    heroImage: unsplashPhoto("1502364271109-0a9a75a2a9df"),
     shortDescription: "A hands-on sushi class led by a chef, including a market visit.",
     description: [
       "A market visit followed by a private hands-on sushi class, led by a chef in a small-group or fully private setting.",
@@ -212,7 +212,7 @@ export const experiences: Experience[] = [
     title: "Lavender Fields Photography Excursion",
     category: "Nature",
     destinationSlug: "paris",
-    heroImage: themeImage("mountainNature", 7),
+    heroImage: unsplashPhoto("1600759487717-62bbb608106e"),
     shortDescription: "A guided drive through Provence's lavender fields at peak bloom, with a private photographer.",
     description: [
       "A seasonal excursion (typically late June through July) through Provence's lavender fields, with a photographer on hand for the group.",
@@ -224,7 +224,7 @@ export const experiences: Experience[] = [
     title: "Waiheke Island Wine Day",
     category: "Food & Wine",
     destinationSlug: "auckland",
-    heroImage: themeImage("foodAndWine", 2),
+    heroImage: unsplashPhoto("1545309451-fc04a9c4bc5b"),
     shortDescription: "A private ferry and vineyard-hopping day on Waiheke Island.",
     description: [
       "A day trip by private ferry to Waiheke Island, visiting a curated selection of vineyards with tastings arranged in advance.",
@@ -236,7 +236,7 @@ export const experiences: Experience[] = [
     title: "Corporate Team Sailing Day",
     category: "Events",
     destinationSlug: "barcelona",
-    heroImage: themeImage("cruiseAndSea", 0),
+    heroImage: unsplashPhoto("1501771924607-209f42a6e7e4"),
     shortDescription: "A chartered sailing day for corporate groups, with an optional team-building format.",
     description: [
       "A chartered boat day for corporate groups — configurable as a purely social afternoon or with a light team-building structure built in.",

@@ -1,5 +1,5 @@
 import { Review } from "./types";
-import { themeImage } from "./images";
+import { unsplashPhoto } from "./images";
 
 /**
  * All entries here are SAMPLE testimonials for development/design purposes.
@@ -22,7 +22,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "We told them roughly what we wanted and they built the rest. The pace through Rome, Florence and Venice was exactly right for two kids under ten.",
-    image: themeImage("culturalHeritage", 0),
+    image: unsplashPhoto("1687817997684-c9335cce7c5c"),
     sample: true,
   },
   {
@@ -34,7 +34,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Every detail of the honeymoon was arranged before we landed. The caldera suite was even better than the photos.",
-    image: themeImage("coastal", 0),
+    image: unsplashPhoto("1696519669474-3001c0e2b548"),
     sample: true,
   },
   {
@@ -46,7 +46,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "The safari logistics alone would have been overwhelming to plan ourselves. Every bush flight and lodge transfer was seamless.",
-    image: themeImage("safari", 0),
+    image: unsplashPhoto("1704104502747-24e356eccb58"),
     sample: true,
   },
   {
@@ -58,7 +58,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "The private tea ceremony in Kyoto was the highlight of the whole trip, and something we never would have found on our own.",
-    image: themeImage("culturalHeritage", 4),
+    image: unsplashPhoto("1686560663630-890ee2005c47"),
     sample: true,
   },
   {
@@ -70,7 +70,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "A well-organized cruise pairing with a few days in Rome beforehand. Communication throughout the planning process was excellent.",
-    image: themeImage("cruiseAndSea", 0),
+    image: unsplashPhoto("1617170788899-ef9587d6e63f"),
     sample: true,
   },
   {
@@ -82,7 +82,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Cape Town, the Winelands and a short safari extension — a lot to coordinate, and it all ran smoothly.",
-    image: themeImage("mountainNature", 8),
+    image: unsplashPhoto("1604763655221-b98ebdac6ddf"),
     sample: true,
   },
   {
@@ -94,7 +94,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "They arranged opera tickets that we couldn't get on our own, plus a private guide at the Kunsthistorisches Museum.",
-    image: themeImage("culturalHeritage", 7),
+    image: unsplashPhoto("1516550893923-42d28e5677af"),
     sample: true,
   },
   {
@@ -106,7 +106,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "The overwater villa recommendation matched exactly what we wanted, right down to the reef access.",
-    image: themeImage("tropicalBeach", 1),
+    image: unsplashPhoto("1697898109604-e06e88b15271"),
     sample: true,
   },
   {
@@ -118,7 +118,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "The Sahara overnight was arranged with almost no notice on our part — they made it happen within a week.",
-    image: themeImage("desertArchitecture", 0),
+    image: unsplashPhoto("1597212618440-806262de4f6b"),
     sample: true,
   },
   {
@@ -130,7 +130,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Our leadership retreat for 24 people was handled from meeting logistics through to the closing dinner. Genuinely stress-free for our team.",
-    image: themeImage("business", 2),
+    image: unsplashPhoto("1558102400-72da9fdbecae"),
     sample: true,
   },
   {
@@ -142,7 +142,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Exactly the reset I was hoping for. The villa and the wellness schedule were both perfectly judged.",
-    image: themeImage("wellness", 0),
+    image: unsplashPhoto("1555400038-63f5ba517a47"),
     sample: true,
   },
   {
@@ -154,7 +154,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "A concentrated few days that still felt unrushed. The museum guide was fantastic with our teenagers.",
-    image: themeImage("cityscape", 5),
+    image: unsplashPhoto("1485871981521-5b1fd3805eee"),
     sample: true,
   },
   {
@@ -166,7 +166,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "The Santa Monica to Malibu drive they built into day one set the tone for the whole trip. Every hotel pick was right.",
-    image: themeImage("cityscape", 6),
+    image: unsplashPhoto("1619678562883-7f77b7c68d3c"),
     sample: true,
   },
   {
@@ -178,7 +178,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "South Beach in the mornings, Wynwood in the afternoons — a smart split that kept both the kids and us happy.",
-    image: themeImage("coastal", 2),
+    image: unsplashPhoto("1589083130544-0d6a2926e519"),
     sample: true,
   },
   {
@@ -190,7 +190,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "The Niagara day trip they slotted in was a nice surprise — we hadn't even asked for it, just mentioned we liked wine country.",
-    image: themeImage("cityscape", 12),
+    image: unsplashPhoto("1569982615761-66697da68502"),
     sample: true,
   },
   {
@@ -202,7 +202,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "The Sea-to-Sky drive to Whistler was worth building the whole itinerary around. Great call on their part.",
-    image: themeImage("mountainNature", 4),
+    image: unsplashPhoto("1647655806923-e8202f4f2b8c"),
     sample: true,
   },
   {
@@ -214,7 +214,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "West End tickets we couldn't get ourselves, plus a genuinely knowledgeable guide at the British Museum. Worth every bit of the planning fee.",
-    image: themeImage("cityscape", 0),
+    image: unsplashPhoto("1543832923-44667a44c804"),
     sample: true,
   },
   {
@@ -226,7 +226,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "Our kids still talk about the history treasure hunt they arranged. Made central London feel like a game, not a lecture.",
-    image: themeImage("cityscape", 17),
+    image: unsplashPhoto("1543832923-44667a44c804"),
     sample: true,
   },
   {
@@ -238,7 +238,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "The Champagne day trip was better than anything we'd have found searching on our own — small house, private tasting, no crowds.",
-    image: themeImage("foodAndWine", 2),
+    image: unsplashPhoto("1431274172761-fca41d930114"),
     sample: true,
   },
   {
@@ -250,7 +250,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Private early access to the Musée d'Orsay before opening hours was the standout. Quiet galleries, no rush.",
-    image: themeImage("cityscape", 1),
+    image: unsplashPhoto("1502602898657-3e91760cbb34"),
     sample: true,
   },
   {
@@ -262,7 +262,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Three thousand years of history and they still managed to leave room for long lunches. That balance is harder to get right than it sounds.",
-    image: themeImage("culturalHeritage", 0),
+    image: unsplashPhoto("1552832230-c0197dd311b5"),
     sample: true,
   },
   {
@@ -274,7 +274,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "Vatican Museums with a guide who actually knew how to talk to a nine-year-old. Not a small thing when you're touring with kids.",
-    image: themeImage("culturalHeritage", 5),
+    image: unsplashPhoto("1529154036614-a60975f5c760"),
     sample: true,
   },
   {
@@ -286,7 +286,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "The Chianti countryside day was the highlight — a private estate, no tour bus in sight, exactly what we asked for.",
-    image: themeImage("mountainNature", 4),
+    image: unsplashPhoto("1687817997684-c9335cce7c5c"),
     sample: true,
   },
   {
@@ -298,7 +298,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A private boat instead of the crowded vaporetto made all the difference. Small change, completely different trip.",
-    image: themeImage("cityscape", 2),
+    image: unsplashPhoto("1558271736-cd043ef2e855"),
     sample: true,
   },
   {
@@ -310,7 +310,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Gaudí in the morning, beach in the afternoon, every single day. Our kids didn't want to leave.",
-    image: themeImage("cityscape", 10),
+    image: unsplashPhoto("1593368858664-a7fe556ab936"),
     sample: true,
   },
   {
@@ -322,7 +322,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "The tapas crawl through the Gothic Quarter they arranged with a local guide beat every restaurant list we'd researched ourselves.",
-    image: themeImage("foodAndWine", 3),
+    image: unsplashPhoto("1593368858664-a7fe556ab936"),
     sample: true,
   },
   {
@@ -334,7 +334,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Sintra as a day trip was exactly the right amount of time — enough to see the palaces without feeling rushed back.",
-    image: themeImage("coastal", 3),
+    image: unsplashPhoto("1558102400-72da9fdbecae"),
     sample: true,
   },
   {
@@ -346,7 +346,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "Biking the canals as a family was easier than we expected because they'd already scouted routes that worked with kids.",
-    image: themeImage("cityscape", 18),
+    image: unsplashPhoto("1605704320412-5c3255bf47a9"),
     sample: true,
   },
   {
@@ -358,7 +358,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A genuinely elegant few days — the hotel, the concert, the coffeehouses they pointed us to. Nothing felt like a tourist checklist.",
-    image: themeImage("culturalHeritage", 7),
+    image: unsplashPhoto("1516550893923-42d28e5677af"),
     sample: true,
   },
   {
@@ -370,7 +370,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "They timed our castle visit for early morning before the tour groups arrived. Made a huge difference to how the city felt.",
-    image: themeImage("cityscape", 9),
+    image: unsplashPhoto("1600623471616-8c1966c91ff6"),
     sample: true,
   },
   {
@@ -382,7 +382,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "The Acropolis Museum guide connected everything back to what we'd just seen outside. Our teenagers were actually engaged.",
-    image: themeImage("culturalHeritage", 1),
+    image: unsplashPhoto("1603565816030-6b389eeb23cb"),
     sample: true,
   },
   {
@@ -394,7 +394,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "The catamaran sunset sail was worth the whole trip on its own. They picked a smaller boat so it never felt crowded.",
-    image: themeImage("coastal", 0),
+    image: unsplashPhoto("1580502304784-8985b7eb7260"),
     sample: true,
   },
   {
@@ -406,7 +406,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Crossing the Bosphorus by private boat instead of the public ferry set the whole day apart. Small upgrade, big difference.",
-    image: themeImage("culturalHeritage", 8),
+    image: unsplashPhoto("1589561454226-796a8aa89b05"),
     sample: true,
   },
   {
@@ -418,7 +418,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "The desert camp overnight was better organized than resorts we've paid more for elsewhere. Genuinely impressive attention to detail.",
-    image: themeImage("desertArchitecture", 0),
+    image: unsplashPhoto("1651467606797-e1c660cf3fda"),
     sample: true,
   },
   {
@@ -430,7 +430,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "Coordinated a delegation visit around the Louvre Abu Dhabi and the Grand Mosque without a single scheduling hiccup.",
-    image: themeImage("cityscape", 4),
+    image: unsplashPhoto("1512632578888-169bbbc64f33"),
     sample: true,
   },
   {
@@ -442,7 +442,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Table Mountain, the Winelands, then a safari extension — ambitious itinerary, and every transfer connected exactly on time.",
-    image: themeImage("coastal", 4),
+    image: unsplashPhoto("1604763655221-b98ebdac6ddf"),
     sample: true,
   },
   {
@@ -454,7 +454,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Our riad had a private courtyard that felt a world away from the medina outside. Exactly the contrast we wanted.",
-    image: themeImage("culturalHeritage", 2),
+    image: unsplashPhoto("1587974928442-77dc3e0dba72"),
     sample: true,
   },
   {
@@ -466,7 +466,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Giza at opening time, before the heat and the crowds, made the pyramids feel genuinely awe-inspiring rather than chaotic.",
-    image: themeImage("culturalHeritage", 3),
+    image: unsplashPhoto("1600520611035-84157ad4084d"),
     sample: true,
   },
   {
@@ -478,7 +478,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Timed for migration season exactly as we'd asked. Three different lodge locations meant three completely different kinds of game viewing.",
-    image: themeImage("safari", 1),
+    image: unsplashPhoto("1635595358293-03620e36be48"),
     sample: true,
   },
   {
@@ -490,7 +490,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "A perfect close to a safari — Stone Town for a day, then straight to the beach. The transition was handled without a hitch.",
-    image: themeImage("tropicalBeach", 0),
+    image: unsplashPhoto("1620896712848-d05411ec91ec"),
     sample: true,
   },
   {
@@ -502,7 +502,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Old Tokyo and new Tokyo in the same week, paced so our kids never hit the wall. The Hakone day trip was the icing on top.",
-    image: themeImage("cityscape", 13),
+    image: unsplashPhoto("1551322120-c697cf88fbdc"),
     sample: true,
   },
   {
@@ -514,7 +514,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "The private tea ceremony felt personal rather than staged for tourists. That distinction mattered a lot to us.",
-    image: themeImage("culturalHeritage", 4),
+    image: unsplashPhoto("1578469645742-46cae010e5d4"),
     sample: true,
   },
   {
@@ -526,7 +526,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Ubud for the culture, Seminyak for the beach — the split they suggested was exactly right for a honeymoon.",
-    image: themeImage("tropicalBeach", 2),
+    image: unsplashPhoto("1555400038-63f5ba517a47"),
     sample: true,
   },
   {
@@ -538,7 +538,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "Even a short stopover felt fully planned — hawker centers, Gardens by the Bay, Sentosa, all in a tight but comfortable window.",
-    image: themeImage("cityscape", 4),
+    image: unsplashPhoto("1525625293386-3f8f99389edd"),
     sample: true,
   },
   {
@@ -550,7 +550,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "The street food tour they arranged with a local guide found places we never would have found searching on our own.",
-    image: themeImage("foodAndWine", 1),
+    image: unsplashPhoto("1613672803979-a6edfc5a179b"),
     sample: true,
   },
   {
@@ -562,7 +562,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A dim sum morning that felt genuinely local, not a tourist version of one. Small thing, but it set the tone for the whole trip.",
-    image: themeImage("cityscape", 7),
+    image: unsplashPhoto("1536599018102-9f803c140fc1"),
     sample: true,
   },
   {
@@ -574,7 +574,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Front-row seats at the Opera House and a harbor cruise timed for sunset. They clearly knew the city well.",
-    image: themeImage("culturalHeritage", 2),
+    image: unsplashPhoto("1616128618694-96e9e896ecb7"),
     sample: true,
   },
   {
@@ -586,7 +586,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "The Yarra Valley day trip they added on turned a city break into something much more memorable.",
-    image: themeImage("foodAndWine", 2),
+    image: unsplashPhoto("1514395462725-fb4566210144"),
     sample: true,
   },
   {
@@ -598,7 +598,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Waiheke Island by ferry was the perfect first stop before we headed south — they clearly understood how to open a New Zealand trip.",
-    image: themeImage("mountainNature", 9),
+    image: unsplashPhoto("1677557769755-875d8141c0c6"),
     sample: true,
   },
   {
@@ -610,7 +610,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A resort with a genuinely good kids' club, which mattered more to our trip than any other single detail.",
-    image: themeImage("tropicalBeach", 1),
+    image: unsplashPhoto("1697898109604-e06e88b15271"),
     sample: true,
   },
   {
@@ -622,7 +622,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Three islands in eight days sounded ambitious when we first saw the plan, but the boat transfers made it feel effortless.",
-    image: themeImage("coastal", 1),
+    image: unsplashPhoto("1670234069735-a9b32837cee4"),
     sample: true,
   },
   {
@@ -634,7 +634,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "Lagoon days for the kids, a hiking morning for us in Black River Gorges. Good balance for a family with different interests.",
-    image: themeImage("tropicalBeach", 0),
+    image: unsplashPhoto("1513415277900-a62401e19be4"),
     sample: true,
   },
   {
@@ -646,7 +646,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A weekend built entirely around the Met and a Lincoln Center evening. Exactly the kind of focused trip we'd been struggling to plan ourselves.",
-    image: themeImage("cityscape", 5),
+    image: unsplashPhoto("1485871981521-5b1fd3805eee"),
     sample: true,
   },
   {
@@ -658,7 +658,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "Private transportation between the coast and the studios saved us hours of driving ourselves. Worth every bit of the arrangement.",
-    image: themeImage("cityscape", 6),
+    image: unsplashPhoto("1619678562883-7f77b7c68d3c"),
     sample: true,
   },
   {
@@ -670,7 +670,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A short beach reset before a Caribbean cruise, handled as one seamless itinerary rather than two separate bookings.",
-    image: themeImage("coastal", 2),
+    image: unsplashPhoto("1589083130544-0d6a2926e519"),
     sample: true,
   },
   {
@@ -682,7 +682,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "St. Lawrence Market and the Distillery District were exactly the kind of local color we'd asked for, not just the obvious sights.",
-    image: themeImage("cityscape", 12),
+    image: unsplashPhoto("1569982615761-66697da68502"),
     sample: true,
   },
   {
@@ -694,7 +694,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Mountains one day, harbor the next — a trip that felt unhurried despite covering a lot of ground.",
-    image: themeImage("mountainNature", 4),
+    image: unsplashPhoto("1647655806923-e8202f4f2b8c"),
     sample: true,
   },
   {
@@ -706,7 +706,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Notting Hill and South Kensington gave us a completely different London than our first trip years ago. Great neighborhood picks.",
-    image: themeImage("cityscape", 19),
+    image: unsplashPhoto("1512734099960-65a682cbfe2b"),
     sample: true,
   },
   {
@@ -718,7 +718,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A market morning followed by a cooking class turned out to be the highlight neither of us expected going in.",
-    image: themeImage("foodAndWine", 0),
+    image: unsplashPhoto("1553455427-c38fa28dc586"),
     sample: true,
   },
   {
@@ -730,7 +730,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "A pasta-making class with a local chef became the thing our kids talk about most, more than the Colosseum even.",
-    image: themeImage("foodAndWine", 3),
+    image: unsplashPhoto("1548585742-1df49e753a83"),
     sample: true,
   },
   {
@@ -742,7 +742,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Private early access to the Uffizi before the doors opened to the public — genuinely one of the best travel decisions we've made.",
-    image: themeImage("culturalHeritage", 6),
+    image: unsplashPhoto("1687817997684-c9335cce7c5c"),
     sample: true,
   },
   {
@@ -754,7 +754,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A private architecture historian for the Gaudí sites turned what could've been a quick photo stop into a real education.",
-    image: themeImage("cityscape", 10),
+    image: unsplashPhoto("1739532827391-45e14eed59c3"),
     sample: true,
   },
   {
@@ -766,7 +766,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "Timed our visit for tulip season without us even having to ask — they just knew that would matter to us.",
-    image: themeImage("cityscape", 18),
+    image: unsplashPhoto("1605704320412-5c3255bf47a9"),
     sample: true,
   },
   {
@@ -778,7 +778,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "The Grand Bazaar can be overwhelming with kids, but the guide they arranged kept it fun rather than exhausting.",
-    image: themeImage("culturalHeritage", 8),
+    image: unsplashPhoto("1589561454226-796a8aa89b05"),
     sample: true,
   },
   {
@@ -790,7 +790,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "A conference extension turned into a genuinely enjoyable few extra days, thanks to how well the desert excursion was timed.",
-    image: themeImage("cityscape", 3),
+    image: unsplashPhoto("1651467606797-e1c660cf3fda"),
     sample: true,
   },
   {
@@ -802,7 +802,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A private tasting at a Stellenbosch estate with a pairing lunch overlooking the vineyards. Couldn't have found that ourselves.",
-    image: themeImage("foodAndWine", 2),
+    image: unsplashPhoto("1586960805232-9ad00a8c0faf"),
     sample: true,
   },
   {
@@ -814,7 +814,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "The Sahara camel trek and overnight camp under the stars was worth the whole trip on its own. Genuinely unforgettable.",
-    image: themeImage("desertArchitecture", 0),
+    image: unsplashPhoto("1719084198651-5ac167cb3e6e"),
     sample: true,
   },
   {
@@ -826,7 +826,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A safari that worked for our whole family, including a ten-year-old — the guide adjusted the pace without us even asking.",
-    image: themeImage("safari", 0),
+    image: unsplashPhoto("1635595358293-03620e36be48"),
     sample: true,
   },
   {
@@ -838,7 +838,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A private sushi class with a chef who actually explained the technique, not just a tourist demonstration.",
-    image: themeImage("foodAndWine", 1),
+    image: unsplashPhoto("1551322120-c697cf88fbdc"),
     sample: true,
   },
   {
@@ -850,7 +850,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "Arashiyama's bamboo grove early in the morning, before any tour buses arrived. Small timing decisions like that made the trip.",
-    image: themeImage("culturalHeritage", 4),
+    image: unsplashPhoto("1578469645742-46cae010e5d4"),
     sample: true,
   },
   {
@@ -862,7 +862,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A full wellness day — yoga, spa, a tasting menu built around local ingredients. Exactly what I needed and didn't know how to plan myself.",
-    image: themeImage("wellness", 1),
+    image: unsplashPhoto("1633820313053-fa030b13ef94"),
     sample: true,
   },
   {
@@ -874,7 +874,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A short stopover that still felt like a proper trip, right down to the hawker-center dinner they specifically pointed us to.",
-    image: themeImage("cityscape", 4),
+    image: unsplashPhoto("1525625293386-3f8f99389edd"),
     sample: true,
   },
   {
@@ -886,7 +886,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "The Hunter Valley day trip added real texture to what would've just been a harbor-and-beach itinerary.",
-    image: themeImage("cityscape", 11),
+    image: unsplashPhoto("1616128618694-96e9e896ecb7"),
     sample: true,
   },
   {
@@ -898,7 +898,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Waiheke's vineyards by private ferry — a lovely, low-key start before the more adventurous part of our New Zealand trip.",
-    image: themeImage("foodAndWine", 2),
+    image: unsplashPhoto("1677557769755-875d8141c0c6"),
     sample: true,
   },
   {
@@ -910,7 +910,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Meeting space, ground transportation and a Douro Valley afternoon for the team — all coordinated without a single scheduling conflict.",
-    image: themeImage("business", 1),
+    image: unsplashPhoto("1501927023255-9063be98970c"),
     sample: true,
   },
   {
@@ -922,7 +922,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Our chartered sailing afternoon turned a standard corporate offsite into something the whole team is still talking about.",
-    image: themeImage("business", 3),
+    image: unsplashPhoto("1567437890326-0084ea9d99e9"),
     sample: true,
   },
   {
@@ -934,7 +934,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Coordinating a group of forty alumni across the Acropolis and a Greek Isles cruise extension was handled with real precision.",
-    image: themeImage("culturalHeritage", 1),
+    image: unsplashPhoto("1603565816030-6b389eeb23cb"),
     sample: true,
   },
   {
@@ -946,7 +946,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Eighteen of us across three generations, and somehow every single hotel room and transfer worked out.",
-    image: themeImage("mountainNature", 8),
+    image: unsplashPhoto("1637083963580-9383f3b835bd"),
     sample: true,
   },
   {
@@ -958,7 +958,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Twentieth anniversary trip, and they treated it with exactly the attention that deserved — nothing generic about the itinerary.",
-    image: themeImage("coastal", 0),
+    image: unsplashPhoto("1594048069339-42ae0e89376a"),
     sample: true,
   },
   {
@@ -970,7 +970,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A babymoon that felt properly relaxing rather than another item to plan. They handled every logistic so we didn't have to think about it.",
-    image: themeImage("tropicalBeach", 3),
+    image: unsplashPhoto("1743356174523-b04efcc66b46"),
     sample: true,
   },
   {
@@ -982,7 +982,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "A couple of days in Venice bookending a Mediterranean cruise, arranged as a single trip rather than two disconnected bookings.",
-    image: themeImage("cruiseAndSea", 1),
+    image: unsplashPhoto("1558271736-cd043ef2e855"),
     sample: true,
   },
   {
@@ -994,7 +994,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A first cruise for our family, and the kids' club programming on board turned out to matter more than we expected. Good call flagging that to us.",
-    image: themeImage("tropicalBeach", 1),
+    image: unsplashPhoto("1717541262982-731503ac4dc2"),
     sample: true,
   },
   {
@@ -1006,7 +1006,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "The scenic cruising day through Geirangerfjord was worth the whole booking. They picked the sailing specifically for that stretch.",
-    image: themeImage("mountainNature", 2),
+    image: unsplashPhoto("1698307781486-7c63dadf5fb7"),
     sample: true,
   },
   {
@@ -1018,7 +1018,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "An overnight call in St. Petersburg gave us two full days there instead of a rushed few hours. Made the whole cruise worth it.",
-    image: themeImage("cityscape", 18),
+    image: unsplashPhoto("1643594265713-b09d4c6a57d9"),
     sample: true,
   },
   {
@@ -1030,7 +1030,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Fewer, deeper stops instead of a packed port list — exactly the pace we'd asked for on a river cruise.",
-    image: themeImage("cityscape", 18),
+    image: unsplashPhoto("1692110899720-eb959f1e58bc"),
     sample: true,
   },
   {
@@ -1042,7 +1042,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Glacier Bay scenic cruising was everything we'd hoped for, and the Denali land extension they suggested afterward made the whole trip.",
-    image: themeImage("mountainNature", 0),
+    image: unsplashPhoto("1673114819432-1aa36952dd3e"),
     sample: true,
   },
   {
@@ -1054,7 +1054,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "Genuinely unhurried — markets, a cooking class in each region, and long lunches that never felt rushed to the next stop.",
-    image: themeImage("foodAndWine", 0),
+    image: unsplashPhoto("1756365951512-b15739bfbf4c"),
     sample: true,
   },
   {
@@ -1066,7 +1066,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "A concentrated culture weekend that fit around our teenagers' school schedule without feeling like a compromise.",
-    image: themeImage("cityscape", 16),
+    image: unsplashPhoto("1518235506717-e1ed3306a89b"),
     sample: true,
   },
   {
@@ -1078,7 +1078,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "The balance between structured sessions and genuine downtime was exactly right — our team came back energized, not drained.",
-    image: themeImage("business", 0),
+    image: unsplashPhoto("1599069158346-684fee0e414a"),
     sample: true,
   },
   {
@@ -1090,7 +1090,7 @@ export const reviews: Review[] = [
     rating: 4,
     quote:
       "A wellness-focused trip that still had enough structure for the kids — the rice terrace walks worked for all of us.",
-    image: themeImage("tropicalBeach", 2),
+    image: unsplashPhoto("1604999333679-b86d54738315"),
     sample: true,
   },
   {
@@ -1102,7 +1102,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A short but well-planned opening to a longer New Zealand trip — they clearly knew exactly how to sequence it.",
-    image: themeImage("coastal", 5),
+    image: unsplashPhoto("1706284052484-f2d180ca73ac"),
     sample: true,
   },
   {
@@ -1114,7 +1114,7 @@ export const reviews: Review[] = [
     rating: 5,
     quote:
       "A proper unplugged week. The resort choice matched what we asked for down to the smallest detail.",
-    image: themeImage("luxuryResort", 1),
+    image: unsplashPhoto("1513415277900-a62401e19be4"),
     sample: true,
   },
 ];

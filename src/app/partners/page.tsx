@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { partners, partnersStatement } from "@/data/partners";
-import { themeImage } from "@/data/images";
+import { unsplashPhoto } from "@/data/images";
 import { cryptoPartnerExchanges, cryptoPartnerWallets } from "@/data/cryptoPartners";
 import { PartnerChip } from "@/components/ui/PartnerChip";
 import { SwipeRow } from "@/components/ui/SwipeRow";
@@ -19,7 +19,7 @@ export default function PartnersPage() {
         eyebrow="About"
         title="Partners"
         description={partnersStatement}
-        image={themeImage("cityscape", 2)}
+        image={unsplashPhoto("1758518729240-7162d07427b8")}
         imageAlt="A city street"
       />
       <section className="py-16 md:py-24">

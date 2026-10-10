@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
-import { themeImage } from "@/data/images";
+import { unsplashPhoto } from "@/data/images";
 import { stayProvider } from "@/lib/providers";
 import { track } from "@/lib/analytics";
 
@@ -45,7 +45,7 @@ export function StaySearchPage() {
         eyebrow="Stay Search"
         title="Search stays, then let us design the journey around them."
         description="See real accommodation options for your destination and dates. World Bridge Meridian doesn't book rooms directly — once you've found something worth building a trip around, we take it from there."
-        image={themeImage("coastal", 2)}
+        image={unsplashPhoto("1512918728675-ed5a9ecdebfd")}
         imageAlt="A hotel terrace overlooking the coast"
         size="sm"
       />

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SpecialtyPage } from "@/components/specialty/SpecialtyPage";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { themeImage } from "@/data/images";
+import { unsplashPhoto } from "@/data/images";
 import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
@@ -73,7 +73,7 @@ export default function InstitutionalPage() {
         eyebrow="Our Expertise"
         title="Travel programs for institutions, not just individuals."
         intro="Universities, museums, galleries, alumni associations and professional bodies bring different requirements than a private trip — approvals, cohort sizes, accessibility needs and institutional budgets among them. We coordinate the full program: accommodation, transportation, experiences and on-the-ground logistics, reporting to one point of contact within your organization."
-        heroImage={themeImage("culturalHeritage", 2)}
+        heroImage={unsplashPhoto("1576495199011-eb94736d05d6")}
         heroImageAlt="A guided group inside a museum gallery"
         travelStyle="business"
         examples={[

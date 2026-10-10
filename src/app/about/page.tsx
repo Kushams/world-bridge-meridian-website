@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { company } from "@/data/company";
 import { team } from "@/data/team";
-import { themeImage } from "@/data/images";
+import { unsplashPhoto } from "@/data/images";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -54,7 +54,7 @@ export default function AboutPage() {
         eyebrow="About"
         title={company.legalPositioning}
         description={company.tagline}
-        image={themeImage("mountainNature", 2)}
+        image={unsplashPhoto("1521737604893-d14cc237f11d")}
         imageAlt="A dramatic natural landscape"
       />
 

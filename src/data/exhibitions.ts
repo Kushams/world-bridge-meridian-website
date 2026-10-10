@@ -1,4 +1,4 @@
-import { themeImage } from "./images";
+import { unsplashPhoto } from "./images";
 
 /**
  * Real, currently-running (or clearly upcoming) exhibitions and art fairs at
@@ -51,7 +51,7 @@ export const artListings: ArtListing[] = [
       "A survey of Dan Flavin's grid-based fluorescent light works at David Zwirner's Hong Kong space.",
     sourceUrl: "https://www.davidzwirner.com/exhibitions",
     sourceLabel: "davidzwirner.com",
-    heroImage: themeImage("culturalHeritage", 8),
+    heroImage: unsplashPhoto("1766128867459-064fcbfa8781"),
   },
   {
     slug: "francesca-woodman-gagosian-rome",
@@ -67,7 +67,7 @@ export const artListings: ArtListing[] = [
     sourceUrl:
       "https://gagosian.com/exhibitions/2026/francesca-woodman-lately-i-find-a-sliver-of-mirror-is-simply-to-slice-an-eyelid/",
     sourceLabel: "gagosian.com",
-    heroImage: themeImage("culturalHeritage", 3),
+    heroImage: unsplashPhoto("1762928289094-197055a5d5c3"),
   },
   {
     slug: "georg-baselitz-white-cube-bermondsey",
@@ -81,7 +81,7 @@ export const artListings: ArtListing[] = [
     description: "New paintings from Georg Baselitz at White Cube's Bermondsey gallery in London.",
     sourceUrl: "https://www.whitecube.com/exhibitions/london",
     sourceLabel: "whitecube.com",
-    heroImage: themeImage("culturalHeritage", 11),
+    heroImage: unsplashPhoto("1759398010837-f75f9454fb7e"),
   },
   {
     slug: "charles-gaines-hauser-wirth-paris",
@@ -95,7 +95,7 @@ export const artListings: ArtListing[] = [
     description: "New work from Charles Gaines's ongoing series pairing systems of nature with systems of law.",
     sourceUrl: "https://www.hauserwirth.com/hauser-wirth-exhibitions/",
     sourceLabel: "hauserwirth.com",
-    heroImage: themeImage("culturalHeritage", 1),
+    heroImage: unsplashPhoto("1785004904590-f77a3a65a515"),
   },
   {
     slug: "sun-and-moon-saatchi-gallery",
@@ -110,7 +110,7 @@ export const artListings: ArtListing[] = [
       "A major exhibition spanning two floors and nine galleries, exploring how the sun and moon have inspired artists across cultures and history.",
     sourceUrl: "https://www.saatchigallery.com/exhibition/the-sun-and-the-moon-art-inspired-by-the-celestial",
     sourceLabel: "saatchigallery.com",
-    heroImage: themeImage("culturalHeritage", 4),
+    heroImage: unsplashPhoto("1766801848077-31bd1900efcc"),
   },
   {
     slug: "thea-djordjadze-spruth-magers-new-york",
@@ -124,7 +124,7 @@ export const artListings: ArtListing[] = [
     description: "New sculptural work from Thea Djordjadze at Sprüth Magers' New York gallery.",
     sourceUrl: "https://spruethmagers.com/exhibitions/upcoming/",
     sourceLabel: "spruethmagers.com",
-    heroImage: themeImage("culturalHeritage", 7),
+    heroImage: unsplashPhoto("1774021802030-d4b48399232d"),
   },
   {
     slug: "jordy-kerwick-konig-galerie-berlin",
@@ -138,7 +138,7 @@ export const artListings: ArtListing[] = [
     description: "New paintings by Jordy Kerwick at König Galerie's St. Agnes space in Berlin.",
     sourceUrl: "https://www.koeniggalerie.com/blogs/exhibitions",
     sourceLabel: "koeniggalerie.com",
-    heroImage: themeImage("culturalHeritage", 2),
+    heroImage: unsplashPhoto("1771189255285-3bcb030e1f47"),
   },
   {
     slug: "annette-messager-marian-goodman-paris",
@@ -152,7 +152,7 @@ export const artListings: ArtListing[] = [
     description: "An In Focus presentation of Annette Messager's work at Marian Goodman's Paris gallery.",
     sourceUrl: "https://www.mariangoodman.com/exhibitions/",
     sourceLabel: "mariangoodman.com",
-    heroImage: themeImage("culturalHeritage", 5),
+    heroImage: unsplashPhoto("1784397367449-38c09d80873f"),
   },
   {
     slug: "daniel-buren-lisson-gallery-london",
@@ -166,7 +166,7 @@ export const artListings: ArtListing[] = [
     description: "A new site-specific installation by Daniel Buren at Lisson Gallery's London space.",
     sourceUrl: "https://www.lissongallery.com/exhibitions",
     sourceLabel: "lissongallery.com",
-    heroImage: themeImage("culturalHeritage", 9),
+    heroImage: unsplashPhoto("1697257378991-b57497dddc69"),
   },
   {
     slug: "tala-madani-david-kordansky-los-angeles",
@@ -180,7 +180,7 @@ export const artListings: ArtListing[] = [
     description: "New paintings by Tala Madani at David Kordansky Gallery's Los Angeles space.",
     sourceUrl: "https://www.davidkordanskygallery.com/exhibitions",
     sourceLabel: "davidkordanskygallery.com",
-    heroImage: themeImage("culturalHeritage", 3),
+    heroImage: unsplashPhoto("1697257378436-3bbf6cf9f8ba"),
   },
   {
     slug: "david-byrne-pace-new-york",
@@ -195,7 +195,7 @@ export const artListings: ArtListing[] = [
       "A long-running installation of David Byrne's stairwell drawings at Pace Gallery's New York space.",
     sourceUrl: "https://www.pacegallery.com/exhibitions/",
     sourceLabel: "pacegallery.com",
-    heroImage: themeImage("culturalHeritage", 9),
+    heroImage: unsplashPhoto("1650303550939-72502f827c0f"),
   },
 
   // ---------------------------------------------------------------- Museum exhibitions
@@ -211,7 +211,7 @@ export const artListings: ArtListing[] = [
     description: "MoMA brings together the late work of Frida Kahlo and Diego Rivera.",
     sourceUrl: "https://press.moma.org/exhibitions/",
     sourceLabel: "moma.org",
-    heroImage: themeImage("culturalHeritage", 4),
+    heroImage: unsplashPhoto("1761563071832-e548e022a706"),
   },
   {
     slug: "ana-mendieta-tate-modern",
@@ -226,7 +226,7 @@ export const artListings: ArtListing[] = [
       "A major survey of Ana Mendieta's 'earth-body' works, including the landmark Silueta Series alongside remastered films, drawings and late sculptures.",
     sourceUrl: "https://www.tate.org.uk/whats-on?venue=tate-modern&type=exhibition",
     sourceLabel: "tate.org.uk",
-    heroImage: themeImage("culturalHeritage", 0),
+    heroImage: unsplashPhoto("1763909855036-46b3be5085b6"),
   },
   {
     slug: "guggenheim-pop-1960-to-now",
@@ -241,7 +241,7 @@ export const artListings: ArtListing[] = [
       "A global history of Pop art from Warhol to Cattelan, spanning 29 artists including Lichtenstein, Kusama and Oldenburg.",
     sourceUrl: "https://www.guggenheim.org/exhibition/guggenheim-pop",
     sourceLabel: "guggenheim.org",
-    heroImage: themeImage("culturalHeritage", 5),
+    heroImage: unsplashPhoto("1575223970966-76ae61ee7838"),
   },
   {
     slug: "primeval-waters-louvre",
@@ -255,7 +255,7 @@ export const artListings: ArtListing[] = [
     description: "An exploration of ancient Mesopotamia and the invention of irrigation, across the Sully and Richelieu wings.",
     sourceUrl: "https://presse.louvre.fr/?p=1063000232297",
     sourceLabel: "louvre.fr",
-    heroImage: themeImage("culturalHeritage", 6),
+    heroImage: unsplashPhoto("1566127444979-b3d2b654e3d7"),
   },
 
   {
@@ -271,7 +271,7 @@ export const artListings: ArtListing[] = [
       "Fifty Impressionist and Post-Impressionist works from the Dallas Museum of Art, on their Canadian debut at the AGO.",
     sourceUrl: "https://ago.ca/exhibitions/impressionist-revolution-monet-matisse-dallas-museum-art",
     sourceLabel: "ago.ca",
-    heroImage: themeImage("culturalHeritage", 1),
+    heroImage: unsplashPhoto("1451438143976-4e1aa4f7f153"),
   },
 
   // ---------------------------------------------------------------- Art fairs
@@ -287,7 +287,7 @@ export const artListings: ArtListing[] = [
     description: "London's flagship contemporary and historical art fairs, running side by side in The Regent's Park.",
     sourceUrl: "https://www.frieze.com/fairs/frieze-london-frieze-masters",
     sourceLabel: "frieze.com",
-    heroImage: themeImage("culturalHeritage", 2),
+    heroImage: unsplashPhoto("1743119844808-fefd446de533"),
   },
   {
     slug: "art-basel-paris-2026",
@@ -301,7 +301,7 @@ export const artListings: ArtListing[] = [
     description: "Art Basel's Paris edition, held at the Grand Palais.",
     sourceUrl: "https://www.artbasel.com/paris",
     sourceLabel: "artbasel.com",
-    heroImage: themeImage("culturalHeritage", 10),
+    heroImage: unsplashPhoto("1743119755097-38a61eb33a2f"),
   },
   {
     slug: "art-basel-miami-beach-2026",
@@ -315,7 +315,7 @@ export const artListings: ArtListing[] = [
     description: "Art Basel's flagship US edition, closing out the fair calendar year in Miami Beach.",
     sourceUrl: "https://www.artbasel.com/miami-beach",
     sourceLabel: "artbasel.com",
-    heroImage: themeImage("culturalHeritage", 12),
+    heroImage: unsplashPhoto("1545518514-ce8448f542b3"),
   },
 
   // ---------------------------------------------------------------- Past (closed) — seeds the archive
@@ -331,7 +331,7 @@ export const artListings: ArtListing[] = [
     description: "Art Basel's original and flagship Swiss edition.",
     sourceUrl: "https://www.artbasel.com/basel",
     sourceLabel: "artbasel.com",
-    heroImage: themeImage("culturalHeritage", 6),
+    heroImage: unsplashPhoto("1566954979172-eaba308acdf0"),
   },
   // ---------------------------------------------------------------- Added in the 2026-10-08 refresh
   {
@@ -346,7 +346,7 @@ export const artListings: ArtListing[] = [
     description: "Louis Fratino's first solo exhibition in London, and his first with the gallery since joining its roster.",
     sourceUrl: "https://www.davidzwirner.com/exhibitions/2026/louis-fratino",
     sourceLabel: "davidzwirner.com",
-    heroImage: themeImage("culturalHeritage", 0),
+    heroImage: unsplashPhoto("1566954979172-eaba308acdf0"),
   },
   {
     slug: "daichi-takagi-suchness-david-zwirner-london",
@@ -360,7 +360,7 @@ export const artListings: ArtListing[] = [
     description: "The first solo presentation of Daichi Takagi's work in the UK and his first exhibition with the gallery.",
     sourceUrl: "https://www.davidzwirner.com/exhibitions/2026/daichi-takagi-suchness",
     sourceLabel: "davidzwirner.com",
-    heroImage: themeImage("culturalHeritage", 1),
+    heroImage: unsplashPhoto("1545518514-ce8448f542b3"),
   },
   {
     slug: "roy-decarava-the-sound-i-saw-david-zwirner-los-angeles",
@@ -374,7 +374,7 @@ export const artListings: ArtListing[] = [
     description: "Photographs by Roy DeCarava, shown at David Zwirner's Los Angeles gallery.",
     sourceUrl: "https://www.davidzwirner.com/exhibitions/2026/roy-decarava-the-sound-i-saw",
     sourceLabel: "davidzwirner.com",
-    heroImage: themeImage("culturalHeritage", 2),
+    heroImage: unsplashPhoto("1606819717115-9159c900370b"),
   },
   {
     slug: "nate-lowman-hanging-out-david-zwirner-new-york",
@@ -388,7 +388,7 @@ export const artListings: ArtListing[] = [
     description: "A new exhibition by Nate Lowman at David Zwirner's 19th Street gallery.",
     sourceUrl: "https://www.davidzwirner.com/exhibitions/2026/nate-lowman",
     sourceLabel: "davidzwirner.com",
-    heroImage: themeImage("culturalHeritage", 3),
+    heroImage: unsplashPhoto("1569783721854-33a99b4c0bae"),
   },
   {
     slug: "oscar-murillo-david-zwirner-paris",
@@ -402,7 +402,7 @@ export const artListings: ArtListing[] = [
     description: "Oscar Murillo's paintings and social maps, timed to open the week of Art Basel Paris. Closing date to be confirmed on the gallery site.",
     sourceUrl: "https://www.davidzwirner.com/exhibitions/2026/oscar-murillo-unfinished-thinking-paintings-and-social-maps",
     sourceLabel: "davidzwirner.com",
-    heroImage: themeImage("culturalHeritage", 4),
+    heroImage: unsplashPhoto("1496889196885-5ddcec5eef4d"),
   },
   {
     slug: "yoshitomo-nara-david-zwirner-new-york",
@@ -416,7 +416,7 @@ export const artListings: ArtListing[] = [
     description: "Yoshitomo Nara's first solo presentation with David Zwirner, across the gallery's 19th and 20th Street spaces.",
     sourceUrl: "https://www.davidzwirner.com/exhibitions/2026/yoshitomo-nara",
     sourceLabel: "davidzwirner.com",
-    heroImage: themeImage("culturalHeritage", 5),
+    heroImage: unsplashPhoto("1512540452972-baac55d40ef1"),
   },
   {
     slug: "cady-noland-gagosian-london",
@@ -430,7 +430,7 @@ export const artListings: ArtListing[] = [
     description: "New work by Cady Noland, shown alongside the relaunch of her two-volume book The Clip-On Method.",
     sourceUrl: "https://gagosian.com/exhibitions/2026/cady-noland/",
     sourceLabel: "gagosian.com",
-    heroImage: themeImage("culturalHeritage", 6),
+    heroImage: unsplashPhoto("1658232630877-6a279285a107"),
   },
   {
     slug: "lee-krasner-gagosian-paris",
@@ -444,7 +444,7 @@ export const artListings: ArtListing[] = [
     description: "Lee Krasner's first solo exhibition in France, organised with the Pollock-Krasner Foundation.",
     sourceUrl: "https://gagosian.com/exhibitions/2026/lee-krasner/",
     sourceLabel: "gagosian.com",
-    heroImage: themeImage("culturalHeritage", 7),
+    heroImage: unsplashPhoto("1766128867459-064fcbfa8781"),
   },
   {
     slug: "jordan-wolfson-gagosian-new-york",
@@ -458,7 +458,7 @@ export const artListings: ArtListing[] = [
     description: "A new exhibition by Jordan Wolfson at Gagosian's West 24th Street gallery.",
     sourceUrl: "https://gagosian.com/exhibitions/",
     sourceLabel: "gagosian.com",
-    heroImage: themeImage("culturalHeritage", 8),
+    heroImage: unsplashPhoto("1762928289094-197055a5d5c3"),
   },
   {
     slug: "deana-lawson-gagosian-new-york",
@@ -472,7 +472,7 @@ export const artListings: ArtListing[] = [
     description: "Photography by Deana Lawson at Gagosian's 541 West 24th Street gallery.",
     sourceUrl: "https://gagosian.com/exhibitions/",
     sourceLabel: "gagosian.com",
-    heroImage: themeImage("culturalHeritage", 9),
+    heroImage: unsplashPhoto("1759398010837-f75f9454fb7e"),
   },
   {
     slug: "lee-bul-hauser-wirth-new-york",
@@ -486,7 +486,7 @@ export const artListings: ArtListing[] = [
     description: "A solo exhibition by Lee Bul at Hauser & Wirth's 22nd Street gallery.",
     sourceUrl: "https://www.hauserwirth.com/hauser-wirth-exhibitions/",
     sourceLabel: "hauserwirth.com",
-    heroImage: themeImage("culturalHeritage", 10),
+    heroImage: unsplashPhoto("1785004904590-f77a3a65a515"),
   },
   {
     slug: "anna-maria-maiolino-hauser-wirth-new-york",
@@ -500,7 +500,7 @@ export const artListings: ArtListing[] = [
     description: "Sixty years of Anna Maria Maiolino's work, presented across three chapters.",
     sourceUrl: "https://www.hauserwirth.com/hauser-wirth-exhibitions/",
     sourceLabel: "hauserwirth.com",
-    heroImage: themeImage("culturalHeritage", 11),
+    heroImage: unsplashPhoto("1766801848077-31bd1900efcc"),
   },
   {
     slug: "cindy-sherman-hauser-wirth-london",
@@ -514,7 +514,7 @@ export const artListings: ArtListing[] = [
     description: "Cindy Sherman opens at Hauser & Wirth London during Frieze week, alongside a Lorna Simpson exhibition.",
     sourceUrl: "https://www.hauserwirth.com/locations/10056-hauser-wirth-london/",
     sourceLabel: "hauserwirth.com",
-    heroImage: themeImage("culturalHeritage", 12),
+    heroImage: unsplashPhoto("1774021802030-d4b48399232d"),
   },
   {
     slug: "calder-okeeffe-hauser-wirth-palo-alto",
@@ -528,7 +528,7 @@ export const artListings: ArtListing[] = [
     description: "Alexander Calder and Georgia O'Keeffe side by side, the gallery's second major presentation of Calder's work in California.",
     sourceUrl: "https://www.hauserwirth.com/hauser-wirth-exhibitions/calder-okeeffe/",
     sourceLabel: "hauserwirth.com",
-    heroImage: themeImage("culturalHeritage", 0),
+    heroImage: unsplashPhoto("1771189255285-3bcb030e1f47"),
   },
   {
     slug: "calder-francois-premier-hauser-wirth-paris",
@@ -542,7 +542,7 @@ export const artListings: ArtListing[] = [
     description: "A Calder exhibition at Hauser & Wirth Paris, opening the week of Art Basel Paris.",
     sourceUrl: "https://www.hauserwirth.com/locations/",
     sourceLabel: "hauserwirth.com",
-    heroImage: themeImage("culturalHeritage", 1),
+    heroImage: unsplashPhoto("1784397367449-38c09d80873f"),
   },
   {
     slug: "lynda-benglis-pace-new-york",
@@ -556,7 +556,7 @@ export const artListings: ArtListing[] = [
     description: "New work by Lynda Benglis at Pace's New York gallery.",
     sourceUrl: "https://www.pacegallery.com/exhibitions/",
     sourceLabel: "pacegallery.com",
-    heroImage: themeImage("culturalHeritage", 2),
+    heroImage: unsplashPhoto("1697257378991-b57497dddc69"),
   },
   {
     slug: "david-lynch-pace-los-angeles",
@@ -570,7 +570,7 @@ export const artListings: ArtListing[] = [
     description: "A major exhibition of David Lynch's work at Pace in the artist's hometown of Los Angeles.",
     sourceUrl: "https://www.pacegallery.com/exhibitions/",
     sourceLabel: "pacegallery.com",
-    heroImage: themeImage("culturalHeritage", 3),
+    heroImage: unsplashPhoto("1697257378436-3bbf6cf9f8ba"),
   },
   {
     slug: "kiki-kogelnik-exquisite-corpse-pace-berlin",
@@ -584,7 +584,7 @@ export const artListings: ArtListing[] = [
     description: "Works by pop-era artist Kiki Kogelnik at Pace's Berlin gallery.",
     sourceUrl: "https://www.pacegallery.com/exhibitions/",
     sourceLabel: "pacegallery.com",
-    heroImage: themeImage("culturalHeritage", 4),
+    heroImage: unsplashPhoto("1650303550939-72502f827c0f"),
   },
   {
     slug: "kylie-manning-the-mudlarkers-pace-london",
@@ -598,7 +598,7 @@ export const artListings: ArtListing[] = [
     description: "New paintings by Kylie Manning, opening during Frieze week.",
     sourceUrl: "https://www.pacegallery.com/exhibitions/",
     sourceLabel: "pacegallery.com",
-    heroImage: themeImage("culturalHeritage", 5),
+    heroImage: unsplashPhoto("1566954979172-eaba308acdf0"),
   },
   {
     slug: "kiki-smith-untethered-journey-pace-los-angeles",
@@ -612,7 +612,7 @@ export const artListings: ArtListing[] = [
     description: "A special project by Kiki Smith at Pace Los Angeles.",
     sourceUrl: "https://www.pacegallery.com/exhibitions/",
     sourceLabel: "pacegallery.com",
-    heroImage: themeImage("culturalHeritage", 6),
+    heroImage: unsplashPhoto("1545518514-ce8448f542b3"),
   },
   {
     slug: "gabriel-orozco-chronotopic-white-cube-bermondsey",
@@ -626,7 +626,7 @@ export const artListings: ArtListing[] = [
     description: "A Gabriel Orozco exhibition at White Cube Bermondsey, curated by Briony Fer.",
     sourceUrl: "https://www.whitecube.com/exhibitions/london",
     sourceLabel: "whitecube.com",
-    heroImage: themeImage("culturalHeritage", 7),
+    heroImage: unsplashPhoto("1606819717115-9159c900370b"),
   },
   {
     slug: "danh-vo-white-cube-new-york",
@@ -640,7 +640,7 @@ export const artListings: ArtListing[] = [
     description: "New work by Danh Vo, marking the artist's return to New York.",
     sourceUrl: "https://www.whitecube.com/exhibitions/new-york",
     sourceLabel: "whitecube.com",
-    heroImage: themeImage("culturalHeritage", 8),
+    heroImage: unsplashPhoto("1569783721854-33a99b4c0bae"),
   },
   {
     slug: "firenze-lai-white-cube-masons-yard",
@@ -654,7 +654,7 @@ export const artListings: ArtListing[] = [
     description: "Firenze Lai's first UK exhibition and her first with the gallery, opening during Frieze week.",
     sourceUrl: "https://www.whitecube.com/exhibitions/london",
     sourceLabel: "whitecube.com",
-    heroImage: themeImage("culturalHeritage", 9),
+    heroImage: unsplashPhoto("1496889196885-5ddcec5eef4d"),
   },
   {
     slug: "tracey-emin-white-cube-paris",
@@ -668,7 +668,7 @@ export const artListings: ArtListing[] = [
     description: "Bronze sculptures and new paintings by Tracey Emin, timed to Art Basel Paris.",
     sourceUrl: "https://www.whitecube.com/gallery-exhibitions/tracey-emin-paris-2026",
     sourceLabel: "whitecube.com",
-    heroImage: themeImage("culturalHeritage", 10),
+    heroImage: unsplashPhoto("1512540452972-baac55d40ef1"),
   },
   {
     slug: "tesfaye-urgessa-white-cube-hong-kong",
@@ -682,7 +682,7 @@ export const artListings: ArtListing[] = [
     description: "A solo exhibition by Tesfaye Urgessa at White Cube Hong Kong.",
     sourceUrl: "https://www.whitecube.com/exhibitions/",
     sourceLabel: "whitecube.com",
-    heroImage: themeImage("culturalHeritage", 11),
+    heroImage: unsplashPhoto("1658232630877-6a279285a107"),
   },
   {
     slug: "hiroshi-sugimoto-unnatural-habitat-lisson-new-york",
@@ -696,7 +696,7 @@ export const artListings: ArtListing[] = [
     description: "Hiroshi Sugimoto at Lisson's New York gallery, shown alongside a Leonilson exhibition.",
     sourceUrl: "https://www.lissongallery.com/exhibitions",
     sourceLabel: "lissongallery.com",
-    heroImage: themeImage("culturalHeritage", 12),
+    heroImage: unsplashPhoto("1766128867459-064fcbfa8781"),
   },
   {
     slug: "carmen-herrera-pulse-pause-repeat-lisson-london",
@@ -710,7 +710,7 @@ export const artListings: ArtListing[] = [
     description: "Carmen Herrera at Lisson London, opening alongside a Ha Chong-Hyun exhibition.",
     sourceUrl: "https://www.lissongallery.com/exhibitions",
     sourceLabel: "lissongallery.com",
-    heroImage: themeImage("culturalHeritage", 0),
+    heroImage: unsplashPhoto("1762928289094-197055a5d5c3"),
   },
   {
     slug: "oliver-lee-jackson-lisson-los-angeles",
@@ -724,7 +724,7 @@ export const artListings: ArtListing[] = [
     description: "Oliver Lee Jackson's paintings at Lisson Los Angeles.",
     sourceUrl: "https://www.lissongallery.com/exhibitions",
     sourceLabel: "lissongallery.com",
-    heroImage: themeImage("culturalHeritage", 1),
+    heroImage: unsplashPhoto("1759398010837-f75f9454fb7e"),
   },
   {
     slug: "georg-baselitz-the-heroes-thaddaeus-ropac-london",
@@ -738,7 +738,7 @@ export const artListings: ArtListing[] = [
     description: "Georg Baselitz's early Heroes paintings at Thaddaeus Ropac's London gallery.",
     sourceUrl: "https://ropac.net/exhibitions/",
     sourceLabel: "ropac.net",
-    heroImage: themeImage("culturalHeritage", 2),
+    heroImage: unsplashPhoto("1785004904590-f77a3a65a515"),
   },
   {
     slug: "jordan-casteel-winter-sun-thaddaeus-ropac-paris",
@@ -752,7 +752,7 @@ export const artListings: ArtListing[] = [
     description: "New paintings by Jordan Casteel at Thaddaeus Ropac's Paris Marais gallery.",
     sourceUrl: "https://ropac.net/exhibitions/",
     sourceLabel: "ropac.net",
-    heroImage: themeImage("culturalHeritage", 3),
+    heroImage: unsplashPhoto("1766801848077-31bd1900efcc"),
   },
   {
     slug: "david-salle-the-venice-paintings-thaddaeus-ropac-paris",
@@ -766,7 +766,7 @@ export const artListings: ArtListing[] = [
     description: "David Salle's Venice paintings at Thaddaeus Ropac's Pantin space.",
     sourceUrl: "https://ropac.net/exhibitions/",
     sourceLabel: "ropac.net",
-    heroImage: themeImage("culturalHeritage", 4),
+    heroImage: unsplashPhoto("1774021802030-d4b48399232d"),
   },
   {
     slug: "valie-export-ketty-la-rocca-thaddaeus-ropac-salzburg",
@@ -780,7 +780,7 @@ export const artListings: ArtListing[] = [
     description: "Two pioneering women artists in dialogue at Thaddaeus Ropac's Salzburg Villa Kast.",
     sourceUrl: "https://ropac.net/exhibitions/",
     sourceLabel: "ropac.net",
-    heroImage: themeImage("culturalHeritage", 5),
+    heroImage: unsplashPhoto("1771189255285-3bcb030e1f47"),
   },
   {
     slug: "ivan-argote-mamarrachos-perrotin-london",
@@ -794,7 +794,7 @@ export const artListings: ArtListing[] = [
     description: "A solo exhibition by Iván Argote at Perrotin London.",
     sourceUrl: "https://www.perrotin.com/exhibitions/current",
     sourceLabel: "perrotin.com",
-    heroImage: themeImage("culturalHeritage", 6),
+    heroImage: unsplashPhoto("1784397367449-38c09d80873f"),
   },
   {
     slug: "lee-bae-attending-perrotin-paris",
@@ -808,7 +808,7 @@ export const artListings: ArtListing[] = [
     description: "A solo exhibition by Lee Bae at Perrotin Paris.",
     sourceUrl: "https://www.perrotin.com/exhibitions/current",
     sourceLabel: "perrotin.com",
-    heroImage: themeImage("culturalHeritage", 7),
+    heroImage: unsplashPhoto("1697257378991-b57497dddc69"),
   },
   {
     slug: "tony-cragg-marian-goodman-new-york",
@@ -822,7 +822,7 @@ export const artListings: ArtListing[] = [
     description: "New sculpture by Tony Cragg at Marian Goodman's New York gallery.",
     sourceUrl: "https://www.mariangoodman.com/exhibitions/",
     sourceLabel: "mariangoodman.com",
-    heroImage: themeImage("culturalHeritage", 8),
+    heroImage: unsplashPhoto("1697257378436-3bbf6cf9f8ba"),
   },
   {
     slug: "tacita-dean-bruce-nauman-marian-goodman-paris",
@@ -836,7 +836,7 @@ export const artListings: ArtListing[] = [
     description: "A two-artist exhibition of Tacita Dean and Bruce Nauman, opening the week of Art Basel Paris.",
     sourceUrl: "https://www.mariangoodman.com/exhibitions/",
     sourceLabel: "mariangoodman.com",
-    heroImage: themeImage("culturalHeritage", 9),
+    heroImage: unsplashPhoto("1650303550939-72502f827c0f"),
   },
   {
     slug: "lucy-dodd-spruth-magers-london",
@@ -850,7 +850,7 @@ export const artListings: ArtListing[] = [
     description: "Lucy Dodd's paintings centred on the figure of Diana, the woodland huntress.",
     sourceUrl: "https://spruethmagers.com/exhibitions/",
     sourceLabel: "spruethmagers.com",
-    heroImage: themeImage("culturalHeritage", 10),
+    heroImage: unsplashPhoto("1566954979172-eaba308acdf0"),
   },
   {
     slug: "salvo-la-citta-spruth-magers-berlin",
@@ -864,7 +864,7 @@ export const artListings: ArtListing[] = [
     description: "Paintings of the city by Salvo, shown for Berlin Art Week.",
     sourceUrl: "https://spruethmagers.com/exhibitions/",
     sourceLabel: "spruethmagers.com",
-    heroImage: themeImage("culturalHeritage", 11),
+    heroImage: unsplashPhoto("1545518514-ce8448f542b3"),
   },
   {
     slug: "beyond-the-streets-saatchi-gallery",
@@ -878,7 +878,7 @@ export const artListings: ArtListing[] = [
     description: "More than 100 international creators in a major street-culture exhibition across Galleries 4–14.",
     sourceUrl: "https://www.saatchigallery.com/whats-on/upcoming",
     sourceLabel: "saatchigallery.com",
-    heroImage: themeImage("culturalHeritage", 12),
+    heroImage: unsplashPhoto("1606819717115-9159c900370b"),
   },
   {
     slug: "the-90s-art-and-fashion-tate-britain",
@@ -892,7 +892,7 @@ export const artListings: ArtListing[] = [
     description: "The first exhibition to explore the art, photography and fashion of the 1990s at Tate Britain, guest-curated by Edward Enninful.",
     sourceUrl: "https://www.tate.org.uk/whats-on/tate-britain/the-90s",
     sourceLabel: "tate.org.uk",
-    heroImage: themeImage("culturalHeritage", 0),
+    heroImage: unsplashPhoto("1653987255814-3b4c05832660"),
   },
   {
     slug: "light-and-magic-tate-modern",
@@ -906,7 +906,7 @@ export const artListings: ArtListing[] = [
     description: "About 200 vintage prints by more than 80 artists in the first major exhibition on Pictorialism.",
     sourceUrl: "https://www.tate.org.uk/whats-on/tate-modern/light-and-magic",
     sourceLabel: "tate.org.uk",
-    heroImage: themeImage("culturalHeritage", 1),
+    heroImage: unsplashPhoto("1788660601198-ca43cb53416a"),
   },
   {
     slug: "krasner-and-pollock-past-continuous-the-met",
@@ -920,7 +920,7 @@ export const artListings: ArtListing[] = [
     description: "A milestone exhibition tracing the parallel lives and work of Lee Krasner and Jackson Pollock.",
     sourceUrl: "https://www.metmuseum.org/exhibitions",
     sourceLabel: "metmuseum.org",
-    heroImage: themeImage("culturalHeritage", 2),
+    heroImage: unsplashPhoto("1761563071832-e548e022a706"),
   },
   {
     slug: "designing-the-gilded-age-tiffany-the-met",
@@ -934,7 +934,7 @@ export const artListings: ArtListing[] = [
     description: "Drawings from the Tiffany studios at The Met Fifth Avenue.",
     sourceUrl: "https://www.metmuseum.org/exhibitions",
     sourceLabel: "metmuseum.org",
-    heroImage: themeImage("culturalHeritage", 3),
+    heroImage: unsplashPhoto("1763909855036-46b3be5085b6"),
   },
   {
     slug: "costume-art-the-met",
@@ -948,7 +948,7 @@ export const artListings: ArtListing[] = [
     description: "The exhibition behind The Met Gala, shown in the Thom Browne Gallery.",
     sourceUrl: "https://www.metmuseum.org/exhibitions",
     sourceLabel: "metmuseum.org",
-    heroImage: themeImage("culturalHeritage", 4),
+    heroImage: unsplashPhoto("1575223970966-76ae61ee7838"),
   },
   {
     slug: "mary-cassatt-musee-dorsay",
@@ -962,7 +962,7 @@ export const artListings: ArtListing[] = [
     description: "Nearly 80 works by Mary Cassatt, marking the museum's centenary programme.",
     sourceUrl: "https://www.musee-orsay.fr/",
     sourceLabel: "musee-orsay.fr",
-    heroImage: themeImage("culturalHeritage", 5),
+    heroImage: unsplashPhoto("1650303550939-72502f827c0f"),
   },
   {
     slug: "jenny-holzer-musee-dorsay",
@@ -976,7 +976,7 @@ export const artListings: ArtListing[] = [
     description: "LED installations and projections by Jenny Holzer alongside the museum's permanent collection.",
     sourceUrl: "https://www.musee-orsay.fr/",
     sourceLabel: "musee-orsay.fr",
-    heroImage: themeImage("culturalHeritage", 6),
+    heroImage: unsplashPhoto("1451438143976-4e1aa4f7f153"),
   },
   {
     slug: "gustave-fayet-fondation-louis-vuitton",
@@ -990,7 +990,7 @@ export const artListings: ArtListing[] = [
     description: "A major exhibition of the collector Gustave Fayet's holdings and his own work.",
     sourceUrl: "https://www.fondationlouisvuitton.fr/en",
     sourceLabel: "fondationlouisvuitton.fr",
-    heroImage: themeImage("culturalHeritage", 7),
+    heroImage: unsplashPhoto("1653987255814-3b4c05832660"),
   },
   {
     slug: "louise-bourgeois-extreme-tension-bnf-pompidou",
@@ -1004,7 +1004,7 @@ export const artListings: ArtListing[] = [
     description: "Drawings and prints by Louise Bourgeois, presented at a partner venue while the Centre Pompidou is closed for renovation.",
     sourceUrl: "https://www.centrepompidou.fr/fr/programme/expositions",
     sourceLabel: "centrepompidou.fr",
-    heroImage: themeImage("culturalHeritage", 8),
+    heroImage: unsplashPhoto("1788660601198-ca43cb53416a"),
   },
   {
     slug: "spices-and-wonders-louvre-abu-dhabi",
@@ -1018,7 +1018,7 @@ export const artListings: ArtListing[] = [
     description: "An exhibition on the Indian Ocean's trade routes, created with the Guimet – National Museum of Asian Arts.",
     sourceUrl: "https://www.louvreabudhabi.ae/en/whats-on",
     sourceLabel: "louvreabudhabi.ae",
-    heroImage: themeImage("culturalHeritage", 9),
+    heroImage: unsplashPhoto("1566127444979-b3d2b654e3d7"),
   },
   {
     slug: "myths-and-monsters-m-plus-hong-kong",
@@ -1032,7 +1032,7 @@ export const artListings: ArtListing[] = [
     description: "An exploration of fantasy in Asian visual culture and cross-cultural dialogues.",
     sourceUrl: "https://www.mplus.org.hk/en/exhibitions/",
     sourceLabel: "mplus.org.hk",
-    heroImage: themeImage("culturalHeritage", 10),
+    heroImage: unsplashPhoto("1763909855036-46b3be5085b6"),
   },
   {
     slug: "herzog-de-meuron-in-focus-m-plus-hong-kong",
@@ -1046,7 +1046,7 @@ export const artListings: ArtListing[] = [
     description: "Models, drawings and material samples from the firm that designed the museum building, marking M+'s fifth anniversary.",
     sourceUrl: "https://www.mplus.org.hk/en/exhibitions/",
     sourceLabel: "mplus.org.hk",
-    heroImage: themeImage("culturalHeritage", 11),
+    heroImage: unsplashPhoto("1575223970966-76ae61ee7838"),
   },
   {
     slug: "mariko-mori-mori-art-museum",
@@ -1060,7 +1060,7 @@ export const artListings: ArtListing[] = [
     description: "A retrospective of about 80 works, including Mariko Mori's Wave UFO.",
     sourceUrl: "https://www.mori.art.museum/en/",
     sourceLabel: "mori.art.museum",
-    heroImage: themeImage("culturalHeritage", 12),
+    heroImage: unsplashPhoto("1650303550939-72502f827c0f"),
   },
   {
     slug: "frieze-masters-2026",
@@ -1074,7 +1074,7 @@ export const artListings: ArtListing[] = [
     description: "Frieze's historical-art fair, held alongside Frieze London in Regent's Park.",
     sourceUrl: "https://www.frieze.com/fairs/frieze-london-frieze-masters",
     sourceLabel: "frieze.com",
-    heroImage: themeImage("culturalHeritage", 0),
+    heroImage: unsplashPhoto("1650303550939-72502f827c0f"),
   },
   {
     slug: "paris-photo-2026",
@@ -1088,7 +1088,7 @@ export const artListings: ArtListing[] = [
     description: "The 29th edition of the photography fair, with 242 exhibitors from 38 countries, celebrating the bicentenary of photography.",
     sourceUrl: "https://www.parisphoto.com/",
     sourceLabel: "parisphoto.com",
-    heroImage: themeImage("culturalHeritage", 1),
+    heroImage: unsplashPhoto("1743119844808-fefd446de533"),
   },
   {
     slug: "artissima-2026",
@@ -1102,7 +1102,7 @@ export const artListings: ArtListing[] = [
     description: "The 33rd edition of Italy's leading contemporary art fair (preview 29 October).",
     sourceUrl: "https://www.artissima.art/",
     sourceLabel: "artissima.art",
-    heroImage: themeImage("culturalHeritage", 2),
+    heroImage: unsplashPhoto("1743119755097-38a61eb33a2f"),
   },
   {
     slug: "art-basel-qatar-2027",
@@ -1116,7 +1116,7 @@ export const artListings: ArtListing[] = [
     description: "The second edition of Art Basel in Doha (preview days 26–27 January 2027).",
     sourceUrl: "https://www.artbasel.com/qatar",
     sourceLabel: "artbasel.com",
-    heroImage: themeImage("culturalHeritage", 3),
+    heroImage: unsplashPhoto("1545518514-ce8448f542b3"),
   },
   {
     slug: "frieze-los-angeles-2027",
@@ -1130,7 +1130,7 @@ export const artListings: ArtListing[] = [
     description: "The eighth edition of Frieze Los Angeles at the Santa Monica Airport campus.",
     sourceUrl: "https://www.frieze.com/fairs/frieze-los-angeles",
     sourceLabel: "frieze.com",
-    heroImage: themeImage("culturalHeritage", 4),
+    heroImage: unsplashPhoto("1566954979172-eaba308acdf0"),
   },
   // ---------------------------------------------------------------- Past (kept for the archive)
   {
@@ -1145,7 +1145,7 @@ export const artListings: ArtListing[] = [
     description: "A survey of prints from Universal Limited Art Editions (ULAE) at David Zwirner's 20th Street gallery.",
     sourceUrl: "https://www.davidzwirner.com/exhibitions/past-exhibitions",
     sourceLabel: "davidzwirner.com",
-    heroImage: themeImage("culturalHeritage", 6),
+    heroImage: unsplashPhoto("1569783721854-33a99b4c0bae"),
   },
   {
     slug: "ed-ruscha-gagosian-london",
@@ -1159,7 +1159,7 @@ export const artListings: ArtListing[] = [
     description: "New paintings by Ed Ruscha at Gagosian's Davies Street gallery in London.",
     sourceUrl: "https://gagosian.com/exhibitions/archive/",
     sourceLabel: "gagosian.com",
-    heroImage: themeImage("culturalHeritage", 0),
+    heroImage: unsplashPhoto("1496889196885-5ddcec5eef4d"),
   },
   {
     slug: "sarah-morris-white-cube-masons-yard",
@@ -1173,7 +1173,7 @@ export const artListings: ArtListing[] = [
     description: "New paintings by Sarah Morris at White Cube's Mason's Yard gallery in London.",
     sourceUrl: "https://www.whitecube.com/exhibitions/archive?location=london",
     sourceLabel: "whitecube.com",
-    heroImage: themeImage("culturalHeritage", 8),
+    heroImage: unsplashPhoto("1512540452972-baac55d40ef1"),
   },
   {
     slug: "anj-smith-hauser-wirth-west-hollywood",
@@ -1187,7 +1187,7 @@ export const artListings: ArtListing[] = [
     description: "New paintings by Anj Smith at Hauser & Wirth's West Hollywood gallery.",
     sourceUrl: "https://www.hauserwirth.com/hauser-wirth-exhibitions/",
     sourceLabel: "hauserwirth.com",
-    heroImage: themeImage("culturalHeritage", 11),
+    heroImage: unsplashPhoto("1658232630877-6a279285a107"),
   },
   {
     slug: "pirouette-turning-points-in-design-moma",
@@ -1201,7 +1201,7 @@ export const artListings: ArtListing[] = [
     description: "A survey of design objects that marked turning points in how design is made, sold and understood.",
     sourceUrl: "https://www.moma.org/calendar/exhibitions/history/?location=both&mde_type=Exhibition&sort_date=closing_date",
     sourceLabel: "moma.org",
-    heroImage: themeImage("culturalHeritage", 12),
+    heroImage: unsplashPhoto("1451438143976-4e1aa4f7f153"),
   },
   {
     slug: "emily-kam-kngwarray-tate-modern",
@@ -1215,7 +1215,7 @@ export const artListings: ArtListing[] = [
     description: "The first European retrospective of the celebrated Aboriginal Australian artist Emily Kam Kngwarray.",
     sourceUrl: "https://www.tate.org.uk/whats-on?venue=tate-modern&type=exhibition",
     sourceLabel: "tate.org.uk",
-    heroImage: themeImage("culturalHeritage", 3),
+    heroImage: unsplashPhoto("1653987255814-3b4c05832660"),
   },
   {
     slug: "rashid-johnson-guggenheim",
@@ -1229,7 +1229,7 @@ export const artListings: ArtListing[] = [
     description: "A major survey of Rashid Johnson's work, featuring nearly 90 pieces across the museum's rotunda.",
     sourceUrl: "https://www.guggenheim.org/exhibitions/past",
     sourceLabel: "guggenheim.org",
-    heroImage: themeImage("culturalHeritage", 9),
+    heroImage: unsplashPhoto("1788660601198-ca43cb53416a"),
   },
   {
     slug: "jacques-louis-david-louvre",
@@ -1243,7 +1243,7 @@ export const artListings: ArtListing[] = [
     description: "A retrospective marking the bicentennial of Jacques-Louis David's death.",
     sourceUrl: "https://presse.louvre.fr/?p=1063000228478",
     sourceLabel: "louvre.fr",
-    heroImage: themeImage("culturalHeritage", 4),
+    heroImage: unsplashPhoto("1566127444979-b3d2b654e3d7"),
   },
   {
     slug: "monet-painting-time-tate-modern",
@@ -1257,7 +1257,7 @@ export const artListings: ArtListing[] = [
     description: "Tate Modern's first exhibition devoted to Claude Monet.",
     sourceUrl: "https://www.tate.org.uk/press/press-releases/tate-announces-2027-exhibition-programme",
     sourceLabel: "tate.org.uk",
-    heroImage: themeImage("culturalHeritage", 5),
+    heroImage: unsplashPhoto("1763909855036-46b3be5085b6"),
   },
   {
     slug: "ink-tate-modern",
@@ -1271,7 +1271,7 @@ export const artListings: ArtListing[] = [
     description: "Tate Modern's first exhibition dedicated to ink painting.",
     sourceUrl: "https://www.tate.org.uk/press/press-releases/tate-announces-2027-exhibition-programme",
     sourceLabel: "tate.org.uk",
-    heroImage: themeImage("culturalHeritage", 6),
+    heroImage: unsplashPhoto("1575223970966-76ae61ee7838"),
   },
   {
     slug: "baya-tate-modern",
@@ -1285,7 +1285,7 @@ export const artListings: ArtListing[] = [
     description: "A Tate Modern exhibition devoted to the artist Baya.",
     sourceUrl: "https://www.tate.org.uk/press/press-releases/tate-announces-2027-exhibition-programme",
     sourceLabel: "tate.org.uk",
-    heroImage: themeImage("culturalHeritage", 7),
+    heroImage: unsplashPhoto("1650303550939-72502f827c0f"),
   },
   {
     slug: "nalini-malani-tate-modern",
@@ -1299,7 +1299,7 @@ export const artListings: ArtListing[] = [
     description: "A Tate Modern exhibition of work by Nalini Malani.",
     sourceUrl: "https://www.tate.org.uk/press/press-releases/tate-announces-2027-exhibition-programme",
     sourceLabel: "tate.org.uk",
-    heroImage: themeImage("culturalHeritage", 8),
+    heroImage: unsplashPhoto("1451438143976-4e1aa4f7f153"),
   },
   {
     slug: "lynda-benglis-tate-modern",
@@ -1313,7 +1313,7 @@ export const artListings: ArtListing[] = [
     description: "A Tate Modern exhibition of work by Lynda Benglis.",
     sourceUrl: "https://www.tate.org.uk/press/press-releases/tate-announces-2027-exhibition-programme",
     sourceLabel: "tate.org.uk",
-    heroImage: themeImage("culturalHeritage", 9),
+    heroImage: unsplashPhoto("1653987255814-3b4c05832660"),
   },
   {
     slug: "edvard-munch-tate-modern",
@@ -1327,7 +1327,7 @@ export const artListings: ArtListing[] = [
     description: "A Tate Modern exhibition of work by Edvard Munch.",
     sourceUrl: "https://www.tate.org.uk/press/press-releases/tate-announces-2027-exhibition-programme",
     sourceLabel: "tate.org.uk",
-    heroImage: themeImage("culturalHeritage", 10),
+    heroImage: unsplashPhoto("1788660601198-ca43cb53416a"),
   },
 ];
 

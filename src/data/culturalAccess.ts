@@ -1,4 +1,4 @@
-import { themeImage } from "./images";
+import { unsplashPhoto } from "./images";
 
 /**
  * Real, independent membership / patron programs run directly by major
@@ -42,7 +42,7 @@ export const culturalAccessPrograms: CulturalAccessProgram[] = [
       "The Met's patron-level membership tiers open onto curator-led tours, opening receptions and behind-the-scenes programming; the Apollo Circle is its dedicated group for younger patrons in their twenties and thirties.",
     sourceUrl: "https://engage.metmuseum.org/members/patrons-circle/",
     sourceLabel: "engage.metmuseum.org",
-    heroImage: themeImage("culturalHeritage", 8),
+    heroImage: unsplashPhoto("1650303550939-72502f827c0f"),
   },
   {
     slug: "tate-patrons",
@@ -55,7 +55,7 @@ export const culturalAccessPrograms: CulturalAccessProgram[] = [
       "Across four membership tiers, Tate Patrons get curator-led exhibition tours, visits to artists' studios and private collections, London private views, and invitations to receptions and international art trips.",
     sourceUrl: "https://www.tate.org.uk/join-support/tate-patrons",
     sourceLabel: "tate.org.uk",
-    heroImage: themeImage("culturalHeritage", 3),
+    heroImage: unsplashPhoto("1451438143976-4e1aa4f7f153"),
   },
   {
     slug: "societe-amis-du-louvre",
@@ -68,7 +68,7 @@ export const culturalAccessPrograms: CulturalAccessProgram[] = [
       "An independent society founded in 1897 with more than 65,000 members today, funding acquisitions for the Louvre. Membership gives unlimited access to the museum without reservation; higher giving levels join the Cercle des Mécènes patron circle. An American Friends of the Louvre program exists for US-based supporters.",
     sourceUrl: "https://www.amisdulouvre.fr/",
     sourceLabel: "amisdulouvre.fr",
-    heroImage: themeImage("culturalHeritage", 1),
+    heroImage: unsplashPhoto("1566127444979-b3d2b654e3d7"),
   },
   {
     slug: "friends-of-the-uffizi",
@@ -81,7 +81,7 @@ export const culturalAccessPrograms: CulturalAccessProgram[] = [
       "The US-based sister organization to Florence's own Amici degli Uffizi, raising funds for the Uffizi's acquisitions, restorations and exhibitions and offering members a direct connection to the museum's program of events.",
     sourceUrl: "https://friendsoftheuffizigallery.org/",
     sourceLabel: "friendsoftheuffizigallery.org",
-    heroImage: themeImage("culturalHeritage", 4),
+    heroImage: unsplashPhoto("1653987255814-3b4c05832660"),
   },
   {
     slug: "american-friends-of-the-prado",
@@ -94,7 +94,7 @@ export const culturalAccessPrograms: CulturalAccessProgram[] = [
       "A US-based support organization for the Prado offering tiered membership — from general entry through the museum's dedicated Puerta de Amigos to guided-visit access at higher levels — alongside Spain's own Fundación Amigos del Museo del Prado.",
     sourceUrl: "https://www.afpradomuseum.org/membership",
     sourceLabel: "afpradomuseum.org",
-    heroImage: themeImage("culturalHeritage", 8),
+    heroImage: unsplashPhoto("1761563071832-e548e022a706"),
   },
 
   // ---------------------------------------------------------------- Opera & ballet
@@ -109,7 +109,7 @@ export const culturalAccessPrograms: CulturalAccessProgram[] = [
       "Founded in 1978 to support Teatro alla Scala, Amici della Scala runs the long-running Prima delle Prime series — talks introducing each opera and ballet of the season — alongside exhibitions and preservation projects for the theater's archives.",
     sourceUrl: "https://www.amicidellascala.it/?lang=en",
     sourceLabel: "amicidellascala.it",
-    heroImage: themeImage("culturalHeritage", 9),
+    heroImage: unsplashPhoto("1783184890654-8b8a89432de4"),
   },
   {
     slug: "royal-ballet-and-opera-patrons",
@@ -122,7 +122,7 @@ export const culturalAccessPrograms: CulturalAccessProgram[] = [
       "The Royal Ballet and Opera's patron program (formerly the Royal Opera House) gives priority booking, guaranteed first-night seats and, at higher tiers, a private backstage tour for the member and their guests.",
     sourceUrl: "https://www.rbo.org.uk/join-and-support/royal-ballet-and-opera-patrons",
     sourceLabel: "rbo.org.uk",
-    heroImage: themeImage("culturalHeritage", 4),
+    heroImage: unsplashPhoto("1782556907732-14729de57a09"),
   },
   {
     slug: "vienna-state-opera-circle-of-friends",
@@ -135,7 +135,7 @@ export const culturalAccessPrograms: CulturalAccessProgram[] = [
       "Membership from as little as €120 a year gives right of first refusal on tickets across the season plus free admission to the house's artistic-life events; a separate Friends of the Vienna State Ballet program adds artist talks and rehearsal visits.",
     sourceUrl: "https://www.wiener-staatsoper.at/en/ocof/",
     sourceLabel: "wiener-staatsoper.at",
-    heroImage: themeImage("culturalHeritage", 9),
+    heroImage: unsplashPhoto("1690131054032-1d7465c6b662"),
   },
 ];
 

@@ -1,4 +1,4 @@
-import { themeImage } from "./images";
+import { themeImage, unsplashPhoto } from "./images";
 
 /**
  * Real, officially-dated events across sport, entertainment, industry,
@@ -137,7 +137,7 @@ export const worldEvents: WorldEvent[] = [
       "The oldest tennis tournament in the world and the only Grand Slam still played on grass, at the All England Club in Wimbledon.",
     sourceUrl: "https://www.wimbledon.com/",
     sourceLabel: "wimbledon.com",
-    heroImage: themeImage("mountainNature", 5),
+    heroImage: unsplashPhoto("1783201033940-acd25eda0eac"),
   },
   {
     slug: "wimbledon-2027",
@@ -153,7 +153,7 @@ export const worldEvents: WorldEvent[] = [
       "Two weeks of grass-court tennis at the All England Club, with the finals expected the second weekend.",
     sourceUrl: "https://www.wimbledon.com/",
     sourceLabel: "wimbledon.com",
-    heroImage: themeImage("mountainNature", 5),
+    heroImage: unsplashPhoto("1719762888013-6ae1e96d0eb8"),
   },
   {
     slug: "tcs-new-york-city-marathon-2026",
@@ -185,7 +185,7 @@ export const worldEvents: WorldEvent[] = [
       "Golf's first major of the year, played every spring at Augusta National — tournament rounds run Thursday to Sunday, with practice rounds and the Par 3 Contest earlier in the week.",
     sourceUrl: "https://www.masters.com/",
     sourceLabel: "masters.com",
-    heroImage: themeImage("mountainNature", 7),
+    heroImage: unsplashPhoto("1785016680667-bca44158204e"),
   },
   {
     slug: "monaco-grand-prix-2027",
@@ -201,7 +201,7 @@ export const worldEvents: WorldEvent[] = [
       "Formula 1's most storied race, run through the streets of Monte Carlo — the race itself is scheduled for Sunday, June 6, opening the European leg of the season.",
     sourceUrl: "https://acm.mc/en/epreuves/formula-1-grand-prix-de-monaco/",
     sourceLabel: "acm.mc",
-    heroImage: themeImage("coastal", 1),
+    heroImage: unsplashPhoto("1777684862302-7c0973a30095"),
   },
 
   // ---------------------------------------------------------------- Music festivals
@@ -219,7 +219,7 @@ export const worldEvents: WorldEvent[] = [
       "One of the world's best-known music festivals, held across two consecutive weekends in the desert outside Palm Springs.",
     sourceUrl: "https://www.coachella.com/",
     sourceLabel: "coachella.com",
-    heroImage: themeImage("mountainNature", 2),
+    heroImage: unsplashPhoto("1778914835544-4af67f7280df"),
   },
   {
     slug: "coachella-2027",
@@ -235,7 +235,7 @@ export const worldEvents: WorldEvent[] = [
       "The 2027 edition returns across two weekends (April 9–11 and 16–18) at the Empire Polo Club.",
     sourceUrl: "https://www.coachella.com/",
     sourceLabel: "coachella.com",
-    heroImage: themeImage("mountainNature", 2),
+    heroImage: unsplashPhoto("1751042265458-cfad0040a5de"),
   },
 
   // ---------------------------------------------------------------- Food, drink & wine
@@ -253,7 +253,7 @@ export const worldEvents: WorldEvent[] = [
       "The 191st Oktoberfest — 16 days of beer tents, traditional food and Bavarian festivity on the Theresienwiese, the world's largest folk festival.",
     sourceUrl: "https://www.oktoberfest.de/en",
     sourceLabel: "oktoberfest.de",
-    heroImage: themeImage("foodAndWine", 3),
+    heroImage: unsplashPhoto("1760039756619-94cf22850ae0"),
   },
 
   // ---------------------------------------------------------------- Technology
@@ -289,7 +289,7 @@ export const worldEvents: WorldEvent[] = [
       "The 80th edition of the world's most prestigious film festival, running along the Croisette with red-carpet premieres and the Palme d'Or competition.",
     sourceUrl: "https://www.festival-cannes.com/en/",
     sourceLabel: "festival-cannes.com",
-    heroImage: themeImage("coastal", 3),
+    heroImage: unsplashPhoto("1736766920028-ee18c15c02ac"),
   },
 
   // ---------------------------------------------------------------- Design
