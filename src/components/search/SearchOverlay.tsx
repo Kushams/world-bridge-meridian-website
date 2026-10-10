@@ -17,12 +17,13 @@ export function SearchOverlay({
 
   const results = useMemo(() => searchSite(query), [query]);
   const grouped = useMemo(() => {
+    const order = ["Page", "Answer"];
     const map = new Map<string, typeof results>();
     for (const item of results) {
       if (!map.has(item.type)) map.set(item.type, []);
       map.get(item.type)!.push(item);
     }
-    return map;
+    return new Map([...map.entries()].sort((a, b) => (order.indexOf(a[0]) + 1 || 99) - (order.indexOf(b[0]) + 1 || 99)));
   }, [results]);
 
   useEffect(() => {
@@ -62,7 +63,7 @@ export function SearchOverlay({
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search destinations, journeys, cruises, experiences, journal…"
+            placeholder="Search anything: pages, places, gift cards, payments, help…"
             className="w-full bg-transparent font-display text-xl text-ivory placeholder:text-stone-dim outline-none md:text-2xl"
           />
           <button
@@ -80,8 +81,8 @@ export function SearchOverlay({
         <div className="mt-8 flex-1 overflow-y-auto">
           {query.trim() === "" ? (
             <p className="text-sm text-stone-dim">
-              Search across destinations, travel packages, cruises, experiences and the
-              journal.
+              Search the whole site: pages, destinations, journeys, cruises, hotels, gift cards and
+              credits, payments, questions and answers, and more.
             </p>
           ) : results.length === 0 ? (
             <p className="text-sm text-stone-dim">
@@ -99,14 +100,20 @@ export function SearchOverlay({
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     {items.map((item) => (
                       <Link
-                        key={`${item.href}-${item.title}`}
+                        key={`${item.type}-${item.href}-${item.title}`}
                         href={item.href}
                         onClick={onClose}
                         className="group flex items-center gap-4 rounded-control p-2 hover:bg-charcoal transition-colors"
                       >
-                        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-control">
-                          <Image src={item.image} alt="" fill sizes="56px" className="object-cover" />
-                        </div>
+                        {item.image ? (
+                          <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-control">
+                            <Image src={item.image} alt="" fill sizes="56px" className="object-cover" />
+                          </div>
+                        ) : (
+                          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-control border border-line text-gold" aria-hidden>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 2h7l4 4v12H5z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" /><path d="M8 10h5M8 13h5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" /></svg>
+                          </div>
+                        )}
                         <div className="min-w-0">
                           <p className="truncate font-display text-base text-ivory group-hover:text-gold transition-colors">
                             {item.title}

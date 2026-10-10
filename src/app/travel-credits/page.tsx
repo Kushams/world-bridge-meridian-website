@@ -9,43 +9,14 @@ import { Button } from "@/components/ui/Button";
 import { themeImage } from "@/data/images";
 import { company } from "@/data/company";
 import { CreditsPurchase } from "@/components/credits/CreditsPurchase";
-import { CREDIT_MAX, CREDIT_MIN, CASHBACK_TIERS, PROMO_MAX_SHARE, PROMO_VALID_DAYS, fmtUsd } from "@/lib/credits";
+import { CASHBACK_TIERS, PROMO_MAX_SHARE, PROMO_VALID_DAYS, fmtUsd } from "@/lib/credits";
+import { faqCredits } from "@/data/pageFaqs";
 
 export const metadata: Metadata = {
   title: "Travel Credits — Buy Today, Travel Tomorrow",
   description: `Travel Credits are US-dollar credits in your ${company.name} account, bought with cryptocurrency and used toward your journeys. Credits you buy never expire.`,
 };
 
-const faqs = [
-  {
-    q: "How can I buy Travel Credits?",
-    a: "Sign in to your account, choose an amount and pay with cryptocurrency on this page. Our team verifies your payment on the blockchain, then adds the credits to My World Bridge.",
-  },
-  {
-    q: "How long are Travel Credits valid for?",
-    a: `There are two types. Travel Credits that you buy, receive as a refund, or redeem from a gift card never expire. Promo Credits from promotions, vouchers and the Invite Program always have an expiry date (usually ${PROMO_VALID_DAYS} days), shown in your account.`,
-  },
-  {
-    q: "Is there a limit on how many Travel Credits I can buy?",
-    a: `No limit on how many you can hold. Each purchase is between ${fmtUsd(CREDIT_MIN)} and ${fmtUsd(CREDIT_MAX)}. For more, email ${company.email}.`,
-  },
-  {
-    q: "What is the difference between Travel Credits and Promo Credits?",
-    a: "Travel Credits are money you have paid or been refunded: they never expire and can cover up to 100% of any booking. Promo Credits are rewards: they expire, apply to larger bookings only, and are capped per booking.",
-  },
-  {
-    q: "How do Promo Credits work?",
-    a: `They are free credits from us (cashback, invite rewards, vouchers). Each batch lasts ${PROMO_VALID_DAYS} days from the day we give it. You can use them on any booking, up to ${Math.round(PROMO_MAX_SHARE * 100)}% of its price, for example up to ${fmtUsd(1000)} on a ${fmtUsd(4000)} journey. Unused Promo Credits expire.`,
-  },
-  {
-    q: "How does cashback work?",
-    a: `When a journey of ${fmtUsd(CASHBACK_TIERS[0].from)} or more is completed and paid, you get ${CASHBACK_TIERS.map((t) => `${t.pct}% from ${fmtUsd(t.from)}`).join(", ")} back as Promo Credits.`,
-  },
-  {
-    q: "I have a gift card or voucher code.",
-    a: "Open My World Bridge, go to Travel Credits and enter the code. A gift card becomes Travel Credits; a voucher becomes Promo Credits.",
-  },
-];
 
 export default function TravelCreditsPage() {
   return (
@@ -113,7 +84,7 @@ export default function TravelCreditsPage() {
       <section id="credit-faq" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>
           <SectionHeading eyebrow="Questions" title="Travel Credit questions, answered." />
-          <FaqList items={faqs} className="mt-8 max-w-3xl" />
+          <FaqList items={faqCredits} className="mt-8 max-w-3xl" />
         </Container>
       </section>
 

@@ -353,13 +353,6 @@ export function JourneyWizard() {
               placeholder="Tell us more (optional) — e.g. Italy, or a region you're drawn to"
               className="mt-6 w-full rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory placeholder:text-stone-dim outline-none focus:border-gold"
             />
-            <p className="mt-6 text-sm text-stone-dim">
-              Travelling for an exhibition, museum or art fair?{" "}
-              <a href="/travel-details-form" className="text-gold hover:text-ivory">
-                Use our Exhibition Travel Itinerary Form instead
-              </a>
-              .
-            </p>
           </fieldset>
         ) : null}
 
