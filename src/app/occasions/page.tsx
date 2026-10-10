@@ -81,7 +81,7 @@ export default function OccasionsPage() {
       <section className="py-16 md:py-24">
         <Container>
           <SectionHeading
-            eyebrow="Illustrative Journeys"
+            eyebrow="Journeys for Every Occasion"
             title="Starting points, not a fixed menu."
             description={`${company.sampleDataDisclaimer} Every journey is designed from a private consultation around your specific occasion.`}
           />

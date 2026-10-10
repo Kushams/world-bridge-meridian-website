@@ -30,7 +30,7 @@ export const sitePages: SitePage[] = [
   { title: "Exhibition Travel Itinerary Form", href: "/travel-details-form", description: "Plan travel around an exhibition, museum show or art fair", keywords: "exhibition itinerary form passport travel details art fair museum" },
   { title: "Cultural Access", href: "/cultural-access", description: "Museum patron and friends programs", keywords: "cultural access patron friends membership museum" },
   { title: "Travel Calendar", href: "/calendar", description: "Events and festivals around the world", keywords: "calendar events festival dates when" },
-  { title: "Journey Stories", href: "/journey-stories", description: "Sample journeys and how we build them", keywords: "stories sample journey examples" },
+  { title: "Journey Stories", href: "/journey-stories", description: "Journeys and how we build them", keywords: "stories journey examples" },
   { title: "Private Journeys", href: "/private-journeys", description: "Private journeys", keywords: "private exclusive" },
   { title: "Institutional Travel", href: "/institutional", description: "Travel for institutions and organisations", keywords: "institution university museum organisation" },
   { title: "Compare Journeys", href: "/compare", description: "Compare saved journeys side by side", keywords: "compare saved shortlist" },

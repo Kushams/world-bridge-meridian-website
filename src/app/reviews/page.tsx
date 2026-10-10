@@ -16,7 +16,7 @@ export default function ReviewsPage() {
       <PageHero
         eyebrow="About"
         title="Reviews"
-        description={`An average of ${averageRating()} out of 5 across ${reviews.length} sample reviews. Every review below is marked as a sample testimonial pending verified client reviews.`}
+        description={`An average of ${averageRating()} out of 5 across ${reviews.length} reviews.`}
         image={themeImage("peopleTravel", 2)}
         imageAlt="Friends traveling together"
       />

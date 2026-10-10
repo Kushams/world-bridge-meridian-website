@@ -30,7 +30,7 @@ export default function TermsPage() {
             <div>
               <h2 className="mb-3 font-display text-xl text-ivory">Use of This Website</h2>
               <p>
-                Content on this website — including destination information, sample itineraries,
+                Content on this website — including destination information, itineraries,
                 and pricing — is provided for planning purposes. It does not constitute a binding
                 offer or guarantee of availability.
               </p>
@@ -42,11 +42,11 @@ export default function TermsPage() {
             </div>
 
             <div>
-              <h2 className="mb-3 font-display text-xl text-ivory">Sample & Indicative Content</h2>
+              <h2 className="mb-3 font-display text-xl text-ivory">Indicative Content</h2>
               <p>
                 Cruise sailings, current journeys, and similar listings marked as
-                &ldquo;Sample Journey,&rdquo; &ldquo;Indicative Journey,&rdquo; or
-                &ldquo;Enquiry-Based Journey&rdquo; are illustrative and do not represent live,
+                &ldquo;Indicative Journey&rdquo; or
+                &ldquo;Enquiry-Based Journey&rdquo; are indicative and do not represent live,
                 guaranteed availability. Availability, final itinerary and
                 pricing are confirmed directly with you before booking.
               </p>

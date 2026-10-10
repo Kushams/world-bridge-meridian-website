@@ -63,7 +63,7 @@ export default function PrivateJourneysPage() {
       <section className="py-16 md:py-24">
         <Container>
           <SectionHeading
-            eyebrow="Illustrative Concepts"
+            eyebrow="Journey Concepts"
             title="A starting point, not a fixed menu."
             description={`${company.sampleDataDisclaimer} Every private journey is designed from a private consultation — these are the kinds of journeys we're most often asked to build.`}
           />

@@ -14,7 +14,7 @@ import { SwipeRow } from "@/components/ui/SwipeRow";
 export const metadata: Metadata = {
   title: "Current Journeys",
   description:
-    "Current and upcoming travel opportunities from World Bridge Meridian — sample and indicative journeys, confirmed at enquiry.",
+    "Current and upcoming travel opportunities from World Bridge Meridian — indicative journeys, confirmed at enquiry.",
 };
 
 export default function CurrentJourneysPage() {

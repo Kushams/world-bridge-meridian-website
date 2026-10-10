@@ -116,7 +116,7 @@ export default function Home() {
       <CardSection
         eyebrow="Cruise Collection"
         title="Ocean and river journeys, organized end to end."
-        description="Sample sailings across our cruise categories — confirmed availability at enquiry."
+        description="Sailings across our cruise categories — availability confirmed at enquiry."
         viewAllHref="/cruises"
       >
         <SwipeRow className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">

@@ -34,7 +34,7 @@ export const cruises: Cruise[] = [
       { day: "Day 7", title: "Return to Barcelona", description: "Disembarkation." },
     ],
     indicativePricing: [{ label: "From", amount: 1650, currency: "USD", unit: "per person" }],
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "greek-isles-turkish-coast",
@@ -62,7 +62,7 @@ export const cruises: Cruise[] = [
       { day: "Day 9–10", title: "Return", description: "Sea day and return to Piraeus." },
     ],
     indicativePricing: [{ label: "From", amount: 2450, currency: "USD", unit: "per person" }],
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "caribbean-southern-escape",
@@ -90,7 +90,7 @@ export const cruises: Cruise[] = [
       { day: "Day 8", title: "Return to Miami", description: "Disembarkation." },
     ],
     indicativePricing: [{ label: "From", amount: 1850, currency: "USD", unit: "per person" }],
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "alaska-glacier-discovery",
@@ -119,7 +119,7 @@ export const cruises: Cruise[] = [
       { day: "Day 7", title: "Return to Seattle", description: "Disembarkation." },
     ],
     indicativePricing: [{ label: "From", amount: 2150, currency: "USD", unit: "per person" }],
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "norwegian-fjords-explorer",
@@ -148,7 +148,7 @@ export const cruises: Cruise[] = [
       { day: "Day 9", title: "At Sea", description: "Return sea day." },
     ],
     indicativePricing: [{ label: "From", amount: 3250, currency: "USD", unit: "per person" }],
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "baltic-capitals",
@@ -177,7 +177,7 @@ export const cruises: Cruise[] = [
       { day: "Day 8–11", title: "Return", description: "Additional ports and return sea days." },
     ],
     indicativePricing: [{ label: "From", amount: 3650, currency: "USD", unit: "per person" }],
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "arabian-gulf-explorer",
@@ -206,7 +206,7 @@ export const cruises: Cruise[] = [
       { day: "Day 7", title: "Return to Dubai", description: "Disembarkation." },
     ],
     indicativePricing: [{ label: "From", amount: 2050, currency: "USD", unit: "per person" }],
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "asia-pacific-crossing",
@@ -234,7 +234,7 @@ export const cruises: Cruise[] = [
       { day: "Day 11–14", title: "Approach & Arrival", description: "Continued sailing to Hong Kong." },
     ],
     indicativePricing: [{ label: "From", amount: 3850, currency: "USD", unit: "per person" }],
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "sydney-new-zealand-fjords",
@@ -262,7 +262,7 @@ export const cruises: Cruise[] = [
       { day: "Day 8–12", title: "North Island", description: "Wellington, Auckland, and return sailing." },
     ],
     indicativePricing: [{ label: "From", amount: 4250, currency: "USD", unit: "per person" }],
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "rhine-river-journey",
@@ -290,7 +290,7 @@ export const cruises: Cruise[] = [
       { day: "Day 6–7", title: "Basel", description: "Arrival and disembarkation." },
     ],
     indicativePricing: [{ label: "From", amount: 3150, currency: "USD", unit: "per person" }],
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "transatlantic-crossing",
@@ -317,7 +317,7 @@ export const cruises: Cruise[] = [
       { day: "Day 7", title: "New York", description: "Arrival and disembarkation." },
     ],
     indicativePricing: [{ label: "From", amount: 1450, currency: "USD", unit: "per person" }],
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "luxury-small-ship-mediterranean",
@@ -345,7 +345,7 @@ export const cruises: Cruise[] = [
       { day: "Day 7–8", title: "Portofino & Return", description: "Portofino and return to Civitavecchia." },
     ],
     indicativePricing: [{ label: "From", amount: 6250, currency: "USD", unit: "per person" }],
-    status: "Sample Journey",
+    status: "Indicative Journey",
     // Note: featured luxury option surfaced on /cruises and homepage cruise section
   },
   {
@@ -375,7 +375,7 @@ export const cruises: Cruise[] = [
       { day: "Day 6–7", title: "At Sea & Return", description: "Sea day and return to Fort Lauderdale." },
     ],
     indicativePricing: [{ label: "From", amount: 5400, currency: "USD", unit: "for a family of four" }],
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "couples-caribbean-romance",
@@ -387,8 +387,8 @@ export const cruises: Cruise[] = [
     departurePort: "Miami, Florida",
     travelPeriod: "Year-round",
     cabinCategories: ["Ocean View", "Balcony", "Suite"],
-    heroImage: unsplashPhoto("1725777578904-88e5fe963151"),
-    gallery: [unsplashPhoto("1585793753011-397e6e4668d6"), unsplashPhoto("1656504862878-804f431ea3b4")],
+    heroImage: unsplashPhoto("1585793753011-397e6e4668d6"),
+    gallery: [unsplashPhoto("1743427522092-3e3ef36e0a24"), unsplashPhoto("1617170788899-ef9587d6e63f")],
     description: [
       "A shorter, adults-focused western Caribbean itinerary — a natural fit for a honeymoon extension or a couples-only long weekend at sea.",
       "Onboard programming skews toward quieter, adults-oriented experiences.",
@@ -404,7 +404,7 @@ export const cruises: Cruise[] = [
       { day: "Day 5", title: "Return to Miami", description: "Disembarkation." },
     ],
     indicativePricing: [{ label: "From", amount: 1250, currency: "USD", unit: "per person" }],
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
 ];
 

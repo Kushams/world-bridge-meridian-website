@@ -27,7 +27,7 @@ export const currentJourneys: CurrentJourney[] = [
     travelType: "Cruise",
     heroImage: unsplashPhoto("1617170788899-ef9587d6e63f"),
     indicativePricing: { label: "From", amount: 1650, currency: "USD", unit: "per person" },
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "christmas-in-europe",
@@ -49,7 +49,7 @@ export const currentJourneys: CurrentJourney[] = [
     travelType: "Cruise / Beach",
     heroImage: unsplashPhoto("1760429613920-97150368ed79"),
     indicativePricing: { label: "From", amount: 1850, currency: "USD", unit: "per person" },
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
   {
     slug: "barcelona-family-journey",
@@ -115,7 +115,7 @@ export const currentJourneys: CurrentJourney[] = [
     travelType: "Adventure",
     heroImage: unsplashPhoto("1673667618335-face21a8b1a8"),
     indicativePricing: { label: "From", amount: 4250, currency: "USD", unit: "per person" },
-    status: "Sample Journey",
+    status: "Indicative Journey",
   },
 ];
 

@@ -112,7 +112,7 @@ export default async function CruisePage({
               </div>
 
               <div className="mt-12">
-                <p className="eyebrow mb-6">Sample Itinerary</p>
+                <p className="eyebrow mb-6">Itinerary</p>
                 <ItineraryTimeline days={cruise.sampleItinerary} />
               </div>
 

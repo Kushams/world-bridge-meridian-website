@@ -39,7 +39,7 @@ export const company = {
     "Prices shown are indicative starting prices and may vary based on travel dates, availability, accommodation selection, number of travelers, supplier pricing, seasonal demand, activities, transportation and requested upgrades. Final pricing is confirmed after consultation and availability checks.",
 
   sampleDataDisclaimer:
-    "Sample journey — shown for illustration while we connect live supplier data. Availability is confirmed after enquiry.",
+    "Availability and final pricing are confirmed after enquiry.",
 
   reviewDisclaimer:
     "Sample testimonial — replace with verified client review before launch.",
