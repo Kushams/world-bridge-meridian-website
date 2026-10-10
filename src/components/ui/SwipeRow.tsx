@@ -6,7 +6,7 @@ const MAX_DOTS = 8;
 /** Lists longer than this also get a "Show all" button, as an alternative to swiping. */
 const VIEW_ALL_MIN = 6;
 /** Rows with at least this many cards drift sideways on their own, like the partner strip. */
-const AUTO_MIN = 5;
+const AUTO_MIN = 4;
 const AUTO_SPEED = 32; // pixels per second
 const AUTO_PAUSE_AFTER_TOUCH = 4000;
 

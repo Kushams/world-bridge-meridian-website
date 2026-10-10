@@ -31,12 +31,12 @@ import { themeImage } from "@/data/images";
 import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export default function Home() {
-  const featuredPackages = (getFeaturedPackages().length ? getFeaturedPackages() : packages).slice(0, 3);
-  const featuredDestinations = (getFeaturedDestinations().length ? getFeaturedDestinations() : destinations).slice(0, 8);
-  const featuredCruises = cruises.slice(0, 3);
-  const featuredReviews = reviews.slice(0, 3);
-  const latestJournal = journal.slice(0, 3);
-  const featuredJourneyStories = journeyStories.slice(0, 3);
+  const featuredPackages = (() => { const f = getFeaturedPackages(); return [...f, ...packages.filter((p) => !f.includes(p))]; })();
+  const featuredDestinations = (() => { const f = getFeaturedDestinations(); const rest = destinations.filter((d) => !f.includes(d)); return [...f, ...rest].slice(0, 20); })();
+  const featuredCruises = cruises;
+  const featuredReviews = reviews;
+  const latestJournal = journal;
+  const featuredJourneyStories = journeyStories;
 
   return (
     <>
