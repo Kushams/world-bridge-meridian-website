@@ -9,7 +9,6 @@ const VIEW_ALL_MIN = 6;
 const AUTO_MIN = 5;
 const AUTO_SPEED = 32; // pixels per second
 const AUTO_PAUSE_AFTER_TOUCH = 4000;
-const AUTO_HOLD_AT_END = 1600;
 
 /**
  * Pull "cards per view" at each breakpoint out of the grid classes the list
@@ -45,13 +44,17 @@ export function SwipeRow({ children, className = "" }: { children: ReactNode; cl
   const update = useCallback(() => {
     const el = ref.current;
     if (!el) return;
-    const items = Array.from(el.children) as HTMLElement[];
+    const items = (Array.from(el.children) as HTMLElement[]).filter((c) => !c.hasAttribute("data-loop-clone"));
     setCount(items.length);
-    const over = el.scrollWidth > el.clientWidth + 4;
+    const clones = el.querySelector<HTMLElement>("[data-loop-clone]");
+    const loop = clones && items[0] ? clones.offsetLeft - items[0].offsetLeft : 0;
+    // While the endless loop is running the row has extra copies at its end; measure the real items only.
+    const over = loop > 0 ? true : el.scrollWidth > el.clientWidth + 4;
     setOverflowing(over);
-    const start = el.scrollLeft <= 2;
-    const end = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
-    setAtStart(start);
+    const left = loop > 0 ? el.scrollLeft % loop : el.scrollLeft;
+    const start = left <= 2;
+    const end = loop > 0 ? false : el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
+    setAtStart(loop > 0 ? false : start);
     setAtEnd(end);
     if (items.length === 0) return;
     if (end && over) {
@@ -62,7 +65,7 @@ export function SwipeRow({ children, className = "" }: { children: ReactNode; cl
     let best = 0;
     let bestDist = Infinity;
     items.forEach((item, i) => {
-      const dist = Math.abs(el.scrollLeft - (item.offsetLeft - pad));
+      const dist = Math.abs(left - (item.offsetLeft - pad));
       if (dist < bestDist) {
         bestDist = dist;
         best = i;
@@ -88,8 +91,12 @@ export function SwipeRow({ children, className = "" }: { children: ReactNode; cl
     };
   }, [update, expanded]);
 
-  // Long rows drift on their own. Pauses while you hover, touch or tab into it, and while it is off screen,
-  // and stays still for visitors who prefer reduced motion. At the end it glides back to the start.
+  // Long rows drift on their own, in an endless loop: the first cards come back in right after the last
+  // ones, with no jump. To do that a few copies of the first cards sit after the last card, and when the
+  // row has slid one full set along it quietly steps back by that distance (the view looks identical).
+  // It pauses while you hover, touch or tab into it, and while off screen, and stays still for visitors
+  // who prefer reduced motion. The copies are removed while it is paused, so buttons and links on the
+  // cards behave normally when you use them.
   useEffect(() => {
     const el = ref.current;
     if (!el || expanded || !overflowing || count < AUTO_MIN) return;
@@ -99,17 +106,53 @@ export function SwipeRow({ children, className = "" }: { children: ReactNode; cl
     let pos = el.scrollLeft;
     let paused = false;
     let visible = false;
-    let holdUntil = 0;
     let resume: ReturnType<typeof setTimeout> | undefined;
+
+    const originals = () => (Array.from(el.children) as HTMLElement[]).filter((c) => !c.hasAttribute("data-loop-clone"));
+    const clones = () => Array.from(el.querySelectorAll<HTMLElement>("[data-loop-clone]"));
+    const loopWidth = () => {
+      const first = clones()[0];
+      const orig = originals()[0];
+      return first && orig ? first.offsetLeft - orig.offsetLeft : 0;
+    };
+    const removeClones = () => {
+      const w = loopWidth();
+      // If we are inside the copies, step back to the identical spot among the real cards first.
+      if (w > 0 && el.scrollLeft >= w) el.scrollLeft -= w;
+      clones().forEach((c) => c.remove());
+    };
+    const addClones = () => {
+      const items = originals();
+      if (items.length === 0) return;
+      // Enough copies to fill the whole view plus one card, so the wrap-around is invisible.
+      const need = el.clientWidth + (items[0].offsetWidth || 0) + 48;
+      let have = clones().reduce((sum, c) => sum + c.offsetWidth + 32, 0);
+      let i = clones().length;
+      while (have < need && i < items.length) {
+        const c = items[i].cloneNode(true) as HTMLElement;
+        c.setAttribute("data-loop-clone", "");
+        c.setAttribute("aria-hidden", "true");
+        c.querySelectorAll<HTMLElement>("a, button, input, select, textarea").forEach((n) => n.setAttribute("tabindex", "-1"));
+        el.appendChild(c);
+        have += items[i].offsetWidth + 32;
+        i++;
+      }
+    };
 
     const setPaused = (value: boolean) => {
       paused = value;
-      el.classList.toggle("swipe-auto", !value);
-      if (!value) pos = el.scrollLeft;
+      if (value) {
+        el.classList.remove("swipe-auto");
+        removeClones();
+      } else {
+        addClones();
+        el.classList.add("swipe-auto");
+        pos = el.scrollLeft;
+      }
     };
     const interact = (ms: number) => {
-      setPaused(true);
       clearTimeout(resume);
+      if (!paused) setPaused(true);
       resume = setTimeout(() => setPaused(false), ms);
     };
     const onEnter = (e: PointerEvent) => {
@@ -123,18 +166,11 @@ export function SwipeRow({ children, className = "" }: { children: ReactNode; cl
     const tick = (t: number) => {
       const dt = last ? Math.min(t - last, 64) : 0;
       last = t;
-      if (!paused && visible && !document.hidden && t >= holdUntil) {
-        const max = el.scrollWidth - el.clientWidth;
-        if (pos >= max - 1) {
-          holdUntil = t + AUTO_HOLD_AT_END + 900;
-          el.classList.remove("swipe-auto");
-          el.scrollTo({ left: 0, behavior: "smooth" });
-          setTimeout(() => {
-            pos = el.scrollLeft;
-            if (!paused) el.classList.add("swipe-auto");
-          }, AUTO_HOLD_AT_END + 900);
-        } else {
+      if (!paused && visible && !document.hidden) {
+        const w = loopWidth();
+        if (w > 0) {
           pos += (AUTO_SPEED * dt) / 1000;
+          if (pos >= w) pos -= w;
           el.scrollLeft = pos;
         }
       }
@@ -145,6 +181,10 @@ export function SwipeRow({ children, className = "" }: { children: ReactNode; cl
       visible = entry.isIntersecting;
     });
     io.observe(el);
+    const ro = new ResizeObserver(() => {
+      if (!paused) addClones();
+    });
+    ro.observe(el);
     el.addEventListener("pointerenter", onEnter);
     el.addEventListener("pointerleave", onLeave);
     el.addEventListener("pointerdown", onTouch);
@@ -157,6 +197,8 @@ export function SwipeRow({ children, className = "" }: { children: ReactNode; cl
       cancelAnimationFrame(raf);
       clearTimeout(resume);
       io.disconnect();
+      ro.disconnect();
+      removeClones();
       el.classList.remove("swipe-auto");
       el.removeEventListener("pointerenter", onEnter);
       el.removeEventListener("pointerleave", onLeave);
