@@ -7,7 +7,7 @@ import { PartnerChip } from "@/components/ui/PartnerChip";
 import { company } from "@/data/company";
 
 const points = [
-  { t: "Pay in crypto", b: "Bitcoin, Ethereum, USDT, USDC and Solana, on the networks listed on our payments page." },
+  { t: "Pay in crypto", b: "Bitcoin, Ethereum, USDT, USDC, Solana and more, on the networks listed on our payments page." },
   { t: "Use any exchange or wallet", b: "Send from the account you already have. A wallet address and a transaction ID is all we need." },
   { t: "Verified by people", b: "Our team checks every payment on the blockchain and confirms with you before anything is booked." },
   { t: "Credits and cashback", b: "Buy Travel Credits with crypto and earn cashback on completed journeys." },
