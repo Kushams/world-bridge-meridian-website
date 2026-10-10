@@ -87,7 +87,7 @@ export const IMAGE_BANK = {
     "1590050752117-238cb0fb12b1", // dock over water, sunset
   ],
   tropicalBeach: [
-    "1548574505-5e239809ee19", // overwater villas, aerial
+    "1760429613920-97150368ed79", // turquoise beach with palm trees, aerial
     "1519046904884-53103b34b206", // beach, palm trees and hammock
     "1509233725247-49e657c54213", // beach, palm trees, clear water
     "1571003123894-1f0594d2b5d9", // overwater villas, dusk
@@ -129,7 +129,7 @@ export const IMAGE_BANK = {
     "1522673607200-164d1b6ce486", // wedding chairs on a lawn
   ],
   luxuryResort: [
-    "1548574505-5e239809ee19", // overwater villas, aerial
+    "1590523277543-a94d2e4eb00b", // overwater villas, aerial
     "1540541338287-41700207dee6", // resort pool, aerial
     "1571896349842-33c89424de2d", // infinity pool at dusk
     "1602002418082-a4443e081dd1", // curved infinity pool over ocean
