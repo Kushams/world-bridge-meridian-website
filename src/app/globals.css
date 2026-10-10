@@ -343,6 +343,9 @@ h1.font-display,
   margin-right: -1.5rem;
   padding: 0 1.5rem 0.5rem;
 }
+.swipe-row.swipe-auto {
+  scroll-snap-type: none;
+}
 .swipe-row::-webkit-scrollbar {
   display: none;
 }

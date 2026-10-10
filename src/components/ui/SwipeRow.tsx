@@ -5,6 +5,11 @@ import { CSSProperties, ReactNode, useCallback, useEffect, useRef, useState } fr
 const MAX_DOTS = 8;
 /** Lists longer than this also get a "Show all" button, as an alternative to swiping. */
 const VIEW_ALL_MIN = 6;
+/** Rows with at least this many cards drift sideways on their own, like the partner strip. */
+const AUTO_MIN = 5;
+const AUTO_SPEED = 32; // pixels per second
+const AUTO_PAUSE_AFTER_TOUCH = 4000;
+const AUTO_HOLD_AT_END = 1600;
 
 /**
  * Pull "cards per view" at each breakpoint out of the grid classes the list
@@ -82,6 +87,85 @@ export function SwipeRow({ children, className = "" }: { children: ReactNode; cl
       mutation.disconnect();
     };
   }, [update, expanded]);
+
+  // Long rows drift on their own. Pauses while you hover, touch or tab into it, and while it is off screen,
+  // and stays still for visitors who prefer reduced motion. At the end it glides back to the start.
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || expanded || !overflowing || count < AUTO_MIN) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    let last = 0;
+    let pos = el.scrollLeft;
+    let paused = false;
+    let visible = false;
+    let holdUntil = 0;
+    let resume: ReturnType<typeof setTimeout> | undefined;
+
+    const setPaused = (value: boolean) => {
+      paused = value;
+      el.classList.toggle("swipe-auto", !value);
+      if (!value) pos = el.scrollLeft;
+    };
+    const interact = (ms: number) => {
+      setPaused(true);
+      clearTimeout(resume);
+      resume = setTimeout(() => setPaused(false), ms);
+    };
+    const onEnter = (e: PointerEvent) => {
+      if (e.pointerType === "mouse") interact(1 << 30);
+    };
+    const onLeave = (e: PointerEvent) => {
+      if (e.pointerType === "mouse") interact(500);
+    };
+    const onTouch = () => interact(AUTO_PAUSE_AFTER_TOUCH);
+
+    const tick = (t: number) => {
+      const dt = last ? Math.min(t - last, 64) : 0;
+      last = t;
+      if (!paused && visible && !document.hidden && t >= holdUntil) {
+        const max = el.scrollWidth - el.clientWidth;
+        if (pos >= max - 1) {
+          holdUntil = t + AUTO_HOLD_AT_END + 900;
+          el.classList.remove("swipe-auto");
+          el.scrollTo({ left: 0, behavior: "smooth" });
+          setTimeout(() => {
+            pos = el.scrollLeft;
+            if (!paused) el.classList.add("swipe-auto");
+          }, AUTO_HOLD_AT_END + 900);
+        } else {
+          pos += (AUTO_SPEED * dt) / 1000;
+          el.scrollLeft = pos;
+        }
+      }
+      raf = requestAnimationFrame(tick);
+    };
+
+    const io = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+    });
+    io.observe(el);
+    el.addEventListener("pointerenter", onEnter);
+    el.addEventListener("pointerleave", onLeave);
+    el.addEventListener("pointerdown", onTouch);
+    el.addEventListener("touchstart", onTouch, { passive: true });
+    el.addEventListener("wheel", onTouch, { passive: true });
+    el.addEventListener("focusin", onTouch);
+    setPaused(false);
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(resume);
+      io.disconnect();
+      el.classList.remove("swipe-auto");
+      el.removeEventListener("pointerenter", onEnter);
+      el.removeEventListener("pointerleave", onLeave);
+      el.removeEventListener("pointerdown", onTouch);
+      el.removeEventListener("touchstart", onTouch);
+      el.removeEventListener("wheel", onTouch);
+      el.removeEventListener("focusin", onTouch);
+    };
+  }, [count, overflowing, expanded]);
 
   function goTo(i: number) {
     const el = ref.current;
