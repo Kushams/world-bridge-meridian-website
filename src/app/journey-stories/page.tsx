@@ -4,7 +4,6 @@ import { Container } from "@/components/ui/Container";
 import { JourneyStoryCard } from "@/components/cards/JourneyStoryCard";
 import { journeyStories } from "@/data/journey-stories";
 import { themeImage } from "@/data/images";
-import { company } from "@/data/company";
 import { SwipeRow } from "@/components/ui/SwipeRow";
 
 export const metadata: Metadata = {
@@ -26,9 +25,6 @@ export default function JourneyStoriesPage() {
 
       <section className="py-16 md:py-24">
         <Container>
-          <p className="mb-10 max-w-2xl rounded-card border hairline bg-charcoal p-5 text-sm text-stone-dim leading-relaxed">
-            {company.sampleDataDisclaimer}
-          </p>
           <SwipeRow className="grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-3">
             {journeyStories.map((story) => (
               <JourneyStoryCard key={story.slug} story={story} />

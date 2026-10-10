@@ -108,7 +108,7 @@ export const IMAGE_BANK = {
     "1547471080-7cc2caa01a7e", // acacia tree silhouette, savanna sunset
   ],
   cruiseAndSea: [
-    "1512100356356-de1b84283e18", // seaplane, tropical aerial
+    "1599640842225-85d111c60e6b", // cruise ship docked at a tropical beach
     "1719423324139-04edfa77ea0d", // cruise ship bow, aerial top-down, emerald water
     "1540206395-68808572332f", // ocean wave, aerial
     "1590050752117-238cb0fb12b1", // dock over water, sunset
@@ -122,7 +122,7 @@ export const IMAGE_BANK = {
   ],
   peopleTravel: [
     "1494774157365-9e04c6720e47", // couple silhouette, sunset
-    "1476234251651-f353703a034d", // parent carrying child, sunset
+    "1756982477661-107a1c72c8fd", // family walking on a tree-lined path at sunset
     "1484712401471-05c7215830eb", // friends celebrating outdoors
     "1502086223501-7ea6ecd79368", // children playing in a forest
     "1543269865-cbf427effbad", // friends talking at a café

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SpecialtyPage } from "@/components/specialty/SpecialtyPage";
 import { Container } from "@/components/ui/Container";
-import { themeImage } from "@/data/images";
+import { unsplashPhoto } from "@/data/images";
 
 export const metadata: Metadata = {
   title: "Arts & Culture Travel",
@@ -23,8 +23,8 @@ export default function ArtsCulturePage() {
       eyebrow="Our Expertise"
       title="Travel through culture."
       intro="Museums, art galleries, opera, performing arts and heritage sites — journeys built for clients who travel to go deeper into a place, not just to see it."
-      heroImage={themeImage("culturalHeritage", 8)}
-      heroImageAlt="A museum gallery interior"
+      heroImage={unsplashPhoto("1512540452972-baac55d40ef1")}
+      heroImageAlt="Visitors looking at paintings in an art gallery"
       travelStyle="arts-culture"
       afterHero={
         <div className="border-b hairline bg-charcoal py-10">
