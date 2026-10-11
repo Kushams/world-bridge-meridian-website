@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/my-world-bridge"],
+      disallow: ["/my-world-bridge", "/staff"],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };

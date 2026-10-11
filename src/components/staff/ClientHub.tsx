@@ -1,0 +1,419 @@
+"use client";
+
+import { useCallback, useEffect, useState, type ReactNode } from "react";
+import {
+  createInvoice,
+  fmtDate,
+  listFiles,
+  loadClientInvoices,
+  loadClientRequests,
+  loadProfile,
+  loadSignatures,
+  notifyClient,
+  openFile,
+  removeFile,
+  uploadFile,
+  usd,
+  voidInvoice,
+  type Client,
+  type Request,
+  type Signature,
+  type StaffInvoice,
+  type StoredFile,
+} from "@/lib/staff";
+import { stemOf } from "@/lib/clientDocs";
+import { inputClass, Row } from "./RequestsPanel";
+
+const DOCS = "client-documents";
+const UPLOADS = "client-uploads";
+const RECEIVED = [
+  { key: "passport", label: "Passport" },
+  { key: "visa", label: "Visa or permit" },
+  { key: "other", label: "Other" },
+  { key: "returned", label: "Signed copies sent back" },
+] as const;
+
+const SEND_TYPES = [
+  { key: "view", prefix: "", label: "To view", hint: "Itineraries, tickets, vouchers" },
+  { key: "sign", prefix: "SIGN - ", label: "Sign on screen", hint: "Booking terms, confirmations, consent" },
+  { key: "return", prefix: "RETURN - ", label: "Sign & send back", hint: "Visa or airline forms needing a real signature" },
+] as const;
+
+const PROFILE_FIELDS: [string, string][] = [
+  ["full_name", "Name"],
+  ["phone", "Phone"],
+  ["home_city", "Home city / airport"],
+  ["nationality", "Nationality"],
+  ["preferred_contact", "Preferred contact"],
+  ["travel_styles", "Travel styles"],
+  ["interests", "Interests"],
+  ["travel_pace", "Pace"],
+  ["bed_preference", "Bed"],
+  ["dietary_requirements", "Dietary"],
+  ["allergies", "Allergies"],
+];
+
+const btn = "rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide disabled:opacity-40";
+const fileLabel = (name: string) => name.replace(/^\d{10,}-/, "");
+
+function Block({ title, children, note }: { title: string; children: ReactNode; note?: string }) {
+  return (
+    <section className="rounded-card border hairline p-5 md:p-6">
+      <h3 className="font-display text-xl text-ivory">{title}</h3>
+      {note ? <p className="mt-1 text-xs text-stone-dim">{note}</p> : null}
+      <div className="mt-4">{children}</div>
+    </section>
+  );
+}
+
+function FileRow({ f, bucket, extra, onRemove }: { f: StoredFile; bucket: string; extra?: ReactNode; onRemove?: () => void }) {
+  return (
+    <li className="flex flex-wrap items-center justify-between gap-3 py-3">
+      <div className="min-w-0">
+        <p className="truncate text-sm text-ivory">{fileLabel(f.name)}</p>
+        <p className="text-xs text-stone-dim">
+          {fmtDate(f.added)}
+          {extra}
+        </p>
+      </div>
+      <div className="flex gap-2">
+        <button type="button" onClick={() => openFile(bucket, f.path)} className={`${btn} border border-line text-ivory hover:border-gold`}>
+          Open
+        </button>
+        {onRemove ? (
+          <button type="button" onClick={onRemove} className={`${btn} text-stone hover:text-red-400`}>
+            Remove
+          </button>
+        ) : null}
+      </div>
+    </li>
+  );
+}
+
+/** Everything for one client: profile, requests, documents sent, invoices and what they've sent us. */
+export function ClientHub({ client }: { client: Client }) {
+  const email = client.email;
+  const [profile, setProfile] = useState<Record<string, unknown> | null>(null);
+  const [requests, setRequests] = useState<Request[]>([]);
+  const [docs, setDocs] = useState<StoredFile[]>([]);
+  const [sigs, setSigs] = useState<Signature[]>([]);
+  const [invoices, setInvoices] = useState<StaffInvoice[]>([]);
+  const [pdfs, setPdfs] = useState<StoredFile[]>([]);
+  const [received, setReceived] = useState<Record<string, StoredFile[]>>({});
+  const [notice, setNotice] = useState("");
+
+  const load = useCallback(async () => {
+    const [p, r, d, s, inv, pdf, ...rec] = await Promise.all([
+      loadProfile(client.id),
+      loadClientRequests(email),
+      listFiles(DOCS, email),
+      loadSignatures(email),
+      loadClientInvoices(client.id),
+      listFiles(DOCS, `${email}/invoices`),
+      ...RECEIVED.map((c) => listFiles(UPLOADS, `${email}/${c.key}`)),
+    ]);
+    setProfile(p);
+    setRequests(r);
+    setDocs(d);
+    setSigs(s);
+    setInvoices(inv ?? []);
+    setPdfs(pdf);
+    setReceived(Object.fromEntries(RECEIVED.map((c, i) => [c.key, rec[i]])));
+  }, [client.id, email]);
+
+  useEffect(() => {
+    const t = setTimeout(load, 0);
+    return () => clearTimeout(t);
+  }, [load]);
+
+  function flash(text: string) {
+    setNotice(text);
+    window.setTimeout(() => setNotice(""), 6000);
+  }
+
+  async function remove(bucket: string, f: StoredFile) {
+    if (!window.confirm(`Remove "${fileLabel(f.name)}"? The client will no longer see it.`)) return;
+    const err = await removeFile(bucket, f.path);
+    flash(err ? `Not removed: ${err}` : "Removed.");
+    load();
+  }
+
+  return (
+    <div className="space-y-6">
+      <header className="flex flex-wrap items-center gap-4">
+        <span className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border hairline text-lg text-gold">
+          {client.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={client.avatar_url} alt="" className="h-full w-full object-cover" />
+          ) : (
+            (client.full_name || email).slice(0, 2).toUpperCase()
+          )}
+        </span>
+        <div>
+          <h2 className="font-display text-3xl text-ivory">{client.full_name || email}</h2>
+          <p className="text-sm text-stone">
+            <a href={`mailto:${email}`} className="underline hover:text-ivory">{email}</a>
+            {client.phone ? ` · ${client.phone}` : ""} · {client.confirmed ? `joined ${fmtDate(client.created_at)}` : "email not confirmed yet"}
+          </p>
+        </div>
+      </header>
+
+      {notice ? (
+        <p role="status" className={`text-sm ${notice.startsWith("Not") ? "text-red-400" : "text-gold"}`}>
+          {notice}
+        </p>
+      ) : null}
+
+      <Block title="Profile">
+        <dl className="grid gap-x-6 gap-y-2 text-sm sm:grid-cols-[200px_1fr]">
+          {PROFILE_FIELDS.map(([k, label]) => {
+            const v = profile?.[k];
+            const text = Array.isArray(v) ? v.join(", ") : v ? String(v) : "";
+            return (
+              <div key={k} className="contents">
+                <dt className="text-xs uppercase tracking-wide text-stone-dim">{label}</dt>
+                <dd className="text-ivory">{text || <span className="text-stone-dim">—</span>}</dd>
+              </div>
+            );
+          })}
+        </dl>
+      </Block>
+
+      <Block title="Requests" note="Change the stage and the client is emailed automatically.">
+        {requests.length ? (
+          <div className="space-y-4">
+            {requests.map((r) => (
+              <Row key={r.id} r={r} onSaved={(s) => setRequests((l) => l.map((x) => (x.id === r.id ? { ...x, status: s } : x)))} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-stone-dim">No requests from this email yet.</p>
+        )}
+      </Block>
+
+      <SendDocuments email={email} onDone={(m) => (flash(m), load())} />
+
+      <Block title="Documents sent to this client" note="What they see under Itineraries & Documents.">
+        {docs.length ? (
+          <ul className="divide-y divide-line">
+            {docs.map((f) => {
+              const signed = sigs.find((s) => s.document_path === f.path);
+              const returned = (received.returned ?? []).some((r) => r.name.startsWith(`${stemOf(f.name)}__returned`));
+              const extra = f.name.startsWith("SIGN - ")
+                ? signed
+                  ? ` · Signed by ${signed.signer_name} on ${fmtDate(signed.signed_at)} ✓`
+                  : " · Waiting for signature"
+                : f.name.startsWith("RETURN - ")
+                  ? returned
+                    ? " · Signed copy received ✓"
+                    : " · Waiting for signed copy"
+                  : "";
+              return <FileRow key={f.path} f={f} bucket={DOCS} extra={extra} onRemove={() => remove(DOCS, f)} />;
+            })}
+          </ul>
+        ) : (
+          <p className="text-sm text-stone-dim">Nothing sent yet.</p>
+        )}
+      </Block>
+
+      <InvoicesBlock email={email} invoices={invoices} pdfs={pdfs} onChange={(m) => (flash(m), load())} onRemovePdf={(f) => remove(DOCS, f)} />
+
+      <Block title="Sent to us by this client" note="Passports, visas and other files they uploaded, plus signed copies.">
+        {RECEIVED.some((c) => (received[c.key] ?? []).length) ? (
+          <div className="space-y-4">
+            {RECEIVED.map((c) =>
+              (received[c.key] ?? []).length ? (
+                <div key={c.key}>
+                  <p className="text-xs uppercase tracking-wide text-gold">{c.label}</p>
+                  <ul className="divide-y divide-line">
+                    {(received[c.key] ?? []).map((f) => (
+                      <FileRow key={f.path} f={f} bucket={UPLOADS} />
+                    ))}
+                  </ul>
+                </div>
+              ) : null,
+            )}
+          </div>
+        ) : (
+          <p className="text-sm text-stone-dim">Nothing received yet.</p>
+        )}
+        {sigs.length ? (
+          <div className="mt-4">
+            <p className="text-xs uppercase tracking-wide text-gold">On-screen signatures</p>
+            <ul className="mt-1 space-y-1 text-sm text-ivory">
+              {sigs.map((s) => (
+                <li key={s.document_path + s.signed_at}>
+                  {s.document_title || fileLabel(s.document_path.split("/").pop() ?? "")} — signed by {s.signer_name}, {fmtDate(s.signed_at)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+      </Block>
+    </div>
+  );
+}
+
+function SendDocuments({ email, onDone }: { email: string; onDone: (msg: string) => void }) {
+  const [type, setType] = useState<(typeof SEND_TYPES)[number]["key"]>("view");
+  const [title, setTitle] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [inputKey, setInputKey] = useState(0);
+
+  async function send() {
+    if (!file) return;
+    const t = SEND_TYPES.find((s) => s.key === type)!;
+    const ext = file.name.includes(".") ? file.name.slice(file.name.lastIndexOf(".")) : "";
+    const base = (title.trim() || file.name.replace(/\.[^.]+$/, "")).replace(/[\\/]+/g, "-");
+    setBusy(true);
+    const err = await uploadFile(DOCS, `${email}/${t.prefix}${base}${ext.toLowerCase()}`, file);
+    setBusy(false);
+    if (err) return onDone(`Not sent: ${err.includes("exists") ? "a file with that name is already there. Use a different name." : err}`);
+    setFile(null);
+    setTitle("");
+    setInputKey((k) => k + 1);
+    const emailed = await notifyClient(email, t.key === "view" ? "document" : t.key, base);
+    onDone(`Sent. ${email} can now see "${base}" in their account${emailed ? " and has been emailed." : ", but the email to them didn't send."}`);
+  }
+
+  return (
+    <Block title="Send a document" note="PDF, JPG, PNG or WEBP, up to 25 MB. The client sees it straight away.">
+      <div className="grid gap-3 sm:grid-cols-3">
+        {SEND_TYPES.map((s) => (
+          <button
+            key={s.key}
+            type="button"
+            onClick={() => setType(s.key)}
+            aria-pressed={type === s.key}
+            className={`rounded-card border p-4 text-left transition-colors ${type === s.key ? "border-gold bg-gold/10" : "border-line hover:border-gold/60"}`}
+          >
+            <span className="block text-sm font-semibold text-ivory">{s.label}</span>
+            <span className="mt-1 block text-xs text-stone">{s.hint}</span>
+          </button>
+        ))}
+      </div>
+      <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
+        <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Name the client sees, e.g. Rome itinerary" className={inputClass} />
+        <input
+          key={inputKey}
+          type="file"
+          accept="application/pdf,image/jpeg,image/png,image/webp"
+          onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+          className="text-sm text-stone file:mr-3 file:rounded-full file:border-0 file:bg-ivory file:px-4 file:py-2 file:text-xs file:font-semibold file:uppercase file:text-ink"
+        />
+        <button type="button" disabled={!file || busy} onClick={send} className={`${btn} bg-ivory text-ink`}>
+          {busy ? "Sending…" : "Send to client"}
+        </button>
+      </div>
+    </Block>
+  );
+}
+
+function InvoicesBlock({
+  email,
+  invoices,
+  pdfs,
+  onChange,
+  onRemovePdf,
+}: {
+  email: string;
+  invoices: StaffInvoice[];
+  pdfs: StoredFile[];
+  onChange: (msg: string) => void;
+  onRemovePdf: (f: StoredFile) => void;
+}) {
+  const [amount, setAmount] = useState("");
+  const [desc, setDesc] = useState("");
+  const [busy, setBusy] = useState<string | null>(null);
+
+  async function create() {
+    const n = Number(amount);
+    if (!(n >= 5) || !desc.trim()) return onChange("Not created: enter an amount of at least US$5 and a description.");
+    setBusy("create");
+    const { reference, error } = await createInvoice(email, n, desc.trim());
+    setBusy(null);
+    if (error) return onChange(`Not created: ${error}`);
+    setAmount("");
+    setDesc("");
+    const emailed = await notifyClient(email, "invoice", `${reference} — ${desc.trim()}`);
+    onChange(`Invoice ${reference} created${emailed ? " and the client has been emailed" : ""}. Attach the PDF below.`);
+  }
+
+  async function attach(inv: StaffInvoice, file: File | undefined) {
+    if (!file) return;
+    setBusy(inv.id);
+    const err = await uploadFile(DOCS, `${email}/invoices/${inv.reference}.pdf`, file);
+    if (err) {
+      setBusy(null);
+      return onChange(`Not attached: ${err.includes("exists") ? "remove the old PDF first." : err}`);
+    }
+    const emailed = await notifyClient(email, "invoice_pdf", inv.reference);
+    setBusy(null);
+    onChange(`PDF attached to ${inv.reference}${emailed ? " and the client has been emailed." : "."}`);
+  }
+
+  async function cancel(inv: StaffInvoice) {
+    if (!window.confirm(`Cancel ${inv.reference}? The client won't be able to pay it.`)) return;
+    const err = await voidInvoice(inv.id);
+    onChange(err ? `Not cancelled: ${err}` : `${inv.reference} cancelled.`);
+  }
+
+  return (
+    <Block title="Invoices" note="The client must have an account (they do, if they're listed here).">
+      <div className="grid gap-3 sm:grid-cols-[160px_1fr_auto]">
+        <input value={amount} onChange={(e) => setAmount(e.target.value)} inputMode="decimal" placeholder="Amount (US$)" className={inputClass} />
+        <input value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="What it's for, e.g. Italy art journey — deposit" className={inputClass} />
+        <button type="button" disabled={busy !== null} onClick={create} className={`${btn} bg-ivory text-ink`}>
+          {busy === "create" ? "Creating…" : "Create invoice"}
+        </button>
+      </div>
+      {invoices.length ? (
+        <ul className="mt-5 divide-y divide-line">
+          {invoices.map((inv) => {
+            const pdf = pdfs.find((p) => p.name.toLowerCase().startsWith(inv.reference.toLowerCase()));
+            return (
+              <li key={inv.id} className="flex flex-wrap items-center justify-between gap-3 py-4">
+                <div className="min-w-0">
+                  <p className="text-sm text-ivory">
+                    {inv.description} · <span className="font-semibold">{usd(inv.amount_usd)}</span>
+                  </p>
+                  <p className="text-xs text-stone-dim">
+                    {inv.reference} · {fmtDate(inv.created_at)} ·{" "}
+                    <span className={inv.status === "paid" ? "text-emerald-600" : inv.status === "unpaid" ? "text-gold" : ""}>
+                      {inv.status === "paid" ? `Paid ${fmtDate(inv.paid_at)}` : inv.status === "unpaid" ? "Unpaid" : inv.status === "void" ? "Cancelled" : "Needs review"}
+                    </span>
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  {pdf ? (
+                    <>
+                      <button type="button" onClick={() => openFile(DOCS, pdf.path)} className={`${btn} border border-line text-ivory hover:border-gold`}>
+                        View PDF
+                      </button>
+                      <button type="button" onClick={() => onRemovePdf(pdf)} className={`${btn} text-stone hover:text-red-400`}>
+                        Remove PDF
+                      </button>
+                    </>
+                  ) : (
+                    <label className={`${btn} cursor-pointer border border-line text-ivory hover:border-gold`}>
+                      {busy === inv.id ? "Attaching…" : "Attach PDF"}
+                      <input type="file" accept="application/pdf" className="sr-only" onChange={(e) => attach(inv, e.target.files?.[0])} />
+                    </label>
+                  )}
+                  {inv.status === "unpaid" ? (
+                    <button type="button" onClick={() => cancel(inv)} className={`${btn} text-stone hover:text-red-400`}>
+                      Cancel
+                    </button>
+                  ) : null}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="mt-4 text-sm text-stone-dim">No invoices yet.</p>
+      )}
+    </Block>
+  );
+}

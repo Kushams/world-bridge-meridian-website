@@ -68,7 +68,7 @@ export function UploadsPanel() {
     setBusy(false);
     if (err) return setError("We couldn't upload that file. Please use a PDF, JPG or PNG and try again.");
     setNotice("Received. Thank you — our team has been told.");
-    notifyTeam("upload", file.name, category);
+    notifyTeam("upload", file.name, category, path);
     load();
   }
 
