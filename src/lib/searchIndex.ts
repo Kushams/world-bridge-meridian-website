@@ -175,7 +175,7 @@ function buildIndex(): SearchItem[] {
       subtitle: `${h.place} · ${h.kind}`,
       href: "/stays",
       image: h.heroImage,
-      keywords: `${h.name} ${h.place} ${h.kind} ${h.continent} ${h.description}`.toLowerCase(),
+      keywords: `${h.name} ${h.place} ${h.kind} ${h.continent} ${h.description} ${h.nearGallery ?? ""}`.toLowerCase(),
     });
   }
 
