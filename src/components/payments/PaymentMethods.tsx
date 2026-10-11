@@ -2,7 +2,7 @@
 
 import { ReactNode, useSyncExternalStore } from "react";
 
-type Method = "bank" | "crypto";
+type Method = "bank" | "crypto" | "card";
 
 const CRYPTO_HASHES = ["cryptocurrency", "buy-crypto", "send-safely", "submit-payment"];
 
@@ -16,6 +16,7 @@ function hashMethod(): Method | "none" {
   const id = window.location.hash.slice(1);
   if (CRYPTO_HASHES.includes(id)) return "crypto";
   if (id === "bank-transfer") return "bank";
+  if (id === "card-payment") return "card";
   return "none";
 }
 
@@ -24,14 +25,26 @@ function hashMethod(): Method | "none" {
  * that method's instructions show. Both stay in the page (just hidden) so
  * links like /payments#buy-crypto open the right one.
  */
-export function PaymentMethods({ bank, crypto }: { bank: ReactNode; crypto: ReactNode }) {
+export function PaymentMethods({
+  bank,
+  crypto,
+  card,
+}: {
+  bank: ReactNode;
+  crypto: ReactNode;
+  card?: ReactNode;
+}) {
   const fromHash = useSyncExternalStore(subscribe, hashMethod, () => "all" as const);
   const active: Method | "all" = fromHash === "none" ? "bank" : fromHash;
 
   // The URL hash is the single source of truth, so tab clicks and links like
   // /payments#buy-crypto always agree. replaceState avoids a scroll jump.
   const pick = (m: Method) => {
-    window.history.replaceState(null, "", m === "bank" ? "#bank-transfer" : "#cryptocurrency");
+    window.history.replaceState(
+      null,
+      "",
+      m === "bank" ? "#bank-transfer" : m === "card" ? "#card-payment" : "#cryptocurrency",
+    );
     window.dispatchEvent(new Event("hashchange"));
   };
 
@@ -52,16 +65,26 @@ export function PaymentMethods({ bank, crypto }: { bank: ReactNode; crypto: Reac
 
   return (
     <div>
-      <div role="tablist" aria-label="Payment method" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <div
+        role="tablist"
+        aria-label="Payment method"
+        className={`grid grid-cols-1 gap-3 ${card ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
+      >
         {tab("bank", "Bank transfer", "Your consultant sends the details.")}
         {tab("crypto", "Cryptocurrency", "Buy, send, and tell us. We guide you.")}
+        {card ? tab("card", "Card", "Pay by card through a secure link.") : null}
       </div>
-      <div hidden={active === "crypto"} id="bank-transfer" className="scroll-mt-24 pt-10">
+      <div hidden={active !== "bank" && active !== "all"} id="bank-transfer" className="scroll-mt-24 pt-10">
         {bank}
       </div>
-      <div hidden={active === "bank"} id="cryptocurrency" className="scroll-mt-24 pt-10">
+      <div hidden={active !== "crypto" && active !== "all"} id="cryptocurrency" className="scroll-mt-24 pt-10">
         {crypto}
       </div>
+      {card ? (
+        <div hidden={active !== "card" && active !== "all"} id="card-payment" className="scroll-mt-24 pt-10">
+          {card}
+        </div>
+      ) : null}
     </div>
   );
 }
