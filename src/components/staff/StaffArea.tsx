@@ -3,27 +3,29 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/supabase/AuthProvider";
 import { AuthPanel } from "@/components/account/AuthPanel";
-import { checkStaff } from "@/lib/staff";
+import { loadMe, personalLink, type StaffMember } from "@/lib/staff";
 import { RequestsPanel } from "./RequestsPanel";
 import { ClientsPanel } from "./ClientsPanel";
+import { TeamPanel, CopyLink } from "./TeamPanel";
 
-type Tab = "clients" | "requests";
-const TABS: { key: Tab; label: string }[] = [
+type Tab = "clients" | "requests" | "team";
+const TABS: { key: Tab; label: string; admin?: boolean }[] = [
   { key: "clients", label: "Clients" },
   { key: "requests", label: "All requests" },
+  { key: "team", label: "Team", admin: true },
 ];
 
 /** Staff-only tools. Access is enforced in the database (supabase/staff.sql), this only hides the UI. */
 export function StaffArea() {
   const { user, loading, signOut } = useAuth();
-  const [staff, setStaff] = useState<boolean | null>(null);
+  const [me, setMe] = useState<StaffMember | null | undefined>(undefined);
   const [tab, setTab] = useState<Tab>("clients");
   const [clientEmail, setClientEmail] = useState("");
 
   useEffect(() => {
     if (!user) return;
     let alive = true;
-    checkStaff().then((ok) => alive && setStaff(ok));
+    loadMe().then((m) => alive && setMe(m));
     return () => {
       alive = false;
     };
@@ -31,7 +33,7 @@ export function StaffArea() {
 
   useEffect(() => {
     const h = window.location.hash.slice(1);
-    const t = setTimeout(() => (h === "clients" || h === "requests") && setTab(h), 0);
+    const t = setTimeout(() => (h === "clients" || h === "requests" || h === "team") && setTab(h), 0);
     return () => clearTimeout(t);
   }, []);
 
@@ -52,8 +54,8 @@ export function StaffArea() {
       </div>
     );
   }
-  if (staff === null) return <p className="text-sm text-stone-dim">Checking access…</p>;
-  if (!staff) {
+  if (me === undefined) return <p className="text-sm text-stone-dim">Checking access…</p>;
+  if (!me) {
     return (
       <div className="mx-auto max-w-xl text-center">
         <h1 className="font-display text-3xl text-ivory">This page is for World Bridge Meridian staff</h1>
@@ -67,13 +69,23 @@ export function StaffArea() {
     );
   }
 
+  const admin = me.role === "admin";
+
   return (
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="eyebrow mb-2">Staff</p>
           <h1 className="font-display text-3xl text-ivory md:text-4xl">World Bridge Meridian staff page</h1>
-          <p className="mt-2 text-sm text-stone">Signed in as {user.email}</p>
+          <p className="mt-2 text-sm text-stone">
+            Signed in as {user.email} · {admin ? "Admin: you see every client" : "You see the clients assigned to you"}
+          </p>
+          {me.link_code ? (
+            <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-stone">
+              Your personal link: <span className="text-ivory">{personalLink(me.link_code)}</span>
+              <CopyLink text={personalLink(me.link_code)} />
+            </p>
+          ) : null}
         </div>
         <button type="button" onClick={() => signOut()} className="text-xs text-stone underline hover:text-ivory">
           Sign out
@@ -81,7 +93,7 @@ export function StaffArea() {
       </div>
 
       <div role="tablist" aria-label="Staff tools" className="mt-8 inline-flex flex-wrap gap-1 rounded-full border hairline p-1">
-        {TABS.map((t) => (
+        {TABS.filter((t) => admin || !t.admin).map((t) => (
           <button
             key={t.key}
             role="tab"
@@ -100,8 +112,10 @@ export function StaffArea() {
       <div className="mt-10">
         {tab === "requests" ? (
           <RequestsPanel onOpenClient={(email) => go("clients", email)} />
+        ) : tab === "team" && admin ? (
+          <TeamPanel />
         ) : (
-          <ClientsPanel selected={clientEmail} onSelect={(email) => go("clients", email)} />
+          <ClientsPanel admin={admin} selected={clientEmail} onSelect={(email) => go("clients", email)} />
         )}
       </div>
     </div>

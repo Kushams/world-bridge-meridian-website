@@ -40,7 +40,24 @@ export interface Client {
   avatar_url: string | null;
   created_at: string;
   confirmed: boolean;
+  /** Staff member who looks after this client; null = unassigned (admins only). */
+  assigned_to: string | null;
 }
+
+export interface StaffMember {
+  email: string;
+  role: "admin" | "staff";
+  name: string | null;
+  link_code: string | null;
+}
+
+export interface TeamMember extends StaffMember {
+  clients: number;
+}
+
+export const SITE_URL = "https://worldbridgemeridian.com";
+export const personalLink = (code: string) => `${SITE_URL}/?from=${code}`;
+export const staffName = (m: StaffMember) => m.name || m.email;
 
 export interface Signature {
   document_path: string;
@@ -75,9 +92,20 @@ export const usd = (n: number) =>
 
 const db = () => getSupabaseClient()!;
 
-export async function checkStaff(): Promise<boolean> {
-  const { data, error } = await db().rpc("is_staff");
-  return !error && data === true;
+/** The signed-in staff member, or null if they aren't on the staff list. */
+export async function loadMe(): Promise<StaffMember | null> {
+  const { data, error } = await db().rpc("staff_me");
+  return error ? null : ((data as StaffMember[] | null)?.[0] ?? null);
+}
+
+export async function loadTeam(): Promise<TeamMember[]> {
+  const { data } = await db().rpc("staff_team");
+  return ((data as TeamMember[] | null) ?? []).map((m) => ({ ...m, clients: Number(m.clients) }));
+}
+
+export async function assignClient(clientEmail: string, staffEmail: string | null): Promise<string | null> {
+  const { error } = await db().rpc("staff_assign", { p_client_email: clientEmail, p_staff_email: staffEmail });
+  return error ? error.message : null;
 }
 
 export async function loadRequests(): Promise<Request[] | null> {

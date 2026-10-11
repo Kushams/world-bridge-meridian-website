@@ -66,8 +66,11 @@ Deno.serve(async (req: Request) => {
   const path = typeof body.path === "string" ? body.path : "";
   let attachments: { filename: string; content: string }[] | undefined;
   let fileNote = "";
+  const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
+  // The staff member looking after this client (supabase/staff.sql) gets a copy.
+  const { data: assigned } = await admin.from("client_assignments").select("staff_email").eq("client_email", folder).maybeSingle();
+  const recipients = [INTERNAL_EMAIL, ...(assigned?.staff_email && assigned.staff_email !== INTERNAL_EMAIL ? [assigned.staff_email] : [])];
   if (path && path.startsWith(`${folder}/`) && !path.includes("..")) {
-    const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
     const { data: blob } = await admin.storage.from("client-uploads").download(path);
     if (blob && blob.size <= MAX_ATTACH) {
       attachments = [{ filename: path.split("/").pop()!.replace(/^\d{10,}-/, ""), content: encodeBase64(new Uint8Array(await blob.arrayBuffer())) }];
@@ -82,7 +85,7 @@ Deno.serve(async (req: Request) => {
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       from: FROM_EMAIL,
-      to: [INTERNAL_EMAIL],
+      to: recipients,
       reply_to: user.email,
       subject: `Client ${action}: ${String(body.title ?? "").slice(0, 80)} (${name})`,
       html: `<p><b>${esc(name)}</b> (${esc(user.email)}) ${esc(action)}.</p>
