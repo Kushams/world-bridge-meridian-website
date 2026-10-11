@@ -275,7 +275,9 @@ export const notableStays: NotableStay[] = [
     place: "Dorset Square, Marylebone",
     kind: "Regency Townhouse",
     destinationSlug: "london",
-    heroImage: unsplashPhoto("1513635269975-59663e0ac1ad"),
+    heroImage: "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/29-40_Dorset_Square%2C_NW1%2C_April_2021.jpg/960px-29-40_Dorset_Square%2C_NW1%2C_April_2021.jpg",
+    credit: "No Swan So Fine \u00b7 CC BY-SA 4.0 \u00b7 Wikimedia Commons",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:29-40_Dorset_Square,_NW1,_April_2021.jpg",
     description:
       "Firmdale Hotels' first London townhouse: 38 Kit Kemp-designed bedrooms in a Regency building overlooking the garden square that was once Thomas Lord's first cricket ground, near Baker Street and Regent's Park.",
     ukGroup: "Marylebone",
