@@ -33,7 +33,15 @@ export interface NotableStay {
   credit?: string;
   creditUrl?: string;
   description: string;
+  /** Shown in the "London & the UK" section instead of the Europe row. */
+  ukGroup?: UkStayGroup;
+  /** The major gallery or museum within walking distance. */
+  nearGallery?: string;
 }
+
+export type UkStayGroup = "Marylebone" | "Near the galleries";
+
+export const ukStayGroups: UkStayGroup[] = ["Marylebone", "Near the galleries"];
 
 export const stayContinents: StayContinent[] = [
   "Europe",
@@ -259,6 +267,108 @@ export const notableStays: NotableStay[] = [
     creditUrl: "https://commons.wikimedia.org/wiki/File:Balmoral_Hotel.jpg",
     description:
       "The clock-tower landmark on Princes Street, beside Waverley Station and the Old Town.",
+  },
+  {
+    slug: "dorset-square-hotel-london",
+    continent: "Europe",
+    name: "Dorset Square Hotel",
+    place: "Dorset Square, Marylebone",
+    kind: "Regency Townhouse",
+    destinationSlug: "london",
+    heroImage: "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/29-40_Dorset_Square%2C_NW1%2C_April_2021.jpg/960px-29-40_Dorset_Square%2C_NW1%2C_April_2021.jpg",
+    credit: "No Swan So Fine \u00b7 CC BY-SA 4.0 \u00b7 Wikimedia Commons",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:29-40_Dorset_Square,_NW1,_April_2021.jpg",
+    description:
+      "Firmdale Hotels' first London townhouse: 38 Kit Kemp-designed bedrooms in a Regency building overlooking the garden square that was once Thomas Lord's first cricket ground, near Baker Street and Regent's Park.",
+    ukGroup: "Marylebone",
+  },
+  {
+    slug: "the-marylebone-hotel-london",
+    continent: "Europe",
+    name: "The Marylebone",
+    place: "Welbeck Street, Marylebone",
+    kind: "Boutique Hotel",
+    destinationSlug: "london",
+    heroImage: "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/The_Marylebone_Hotel%2C_Welbeck_Street.jpg/960px-The_Marylebone_Hotel%2C_Welbeck_Street.jpg",
+    credit: "Philafrenzy \u00b7 CC BY-SA 4.0 \u00b7 Wikimedia Commons",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:The_Marylebone_Hotel,_Welbeck_Street.jpg",
+    description:
+      "A Doyle Collection hotel in Marylebone Village, with an on-site health club and 16-metre pool, a short walk from the Wallace Collection and Bond Street.",
+    ukGroup: "Marylebone",
+    nearGallery: "The Wallace Collection",
+  },
+  {
+    slug: "the-langham-london",
+    continent: "Europe",
+    name: "The Langham, London",
+    place: "Portland Place, Marylebone",
+    kind: "Grand Hotel",
+    destinationSlug: "london",
+    heroImage: "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/The_Langham%2C_London_hires.jpg/960px-The_Langham%2C_London_hires.jpg",
+    credit: "The Langham, London \u00b7 Public domain \u00b7 Wikimedia Commons",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:The_Langham,_London_hires.jpg",
+    description:
+      "Opened in 1865 at the top of Regent Street, with afternoon tea in the Palm Court and the Artesian cocktail bar, between Marylebone and the West End.",
+    ukGroup: "Marylebone",
+  },
+  {
+    slug: "the-londoner-london",
+    continent: "Europe",
+    name: "The Londoner",
+    place: "Leicester Square, London",
+    kind: "Lifestyle Hotel",
+    destinationSlug: "london",
+    heroImage: "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b5/Odeon_Luxe_West_End_-_The_Londoner%2C_Leicester_Square_-_2025-07-30.jpg/960px-Odeon_Luxe_West_End_-_The_Londoner%2C_Leicester_Square_-_2025-07-30.jpg",
+    credit: "Ewan Munro \u00b7 CC BY-SA 4.0 \u00b7 Wikimedia Commons",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:Odeon_Luxe_West_End_-_The_Londoner,_Leicester_Square_-_2025-07-30.jpg",
+    description:
+      "A 350-room hotel on the south-west corner of Leicester Square, a few minutes' walk from the National Gallery and the National Portrait Gallery on Trafalgar Square.",
+    ukGroup: "Near the galleries",
+    nearGallery: "National Gallery",
+  },
+  {
+    slug: "rosewood-london",
+    continent: "Europe",
+    name: "Rosewood London",
+    place: "High Holborn, London",
+    kind: "Historic Hotel",
+    destinationSlug: "london",
+    heroImage: "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/Rosewood_London_Courtyard.jpg/960px-Rosewood_London_Courtyard.jpg",
+    credit: "Durston Saylor \u00b7 CC BY-SA 3.0 \u00b7 Wikimedia Commons",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:Rosewood_London_Courtyard.jpg",
+    description:
+      "An Edwardian building on High Holborn entered through a carriage courtyard, close to the British Museum, Covent Garden and the Royal Opera House.",
+    ukGroup: "Near the galleries",
+    nearGallery: "British Museum",
+  },
+  {
+    slug: "sea-containers-london",
+    continent: "Europe",
+    name: "Sea Containers London",
+    place: "South Bank, London",
+    kind: "Riverside Hotel",
+    destinationSlug: "london",
+    heroImage: "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/Sea_Containers_building_%28Sea_Containers_House%29.jpg/960px-Sea_Containers_building_%28Sea_Containers_House%29.jpg",
+    credit: "Acabashi \u00b7 CC BY-SA 4.0 \u00b7 Wikimedia Commons",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:Sea_Containers_building_(Sea_Containers_House).jpg",
+    description:
+      "A Thames-side hotel with interiors inspired by 1920s ocean liners, within walking distance of Tate Modern, Shakespeare's Globe and the National Theatre.",
+    ukGroup: "Near the galleries",
+    nearGallery: "Tate Modern",
+  },
+  {
+    slug: "no-42-margate",
+    continent: "Europe",
+    name: "No.42 Margate by GuestHouse",
+    place: "Seafront, Margate",
+    kind: "Seaside Hotel",
+    heroImage: "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Balcony_and_brick_fascia_of_Sands_Hotel_Margate_Kent_England.jpg/960px-Balcony_and_brick_fascia_of_Sands_Hotel_Margate_Kent_England.jpg",
+    credit: "Acabashi \u00b7 CC BY-SA 4.0 \u00b7 Wikimedia Commons",
+    creditUrl: "https://commons.wikimedia.org/wiki/File:Balcony_and_brick_fascia_of_Sands_Hotel_Margate_Kent_England.jpg",
+    description:
+      "21 rooms and sea-view Lookout Suites in a Victorian beachfront building (formerly the Sands Hotel), on the same seafront as Turner Contemporary.",
+    ukGroup: "Near the galleries",
+    nearGallery: "Turner Contemporary",
   },
   {
     slug: "the-plaza-new-york",

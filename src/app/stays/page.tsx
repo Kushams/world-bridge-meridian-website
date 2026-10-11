@@ -4,7 +4,7 @@ import Link from "next/link";
 import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/ui/Container";
 import { stays } from "@/data/stays";
-import { notableStays, stayContinents } from "@/data/topStays";
+import { notableStays, stayContinents, ukStayGroups, type NotableStay } from "@/data/topStays";
 import { getDestination } from "@/data/destinations";
 import { themeImage } from "@/data/images";
 import { SwipeRow } from "@/components/ui/SwipeRow";
@@ -16,6 +16,61 @@ export const metadata: Metadata = {
 };
 
 const categories = Array.from(new Set(stays.map((s) => s.category)));
+
+function NotableStayCard({ stay }: { stay: NotableStay }) {
+  return (
+    <div>
+      <div className="relative aspect-[4/3] overflow-hidden rounded-card">
+        <Image
+          src={stay.heroImage}
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 400px, (min-width: 640px) 45vw, 90vw"
+          className="object-cover"
+        />
+      </div>
+      {stay.credit && stay.creditUrl ? (
+        <a
+          href={stay.creditUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-1.5 block truncate text-[0.65rem] text-stone-dim hover:text-gold"
+        >
+          Photo: {stay.credit}
+        </a>
+      ) : null}
+      <div className="mt-4">
+        <p className="eyebrow !text-[0.65rem] mb-1">
+          {stay.kind} · {stay.place}
+        </p>
+        <h3 className="font-display text-lg text-ivory">{stay.name}</h3>
+        {stay.nearGallery ? (
+          <p className="mt-1 text-xs text-gold">Near {stay.nearGallery}</p>
+        ) : null}
+        <p className="mt-2 text-sm text-stone leading-relaxed">{stay.description}</p>
+        <div className="mt-4 flex flex-wrap gap-3 text-xs">
+          {stay.destinationSlug ? (
+            <Link
+              href={`/destinations/${stay.destinationSlug}`}
+              className="text-gold hover:text-ivory transition-colors"
+            >
+              View Destination
+            </Link>
+          ) : null}
+          <Link
+            href={`/plan-your-journey?${new URLSearchParams({
+              destination: stay.place,
+              notes: `Interested in staying at ${stay.name}.`,
+            }).toString()}`}
+            className="text-ivory-dim hover:text-gold transition-colors"
+          >
+            Include This Stay
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function StaysPage() {
   return (
@@ -41,6 +96,12 @@ export default function StaysPage() {
             around your journey.
           </p>
           <div className="chip-row mt-6 flex flex-wrap gap-3">
+            <a
+              href="#london-and-the-uk"
+              className="rounded-full border border-line px-5 py-2 text-xs font-semibold uppercase tracking-wide text-ivory-dim transition-colors hover:border-gold hover:text-gold"
+            >
+              London &amp; the UK
+            </a>
             {stayContinents.map((continent) => (
               <a
                 key={continent}
@@ -52,8 +113,28 @@ export default function StaysPage() {
             ))}
           </div>
 
+          <div id="london-and-the-uk" className="mt-12 scroll-mt-24">
+            <p className="eyebrow mb-2">London &amp; the UK</p>
+            <p className="mb-8 max-w-2xl text-sm text-stone leading-relaxed">
+              Marylebone townhouses and hotels within walking distance of the UK&apos;s major galleries,
+              for journeys built around exhibitions and art fairs.
+            </p>
+            {ukStayGroups.map((group) => (
+              <div key={group} className="mb-12 last:mb-0">
+                <p className="eyebrow !text-[0.7rem] mb-6">{group}</p>
+                <SwipeRow className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                  {notableStays
+                    .filter((n) => n.ukGroup === group)
+                    .map((stay) => (
+                      <NotableStayCard key={stay.slug} stay={stay} />
+                    ))}
+                </SwipeRow>
+              </div>
+            ))}
+          </div>
+
           {stayContinents.map((continent) => {
-            const items = notableStays.filter((n) => n.continent === continent);
+            const items = notableStays.filter((n) => n.continent === continent && !n.ukGroup);
             return (
               <div
                 key={continent}
@@ -63,53 +144,7 @@ export default function StaysPage() {
                 <p className="eyebrow mb-6">{continent}</p>
                 <SwipeRow className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                   {items.map((stay) => (
-                    <div key={stay.slug}>
-                      <div className="relative aspect-[4/3] overflow-hidden rounded-card">
-                        <Image
-                          src={stay.heroImage}
-                          alt=""
-                          fill
-                          sizes="(min-width: 1024px) 400px, (min-width: 640px) 45vw, 90vw"
-                          className="object-cover"
-                        />
-                      </div>
-                      {stay.credit && stay.creditUrl ? (
-                        <a
-                          href={stay.creditUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-1.5 block truncate text-[0.65rem] text-stone-dim hover:text-gold"
-                        >
-                          Photo: {stay.credit}
-                        </a>
-                      ) : null}
-                      <div className="mt-4">
-                        <p className="eyebrow !text-[0.65rem] mb-1">
-                          {stay.kind} · {stay.place}
-                        </p>
-                        <h3 className="font-display text-lg text-ivory">{stay.name}</h3>
-                        <p className="mt-2 text-sm text-stone leading-relaxed">{stay.description}</p>
-                        <div className="mt-4 flex flex-wrap gap-3 text-xs">
-                          {stay.destinationSlug ? (
-                            <Link
-                              href={`/destinations/${stay.destinationSlug}`}
-                              className="text-gold hover:text-ivory transition-colors"
-                            >
-                              View Destination
-                            </Link>
-                          ) : null}
-                          <Link
-                            href={`/plan-your-journey?${new URLSearchParams({
-                              destination: stay.place,
-                              notes: `Interested in staying at ${stay.name}.`,
-                            }).toString()}`}
-                            className="text-ivory-dim hover:text-gold transition-colors"
-                          >
-                            Include This Stay
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
+                    <NotableStayCard key={stay.slug} stay={stay} />
                   ))}
                 </SwipeRow>
               </div>
