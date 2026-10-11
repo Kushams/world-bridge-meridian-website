@@ -55,7 +55,7 @@ export function DocumentsPanel() {
     if (list.error) return setFailed(true);
     setDocs(
       (list.data ?? [])
-        .filter((f) => f.name && !f.name.startsWith("."))
+        .filter((f) => f.id && f.name && !f.name.startsWith("."))
         .map((f) => ({
           name: f.name,
           title: docTitle(f.name),
