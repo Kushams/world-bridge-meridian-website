@@ -10,6 +10,11 @@ import { useAuth } from "@/lib/supabase/AuthProvider";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { AccountGate } from "@/components/account/AccountGate";
 import { CryptoPayStep } from "@/components/payments/CryptoPayStep";
+import { NewToCryptoHint } from "@/components/payments/NewToCryptoHint";
+import { CardCheckoutTips, PayMethodPicker, type PayMethod } from "@/components/payments/PayMethodPicker";
+import { CARD_PAYMENTS_ENABLED } from "@/data/cardPayments";
+import { startOrderCardPayment } from "@/lib/invoices";
+import { CreditCardPreview } from "./CreditCardPreview";
 import { track } from "@/lib/analytics";
 import { CREDIT_MAX, CREDIT_MIN, CREDIT_PRESETS, fmtUsd } from "@/lib/credits";
 import { usd } from "@/lib/giftCards";
@@ -17,8 +22,9 @@ import { usd } from "@/lib/giftCards";
 const field =
   "w-full rounded-control border border-line bg-transparent px-4 py-3 text-sm text-ivory placeholder:text-stone-dim outline-none focus:border-gold";
 const label = "mb-2 block text-xs uppercase tracking-wide text-stone";
+const POPULAR = 1000;
 
-/** Buy Travel Credits: account required, pay in crypto, our team verifies and adds them. */
+/** Buy Travel Credits: account required. Card orders are added automatically once paid; crypto orders after our team verifies them. */
 export function CreditsPurchase() {
   if (!isSupabaseConfigured || enabledCryptoPaymentOptions().length === 0) {
     return (
@@ -44,6 +50,7 @@ function CreditsForm() {
   const { user, profile } = useAuth();
   const [preset, setPreset] = useState<number | null>(1000);
   const [amountText, setAmountText] = useState("1000");
+  const [method, setMethod] = useState<PayMethod>(CARD_PAYMENTS_ENABLED ? "card" : "crypto");
   const [optionId, setOptionId] = useState("");
   const [txHash, setTxHash] = useState("");
   const [agree, setAgree] = useState(false);
@@ -74,6 +81,19 @@ function CreditsForm() {
     e.preventDefault();
     setError("");
     if (!amountOk) return setError(`Please choose an amount between ${fmtUsd(CREDIT_MIN)} and ${fmtUsd(CREDIT_MAX)}.`);
+    if (method === "card") {
+      if (!agree) return setError("Please tick the box to accept the Travel Credit terms.");
+      setStatus("sending");
+      const { url, error: err } = await startOrderCardPayment({ kind: "travel-credits", amount, name: profile?.full_name ?? "" }, token);
+      setReset((n) => n + 1);
+      if (url) {
+        track("checkout_started", { form: "travel-credits", method: "card" });
+        window.location.assign(url);
+        return;
+      }
+      setStatus("idle");
+      return setError(err ?? "We couldn't start the card payment just now. Please try again.");
+    }
     if (!selected) return setError("Please choose the cryptocurrency and network you sent payment on.");
     if (!txHash.trim()) return setError("Please paste the transaction ID from your payment.");
     if (!agree) return setError("Please tick the box to accept the Travel Credit terms.");
@@ -104,11 +124,21 @@ function CreditsForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="mx-auto max-w-2xl space-y-8">
+    <form onSubmit={onSubmit} className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_24rem] lg:items-start">
+      <aside className="space-y-5 lg:order-2 lg:sticky lg:top-28" aria-label="Order summary">
+        <CreditCardPreview amount={amountOk ? fmtUsd(amount) : "US$—"} holder={profile?.full_name ?? ""} />
+        <dl className="space-y-3 rounded-card border hairline p-5 text-sm">
+          <div className="flex justify-between"><dt className="text-stone">Travel Credits</dt><dd className="text-ivory">{amountOk ? amount.toLocaleString("en-US") : "—"}</dd></div>
+          <div className="flex justify-between"><dt className="text-stone">Expires</dt><dd className="text-ivory">Never</dd></div>
+          <div className="flex justify-between border-t hairline pt-3 font-display text-lg"><dt className="text-ivory">Total</dt><dd className="text-gold">{amountOk ? usd(amount) : "—"}</dd></div>
+        </dl>
+      </aside>
+
+      <div className="space-y-8 lg:order-1">
       <section className="space-y-4">
         <h3 className="font-display text-xl text-ivory md:text-2xl"><span className="mr-2 text-gold">1.</span>Choose an amount</h3>
         <p className="text-sm text-stone">1 Travel Credit = US$1. Credits you buy never expire.</p>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {CREDIT_PRESETS.map((p) => (
             <button
               key={p}
@@ -118,9 +148,11 @@ function CreditsForm() {
                 setPreset(p);
                 setAmountText(String(p));
               }}
-              className={`rounded-control border px-3 py-3 text-sm ${preset === p ? "border-gold bg-gold/10 text-ivory" : "border-line text-stone hover:border-gold"}`}
+              className={`relative rounded-card border px-4 py-5 text-left transition-colors ${preset === p ? "border-gold bg-gold/10 ring-1 ring-gold" : "border-line hover:border-gold"}`}
             >
-              {fmtUsd(p)}
+              {p === POPULAR ? <span className="absolute right-2 top-2 rounded-full bg-gold px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-wide text-ink">Popular</span> : null}
+              <span className="block font-display text-2xl text-ivory">{fmtUsd(p)}</span>
+              <span className="mt-1 block text-xs text-stone-dim">{p.toLocaleString("en-US")} credits</span>
             </button>
           ))}
         </div>
@@ -140,15 +172,19 @@ function CreditsForm() {
             Between {fmtUsd(CREDIT_MIN)} and {fmtUsd(CREDIT_MAX)} per purchase. There is no limit on how many credits you can hold.
           </p>
         </div>
-        <dl className="flex items-baseline justify-between rounded-card border hairline p-5 font-display text-lg">
-          <dt className="text-ivory">Total</dt>
-          <dd className="text-gold">{amountOk ? usd(amount) : "—"}</dd>
-        </dl>
       </section>
 
       <section className="space-y-4 border-t hairline pt-8">
-        <h3 className="font-display text-xl text-ivory md:text-2xl"><span className="mr-2 text-gold">2.</span>Pay with cryptocurrency</h3>
-        <CryptoPayStep idPrefix="tc" totalLabel={amountOk ? fmtUsd(amount) : null} amountUsd={amountOk ? amount : null} optionId={optionId} onOption={setOptionId} txHash={txHash} onTxHash={setTxHash} />
+        <h3 className="font-display text-xl text-ivory md:text-2xl"><span className="mr-2 text-gold">2.</span>How would you like to pay?</h3>
+        {CARD_PAYMENTS_ENABLED ? <PayMethodPicker value={method} onChange={setMethod} /> : null}
+        {method === "card" ? (
+          <CardCheckoutTips />
+        ) : (
+          <>
+            <NewToCryptoHint />
+            <CryptoPayStep idPrefix="tc" totalLabel={amountOk ? fmtUsd(amount) : null} amountUsd={amountOk ? amount : null} optionId={optionId} onOption={setOptionId} txHash={txHash} onTxHash={setTxHash} />
+          </>
+        )}
       </section>
 
       <div className="space-y-4 border-t hairline pt-8">
@@ -161,8 +197,9 @@ function CreditsForm() {
         <TurnstileWidget onToken={setToken} resetKey={reset} />
         {error ? <p role="alert" className="text-sm text-red-500">{error}</p> : null}
         <button type="submit" disabled={status === "sending"} className="w-full rounded-full bg-ivory px-8 py-4 text-sm font-semibold uppercase tracking-wide text-ink hover:opacity-90 disabled:opacity-50 sm:w-auto">
-          {status === "sending" ? "Sending…" : "Buy Travel Credits"}
+          {status === "sending" ? (method === "card" ? "Opening secure payment…" : "Sending…") : method === "card" ? "Continue to secure payment" : "Buy Travel Credits"}
         </button>
+      </div>
       </div>
     </form>
   );

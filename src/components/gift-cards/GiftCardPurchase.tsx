@@ -10,6 +10,10 @@ import { useAuth } from "@/lib/supabase/AuthProvider";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { AccountGate } from "@/components/account/AccountGate";
 import { CryptoPayStep } from "@/components/payments/CryptoPayStep";
+import { NewToCryptoHint } from "@/components/payments/NewToCryptoHint";
+import { CardCheckoutTips, PayMethodPicker, type PayMethod } from "@/components/payments/PayMethodPicker";
+import { CARD_PAYMENTS_ENABLED } from "@/data/cardPayments";
+import { startOrderCardPayment } from "@/lib/invoices";
 import { GiftCardPreview } from "./GiftCardPreview";
 import { track } from "@/lib/analytics";
 import { GIFT_DESIGNS, GIFT_MAX_QTY, GIFT_MAX_TOTAL, GIFT_MIN, GIFT_PRESETS, usd, type GiftDesign } from "@/lib/giftCards";
@@ -67,6 +71,7 @@ function GiftCardForm() {
   const [rName, setRName] = useState("");
   const [rEmail, setREmail] = useState("");
   const [msg, setMsg] = useState("");
+  const [method, setMethod] = useState<PayMethod>(CARD_PAYMENTS_ENABLED ? "card" : "crypto");
   const [optionId, setOptionId] = useState("");
   const [txHash, setTxHash] = useState("");
   const [agree, setAgree] = useState(false);
@@ -102,6 +107,33 @@ function GiftCardForm() {
     e.preventDefault();
     setError("");
     if (!totalOk) return setError(`Please choose an amount of at least ${usd(GIFT_MIN)}, and a total no higher than ${usd(GIFT_MAX_TOTAL)}.`);
+    if (method === "card") {
+      if (!agree) return setError("Please tick the box to accept the gift card terms.");
+      if (asGift && (!rName.trim() || !rEmail.trim())) return setError("Please enter the recipient's name and email.");
+      setStatus("sending");
+      const { url, error: err } = await startOrderCardPayment(
+        {
+          kind: "gift-card",
+          amount,
+          quantity: qty,
+          name: `${first} ${last}`.trim(),
+          design,
+          sendAsGift: asGift,
+          recipientName: rName.trim(),
+          recipientEmail: rEmail.trim(),
+          message: msg.trim(),
+        },
+        token,
+      );
+      setReset((n) => n + 1);
+      if (url) {
+        track("checkout_started", { form: "gift-card", method: "card" });
+        window.location.assign(url);
+        return;
+      }
+      setStatus("error");
+      return setError(err ?? "We couldn't start the card payment just now. Please try again.");
+    }
     if (!selected) return setError("Please choose the cryptocurrency and network you sent payment on.");
     if (!txHash.trim()) return setError("Please paste the transaction ID from your payment.");
     if (!agree) return setError("Please tick the box to accept the gift card terms.");
@@ -246,16 +278,24 @@ function GiftCardForm() {
           ) : null}
         </Step>
 
-        <Step n={3} title="Pay with cryptocurrency">
-          <CryptoPayStep
-            idPrefix="gc"
-            totalLabel={totalOk ? usd(total) : null}
-            amountUsd={totalOk ? total : null}
-            optionId={optionId}
-            onOption={setOptionId}
-            txHash={txHash}
-            onTxHash={setTxHash}
-          />
+        <Step n={3} title="How would you like to pay?">
+          {CARD_PAYMENTS_ENABLED ? <PayMethodPicker value={method} onChange={setMethod} /> : null}
+          {method === "card" ? (
+            <CardCheckoutTips />
+          ) : (
+            <>
+              <NewToCryptoHint />
+              <CryptoPayStep
+                idPrefix="gc"
+                totalLabel={totalOk ? usd(total) : null}
+                amountUsd={totalOk ? total : null}
+                optionId={optionId}
+                onOption={setOptionId}
+                txHash={txHash}
+                onTxHash={setTxHash}
+              />
+            </>
+          )}
         </Step>
 
         <div className="space-y-4 border-t hairline pt-8">
@@ -273,7 +313,7 @@ function GiftCardForm() {
             disabled={status === "sending"}
             className="w-full rounded-full bg-ivory px-8 py-4 text-sm font-semibold uppercase tracking-wide text-ink hover:opacity-90 disabled:opacity-50 sm:w-auto"
           >
-            {status === "sending" ? "Sending…" : "Purchase gift card"}
+            {status === "sending" ? (method === "card" ? "Opening secure payment…" : "Sending…") : method === "card" ? "Continue to secure payment" : "Purchase gift card"}
           </button>
         </div>
       </div>

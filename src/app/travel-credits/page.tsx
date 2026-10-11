@@ -14,9 +14,8 @@ import { faqCredits } from "@/data/pageFaqs";
 
 export const metadata: Metadata = {
   title: "Travel Credits — Buy Today, Travel Tomorrow",
-  description: `Travel Credits are US-dollar credits in your ${company.name} account, bought with cryptocurrency and used toward your journeys. Credits you buy never expire.`,
+  description: `Travel Credits are US-dollar credits in your ${company.name} account, bought by card or cryptocurrency and used toward your journeys. Credits you buy never expire.`,
 };
-
 
 export default function TravelCreditsPage() {
   return (
@@ -24,18 +23,23 @@ export default function TravelCreditsPage() {
       <PageHero
         eyebrow="Travel Credits"
         title="Buy today, travel tomorrow."
-        description={`Travel Credits are US-dollar credits in your account. 1 credit = US$1. Pay with cryptocurrency, then use them toward any ${company.name} journey.`}
+        description={`Travel Credits are US-dollar credits in your account. 1 credit = US$1. Pay by card or cryptocurrency, then use them toward any ${company.name} journey.`}
         image={themeImage("luxuryResort", 4)}
         imageAlt="A tropical resort at dusk"
         size="sm"
+        action={
+          <a href="#buy" className="inline-flex items-center gap-2 rounded-full bg-on-photo px-6 py-3 text-xs font-semibold uppercase tracking-wide text-scrim hover:opacity-90">
+            Scroll down to buy <span aria-hidden>↓</span>
+          </a>
+        }
       />
 
       <section className="py-12 md:py-16">
         <Container>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {[
-              { t: "What are Travel Credits?", b: `Credits you can use toward journeys with ${company.name}. They are in US dollars (1 credit = US$1) and are bought with cryptocurrency.` },
-              { t: "How do I buy them?", b: "Create or sign in to your account, choose an amount, pay in crypto and paste the transaction ID. We verify it and add the credits." },
+              { t: "What are Travel Credits?", b: `Credits you can use toward journeys with ${company.name}. They are in US dollars (1 credit = US$1) and are bought by card or cryptocurrency.` },
+              { t: "How do I buy them?", b: "Sign in, choose an amount and pay by card, Apple Pay or Google Pay (credits are added as soon as it goes through), or pay in crypto and we verify it first." },
               { t: "How do I use them?", b: "Tell your consultant, or tick “Use my Travel Credits” on your journey request. Your consultant applies them to your booking and you pay any remainder as agreed." },
             ].map((c) => (
               <div key={c.t} className="rounded-card border hairline p-6">
@@ -47,18 +51,18 @@ export default function TravelCreditsPage() {
         </Container>
       </section>
 
-      <NewToCrypto what="buy Travel Credits" />
-
       <section id="buy" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>
           <SectionHeading eyebrow="Buy" title="Buy Travel Credits."
-            description={<>Paying in crypto. <a href="#new-to-crypto" className="underline underline-offset-4">New to crypto? See how to buy it in your country.</a></>}
+            description="Choose your amount, then pay by card or crypto."
           />
           <div className="mt-8">
             <CreditsPurchase />
           </div>
         </Container>
       </section>
+
+      <NewToCrypto what="buy Travel Credits" />
 
       <section id="rewards" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container>

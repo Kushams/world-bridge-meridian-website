@@ -26,7 +26,8 @@ export type AnalyticsEvent =
   | "interest_filter_applied"
   | "travel_search_attempted"
   | "plan_this_trip_clicked"
-  | "crypto_payment_submitted";
+  | "crypto_payment_submitted"
+  | "checkout_started";
 
 declare global {
   interface Window {

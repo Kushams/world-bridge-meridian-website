@@ -91,6 +91,10 @@ Deno.serve(async (req: Request) => {
   try {
     const payload = await req.json();
     const record: FormRecord = payload.record ?? payload;
+    // Card orders are created by epv-webhook after payment, which sends its own emails.
+    if (record.payload?.payment_method === "card") {
+      return new Response(JSON.stringify({ ok: true, skipped: "card order" }), { headers: { "Content-Type": "application/json" } });
+    }
     const label = LABELS[record.form_type] ?? "Website form";
 
     await sendEmail(

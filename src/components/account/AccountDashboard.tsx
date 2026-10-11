@@ -70,16 +70,26 @@ function DeleteAccount() {
   );
 }
 
-type Tab = "profile" | "wallet";
-const WALLET_HASHES = new Set(["wallet", "travel-credits", "gift-cards", "redeem-code", "invoices"]);
+type Tab = "profile" | "wallet" | "invoices";
+const WALLET_HASHES = new Set(["wallet", "travel-credits", "gift-cards", "redeem-code"]);
+const INVOICE_HASHES = new Set(["invoices"]);
+const TABS: { key: Tab; label: string }[] = [
+  { key: "profile", label: "Profile" },
+  { key: "wallet", label: "Wallet" },
+  ...(CARD_PAYMENTS_ENABLED ? [{ key: "invoices" as const, label: "Invoices" }] : []),
+];
 
 function subscribeHash(cb: () => void) {
   window.addEventListener("hashchange", cb);
   return () => window.removeEventListener("hashchange", cb);
 }
-const currentTab = (): Tab => (WALLET_HASHES.has(window.location.hash.slice(1)) ? "wallet" : "profile");
+const currentTab = (): Tab => {
+  const h = window.location.hash.slice(1);
+  if (CARD_PAYMENTS_ENABLED && INVOICE_HASHES.has(h)) return "invoices";
+  return WALLET_HASHES.has(h) ? "wallet" : "profile";
+};
 
-/** The signed-in side of /my-world-bridge: two tabs, Profile (details, enquiries, saved) and Wallet. */
+/** The signed-in side of /my-world-bridge: Profile (details, enquiries, saved), Wallet and Invoices tabs. */
 export function AccountDashboard() {
   const tab = useSyncExternalStore(subscribeHash, currentTab, () => "profile" as Tab);
 
@@ -103,8 +113,8 @@ export function AccountDashboard() {
       <ProfileHero />
 
       <div className="sticky top-[4.4rem] z-30 -mx-1 bg-ink/95 px-1 py-2 backdrop-blur">
-      <div id="account-tabs" role="tablist" aria-label="Account sections" className="scroll-mt-40 grid grid-cols-2 gap-1 rounded-full border border-line bg-ink p-1 sm:inline-grid sm:min-w-[22rem]">
-        {(["profile", "wallet"] as const).map((t) => (
+      <div id="account-tabs" role="tablist" aria-label="Account sections" className={`scroll-mt-40 grid gap-1 rounded-full border border-line bg-ink p-1 sm:inline-grid ${TABS.length === 3 ? "grid-cols-3 sm:min-w-[30rem]" : "grid-cols-2 sm:min-w-[22rem]"}`}>
+        {TABS.map(({ key: t, label }) => (
           <button
             key={t}
             type="button"
@@ -113,23 +123,24 @@ export function AccountDashboard() {
             aria-selected={tab === t}
             aria-controls={`panel-${t}`}
             onClick={() => choose(t)}
-            className={`rounded-full px-6 py-2.5 text-xs font-semibold uppercase tracking-wide transition-colors ${
+            className={`rounded-full px-3 py-2.5 text-xs sm:px-6 font-semibold uppercase tracking-wide transition-colors ${
               tab === t ? "bg-ivory text-ink" : "text-ivory-dim hover:text-gold"
             }`}
           >
-            {t === "profile" ? "Profile" : "Wallet"}
+            {label}
           </button>
         ))}
       </div>
       </div>
 
-      {tab === "wallet" ? (
+      {tab === "invoices" ? (
+        <div role="tabpanel" id="panel-invoices" aria-labelledby="tab-invoices" className="space-y-10">
+          <Section id="invoices" eyebrow="Invoices" title="Invoices from your consultant">
+            <InvoicesPanel />
+          </Section>
+        </div>
+      ) : tab === "wallet" ? (
         <div role="tabpanel" id="panel-wallet" aria-labelledby="tab-wallet" className="space-y-10">
-          {CARD_PAYMENTS_ENABLED ? (
-            <Section id="invoices" eyebrow="Invoices" title="Invoices from your consultant">
-              <InvoicesPanel />
-            </Section>
-          ) : null}
           <span id="travel-credits" />
           <span id="gift-cards" />
           <TravelCreditsPanel />
