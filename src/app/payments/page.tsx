@@ -12,6 +12,7 @@ import { CryptoPaymentPanel } from "@/components/payments/CryptoPaymentPanel";
 import { enabledCryptoPaymentOptions } from "@/data/cryptoPayments";
 import { cryptoBuyingSteps, cryptoGuideReviewed } from "@/data/cryptoBuyingGuide";
 import { CryptoCountryGuide } from "@/components/payments/CryptoCountryGuide";
+import { CARD_PAYMENTS_ENABLED, cardPaymentProvider } from "@/data/cardPayments";
 import { isSupabaseConfigured } from "@/lib/supabase/client";
 import { JsonLd } from "@/components/seo/JsonLd";
 
@@ -27,7 +28,7 @@ const processSteps = [
   },
   {
     title: "You receive payment instructions",
-    body: "Your assigned consultant sends the amount and the method — bank transfer, a regional intermediary, or cryptocurrency.",
+    body: "Your assigned consultant sends the amount and the method — bank transfer, a regional intermediary, cryptocurrency, or a secure card payment link.",
   },
   {
     title: "You pay",
@@ -50,6 +51,11 @@ const paymentFaqs = [
   {
     question: `How do I pay ${company.name}?`,
     answer: `Once your journey is confirmed, your assigned consultant sends payment instructions. You can pay by bank transfer arranged through your consultant, through one of our regional payment intermediaries in local currency, or in cryptocurrency (${cryptoAssets.join(", ")}). There is no online checkout.`,
+  },
+  {
+    question: "Can I pay by card?",
+    answer:
+      "Yes, in many cases. Your consultant sends you an invoice in your account (Wallet → Invoices); tap Pay by card and it opens our card payment provider's page (pay.epayvista.com), where you pay by card, Apple Pay or Google Pay. We never see your card details. The provider decides which countries and cards it accepts, so cards issued outside the United States may be declined — bank transfer and cryptocurrency work from anywhere.",
   },
   {
     question: "How do bank transfers work?",
@@ -83,6 +89,53 @@ const faqJsonLd = {
   })),
 };
 
+function CardPaymentSection() {
+  const { name, host, minimumUsd } = cardPaymentProvider;
+  return (
+    <div>
+      <SectionHeading
+        eyebrow="Card"
+        title="Pay by card, through a secure link."
+        description="Visa, Mastercard, American Express, Apple Pay and Google Pay, on the payment provider's own page — never on ours."
+      />
+      <ol className="mt-6 max-w-2xl space-y-4">
+        {[
+          ["Your consultant confirms the amount.", "Nothing is paid before your journey and price are agreed."],
+          ["You receive an invoice in your account.", `Your consultant sends it. Open it under Wallet → Invoices and tap Pay by card — it opens on ${host} (${name}), our card payment provider.`],
+          ["You pay by card, Apple Pay or Google Pay.", "Card details are entered on the provider's page. This website never sees them."],
+          ["We confirm receipt.", "The payment settles to us as a stablecoin (USDC or USDT) and we confirm it in writing."],
+        ].map(([title, body], i) => (
+          <li key={title} className="flex gap-4">
+            <span className="font-display text-2xl leading-none text-gold">{i + 1}</span>
+            <span className="text-sm text-stone leading-relaxed">
+              <span className="text-ivory">{title}</span> {body}
+            </span>
+          </li>
+        ))}
+      </ol>
+      <div className="mt-8 max-w-2xl rounded-card border hairline p-5">
+        <p className="font-display text-lg text-ivory">Good to know</p>
+        <ul className="mt-3 space-y-2 text-sm text-stone leading-relaxed">
+          <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Card payments start at <span className="text-ivory">US${minimumUsd}</span>.</span></li>
+          <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>The provider decides which countries, cards and amounts it accepts, and may ask you to confirm with your bank (3D Secure) or verify your identity. <span className="text-ivory">Cards issued outside the United States may be declined</span> — if that happens, bank transfer or cryptocurrency work everywhere.</span></li>
+          <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Only pay an invoice shown in your own account, and check the payment page opens on <span className="text-ivory">{host}</span>.</span></li>
+          <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Refunds follow our booking terms and are handled by us, not by the provider.</span></li>
+        </ul>
+      </div>
+      <div className="mt-8">
+        <Button href="/my-world-bridge#invoices" size="lg">
+          View my invoices
+        </Button>
+      </div>
+      <p className="mt-6 max-w-3xl text-xs text-stone-dim leading-relaxed">
+        {name} is an independent third-party payment provider, listed here as the service we use to take card
+        payments — not a partner or endorsement of {company.name}. Card payments are converted and settled by
+        the provider and its card partners.
+      </p>
+    </div>
+  );
+}
+
 export default function PaymentsPage() {
   const addressesPublished = isSupabaseConfigured && enabledCryptoPaymentOptions().length > 0;
 
@@ -92,7 +145,7 @@ export default function PaymentsPage() {
       <PageHero
         eyebrow="Payments"
         title="How payment works."
-        description="No online checkout, no card details. We confirm your journey first, then your consultant tells you exactly how to pay."
+        description="We never take card details on this website. We confirm your journey first, then your consultant tells you exactly how to pay."
         image={themeImage("business", 1)}
         imageAlt="A workspace"
       />
@@ -148,6 +201,7 @@ export default function PaymentsPage() {
           <SectionHeading eyebrow="Your choice" title="How would you like to pay?" />
           <div className="mt-8">
             <PaymentMethods
+              card={CARD_PAYMENTS_ENABLED ? <CardPaymentSection /> : undefined}
               bank={
                 <div>
           <SectionHeading eyebrow="Bank transfer" title="How it works." />

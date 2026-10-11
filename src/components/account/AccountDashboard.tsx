@@ -8,6 +8,8 @@ import { EnquiriesPanel } from "./EnquiriesPanel";
 import { ProfileForm } from "./ProfileForm";
 import { TravelCreditsPanel } from "./TravelCreditsPanel";
 import { SavedJourneysPanel } from "./SavedJourneysPanel";
+import { InvoicesPanel } from "./InvoicesPanel";
+import { CARD_PAYMENTS_ENABLED } from "@/data/cardPayments";
 import { MobileCollapse } from "@/components/ui/MobileCollapse";
 
 function Section({ id, eyebrow, title, children }: { id: string; eyebrow: string; title: string; children: React.ReactNode }) {
@@ -69,7 +71,7 @@ function DeleteAccount() {
 }
 
 type Tab = "profile" | "wallet";
-const WALLET_HASHES = new Set(["wallet", "travel-credits", "gift-cards", "redeem-code"]);
+const WALLET_HASHES = new Set(["wallet", "travel-credits", "gift-cards", "redeem-code", "invoices"]);
 
 function subscribeHash(cb: () => void) {
   window.addEventListener("hashchange", cb);
@@ -123,6 +125,11 @@ export function AccountDashboard() {
 
       {tab === "wallet" ? (
         <div role="tabpanel" id="panel-wallet" aria-labelledby="tab-wallet" className="space-y-10">
+          {CARD_PAYMENTS_ENABLED ? (
+            <Section id="invoices" eyebrow="Invoices" title="Invoices from your consultant">
+              <InvoicesPanel />
+            </Section>
+          ) : null}
           <span id="travel-credits" />
           <span id="gift-cards" />
           <TravelCreditsPanel />
