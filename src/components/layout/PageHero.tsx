@@ -10,6 +10,7 @@ export function PageHero({
   image,
   imageAlt,
   size = "md",
+  action,
 }: {
   eyebrow: string;
   title: ReactNode;
@@ -17,6 +18,7 @@ export function PageHero({
   image?: string;
   imageAlt?: string;
   size?: "sm" | "md";
+  action?: ReactNode;
 }) {
   return (
     <section
@@ -56,6 +58,7 @@ export function PageHero({
             {description}
           </p>
         ) : null}
+        {action ? <div className="mt-7">{action}</div> : null}
       </Container>
     </section>
   );

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { loadInvoices, startCardPayment, type Invoice } from "@/lib/invoices";
-import { cardPaymentProvider } from "@/data/cardPayments";
+import { CardCheckoutTips } from "@/components/payments/PayMethodPicker";
 
 const usd = (n: number) => `US$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const fmt = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
@@ -87,10 +87,7 @@ export function InvoicesPanel() {
             <TurnstileWidget onToken={setToken} resetKey={resetKey} />
           </div>
           {error ? <p className="text-sm text-red-400">{error}</p> : null}
-          <p className="text-xs text-stone-dim leading-relaxed">
-            Card payments open on {cardPaymentProvider.host} ({cardPaymentProvider.name}), our card payment provider. We never see your card
-            details. Cards issued outside the United States may be declined — if that happens, use bank transfer or crypto.
-          </p>
+          <CardCheckoutTips />
         </>
       ) : null}
     </div>

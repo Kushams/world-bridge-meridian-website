@@ -13,9 +13,8 @@ import { faqGiftCards } from "@/data/pageFaqs";
 
 export const metadata: Metadata = {
   title: "Travel Gift Cards — Pay with Crypto",
-  description: `Give the gift of travel. ${company.name} gift cards never expire, can be bought with cryptocurrency, and are used toward bespoke journeys.`,
+  description: `Give the gift of travel. ${company.name} gift cards never expire, can be bought by card or cryptocurrency, and are used toward bespoke journeys.`,
 };
-
 
 export default function GiftCardsPage() {
   return (
@@ -23,24 +22,29 @@ export default function GiftCardsPage() {
       <PageHero
         eyebrow="Gift cards"
         title="Give the gift of travel."
-        description="A World Bridge Meridian gift card never expires, can be bought with cryptocurrency, and goes toward a journey designed around the person receiving it."
+        description="A World Bridge Meridian gift card never expires, can be bought by card or cryptocurrency, and goes toward a journey designed around the person receiving it."
         image={themeImage("luxuryResort", 2)}
         imageAlt="A luxury resort at sunset"
         size="sm"
+        action={
+          <a href="#buy" className="inline-flex items-center gap-2 rounded-full bg-on-photo px-6 py-3 text-xs font-semibold uppercase tracking-wide text-scrim hover:opacity-90">
+            Scroll down to buy <span aria-hidden>↓</span>
+          </a>
+        }
       />
-
-      <NewToCrypto what="buy a gift card" />
 
       <section id="buy" className="scroll-mt-24 pb-16 md:pb-24">
         <Container>
           <SectionHeading eyebrow="Buy" title="Order a gift card."
-            description={<>Paying in crypto. <a href="#new-to-crypto" className="underline underline-offset-4">New to crypto? See how to buy it in your country.</a></>}
+            description="Choose a design and amount, then pay by card or crypto."
           />
           <div className="mt-8">
             <GiftCardPurchase />
           </div>
         </Container>
       </section>
+
+      <NewToCrypto what="buy a gift card" />
 
       <section id="redeem" className="scroll-mt-24 border-t hairline py-12 md:py-20">
         <Container className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">

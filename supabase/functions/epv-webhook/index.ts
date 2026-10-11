@@ -40,6 +40,37 @@ async function email(to: string, subject: string, html: string) {
   if (!res.ok) console.error("Resend send failed", res.status, await res.text());
 }
 
+type Db = ReturnType<typeof createClient>;
+
+// A paid Travel Credits / gift card order becomes a confirmed form_submissions row, so the
+// existing database triggers add the credits or create and email the gift cards.
+async function fulfilOrder(
+  db: Db,
+  invoice: { id: string; reference: string; kind: string; description: string; order_details: Record<string, string> | null },
+  clientEmail: string,
+  epvReference: string,
+  txid: string,
+): Promise<string> {
+  const d = invoice.order_details ?? {};
+  const { name, ...rest } = d;
+  const { data: sub, error: insertError } = await db
+    .from("form_submissions")
+    .insert({
+      form_type: invoice.kind,
+      name: name || null,
+      email: clientEmail,
+      subject: `${invoice.description} (card, ${invoice.reference})`,
+      message: invoice.kind === "gift-card" ? d.gift_message || null : null,
+      payload: { ...rest, payment_method: "card", invoice_reference: invoice.reference, epv_reference: epvReference, transaction_hash: txid },
+    })
+    .select("id")
+    .single();
+  if (insertError || !sub) return insertError?.message ?? "could not record the order";
+  await db.from("invoices").update({ submission_id: sub.id }).eq("id", invoice.id);
+  const { error: confirmError } = await db.from("form_submissions").update({ status: "confirmed" }).eq("id", sub.id);
+  return confirmError?.message ?? "";
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method !== "POST") return reply(405, { ok: false });
   if (!EPV_CALLBACK_SECRET || !EPV_API_KEY) return reply(500, { ok: false });
@@ -60,9 +91,9 @@ Deno.serve(async (req: Request) => {
   const db = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
   const { data: invoice } = await db
     .from("invoices")
-    .select("id, reference, user_id, description, amount_usd, status")
+    .select("id, reference, user_id, description, amount_usd, status, kind, order_details")
     .eq("card_reference", msg.reference_id)
-    .maybeSingle();
+    .maybeSingle<{ id: string; reference: string; user_id: string; description: string; amount_usd: number; status: string; kind: string; order_details: Record<string, string> | null }>();
   if (!invoice) return reply(200, { ok: true, unknown: true }); // not one of ours; 2xx stops retries
   if (invoice.status === "paid") return reply(200, { ok: true, duplicate: true });
 
@@ -92,17 +123,33 @@ Deno.serve(async (req: Request) => {
   if (updated && updated.length > 0) {
     const { data: who } = await db.auth.admin.getUserById(invoice.user_id);
     const clientEmail = who.user?.email ?? "(unknown)";
+    const txid = msg.txid || order.explorerTransaction || "";
+    let fulfilError = "";
+    if (status === "paid" && invoice.kind !== "invoice" && who.user?.email) {
+      fulfilError = await fulfilOrder(db, invoice, who.user.email, msg.reference_id, txid);
+      if (fulfilError) await db.from("invoices").update({ status: "needs_review" }).eq("id", invoice.id);
+    }
     const details = `<p><strong>Invoice:</strong> ${invoice.reference} — ${invoice.description}</p>
       <p><strong>Amount:</strong> US$${Number(invoice.amount_usd).toFixed(2)}</p>
       <p><strong>Client:</strong> ${clientEmail}</p>
       <p><strong>Transaction:</strong> ${msg.txid || order.explorerTransaction || "(not provided)"}</p>`;
-    if (status === "paid") {
+    if (fulfilError) {
+      await email(
+        INTERNAL_EMAIL,
+        `Card order paid but not fulfilled — ${invoice.reference}`,
+        `<h2>A paid card order needs finishing by hand</h2>${details}<p>Error: ${fulfilError.replace(/[<>&]/g, "")}</p><p>Fix the cause, then add the credits or gift cards from the SQL editor.</p>`,
+      );
+    } else if (status === "paid") {
       await email(INTERNAL_EMAIL, `Card payment received — ${invoice.reference}`, `<h2>Card payment received</h2>${details}`);
       if (who.user?.email) {
         await email(
           who.user.email,
           `Payment received — ${invoice.reference}`,
-          `<p>Thank you — we've received your card payment for invoice ${invoice.reference} (US$${Number(invoice.amount_usd).toFixed(2)}). Your consultant will confirm it with you in writing.</p>`,
+          invoice.kind === "travel-credits"
+            ? `<p>Thank you — we've received your card payment of US$${Number(invoice.amount_usd).toFixed(2)} (${invoice.reference}). Your Travel Credits are now in your account: https://worldbridgemeridian.com/my-world-bridge#wallet</p>`
+            : invoice.kind === "gift-card"
+              ? `<p>Thank you — we've received your card payment of US$${Number(invoice.amount_usd).toFixed(2)} (${invoice.reference}). The gift card code${invoice.order_details?.quantity === "1" ? " is" : "s are"} being emailed now.</p>`
+              : `<p>Thank you — we've received your card payment for invoice ${invoice.reference} (US$${Number(invoice.amount_usd).toFixed(2)}). Your consultant will confirm it with you in writing.</p>`,
         );
       }
     } else {
