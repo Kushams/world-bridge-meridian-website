@@ -55,7 +55,7 @@ const paymentFaqs = [
   {
     question: "Can I pay by card?",
     answer:
-      "Yes, in many cases. Your consultant can send you a secure payment link that opens on our card payment provider's page (pay.epayvista.com), where you pay by card, Apple Pay or Google Pay. We never see your card details. The provider decides which countries and cards it accepts, so cards issued outside the United States may be declined — bank transfer and cryptocurrency work from anywhere.",
+      "Yes, in many cases. Your consultant sends you an invoice in your account (Wallet → Invoices); tap Pay by card and it opens our card payment provider's page (pay.epayvista.com), where you pay by card, Apple Pay or Google Pay. We never see your card details. The provider decides which countries and cards it accepts, so cards issued outside the United States may be declined — bank transfer and cryptocurrency work from anywhere.",
   },
   {
     question: "How do bank transfers work?",
@@ -101,7 +101,7 @@ function CardPaymentSection() {
       <ol className="mt-6 max-w-2xl space-y-4">
         {[
           ["Your consultant confirms the amount.", "Nothing is paid before your journey and price are agreed."],
-          ["You receive a payment link.", `Sent by your consultant. It opens on ${host} (${name}), our card payment provider.`],
+          ["You receive an invoice in your account.", `Your consultant sends it. Open it under Wallet → Invoices and tap Pay by card — it opens on ${host} (${name}), our card payment provider.`],
           ["You pay by card, Apple Pay or Google Pay.", "Card details are entered on the provider's page. This website never sees them."],
           ["We confirm receipt.", "The payment settles to us as a stablecoin (USDC or USDT) and we confirm it in writing."],
         ].map(([title, body], i) => (
@@ -118,13 +118,13 @@ function CardPaymentSection() {
         <ul className="mt-3 space-y-2 text-sm text-stone leading-relaxed">
           <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Card payments start at <span className="text-ivory">US${minimumUsd}</span>.</span></li>
           <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>The provider decides which countries, cards and amounts it accepts, and may ask you to confirm with your bank (3D Secure) or verify your identity. <span className="text-ivory">Cards issued outside the United States may be declined</span> — if that happens, bank transfer or cryptocurrency work everywhere.</span></li>
-          <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Only pay a link your consultant sent you, and check it opens on <span className="text-ivory">{host}</span>.</span></li>
+          <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Only pay an invoice shown in your own account, and check the payment page opens on <span className="text-ivory">{host}</span>.</span></li>
           <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Refunds follow our booking terms and are handled by us, not by the provider.</span></li>
         </ul>
       </div>
       <div className="mt-8">
-        <Button href="/contact" size="lg">
-          Ask for a card payment link
+        <Button href="/my-world-bridge#invoices" size="lg">
+          View my invoices
         </Button>
       </div>
       <p className="mt-6 max-w-3xl text-xs text-stone-dim leading-relaxed">

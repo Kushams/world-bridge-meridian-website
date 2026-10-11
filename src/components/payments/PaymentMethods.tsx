@@ -72,7 +72,7 @@ export function PaymentMethods({
       >
         {tab("bank", "Bank transfer", "Your consultant sends the details.")}
         {tab("crypto", "Cryptocurrency", "Buy, send, and tell us. We guide you.")}
-        {card ? tab("card", "Card", "Pay by card through a secure link.") : null}
+        {card ? tab("card", "Card", "Pay an invoice by card.") : null}
       </div>
       <div hidden={active !== "bank" && active !== "all"} id="bank-transfer" className="scroll-mt-24 pt-10">
         {bank}
