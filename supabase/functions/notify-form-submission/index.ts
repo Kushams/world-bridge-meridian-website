@@ -161,7 +161,6 @@ Deno.serve(async (req: Request) => {
           <p>Hi ${esc(record.name || "there")},</p>
           <p>Thank you for reaching out. Your ${record.form_type === "journey-request" ? "journey request" : record.form_type === "travel-details" ? "travel detail form" : record.form_type === "gift-card" ? "gift card order" : record.form_type === "travel-credits" ? "Travel Credits purchase" : "message"} has reached our team and ${record.form_type === "gift-card" ? "we will verify your payment on the blockchain, then email the gift card code(s)." : record.form_type === "travel-credits" ? "we will verify your payment on the blockchain, then add the credits to your account and email you." : "a consultant will be in touch personally."}</p>
           ${record.message ? `<p style="color:#666">Your message:</p><blockquote style="white-space:pre-wrap;border-left:2px solid #ddd;padding-left:12px;color:#666">${esc(record.message)}</blockquote>` : ""}
-          <p>— World Bridge Meridian</p>
         `,
         INTERNAL_EMAIL,
       );

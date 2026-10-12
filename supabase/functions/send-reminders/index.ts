@@ -1,6 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
-import { FONT, layout } from "../_shared/email.ts";
+import { FONT, layout, staffSignature, type Signature } from "../_shared/email.ts";
 
 // Called hourly by pg_cron (supabase/reminders.sql) with the shared secret.
 //  * "We haven't heard from you": when the latest thing in a client's thread
@@ -46,11 +46,11 @@ function esc(value: unknown): string {
     .replaceAll('"', "&quot;");
 }
 
-async function send(to: string[], subject: string, html: string, bcc: string[] = []) {
+async function send(to: string[], subject: string, html: string, bcc: string[] = [], signature?: Signature) {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: FROM_EMAIL, to, bcc: bcc.length ? bcc : undefined, reply_to: INTERNAL_EMAIL, subject, html: layout(html) }),
+    body: JSON.stringify({ from: FROM_EMAIL, to, bcc: bcc.length ? bcc : undefined, reply_to: INTERNAL_EMAIL, subject, html: layout(html, signature) }),
   });
   if (!res.ok) console.error("Resend send failed", res.status, await res.text());
   return res.ok;
@@ -74,7 +74,7 @@ async function nudge(
   m: Msg | undefined,
   request: Req | undefined,
   n: number,
-  staff: { email: string; name: string | null }[],
+  staff: { email: string; name: string | null; role: string }[],
   handler: Map<string, string>,
   team: string[],
 ) {
@@ -93,9 +93,10 @@ async function nudge(
       <blockquote style="margin:0;padding:12px 16px;border-left:3px solid #b8964e;background:#f7f4ee;white-space:pre-wrap">${esc(preview)}</blockquote>` : ""}
       ${button(`${ACCOUNT_URL}#messages`, "Reply now")}
       <p>If your plans have changed, or you'd like to talk it through, just reply to this email.</p>
-      <p>Warm regards,<br>World Bridge Meridian</p>
+      <p>Warm regards,</p>
     </div>`,
     [...new Set([...team, ...(coordinatorEmail ? [coordinatorEmail] : [])])],
+    staffSignature(staff.find((s) => s.email === coordinatorEmail)),
   );
 }
 

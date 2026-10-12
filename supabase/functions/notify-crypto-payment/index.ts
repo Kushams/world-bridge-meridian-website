@@ -81,7 +81,6 @@ Deno.serve(async (req: Request) => {
           ${detailsHtml}
           <p>This confirms we received your submission, not that the payment itself has been verified yet. Once our team has checked the transaction on the blockchain, one of our consultants will follow up with you directly to confirm your booking.</p>
           <p>If anything above doesn't look right, please contact us immediately.</p>
-          <p>— World Bridge Meridian</p>
         `,
       );
     }

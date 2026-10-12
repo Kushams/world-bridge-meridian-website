@@ -1,6 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
-import { FONT, layout } from "../_shared/email.ts";
+import { FONT, layout, staffSignature } from "../_shared/email.ts";
 
 // Called by the staff page after staff send a client something. Emails the
 // client a short "something new is in your account" note. Only staff
@@ -96,6 +96,12 @@ Deno.serve(async (req: Request) => {
   if (!client) return json(404, { ok: false, error: "no account" });
 
   const first = (client.full_name ?? "").trim().split(/\s+/)[0];
+  const { data: who } = await supabase.auth.getUser();
+  const { data: senderRow } = await createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } })
+    .from("staff_members")
+    .select("email, name, role")
+    .eq("email", who.user?.email?.toLowerCase() ?? "")
+    .maybeSingle();
   const kind = body.kind as string;
   const title = String(body.title ?? "").slice(0, kind === "message" ? 2000 : 160);
   if (THREAD[kind]) {
@@ -122,8 +128,8 @@ Deno.serve(async (req: Request) => {
           : `<p>${esc(msg.line)}${title ? `: <b>${esc(title)}</b>` : ""}.</p>`}
         <p style="margin:28px 0"><a href="${ACCOUNT_URL}${msg.hash}" style="background:#1c1c1c;color:#fff;padding:12px 22px;border-radius:999px;text-decoration:none;font-family:${FONT};font-size:13px;letter-spacing:.05em;text-transform:uppercase">${esc(msg.button)}</a></p>
         <p>Sign in with this email address to see it. If you have any questions, just reply to this email.</p>
-        <p>Warm regards,<br>World Bridge Meridian</p>
-      </div>`),
+        <p>Warm regards,</p>
+      </div>`, staffSignature(senderRow ?? undefined)),
     }),
   });
   if (!res.ok) console.error("Resend send failed", res.status, await res.text());

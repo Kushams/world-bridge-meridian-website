@@ -85,7 +85,6 @@ Deno.serve(async (req: Request) => {
         ${record.subject ? `<p style="color:#666">Regarding: ${esc(record.subject)}</p>` : ""}
         <p><a href="${ACCOUNT_URL}" style="display:inline-block;background:#1c1a17;color:#fff;text-decoration:none;padding:12px 22px;border-radius:999px">View in My World Bridge</a></p>
         <p style="color:#888;font-size:13px">Sign in with this email address to see your request and its progress. Just reply to this email to reach your consultant.</p>
-        <p>— World Bridge Meridian</p>
       </div>`;
 
     const res = await fetch("https://api.resend.com/emails", {

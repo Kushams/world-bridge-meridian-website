@@ -49,7 +49,7 @@ Deno.serve(async (req: Request) => {
     if (error) throw error;
 
     const wrap = (inner: string) =>
-      `<div style="color:#222;max-width:560px">${inner}<p>— World Bridge Meridian</p></div>`;
+      `<div style="color:#222;max-width:560px">${inner}</div>`;
 
     let sent = 0;
     for (const c of cards ?? []) {
