@@ -1,5 +1,6 @@
 import { FunctionsHttpError } from "@supabase/supabase-js";
 import { getSupabaseClient } from "@/lib/supabase/client";
+import type { LineItem } from "@/lib/money";
 
 export interface Invoice {
   id: string;
@@ -11,6 +12,13 @@ export interface Invoice {
   created_at: string;
   /** Pasted in by staff when the client chooses a bank transfer; empty until then. */
   bank_details: string | null;
+  /** The invoice's own currency and total. amount_usd is what card / crypto charges. Older invoices have no amount (USD). */
+  currency: "USD" | "EUR" | "GBP";
+  amount: number | null;
+  subtotal: number | null;
+  tax_percent: number;
+  line_items: LineItem[] | null;
+  due_date: string | null;
 }
 
 export async function loadInvoices(): Promise<Invoice[] | null> {
@@ -18,11 +26,11 @@ export async function loadInvoices(): Promise<Invoice[] | null> {
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("invoices")
-    .select("id, reference, description, amount_usd, status, paid_at, created_at, bank_details")
+    .select("id, reference, description, amount_usd, status, paid_at, created_at, bank_details, currency, amount, subtotal, tax_percent, line_items, due_date")
     .eq("kind", "invoice")
     .order("created_at", { ascending: false });
   if (error) return null;
-  return (data ?? []).map((i) => ({ ...i, amount_usd: Number(i.amount_usd) })) as Invoice[];
+  return (data ?? []).map((i) => ({ ...i, amount_usd: Number(i.amount_usd), amount: i.amount == null ? null : Number(i.amount), subtotal: i.subtotal == null ? null : Number(i.subtotal), tax_percent: Number(i.tax_percent ?? 0) })) as Invoice[];
 }
 
 export type CardOrder =

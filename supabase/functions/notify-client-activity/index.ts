@@ -2,6 +2,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { encodeBase64 } from "jsr:@std/encoding@1/base64";
 import { layout } from "../_shared/email.ts";
+import { pushToTeam } from "../_shared/push.ts";
 
 // Called by the website after a signed-in client uploads a document, signs one
 // on screen, or returns a signed file. Emails the team, attaching the uploaded
@@ -123,5 +124,12 @@ Deno.serve(async (req: Request) => {
     }),
   });
   if (!res.ok) console.error("Resend send failed", res.status, await res.text());
+  // Real push notification to the admins and the staff member looking after this client's phones.
+  await pushToTeam(admin, folder, {
+    title: kind === "message" ? `New message from ${name}` : `${name} ${action}`,
+    body: String(body.title ?? "").slice(0, 160) || action,
+    url: `/staff?client=${encodeURIComponent(folder)}#clients`,
+    tag: `client-${folder}`,
+  });
   return json(200, { ok: res.ok });
 });

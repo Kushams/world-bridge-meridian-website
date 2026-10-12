@@ -95,3 +95,15 @@ export async function voiceUrl(path: string): Promise<string | null> {
   const { data } = await db().storage.from(VOICE_BUCKET).createSignedUrl(path, 3600);
   return data?.signedUrl ?? null;
 }
+
+/** How many messages from our team this client has not seen yet (sent after `since`). */
+export async function countStaffMessagesSince(clientEmail: string, since: string): Promise<number> {
+  const { count } = await db()
+    .from("client_messages")
+    .select("id", { count: "exact", head: true })
+    .eq("client_email", clientEmail.toLowerCase())
+    .eq("sender", "staff")
+    .eq("kind", "message")
+    .gt("created_at", since);
+  return count ?? 0;
+}

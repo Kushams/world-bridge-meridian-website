@@ -6,10 +6,20 @@ import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/AuthProvider";
 import { loadInvoices, parseBankLines, startCardPayment, type Invoice } from "@/lib/invoices";
+import { money } from "@/lib/money";
 
 const BUCKET = "client-documents";
 const usd = (n: number) => `US$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const fmt = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+
+const own = (i: Invoice) => i.amount ?? i.amount_usd;
+const ownMoney = (i: Invoice) => money(own(i), i.currency ?? "USD");
+/** "€1,002.00 + US$300.00" when invoices are in different currencies. */
+const sumLabel = (list: Invoice[]) => {
+  const by = new Map<string, number>();
+  for (const i of list) by.set(i.currency ?? "USD", (by.get(i.currency ?? "USD") ?? 0) + own(i));
+  return by.size ? [...by].map(([c, n]) => money(n, c)).join(" + ") : money(0, "USD");
+};
 
 const STATUS: Record<Invoice["status"], { label: string; className: string }> = {
   unpaid: { label: "Due", className: "border-gold/60 bg-gold/10 text-gold" },
@@ -76,7 +86,7 @@ function BankTransfer({ invoice }: { invoice: Invoice }) {
         {rows.map((r, idx) => (
           <CopyRow key={`${idx}-${r.value}`} label={r.label || null} value={r.value} />
         ))}
-        <CopyRow label="Amount (USD)" value={usd(invoice.amount_usd)} copyValue={invoice.amount_usd.toFixed(2)} />
+        <CopyRow label={`Amount (${invoice.currency ?? "USD"})`} value={ownMoney(invoice)} copyValue={own(invoice).toFixed(2)} />
         <CopyRow label="Payment reference" value={invoice.reference} mono />
       </ul>
       <p className="mt-3 text-xs text-stone">
@@ -105,7 +115,7 @@ function InvoiceSheet({ invoice }: { invoice: Invoice }) {
         </div>
         <div className="flex justify-between border-t border-neutral-200 pt-2 text-[8px] font-semibold text-neutral-800">
           <span>Total</span>
-          <span>{usd(invoice.amount_usd)}</span>
+          <span>{ownMoney(invoice)}</span>
         </div>
       </div>
       {invoice.status === "paid" ? (
@@ -145,6 +155,23 @@ export function InvoicesPanel() {
     };
   }, []);
 
+  // Tell the team the client has seen their unpaid invoices (once per invoice per browser session).
+  useEffect(() => {
+    const supabase = getSupabaseClient();
+    if (!supabase || !invoices) return;
+    for (const i of invoices) {
+      if (i.status !== "unpaid") continue;
+      const key = `wbm-inv-opened:${i.id}`;
+      try {
+        if (window.sessionStorage.getItem(key)) continue;
+        window.sessionStorage.setItem(key, "1");
+      } catch {
+        // Storage blocked: the database only records the first open anyway.
+      }
+      supabase.rpc("client_opened_invoice", { p_id: i.id }).then(() => undefined, () => undefined);
+    }
+  }, [invoices]);
+
   async function pay(invoice: Invoice) {
     setError("");
     setBusy(invoice.id);
@@ -180,16 +207,18 @@ export function InvoicesPanel() {
     );
   }
 
-  const due = invoices.filter((i) => i.status === "unpaid").reduce((s, i) => s + i.amount_usd, 0);
-  const paid = invoices.filter((i) => i.status === "paid").reduce((s, i) => s + i.amount_usd, 0);
+  const dueList = invoices.filter((i) => i.status === "unpaid");
+  const due = dueList.reduce((n, i) => n + i.amount_usd, 0);
+  const dueLabel = sumLabel(dueList);
+  const paidLabel = sumLabel(invoices.filter((i) => i.status === "paid"));
   const hasUnpaid = due > 0;
 
   return (
     <div className="max-w-3xl space-y-5">
       <dl className="grid grid-cols-3 gap-3">
         {[
-          ["Amount due", usd(due), "text-gold"],
-          ["Paid", usd(paid), "text-ivory"],
+          ["Amount due", dueLabel, "text-gold"],
+          ["Paid", paidLabel, "text-ivory"],
           ["Invoices", String(invoices.length), "text-ivory"],
         ].map(([k, v, c]) => (
           <div key={k} className="rounded-card border hairline p-4">
@@ -214,14 +243,43 @@ export function InvoicesPanel() {
                   <h3 className="mt-2 font-display text-lg text-ivory md:text-xl">{i.description}</h3>
                   <p className="mt-1 text-xs text-stone-dim">
                     {i.reference} · issued {fmt(i.created_at)}
+                    {i.due_date && i.status === "unpaid" ? ` · due ${fmt(i.due_date)}` : ""}
                     {i.status === "paid" && i.paid_at ? ` · paid ${fmt(i.paid_at)}` : ""}
                   </p>
                 </div>
-                <p className="font-display text-2xl text-ivory">{usd(i.amount_usd)}</p>
+                <div className="text-right">
+                  <p className="font-display text-2xl text-ivory">{ownMoney(i)}</p>
+                  {i.currency && i.currency !== "USD" && i.status === "unpaid" ? (
+                    <p className="text-xs text-stone-dim">About {usd(i.amount_usd)} by card or crypto, converted at the live rate when you pay</p>
+                  ) : null}
+                </div>
               </div>
 
               {i.status === "needs_review" ? (
                 <p className="mt-3 text-sm text-stone">We&apos;re checking your payment and will confirm it in writing shortly.</p>
+              ) : null}
+
+              {i.line_items?.length ? (
+                <details className="mt-3 text-sm">
+                  <summary className="cursor-pointer text-xs text-stone underline underline-offset-4 hover:text-ivory">View items</summary>
+                  <ul className="mt-2 divide-y divide-line">
+                    {i.line_items.map((l, idx) => (
+                      <li key={idx} className="flex justify-between gap-3 py-2">
+                        <span className="min-w-0">
+                          <span className="block text-ivory">{l.title}{l.qty !== 1 ? ` × ${l.qty}` : ""}</span>
+                          {l.details ? <span className="block whitespace-pre-line text-xs text-stone-dim">{l.details}</span> : null}
+                        </span>
+                        <span className="shrink-0 text-ivory">{money(l.amount ?? l.qty * l.unit_price, i.currency ?? "USD")}</span>
+                      </li>
+                    ))}
+                    {i.tax_percent > 0 && i.subtotal != null ? (
+                      <li className="flex justify-between gap-3 py-2 text-xs text-stone">
+                        <span>Tax {i.tax_percent}%</span>
+                        <span>{money(own(i) - i.subtotal, i.currency ?? "USD")}</span>
+                      </li>
+                    ) : null}
+                  </ul>
+                </details>
               ) : null}
 
               <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -240,7 +298,7 @@ export function InvoicesPanel() {
                 ) : null}
                 {pdf ? (
                   <Button type="button" size="md" variant="outline" disabled={busy !== null} onClick={() => openPdf(pdf)}>
-                    {busy === pdf ? "Opening…" : "View invoice (PDF)"}
+                    {busy === pdf ? "Opening…" : i.status === "paid" ? "View receipt (PDF)" : "View invoice (PDF)"}
                   </Button>
                 ) : (
                   <span className="text-xs text-stone-dim">Detailed invoice PDF coming soon from your consultant.</span>

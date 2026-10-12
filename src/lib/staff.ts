@@ -1,4 +1,5 @@
 import { getSupabaseClient } from "@/lib/supabase/client";
+import type { Currency, LineItem } from "@/lib/money";
 
 export type Status = "received" | "in_review" | "proposal_sent" | "confirmed" | "closed";
 
@@ -77,6 +78,14 @@ export interface StaffInvoice {
   paid_via: string | null;
   bank_details: string | null;
   user_id: string;
+  amount_usd_charge?: number;
+  currency: "USD" | "EUR" | "GBP";
+  amount: number | null;
+  subtotal: number | null;
+  tax_percent: number;
+  fx_rate: number;
+  line_items: LineItem[] | null;
+  due_date: string | null;
 }
 
 export interface StoredFile {
@@ -135,6 +144,75 @@ export async function loadPresence(): Promise<Presence[] | null> {
   return error ? null : ((data as Presence[] | null) ?? []);
 }
 
+export interface Thread {
+  email: string;
+  sender: string;
+  kind: string;
+  body: string;
+  at: string;
+}
+
+type AttInvoice = { id: string; reference: string; description: string; amount_usd: number; status: string; created_at: string; user_id: string; first_opened_at: string | null; last_opened_at: string | null; card_started_at: string | null };
+
+export interface AttentionData {
+  /** Clients whose latest message is theirs and nobody has replied yet. */
+  waiting: { email: string; body: string; at: string }[];
+  /** Every conversation, most recent first (the Inbox tab). */
+  threads: Thread[];
+  /** Requests still at "Received" three or more days after they arrived. */
+  stuck: Request[];
+  /** Invoices still unpaid (older than a week) or waiting for a payment check. */
+  invoices: AttInvoice[];
+  /** Unpaid invoices where the client reached card checkout at least 15 minutes ago and has not paid. */
+  checkouts: AttInvoice[];
+}
+
+const DAY = 86400000;
+
+/** Everything that needs a person, for the staff member's own clients (admins: everyone). RLS limits what comes back. */
+export async function loadAttention(): Promise<AttentionData | null> {
+  const [msgs, reqs, invs] = await Promise.all([
+    db().from("client_messages").select("client_email, sender, kind, body, created_at").order("created_at", { ascending: false }).limit(1500),
+    loadRequests(),
+    db()
+      .from("invoices")
+      .select("id, reference, description, amount_usd, status, created_at, user_id, first_opened_at, last_opened_at, card_started_at")
+      .eq("kind", "invoice")
+      .in("status", ["unpaid", "needs_review"])
+      .order("created_at", { ascending: true }),
+  ]);
+  if (msgs.error || !reqs || invs.error) return null;
+
+  const latest = new Map<string, { sender: string; kind: string; body: string; created_at: string }>();
+  for (const m of msgs.data ?? []) if (!latest.has(m.client_email)) latest.set(m.client_email, m);
+  const threads: Thread[] = [...latest.entries()]
+    .map(([email, m]) => ({ email, sender: m.sender, kind: m.kind, body: m.kind === "voice" ? "Voice note" : m.body, at: m.created_at }))
+    .sort((a, b) => b.at.localeCompare(a.at));
+  const waiting = threads
+    .filter((t) => t.sender === "client" && (t.kind === "message" || t.kind === "voice"))
+    .map((t) => ({ email: t.email, body: t.body, at: t.at }))
+    .sort((a, b) => a.at.localeCompare(b.at));
+
+  const now = Date.now();
+  const stuck = reqs.filter((r) => r.status === "received" && now - new Date(r.submitted_at).getTime() >= 3 * DAY);
+  const all = (invs.data ?? []).map((i) => ({ ...i, amount_usd: Number(i.amount_usd) })) as AttInvoice[];
+  const isCheckout = (i: AttInvoice) => i.status === "unpaid" && i.card_started_at !== null && now - new Date(i.card_started_at).getTime() >= 15 * 60000 && now - new Date(i.card_started_at).getTime() < 7 * DAY;
+  const checkouts = all.filter(isCheckout);
+  const invoices = all.filter((i) => !isCheckout(i) && (i.status === "needs_review" || now - new Date(i.created_at).getTime() >= 7 * DAY));
+  return { waiting, threads, stuck, invoices, checkouts };
+}
+
+/** What the Alerts tab badge counts: stale requests, invoices to chase and unfinished card payments. */
+export const attentionCount = (a: AttentionData | null) => (a ? a.stuck.length + a.invoices.length + a.checkouts.length : 0);
+/** What the Inbox tab badge counts: conversations waiting for a staff reply. */
+export const waitingCount = (a: AttentionData | null) => (a ? a.waiting.length : 0);
+
+/** Recent sign-ins of one client (newest first), recorded automatically. */
+export async function loadSignIns(userId: string): Promise<string[]> {
+  const { data } = await db().from("client_sign_ins").select("signed_in_at").eq("user_id", userId).order("signed_in_at", { ascending: false }).limit(5);
+  return (data ?? []).map((r: { signed_in_at: string }) => r.signed_in_at);
+}
+
 export async function assignClient(clientEmail: string, staffEmail: string | null): Promise<string | null> {
   const { error } = await db().rpc("staff_assign", { p_client_email: clientEmail, p_staff_email: staffEmail });
   return error ? error.message : null;
@@ -187,11 +265,11 @@ export async function loadSignatures(email: string): Promise<Signature[]> {
 export async function loadClientInvoices(userId: string): Promise<StaffInvoice[] | null> {
   const { data, error } = await db()
     .from("invoices")
-    .select("id, reference, description, amount_usd, status, created_at, paid_at, paid_via, bank_details, user_id")
+    .select("id, reference, description, amount_usd, status, created_at, paid_at, paid_via, bank_details, user_id, currency, amount, subtotal, tax_percent, fx_rate, line_items, due_date")
     .eq("kind", "invoice")
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
-  return error ? null : (data ?? []).map((i) => ({ ...i, amount_usd: Number(i.amount_usd) })) as StaffInvoice[];
+  return error ? null : (data ?? []).map((i) => ({ ...i, amount_usd: Number(i.amount_usd), amount: i.amount == null ? null : Number(i.amount), subtotal: i.subtotal == null ? null : Number(i.subtotal), tax_percent: Number(i.tax_percent ?? 0), fx_rate: Number(i.fx_rate ?? 1) })) as StaffInvoice[];
 }
 
 export async function createInvoice(email: string, amount: number, description: string) {
@@ -201,6 +279,79 @@ export async function createInvoice(email: string, amount: number, description: 
     p_description: description,
   });
   return { reference: (data as string | null) ?? null, error: error?.message ?? null };
+}
+
+/** Creates an invoice from line items; the database recomputes totals. Returns the INV- reference. */
+export async function createInvoiceV2(args: { email: string; currency: Currency; taxPercent: number; fxRate: number; lines: LineItem[]; due: string | null }) {
+  const { data, error } = await db().rpc("staff_create_invoice_v2", {
+    p_email: args.email,
+    p_currency: args.currency,
+    p_tax_percent: args.taxPercent,
+    p_fx_rate: args.fxRate,
+    p_lines: args.lines.map((l) => ({ title: l.title, details: l.details ?? "", qty: l.qty, unit_price: l.unit_price })),
+    p_due: args.due,
+  });
+  return { reference: (data as string | null) ?? null, error: error?.message ?? null };
+}
+
+/** Staff: change an unpaid invoice (lines, prices, currency, tax, due date). The database recomputes totals. */
+export async function updateInvoiceV2(args: { id: string; currency: Currency; taxPercent: number; fxRate: number; lines: LineItem[]; due: string | null }): Promise<string | null> {
+  const { error } = await db().rpc("staff_update_invoice", {
+    p_id: args.id,
+    p_currency: args.currency,
+    p_tax_percent: args.taxPercent,
+    p_fx_rate: args.fxRate,
+    p_lines: args.lines.map((l) => ({ title: l.title, details: l.details ?? "", qty: l.qty, unit_price: l.unit_price })),
+    p_due: args.due,
+  });
+  return error ? error.message : null;
+}
+
+export interface PriceItem {
+  id: string;
+  name: string;
+  details: string | null;
+  unit_price: number;
+  currency: Currency;
+  unit: string | null;
+  category: "Services" | "Materials" | "Other";
+  active: boolean;
+}
+
+export async function loadPriceBook(): Promise<PriceItem[] | null> {
+  const { data, error } = await db().from("price_book").select("id, name, details, unit_price, currency, unit, category, active").order("category").order("name");
+  return error ? null : (data ?? []).map((p) => ({ ...p, unit_price: Number(p.unit_price) })) as PriceItem[];
+}
+
+/** Staff: add (id null) or change a price book item. Returns an error message or null. */
+export async function savePriceItem(item: Omit<PriceItem, "id"> & { id: string | null }): Promise<string | null> {
+  const { error } = await db().rpc("admin_save_price_item", {
+    p_id: item.id,
+    p_name: item.name,
+    p_details: item.details ?? "",
+    p_unit_price: item.unit_price,
+    p_currency: item.currency,
+    p_unit: item.unit ?? "",
+    p_category: item.category,
+    p_active: item.active,
+  });
+  return error ? error.message : null;
+}
+
+export async function deletePriceItem(id: string): Promise<string | null> {
+  const { data, error } = await db().functions.invoke("admin-price-book", { body: { action: "delete", id } });
+  if ((data as { ok?: boolean } | null)?.ok) return null;
+  if (error && "context" in error && error.context instanceof Response) {
+    const body = (await error.context.json().catch(() => null)) as { error?: string } | null;
+    if (body?.error) return body.error;
+  }
+  return error?.message ?? "Couldn't delete";
+}
+
+/** Change (or clear, with null) the due date of an unpaid invoice. */
+export async function setInvoiceDueDate(id: string, due: string | null): Promise<string | null> {
+  const { error } = await db().rpc("staff_set_invoice_due_date", { p_id: id, p_due: due });
+  return error ? error.message : null;
 }
 
 export async function voidInvoice(id: string): Promise<string | null> {
@@ -249,7 +400,7 @@ export async function removeFile(bucket: string, path: string): Promise<string |
   return error ? error.message : null;
 }
 
-export type ClientNotice = "document" | "sign" | "return" | "invoice" | "invoice_pdf" | "message";
+export type ClientNotice = "document" | "sign" | "return" | "invoice" | "invoice_pdf" | "reminder" | "message";
 
 /** Emails the client that something new is in their account. Best effort: the upload already succeeded. */
 export async function notifyClient(email: string, kind: ClientNotice, title: string): Promise<boolean> {

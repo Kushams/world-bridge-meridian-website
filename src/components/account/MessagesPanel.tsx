@@ -7,6 +7,7 @@ import { Thread } from "@/components/messages/Thread";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { notifyTeam, safeName } from "@/lib/clientDocs";
 import { Avatar } from "./Avatar";
+import { DocumentsToDo } from "./DocumentsToDo";
 
 /** Who is looking after the client, then their conversation with us. */
 export function MessagesPanel() {
@@ -66,6 +67,8 @@ export function MessagesPanel() {
           <p className="text-sm text-stone">Loading…</p>
         )}
       </div>
+
+      <DocumentsToDo />
 
       <Thread
         clientEmail={user.email}
