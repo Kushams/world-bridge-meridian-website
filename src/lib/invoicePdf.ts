@@ -229,8 +229,26 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
 
   watermark();
 
+  // ---- Fit on one page ---------------------------------------------------------------------------
+  // Pick the roomiest of three spacing levels whose content still fits on page 1 (long itineraries get tighter rows).
+  const LEVELS = [
+    { billedY: 67, cardY: 91, cardH: 21, tableY: 121, base: 10, lh: 4.1, df: 8.5, ts: 10 },
+    { billedY: 65, cardY: 86, cardH: 19, tableY: 112, base: 9, lh: 3.7, df: 8, ts: 10 },
+    { billedY: 64, cardY: 83, cardH: 17, tableY: 106, base: 8, lh: 3.4, df: 7.6, ts: 9.5 },
+  ];
+  const wrapDetail = (d: string, df: number): string[] => {
+    if (!d) return [];
+    setF("helvetica", "normal");
+    doc.setFontSize(df);
+    return doc.splitTextToSize(fonts ? d.replaceAll("->", "\u2192") : d, 96) as string[];
+  };
+  const totalsH = 25 + (inv.taxPercent > 0 ? 6 : 0) + (cur !== "USD" && inv.status !== "paid" ? 6 : 0);
+  const needs = (lv: (typeof LEVELS)[number]) =>
+    lv.tableY + 10 + inv.lines.reduce((sum, l) => sum + lv.base + wrapDetail((l.details ?? "").trim(), lv.df).length * lv.lh, 0) + Math.max(totalsH, inv.status === "paid" ? 46 : 0) + 22;
+  const LV = LEVELS.find((lv) => needs(lv) <= H - 20) ?? LEVELS[2];
+
   // ---- Bill to / From / Amount ----------------------------------------------------------------
-  let y = 67;
+  let y = LV.billedY;
   text("BILLED TO", L, y, { size: 7, bold: true, color: GOLD, spacing: 1.4 });
   text(client.name || client.email, L, y + 7, { size: 13, font: "times", bold: true });
   let by = y + 12.5;
@@ -246,29 +264,31 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
   text(`${PHONE}  ·  ${SITE}`, 100, y + 17.5, { color: SOFT });
 
   // Amount card
-  y = 91;
+  y = LV.cardY;
+  const ch = LV.cardH;
   fill(SAND);
-  doc.roundedRect(L, y, R - L, 21, 3, 3, "F");
+  doc.roundedRect(L, y, R - L, ch, 3, 3, "F");
   fill(GOLD);
-  doc.roundedRect(L, y, 2.2, 21, 1.1, 1.1, "F");
-  text(inv.status === "paid" ? "AMOUNT PAID" : "AMOUNT DUE", L + 9, y + 7.5, { size: 7, bold: true, color: GOLD, spacing: 1.4 });
-  text(fmt(inv.total, cur), L + 9, y + 16.8, { size: 18, bold: true });
+  doc.roundedRect(L, y, 2.2, ch, 1.1, 1.1, "F");
+  text(inv.status === "paid" ? "AMOUNT PAID" : "AMOUNT DUE", L + 9, y + ch * 0.36, { size: 7, bold: true, color: GOLD, spacing: 1.4 });
+  text(fmt(inv.total, cur), L + 9, y + ch * 0.8, { size: 18, bold: true });
   if (inv.status === "paid") {
     const chipW = 22;
     fill(GREEN);
-    doc.roundedRect(R - chipW - 7, y + 5.5, chipW, 9, 4.5, 4.5, "F");
-    text("PAID", R - 7 - chipW / 2, y + 11.4, { size: 7.5, bold: true, color: WHITE, align: "center" });
+    doc.roundedRect(R - chipW - 7, y + (ch - 9) / 2, chipW, 9, 4.5, 4.5, "F");
+    text("PAID", R - 7 - chipW / 2, y + (ch - 9) / 2 + 5.9, { size: 7.5, bold: true, color: WHITE, align: "center" });
   } else {
-    if (inv.dueDate) text(`·  due ${day(inv.dueDate)}`, L + 9 + 40, y + 7.5, { size: 7.5, color: SOFT });
+    if (inv.dueDate) text(`·  due ${day(inv.dueDate)}`, L + 9 + 40, y + ch * 0.36, { size: 7.5, color: SOFT });
     const bx = R - 54;
+    const by0 = y + (ch - 12) / 2;
     fill(FOREST);
-    doc.roundedRect(bx, y + 4, 47, 12, 6, 6, "F");
-    text("Pay invoice", bx + 23.5, y + 11.6, { size: 9, bold: true, color: CREAM, align: "center", spacing: 0.4 });
-    doc.link(bx, y + 4, 47, 12, { url: `https://${SITE}/my-world-bridge#invoices` });
+    doc.roundedRect(bx, by0, 47, 12, 6, 6, "F");
+    text("Pay invoice", bx + 23.5, by0 + 7.6, { size: 9, bold: true, color: CREAM, align: "center", spacing: 0.4 });
+    doc.link(bx, by0, 47, 12, { url: `https://${SITE}/my-world-bridge#invoices` });
   }
 
   // ---- Line items ------------------------------------------------------------------------------
-  y = 121;
+  y = LV.tableY;
   const colQty = 128;
   const colPrice = 163;
   const colAmount = R - 5;
@@ -285,10 +305,8 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
 
   inv.lines.forEach((l, idx) => {
     const detail = (l.details ?? "").trim();
-    setF("helvetica", "normal");
-    doc.setFontSize(8.5);
-    const detailLines = detail ? (doc.splitTextToSize(fonts ? detail.replaceAll("->", "→") : detail, 96) as string[]) : [];
-    const h = 10 + detailLines.length * 4.1;
+    const detailLines = wrapDetail(detail, LV.df);
+    const h = LV.base + detailLines.length * LV.lh;
     if (y + h > H - 24) {
       footer();
       doc.addPage();
@@ -302,11 +320,11 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
       fill(CREAM);
       doc.rect(L, y, R - L, h, "F");
     }
-    text(l.title, L + 5, y + 7, { size: 10, bold: true });
-    detailLines.forEach((ln, i) => text(ln, L + 5, y + 11.8 + i * 4.1, { size: 8.5, color: SOFT }));
-    text(String(l.qty), colQty, y + 7, { align: "center" });
-    text(fmt(l.unit_price, cur), colPrice, y + 7, { align: "right", color: SOFT });
-    text(fmt(l.amount ?? l.qty * l.unit_price, cur), colAmount, y + 7, { align: "right", bold: true });
+    text(l.title, L + 5, y + LV.base * 0.7, { size: LV.ts, bold: true });
+    detailLines.forEach((ln, i) => text(ln, L + 5, y + LV.base * 0.7 + 4.4 + i * LV.lh, { size: LV.df, color: SOFT }));
+    text(String(l.qty), colQty, y + LV.base * 0.7, { align: "center" });
+    text(fmt(l.unit_price, cur), colPrice, y + LV.base * 0.7, { align: "right", color: SOFT });
+    text(fmt(l.amount ?? l.qty * l.unit_price, cur), colAmount, y + LV.base * 0.7, { align: "right", bold: true });
     y += h;
     stroke(LINE, 0.2);
     doc.line(L, y, R, y);
@@ -320,6 +338,7 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
     watermark();
     y = 28;
   }
+  const tableEnd = y;
   y += 7;
   const tl = 124;
   text("Subtotal", tl, y, { color: SOFT });
@@ -335,21 +354,24 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
   text("TOTAL", tl, y + 8.4, { size: 8, bold: true, color: GOLD_LIGHT, spacing: 1.4 });
   text(fmt(inv.total, cur), colAmount, y + 8.9, { size: 12.5, bold: true, color: CREAM, align: "right" });
   y += 13;
-  if (cur !== "USD") {
+  if (cur !== "USD" && inv.status !== "paid") {
     text(`Card and crypto payments are converted to US dollars at the live rate when you pay (about ${fmt(inv.amountUsd, "USD")} today).`, colAmount, y + 6, { size: 7.5, color: SOFT, align: "right" });
     y += 6;
   }
 
   if (inv.status === "paid") {
-    if (y + 26 > H - 24) {
+    // The seal sits to the left of the totals, so the whole receipt stays on one page.
+    let top = tableEnd;
+    if (top + 46 > H - 24) {
       footer();
       doc.addPage();
       slimHeader();
       watermark();
-      y = 50;
+      top = 30;
+      y = 30;
     }
-    officialStamp(52, y - 1, 22, inv.paidAt ? new Date(inv.paidAt) : new Date());
-    y += 26;
+    officialStamp(52, top + 24, 22, inv.paidAt ? new Date(inv.paidAt) : new Date());
+    y = Math.max(y, top + 46);
   }
 
   // ---- Closing lines -----------------------------------------------------------------------------
