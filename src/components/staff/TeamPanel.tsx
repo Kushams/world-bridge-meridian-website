@@ -18,7 +18,7 @@ export function CopyLink({ text }: { text: string }) {
 
 /** Admins: everyone on the staff list, their personal links and how many clients they look after. */
 function ago(iso: string | null): string {
-  if (!iso) return "never seen";
+  if (!iso) return "";
   const m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
   if (m < 1) return "just now";
   if (m < 60) return `${m} min ago`;
@@ -67,7 +67,7 @@ export function TeamPanel() {
                 {presence[m.email] ? (
                   <span className={`inline-flex items-center gap-1.5 text-xs ${presence[m.email].online ? "text-emerald-600" : "text-stone-dim"}`}>
                     <span aria-hidden className={`h-2 w-2 rounded-full ${presence[m.email].online ? "bg-emerald-500" : "bg-stone-dim/50"}`} />
-                    {presence[m.email].online ? "Online now" : `Last seen ${ago(presence[m.email].last_seen)}`}
+                    {presence[m.email].online ? "Online now" : presence[m.email].last_seen ? `Last seen ${ago(presence[m.email].last_seen)}` : "Hasn't signed in yet"}
                   </span>
                 ) : null}
               </p>
