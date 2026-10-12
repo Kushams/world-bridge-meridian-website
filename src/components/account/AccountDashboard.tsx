@@ -10,7 +10,7 @@ import { TravelCreditsPanel } from "./TravelCreditsPanel";
 import { SavedJourneysPanel } from "./SavedJourneysPanel";
 import { InvoicesPanel } from "./InvoicesPanel";
 import { MessagesPanel } from "./MessagesPanel";
-import { latestStaffMessageAt } from "@/lib/messages";
+import { countStaffMessagesSince } from "@/lib/messages";
 import { CARD_PAYMENTS_ENABLED } from "@/data/cardPayments";
 import { MobileCollapse } from "@/components/ui/MobileCollapse";
 
@@ -94,9 +94,9 @@ const currentTab = (): Tab => {
   return WALLET_HASHES.has(h) ? "wallet" : "profile";
 };
 
-/** True when our team has written since the client last had the Messages tab open (remembered in this browser). */
-function useUnreadFromTeam(email: string | undefined, onMessagesTab: boolean) {
-  const [unread, setUnread] = useState(false);
+/** How many messages our team has sent since the client last had the Inbox tab open (remembered in this browser). */
+function useUnreadFromTeam(email: string | undefined, onInboxTab: boolean) {
+  const [unread, setUnread] = useState(0);
   useEffect(() => {
     if (!email) return;
     const key = `wbm-msgs-seen:${email.toLowerCase()}`;
@@ -105,26 +105,30 @@ function useUnreadFromTeam(email: string | undefined, onMessagesTab: boolean) {
       if (document.visibilityState !== "visible") return;
       let seen = "";
       try {
-        if (onMessagesTab) window.localStorage.setItem(key, new Date().toISOString());
+        if (onInboxTab) window.localStorage.setItem(key, new Date().toISOString());
         seen = window.localStorage.getItem(key) ?? "";
       } catch {
-        // Storage blocked: treat as seen so we never nag.
-        seen = new Date().toISOString();
+        seen = new Date().toISOString(); // Storage blocked: never nag.
       }
-      const latest = await latestStaffMessageAt(email);
-      if (alive) setUnread(Boolean(latest && !onMessagesTab && (!seen || latest > seen)));
+      if (onInboxTab) return alive ? setUnread(0) : undefined;
+      // Never opened the Inbox in this browser: count the last week only, not the whole history.
+      const since = seen || new Date(Date.now() - 7 * 86400000).toISOString();
+      const n = await countStaffMessagesSince(email, since);
+      if (alive) setUnread(n);
     };
     check();
-    const timer = window.setInterval(check, 60000);
+    const timer = window.setInterval(check, 45000);
     document.addEventListener("visibilitychange", check);
     return () => {
       alive = false;
       window.clearInterval(timer);
       document.removeEventListener("visibilitychange", check);
     };
-  }, [email, onMessagesTab]);
+  }, [email, onInboxTab]);
   return unread;
 }
+
+const badge = (n: number) => (n > 9 ? "9+" : String(n));
 
 /** The signed-in side of /my-world-bridge: Profile (details, enquiries, saved), Messages, Wallet and Invoices tabs. */
 export function AccountDashboard() {
@@ -167,7 +171,11 @@ export function AccountDashboard() {
             }`}
           >
             {label}
-            {t === "messages" && unread ? <span aria-label="New message" className="ml-1.5 inline-block h-2 w-2 rounded-full bg-gold align-middle" /> : null}
+            {t === "messages" && unread ? (
+              <span aria-label={`${unread} new message${unread === 1 ? "" : "s"}`} className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1 align-middle text-[10px] font-bold leading-none text-white">
+                {badge(unread)}
+              </span>
+            ) : null}
           </button>
         ))}
       </div>
@@ -183,7 +191,7 @@ export function AccountDashboard() {
             <path d="M4 5h16v11H9l-5 4z" />
           </svg>
           Inbox · message us
-          {unread ? <span aria-label="New message" className="h-2.5 w-2.5 rounded-full bg-gold" /> : null}
+          {unread ? <span aria-label={`${unread} new message${unread === 1 ? "" : "s"}`} className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1 text-[10px] font-bold leading-none text-white">{badge(unread)}</span> : null}
         </button>
       ) : null}
 

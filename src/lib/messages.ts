@@ -96,15 +96,14 @@ export async function voiceUrl(path: string): Promise<string | null> {
   return data?.signedUrl ?? null;
 }
 
-/** When the latest message from our team in this client's thread was sent (null if none), for the "new message" dot. */
-export async function latestStaffMessageAt(clientEmail: string): Promise<string | null> {
-  const { data } = await db()
+/** How many messages from our team this client has not seen yet (sent after `since`). */
+export async function countStaffMessagesSince(clientEmail: string, since: string): Promise<number> {
+  const { count } = await db()
     .from("client_messages")
-    .select("created_at")
+    .select("id", { count: "exact", head: true })
     .eq("client_email", clientEmail.toLowerCase())
     .eq("sender", "staff")
     .eq("kind", "message")
-    .order("created_at", { ascending: false })
-    .limit(1);
-  return (data as { created_at: string }[] | null)?.[0]?.created_at ?? null;
+    .gt("created_at", since);
+  return count ?? 0;
 }
