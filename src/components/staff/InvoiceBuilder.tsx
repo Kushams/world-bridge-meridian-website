@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { createInvoiceV2, loadPriceBook, notifyClient, removeFile, savePriceItem, updateInvoiceV2, uploadFile, type Client, type PriceItem, type StaffInvoice } from "@/lib/staff";
 import { CURRENCIES, fetchUsdRate, money, totals, type Currency } from "@/lib/money";
-import { buildInvoicePdf, loadEmblem } from "@/lib/invoicePdf";
+import { buildInvoicePdf, loadEmblem, loadPdfFonts } from "@/lib/invoicePdf";
 import { inputClass } from "./RequestsPanel";
 
 const DOCS = "client-documents";
@@ -232,6 +232,7 @@ export function InvoiceBuilder({ client, editing, onDone, onCancel }: { client: 
         },
         { name: client.full_name, email, phone: client.phone },
         await loadEmblem(),
+        await loadPdfFonts(),
       );
       if (editing) await removeFile(DOCS, `${email}/invoices/${reference}.pdf`);
       pdfOk = !(await uploadFile(DOCS, `${email}/invoices/${reference}.pdf`, new File([blob], `${reference}.pdf`, { type: "application/pdf" })));

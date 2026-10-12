@@ -23,6 +23,35 @@ export interface PdfClient {
 
 type RGB = [number, number, number];
 
+/** Base64 TTF files for the PDF's typefaces (Montserrat like the site, Playfair Display for titles and amounts). */
+export type PdfFonts = Record<"mont" | "montBold" | "play" | "playBold" | "playItalic", string>;
+const FONT_FILES: Record<keyof PdfFonts, string> = {
+  mont: "Montserrat-Regular",
+  montBold: "Montserrat-SemiBold",
+  play: "PlayfairDisplay-Medium",
+  playBold: "PlayfairDisplay-Bold",
+  playItalic: "PlayfairDisplay-MediumItalic",
+};
+
+/** Fetches the PDF fonts from /fonts/pdf. Returns null if any is missing (the PDF then falls back to built-in fonts). */
+export async function loadPdfFonts(): Promise<PdfFonts | null> {
+  try {
+    const entries = await Promise.all(
+      (Object.keys(FONT_FILES) as (keyof PdfFonts)[]).map(async (k) => {
+        const res = await fetch(`/fonts/pdf/${FONT_FILES[k]}.ttf`);
+        if (!res.ok) throw new Error(k);
+        const bytes = new Uint8Array(await res.arrayBuffer());
+        let bin = "";
+        for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+        return [k, btoa(bin)] as const;
+      }),
+    );
+    return Object.fromEntries(entries) as PdfFonts;
+  } catch {
+    return null;
+  }
+}
+
 const SYMBOL = { USD: "US$", EUR: "€", GBP: "£" } as const;
 const fmt = (n: number, c: keyof typeof SYMBOL) => `${SYMBOL[c]}${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const day = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
@@ -44,10 +73,27 @@ const EMAIL = "info@worldbridgemeridian.group";
 const PHONE = "+1 (302) 627-3325";
 
 /** A World Bridge Meridian branded invoice as a vector PDF (A4). `emblem` is a PNG data URL; omit to leave the logo out. */
-export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem?: string | null): Promise<Blob> {
+export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem?: string | null, fonts?: PdfFonts | null): Promise<Blob> {
   const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ unit: "mm", format: "a4", compress: true });
   doc.setProperties({ title: `${inv.status === "paid" ? "Receipt" : "Invoice"} ${inv.reference}`, subject: inv.status === "paid" ? "Receipt" : "Invoice", author: "World Bridge Meridian", creator: "World Bridge Meridian" });
+  if (fonts) {
+    const add = (key: keyof PdfFonts, family: string, style: string) => {
+      doc.addFileToVFS(`${FONT_FILES[key]}.ttf`, fonts[key]);
+      doc.addFont(`${FONT_FILES[key]}.ttf`, family, style);
+    };
+    add("mont", "Montserrat", "normal");
+    add("montBold", "Montserrat", "bold");
+    add("play", "Playfair", "normal");
+    add("playBold", "Playfair", "bold");
+    add("playItalic", "Playfair", "italic");
+    add("playItalic", "Playfair", "bolditalic");
+  }
+  // Sans = Montserrat, serif = Playfair Display; the built-in Helvetica / Times when the fonts could not be loaded.
+  const setF = (font: "helvetica" | "times", style: "normal" | "bold" | "italic" | "bolditalic") => {
+    if (fonts) doc.setFont(font === "times" ? "Playfair" : "Montserrat", font === "times" ? style : style === "bold" || style === "bolditalic" ? "bold" : "normal");
+    else doc.setFont(font, style);
+  };
   const W = 210;
   const H = 297;
   const L = 16;
@@ -56,8 +102,7 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
 
   type TextOpts = { size?: number; bold?: boolean; italic?: boolean; font?: "helvetica" | "times"; color?: RGB; align?: "left" | "right" | "center"; spacing?: number };
   const text = (s: string, x: number, y: number, o: TextOpts = {}) => {
-    const font = o.font ?? "helvetica";
-    doc.setFont(font, o.bold && o.italic ? "bolditalic" : o.bold ? "bold" : o.italic ? "italic" : "normal");
+    setF(o.font ?? "helvetica", o.bold && o.italic ? "bolditalic" : o.bold ? "bold" : o.italic ? "italic" : "normal");
     doc.setFontSize(o.size ?? 9);
     doc.setTextColor(...(o.color ?? INK));
     doc.text(s, x, y, { align: o.align ?? "left", charSpace: o.spacing ?? 0 });
@@ -85,7 +130,7 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
     };
     // Text along an arc. Top text reads clockwise over the top; bottom text reads left to right along the bottom.
     const arc = (s: string, radius: number, top: boolean, size: number, track: number) => {
-      doc.setFont("helvetica", "bold");
+      setF("helvetica", "bold");
       doc.setFontSize(size);
       doc.setTextColor(...INKC);
       const ws = [...s].map((ch) => doc.getTextWidth(ch));
@@ -121,7 +166,7 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
       }
       const inner = (s: string, dx: number, dy: number, size: number, spacing: number) => {
         const [px, py] = rot(dx, dy);
-        doc.setFont("helvetica", "bold");
+        setF("helvetica", "bold");
         doc.setFontSize(size);
         doc.setTextColor(...INKC);
         doc.text(s, px, py, { align: "center", angle: tilt, charSpace: spacing });
@@ -155,7 +200,7 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
     doc.rect(0, 16, W, 0.8, "F");
     if (emblem) doc.addImage(emblem, "PNG", L, 3.2, 10.5, 9.4);
     text("WORLD BRIDGE MERIDIAN", emblem ? L + 14 : L, 10.2, { size: 9, color: CREAM, spacing: 0.9 });
-    text(`Invoice ${inv.reference}`, R, 10.2, { size: 9, color: GOLD_LIGHT, align: "right" });
+    text(`${inv.status === "paid" ? "Receipt" : "Invoice"} ${inv.reference}`, R, 10.2, { size: 9, color: GOLD_LIGHT, align: "right" });
   };
 
   // ---- First page header ---------------------------------------------------------------------
@@ -207,7 +252,7 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
   fill(GOLD);
   doc.roundedRect(L, y, 2.2, 21, 1.1, 1.1, "F");
   text(inv.status === "paid" ? "AMOUNT PAID" : "AMOUNT DUE", L + 9, y + 7.5, { size: 7, bold: true, color: GOLD, spacing: 1.4 });
-  text(fmt(inv.total, cur), L + 9, y + 16.5, { size: 21, font: "times", bold: true });
+  text(fmt(inv.total, cur), L + 9, y + 16.8, { size: 18, bold: true });
   if (inv.status === "paid") {
     const chipW = 22;
     fill(GREEN);
@@ -240,9 +285,9 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
 
   inv.lines.forEach((l, idx) => {
     const detail = (l.details ?? "").trim();
-    doc.setFont("helvetica", "normal");
+    setF("helvetica", "normal");
     doc.setFontSize(8.5);
-    const detailLines = detail ? (doc.splitTextToSize(detail, 96) as string[]) : [];
+    const detailLines = detail ? (doc.splitTextToSize(fonts ? detail.replaceAll("->", "→") : detail, 96) as string[]) : [];
     const h = 10 + detailLines.length * 4.1;
     if (y + h > H - 24) {
       footer();
@@ -288,7 +333,7 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
   fill(FOREST);
   doc.roundedRect(tl - 5, y, R - tl + 5, 13, 2.5, 2.5, "F");
   text("TOTAL", tl, y + 8.4, { size: 8, bold: true, color: GOLD_LIGHT, spacing: 1.4 });
-  text(fmt(inv.total, cur), colAmount, y + 9, { size: 14, font: "times", bold: true, color: CREAM, align: "right" });
+  text(fmt(inv.total, cur), colAmount, y + 8.9, { size: 12.5, bold: true, color: CREAM, align: "right" });
   y += 13;
   if (cur !== "USD") {
     text(`Card and crypto payments are converted to US dollars at the live rate when you pay (about ${fmt(inv.amountUsd, "USD")} today).`, colAmount, y + 6, { size: 7.5, color: SOFT, align: "right" });

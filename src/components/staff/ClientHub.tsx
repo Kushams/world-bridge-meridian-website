@@ -32,7 +32,7 @@ import {
 import { stemOf } from "@/lib/clientDocs";
 import { parseBankLines, serializeBankLines } from "@/lib/invoices";
 import { money, totals } from "@/lib/money";
-import { buildInvoicePdf, loadEmblem } from "@/lib/invoicePdf";
+import { buildInvoicePdf, loadEmblem, loadPdfFonts } from "@/lib/invoicePdf";
 import { InvoiceBuilder } from "./InvoiceBuilder";
 import { inputClass, Row } from "./RequestsPanel";
 
@@ -478,6 +478,7 @@ function InvoicesBlock({
         },
         { name: client.full_name, email, phone: client.phone },
         await loadEmblem(),
+        await loadPdfFonts(),
       );
       const path = `${email}/invoices/${inv.reference}.pdf`;
       const old = pdfs.find((p) => p.name.toLowerCase().startsWith(inv.reference.toLowerCase()));
