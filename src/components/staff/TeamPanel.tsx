@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { loadTeam, loadTeamDirectory, personalLink, staffName, type DirectoryMember, type TeamMember } from "@/lib/staff";
+import { loadPresence, loadTeam, loadTeamDirectory, personalLink, staffName, type DirectoryMember, type Presence, type TeamMember } from "@/lib/staff";
 
 export function CopyLink({ text }: { text: string }) {
   const [done, setDone] = useState(false);
@@ -17,8 +17,30 @@ export function CopyLink({ text }: { text: string }) {
 }
 
 /** Admins: everyone on the staff list, their personal links and how many clients they look after. */
+function ago(iso: string | null): string {
+  if (!iso) return "never seen";
+  const m = Math.max(0, Math.round((Date.now() - new Date(iso).getTime()) / 60000));
+  if (m < 1) return "just now";
+  if (m < 60) return `${m} min ago`;
+  if (m < 1440) return `${Math.round(m / 60)} h ago`;
+  return `${Math.round(m / 1440)} d ago`;
+}
+
 export function TeamPanel() {
   const [team, setTeam] = useState<TeamMember[] | undefined>(undefined);
+  const [presence, setPresence] = useState<Record<string, Presence>>({});
+
+  useEffect(() => {
+    let alive = true;
+    const refresh = () =>
+      loadPresence().then((list) => alive && list && setPresence(Object.fromEntries(list.map((p) => [p.email, p]))));
+    refresh();
+    const timer = window.setInterval(refresh, 30000);
+    return () => {
+      alive = false;
+      window.clearInterval(timer);
+    };
+  }, []);
 
   useEffect(() => {
     let alive = true;
@@ -40,8 +62,14 @@ export function TeamPanel() {
         {team.map((m) => (
           <li key={m.email} className="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
             <div className="min-w-0">
-              <p className="text-sm text-ivory">
+              <p className="flex flex-wrap items-center gap-2 text-sm text-ivory">
                 {staffName(m)} <span className="text-xs uppercase tracking-wide text-gold">{m.role}</span>
+                {presence[m.email] ? (
+                  <span className={`inline-flex items-center gap-1.5 text-xs ${presence[m.email].online ? "text-emerald-600" : "text-stone-dim"}`}>
+                    <span aria-hidden className={`h-2 w-2 rounded-full ${presence[m.email].online ? "bg-emerald-500" : "bg-stone-dim/50"}`} />
+                    {presence[m.email].online ? "Online now" : `Last seen ${ago(presence[m.email].last_seen)}`}
+                  </span>
+                ) : null}
               </p>
               <p className="text-xs text-stone-dim">
                 {m.email}

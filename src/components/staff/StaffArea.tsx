@@ -3,7 +3,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@/lib/supabase/AuthProvider";
 import { AuthPanel } from "@/components/account/AuthPanel";
-import { loadMe, personalLink, type StaffMember } from "@/lib/staff";
+import { loadMe, personalLink, pingPresence, type StaffMember } from "@/lib/staff";
 import { RequestsPanel } from "./RequestsPanel";
 import { ClientsPanel } from "./ClientsPanel";
 import { TeamPanel, StaffTeamList, CopyLink } from "./TeamPanel";
@@ -54,6 +54,22 @@ export function StaffArea() {
       alive = false;
     };
   }, [user]);
+
+  // Let admins see that this staff member is online: ping now and every minute while the page is visible.
+  const isStaff = Boolean(me);
+  useEffect(() => {
+    if (!isStaff) return;
+    const ping = () => {
+      if (document.visibilityState === "visible") pingPresence().catch(() => {});
+    };
+    ping();
+    const timer = window.setInterval(ping, 60000);
+    document.addEventListener("visibilitychange", ping);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", ping);
+    };
+  }, [isStaff]);
 
   useEffect(() => {
     const h = window.location.hash.slice(1);
