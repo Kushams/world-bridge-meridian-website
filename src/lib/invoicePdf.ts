@@ -141,19 +141,27 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
   // Amount card
   y = 91;
   fill(SAND);
-  doc.roundedRect(L, y, R - L, 20, 3, 3, "F");
+  doc.roundedRect(L, y, R - L, 21, 3, 3, "F");
   fill(GOLD);
-  doc.roundedRect(L, y, 2.2, 20, 1.1, 1.1, "F");
+  doc.roundedRect(L, y, 2.2, 21, 1.1, 1.1, "F");
   text(inv.status === "paid" ? "AMOUNT PAID" : "AMOUNT DUE", L + 9, y + 7.5, { size: 7, bold: true, color: GOLD, spacing: 1.4 });
-  text(fmt(inv.total, cur), L + 9, y + 16, { size: 21, font: "times", bold: true });
-  const chip = inv.status === "paid" ? "PAID" : inv.dueDate ? `DUE ${new Date(inv.dueDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" }).toUpperCase()}` : "DUE ON RECEIPT";
-  const chipW = 12 + chip.length * 2.2;
-  fill(inv.status === "paid" ? GREEN : FOREST);
-  doc.roundedRect(R - chipW - 7, y + 5.5, chipW, 9, 4.5, 4.5, "F");
-  text(chip, R - 7 - chipW / 2, y + 11.4, { size: 7.5, bold: true, color: WHITE, align: "center" });
+  text(fmt(inv.total, cur), L + 9, y + 16.5, { size: 21, font: "times", bold: true });
+  if (inv.status === "paid") {
+    const chipW = 22;
+    fill(GREEN);
+    doc.roundedRect(R - chipW - 7, y + 5.5, chipW, 9, 4.5, 4.5, "F");
+    text("PAID", R - 7 - chipW / 2, y + 11.4, { size: 7.5, bold: true, color: WHITE, align: "center" });
+  } else {
+    if (inv.dueDate) text(`due ${day(inv.dueDate)}`, L + 9 + 29, y + 7.5, { size: 7.5, color: SOFT });
+    const bx = R - 54;
+    fill(FOREST);
+    doc.roundedRect(bx, y + 4, 47, 12, 6, 6, "F");
+    text("Pay invoice", bx + 23.5, y + 11.6, { size: 9, bold: true, color: CREAM, align: "center", spacing: 0.4 });
+    doc.link(bx, y + 4, 47, 12, { url: `https://${SITE}/my-world-bridge#invoices` });
+  }
 
   // ---- Line items ------------------------------------------------------------------------------
-  y = 119;
+  y = 121;
   const colQty = 128;
   const colPrice = 163;
   const colAmount = R - 5;
@@ -173,7 +181,7 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8.5);
     const detailLines = detail ? (doc.splitTextToSize(detail, 96) as string[]) : [];
-    const h = 11 + detailLines.length * 4.1;
+    const h = 10 + detailLines.length * 4.1;
     if (y + h > H - 24) {
       footer();
       doc.addPage();
@@ -205,7 +213,7 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
     watermark();
     y = 28;
   }
-  y += 9;
+  y += 7;
   const tl = 124;
   text("Subtotal", tl, y, { color: SOFT });
   text(fmt(inv.subtotal, cur), colAmount, y, { align: "right" });
@@ -233,37 +241,23 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
     if (inv.paidAt) text(day(inv.paidAt), 42, y + 5, { size: 9, color: GREEN, spacing: 0.5 });
   }
 
-  // ---- How to pay -----------------------------------------------------------------------------
-  y += 12;
-  if (y > H - 56) {
+  // ---- Closing lines -----------------------------------------------------------------------------
+  y += 8;
+  if (y > H - 30) {
     footer();
     doc.addPage();
     slimHeader();
     watermark();
-    y = 30;
+    y = 32;
   }
   if (inv.status !== "paid") {
-    fill(CREAM);
-    doc.roundedRect(L, y, R - L, 30, 3, 3, "F");
-    stroke(GOLD, 0.4);
-    doc.roundedRect(L, y, R - L, 30, 3, 3, "S");
-    text("HOW TO PAY", L + 7, y + 8, { size: 7, bold: true, color: GOLD, spacing: 1.4 });
-    text("Securely online, by card or crypto", L + 7, y + 15, { size: 11, font: "times", bold: true });
-    text(`Sign in at ${SITE}, open My account, then Invoices,`, L + 7, y + 21, { color: SOFT, size: 8.5 });
-    text(`and choose “Pay by card or crypto”.`, L + 7, y + 25.5, { color: SOFT, size: 8.5 });
-    const bx = R - 52;
-    fill(FOREST);
-    doc.roundedRect(bx, y + 9, 45, 12, 6, 6, "F");
-    text("Pay invoice", bx + 22.5, y + 16.6, { size: 9, bold: true, color: CREAM, align: "center", spacing: 0.4 });
-    doc.link(bx, y + 9, 45, 12, { url: `https://${SITE}/my-world-bridge#invoices` });
-    y += 30;
+    text("Pay securely online with a card or crypto: sign in at " + SITE + ", open My account, then Invoices.", W / 2, y, { size: 8.5, color: SOFT, align: "center" });
+    y += 8;
   } else {
-    text("Thank you. This invoice has been settled in full.", L, y + 4, { size: 11, font: "times", italic: true, color: GREEN });
+    text("Thank you. This invoice has been settled in full.", W / 2, y, { size: 11, font: "times", italic: true, color: GREEN, align: "center" });
     y += 8;
   }
-
-  y += 12;
-  if (y < H - 28) text("Thank you for travelling with us.", W / 2, y, { size: 12, font: "times", italic: true, color: GOLD, align: "center" });
+  if (y < H - 20) text("Thank you for travelling with us.", W / 2, y, { size: 12, font: "times", italic: true, color: GOLD, align: "center" });
 
   // ---- Footer and page numbers --------------------------------------------------------------
   footer();
