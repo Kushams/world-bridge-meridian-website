@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { loadThread, type ThreadMessage } from "@/lib/messages";
+import { VoicePlayer, VoiceRecorder } from "./Voice";
 
 const ICONS: Record<string, string> = {
   document: "📄",
@@ -13,6 +14,7 @@ const ICONS: Record<string, string> = {
   signed: "✍️",
   returned: "📝",
   status: "📍",
+  voice: "🎤",
 };
 
 const when = (iso: string) =>
@@ -29,6 +31,7 @@ export function Thread({
   onSend,
   onOpen,
   onAttach,
+  onVoice,
   placeholder,
 }: {
   clientEmail: string;
@@ -37,6 +40,8 @@ export function Thread({
   onOpen?: (m: ThreadMessage) => void;
   /** Uploads a file from the chat; resolves to an error message or null. */
   onAttach?: (file: File) => Promise<string | null>;
+  /** Sends a recorded voice note; resolves to an error message or null. */
+  onVoice?: (audio: Blob, seconds: number) => Promise<string | null>;
   placeholder: string;
 }) {
   const [messages, setMessages] = useState<ThreadMessage[] | null>(null);
@@ -96,6 +101,14 @@ export function Thread({
     refresh();
   }
 
+  async function sendVoice(audio: Blob, seconds: number) {
+    if (!onVoice) return;
+    setError("");
+    const err = await onVoice(audio, seconds);
+    if (err) return setError("Your voice note wasn't sent. Please try again.");
+    refresh();
+  }
+
   return (
     <div className="rounded-card border hairline">
       <div className="max-h-[28rem] min-h-[12rem] space-y-3 overflow-y-auto p-4 md:p-5" aria-live="polite">
@@ -130,7 +143,11 @@ export function Thread({
                     m.sender === viewer ? "bg-ivory text-ink" : "border border-line text-ivory"
                   }`}
                 >
-                  <p className="whitespace-pre-wrap break-words">{m.body}</p>
+                  {m.audio_path ? (
+                    <VoicePlayer path={m.audio_path} />
+                  ) : (
+                    <p className="whitespace-pre-wrap break-words">{m.body}</p>
+                  )}
                   <p className={`mt-1 text-[0.7rem] ${m.sender === viewer ? "text-ink/60" : "text-stone-dim"}`}>
                     {m.sender === viewer ? "You" : m.author_name || (m.sender === "staff" ? "World Bridge Meridian" : m.author_email)} ·{" "}
                     {when(m.created_at)}
@@ -187,6 +204,7 @@ export function Thread({
           placeholder={placeholder}
           className="min-w-0 flex-1 resize-none rounded-2xl border border-line bg-transparent px-4 py-2.5 text-sm text-ivory placeholder:text-stone-dim focus:border-gold focus:outline-none"
         />
+        {onVoice ? <VoiceRecorder onSend={sendVoice} onError={setError} disabled={sending} /> : null}
         <button
           type="submit"
           disabled={!draft.trim() || sending}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/supabase/AuthProvider";
-import { loadHandler, postAsClient, type Handler, type ThreadMessage } from "@/lib/messages";
+import { loadHandler, postAsClient, postVoice, type Handler, type ThreadMessage } from "@/lib/messages";
 import { Thread } from "@/components/messages/Thread";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { notifyTeam, safeName } from "@/lib/clientDocs";
@@ -73,6 +73,7 @@ export function MessagesPanel() {
         onSend={postAsClient}
         onOpen={open}
         onAttach={attach}
+        onVoice={(audio, seconds) => postVoice(folder, "client", audio, seconds)}
         placeholder={handler ? `Message ${handler.name.split(" ")[0]}…` : "Write a message…"}
       />
     </div>
