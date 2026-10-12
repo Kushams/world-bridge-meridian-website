@@ -70,12 +70,14 @@ export function VoiceRecorder({
     }
     let stream: MediaStream;
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: { channelCount: 1, sampleRate: 48000, echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+      });
     } catch {
       return onError("Please allow microphone access to record a voice note.");
     }
     const mime = pickMime();
-    const rec = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+    const rec = new MediaRecorder(stream, { ...(mime ? { mimeType: mime } : {}), audioBitsPerSecond: 128000 });
     chunks.current = [];
     keep.current = false;
     rec.ondataavailable = (e) => e.data.size && chunks.current.push(e.data);

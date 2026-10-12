@@ -3,7 +3,7 @@
 -- the message row points at it. Same readers as the thread itself.
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('chat-voice', 'chat-voice', false, 5242880,
+values ('chat-voice', 'chat-voice', false, 10485760,
         array['audio/webm', 'audio/ogg', 'audio/mp4', 'audio/mpeg', 'audio/aac', 'audio/x-m4a'])
 on conflict (id) do update
   set public = false, file_size_limit = excluded.file_size_limit, allowed_mime_types = excluded.allowed_mime_types;
