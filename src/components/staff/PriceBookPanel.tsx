@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { deletePriceItem, loadPriceBook, savePriceItem, type PriceItem } from "@/lib/staff";
+import { loadPriceBook, savePriceItem, type PriceItem } from "@/lib/staff";
 import { CURRENCIES, money, type Currency } from "@/lib/money";
 import { inputClass } from "./RequestsPanel";
 
@@ -53,10 +53,10 @@ export function PriceBookPanel() {
     }
   }
 
-  async function remove(i: PriceItem) {
-    if (!window.confirm(`Delete "${i.name}" from the price book? Invoices already made are not affected.`)) return;
-    const err = await deletePriceItem(i.id);
-    setMsg(err ? `Not deleted: ${err}` : "Deleted.");
+  /** Hide an item from the picker (or show it again). Old invoices are never affected. */
+  async function toggle(i: PriceItem) {
+    const err = await savePriceItem({ ...i, details: i.details ?? "", unit: i.unit ?? "", active: !i.active });
+    setMsg(err ? `Not saved: ${err}` : i.active ? `"${i.name}" is hidden from the picker.` : `"${i.name}" is back in the picker.`);
     if (!err) reload();
   }
 
@@ -125,8 +125,8 @@ export function PriceBookPanel() {
                 <button type="button" onClick={() => setDraft(toDraft(i))} className={`${btn} border border-line text-ivory hover:border-gold`}>
                   Edit
                 </button>
-                <button type="button" onClick={() => remove(i)} aria-label={`Delete ${i.name}`} className="flex h-10 w-10 items-center justify-center rounded-full text-stone hover:text-red-400">
-                  ×
+                <button type="button" onClick={() => toggle(i)} className={`${btn} text-stone hover:text-ivory`}>
+                  {i.active ? "Hide" : "Show"}
                 </button>
               </div>
             </li>
