@@ -102,7 +102,7 @@ function filled(v: unknown): boolean {
 }
 
 const H3 = `style="margin:24px 0 8px;font-family:${FONT};font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#a8813f"`;
-const TD_K = `style="padding:6px 16px 6px 0;vertical-align:top;color:#77716a;white-space:nowrap;font-size:13px"`;
+const TD_K = `width="38%" style="width:38%;padding:6px 16px 6px 0;vertical-align:top;color:#77716a;font-size:13px"`;
 const TD_V = `style="padding:6px 0;vertical-align:top;font-size:14px;color:#1c1c1c"`;
 
 function rows(pairs: [string, unknown][]): string {
@@ -136,6 +136,15 @@ function travellers(payload: Record<string, unknown>): string {
   return block("Accompanying travellers", keys.map((k, i) => `<tr><td ${TD_K}>Traveller ${i + 2}</td><td ${TD_V}>${esc(payload[k])}</td></tr>`).join(""));
 }
 
+/** One display row; the selected package/cruise is labelled by its type, and echoes of it are dropped. */
+function pair(p: Record<string, unknown>, k: string): [string, unknown][] {
+  if (k === "requestType") return [];
+  if (k === "requestedItem") return p.requestedItem ? [[String(p.requestType || "Selected"), p.requestedItem]] : [];
+  if (k === "destination" && p.destination === p.requestedItem) return [];
+  if (k === "destinationMode" && (p.destinationMode === "specific" || p.destination)) return [];
+  return [[k, p[k]]];
+}
+
 /** Everything the client sent, grouped the way their form was. `clientCopy` keeps passports and contacts out. */
 function details(record: FormRecord, clientCopy: boolean): string {
   const payload = record.payload ?? {};
@@ -148,7 +157,7 @@ function details(record: FormRecord, clientCopy: boolean): string {
   for (const s of sections) {
     s.keys.forEach((k) => used.add(k));
     if (clientCopy && !s.client) continue;
-    html += block(s.title, rows(s.keys.map((k) => [k, payload[k]])));
+    html += block(s.title, rows(s.keys.flatMap((k) => pair(payload, k))));
   }
   if (record.form_type === "travel-details") {
     html += itineraryTable(payload);
@@ -280,7 +289,8 @@ Deno.serve(async (req: Request) => {
     if (record.payload?.payment_method === "card") {
       return new Response(JSON.stringify({ ok: true, skipped: "card order" }), { headers: { "Content-Type": "application/json" } });
     }
-    const label = LABELS[record.form_type] ?? "Website form";
+    const requestType = String(record.payload?.requestType ?? "");
+    const label = record.form_type === "journey-request" && requestType ? `${requestType} request` : LABELS[record.form_type] ?? "Website form";
     const about = topic(record);
     const newsletter = record.form_type === "newsletter";
     const { to, coordinator } = newsletter ? { to: [INTERNAL_EMAIL], coordinator: undefined } : await team(record.email);
