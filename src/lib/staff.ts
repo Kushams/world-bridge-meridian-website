@@ -105,6 +105,19 @@ export async function loadTeam(): Promise<TeamMember[]> {
   return ((data as TeamMember[] | null) ?? []).map((m) => ({ ...m, clients: Number(m.clients) }));
 }
 
+export interface DirectoryMember {
+  email: string;
+  role: "admin" | "staff";
+  name: string | null;
+  title: string | null;
+}
+
+/** What staff (non-admins) may see of the team: the company account and other staff, no client counts or personal links. */
+export async function loadTeamDirectory(): Promise<DirectoryMember[] | null> {
+  const { data, error } = await db().rpc("staff_team_directory");
+  return error ? null : ((data as DirectoryMember[] | null) ?? []);
+}
+
 export async function assignClient(clientEmail: string, staffEmail: string | null): Promise<string | null> {
   const { error } = await db().rpc("staff_assign", { p_client_email: clientEmail, p_staff_email: staffEmail });
   return error ? error.message : null;

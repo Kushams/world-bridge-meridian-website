@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { loadTeam, personalLink, staffName, type TeamMember } from "@/lib/staff";
+import { loadTeam, loadTeamDirectory, personalLink, staffName, type DirectoryMember, type TeamMember } from "@/lib/staff";
 
 export function CopyLink({ text }: { text: string }) {
   const [done, setDone] = useState(false);
@@ -58,5 +58,37 @@ export function TeamPanel() {
         ))}
       </ul>
     </div>
+  );
+}
+
+/** Staff (non-admins): the company and your colleagues. No client counts, links or other admins. */
+export function StaffTeamList() {
+  const [team, setTeam] = useState<DirectoryMember[] | null | undefined>(undefined);
+
+  useEffect(() => {
+    let alive = true;
+    loadTeamDirectory().then((t) => alive && setTeam(t));
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  if (team === undefined) return <p className="text-sm text-stone-dim">Loading team…</p>;
+  if (team === null) return <p className="text-sm text-red-400">Couldn&apos;t load the team. Refresh the page to try again.</p>;
+
+  return (
+    <ul className="space-y-3">
+      {team.map((m) => (
+        <li key={m.email} className="rounded-[24px] border hairline bg-charcoal/40 px-5 py-4 shadow-sm">
+          <p className="text-sm text-ivory">
+            {m.name || m.email} <span className="text-xs uppercase tracking-wide text-gold">{m.role === "admin" ? "Admin" : "Staff"}</span>
+          </p>
+          <p className="text-xs text-stone-dim">
+            {m.title ? `${m.title} · ` : ""}
+            <a href={`mailto:${m.email}`} className="underline hover:text-ivory">{m.email}</a>
+          </p>
+        </li>
+      ))}
+    </ul>
   );
 }

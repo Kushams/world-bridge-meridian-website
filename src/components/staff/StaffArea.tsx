@@ -6,7 +6,7 @@ import { AuthPanel } from "@/components/account/AuthPanel";
 import { loadMe, personalLink, type StaffMember } from "@/lib/staff";
 import { RequestsPanel } from "./RequestsPanel";
 import { ClientsPanel } from "./ClientsPanel";
-import { TeamPanel, CopyLink } from "./TeamPanel";
+import { TeamPanel, StaffTeamList, CopyLink } from "./TeamPanel";
 
 type Tab = "clients" | "requests" | "team";
 
@@ -33,10 +33,10 @@ const ICONS: Record<Tab, ReactNode> = {
   ),
 };
 
-const TABS: { key: Tab; label: string; admin?: boolean }[] = [
+const TABS: { key: Tab; label: string }[] = [
   { key: "clients", label: "Clients" },
   { key: "requests", label: "Requests" },
-  { key: "team", label: "Team", admin: true },
+  { key: "team", label: "Team" },
 ];
 
 /** Staff-only tools. Access is enforced in the database (supabase/staff.sql), this only hides the UI. */
@@ -101,7 +101,7 @@ export function StaffArea() {
 
   const admin = me.role === "admin";
   const initials = (me.name || user.email || "?").trim().slice(0, 2).toUpperCase();
-  const tabs = TABS.filter((t) => admin || !t.admin);
+  const tabs = TABS;
 
   return (
     <div className="mx-auto max-w-3xl pb-28">
@@ -133,8 +133,8 @@ export function StaffArea() {
       <div className="mt-6">
         {tab === "requests" ? (
           <RequestsPanel onOpenClient={(email) => go("clients", email)} />
-        ) : tab === "team" && admin ? (
-          <TeamPanel />
+        ) : tab === "team" ? (
+          admin ? <TeamPanel /> : <StaffTeamList />
         ) : (
           <ClientsPanel admin={admin} selected={clientEmail} onSelect={(email) => go("clients", email)} />
         )}
