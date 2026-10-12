@@ -1,17 +1,24 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useAuth } from "@/lib/supabase/AuthProvider";
 import { AuthPanel } from "@/components/account/AuthPanel";
-import { loadMe, personalLink, pingPresence, type StaffMember } from "@/lib/staff";
+import { attentionCount, loadAttention, loadClients, loadMe, personalLink, pingPresence, type AttentionData, type Client, type StaffMember } from "@/lib/staff";
 import { RequestsPanel } from "./RequestsPanel";
 import { ClientsPanel } from "./ClientsPanel";
+import { TodayPanel } from "./TodayPanel";
 import { TeamPanel, StaffTeamList, CopyLink } from "./TeamPanel";
 
-type Tab = "clients" | "requests" | "team";
+type Tab = "today" | "clients" | "requests" | "team";
 
 const icon = "h-6 w-6";
 const ICONS: Record<Tab, ReactNode> = {
+  today: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={icon} aria-hidden>
+      <path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6z" />
+      <path d="M10 19a2 2 0 0 0 4 0" />
+    </svg>
+  ),
   clients: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={icon} aria-hidden>
       <circle cx="9" cy="8" r="3.2" />
@@ -34,6 +41,7 @@ const ICONS: Record<Tab, ReactNode> = {
 };
 
 const TABS: { key: Tab; label: string }[] = [
+  { key: "today", label: "Today" },
   { key: "clients", label: "Clients" },
   { key: "requests", label: "Requests" },
   { key: "team", label: "Team" },
@@ -43,7 +51,9 @@ const TABS: { key: Tab; label: string }[] = [
 export function StaffArea() {
   const { user, loading, signOut } = useAuth();
   const [me, setMe] = useState<StaffMember | null | undefined>(undefined);
-  const [tab, setTab] = useState<Tab>("clients");
+  const [tab, setTab] = useState<Tab>("today");
+  const [attention, setAttention] = useState<AttentionData | null | undefined>(undefined);
+  const [clients, setClients] = useState<Client[]>([]);
   const [clientEmail, setClientEmail] = useState("");
 
   useEffect(() => {
@@ -71,6 +81,51 @@ export function StaffArea() {
     };
   }, [isStaff]);
 
+  // What needs attention: refresh every minute while the page is visible, and nudge when something new arrives.
+  const lastCount = useRef<number | null>(null);
+  useEffect(() => {
+    if (!isStaff) return;
+    let alive = true;
+    const refresh = async () => {
+      if (document.visibilityState !== "visible") return;
+      const data = await loadAttention();
+      if (!alive) return;
+      setAttention(data);
+      const n = attentionCount(data);
+      const before = lastCount.current;
+      lastCount.current = n;
+      if (before !== null && n > before && "Notification" in window && Notification.permission === "granted") {
+        new Notification("World Bridge Meridian staff", { body: `${n - before} new thing${n - before === 1 ? "" : "s"} need your attention` });
+      }
+    };
+    refresh();
+    loadClients().then((c) => alive && setClients(c ?? []));
+    const timer = window.setInterval(refresh, 60000);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      alive = false;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [isStaff]);
+
+  // Show the count in the browser tab title, e.g. "(3) Staff".
+  const count = attentionCount(attention ?? null);
+  useEffect(() => {
+    if (!isStaff) return;
+    const base = document.title.replace(/^\(\d+\)\s*/, "");
+    document.title = count ? `(${count}) ${base}` : base;
+    return () => {
+      document.title = base;
+    };
+  }, [count, isStaff]);
+
+  const [alertsOn, setAlertsOn] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setAlertsOn("Notification" in window && Notification.permission === "granted"), 0);
+    return () => clearTimeout(t);
+  }, []);
+
   useEffect(() => {
     const h = window.location.hash.slice(1);
     const client = new URLSearchParams(window.location.search).get("client");
@@ -78,7 +133,7 @@ export function StaffArea() {
       if (client) {
         setClientEmail(client.toLowerCase());
         setTab("clients");
-      } else if (h === "clients" || h === "requests" || h === "team") setTab(h);
+      } else if (h === "today" || h === "clients" || h === "requests" || h === "team") setTab(h);
     }, 0);
     return () => clearTimeout(t);
   }, []);
@@ -147,7 +202,20 @@ export function StaffArea() {
       ) : null}
 
       <div className="mt-6">
-        {tab === "requests" ? (
+        {tab === "today" ? (
+          <>
+            {!alertsOn && "Notification" in window && Notification.permission !== "denied" ? (
+              <button
+                type="button"
+                onClick={() => Notification.requestPermission().then((p) => setAlertsOn(p === "granted"))}
+                className="mb-4 flex min-h-11 w-full items-center justify-center rounded-full border border-gold/60 px-5 text-xs font-semibold uppercase tracking-wide text-gold active:scale-[0.98]"
+              >
+                Turn on alerts on this device
+              </button>
+            ) : null}
+            <TodayPanel data={attention} clients={clients} onOpenClient={(email) => go("clients", email)} />
+          </>
+        ) : tab === "requests" ? (
           <RequestsPanel onOpenClient={(email) => go("clients", email)} />
         ) : tab === "team" ? (
           admin ? <TeamPanel /> : <StaffTeamList />
@@ -173,7 +241,12 @@ export function StaffArea() {
                 tab === t.key ? "text-gold" : "text-stone hover:text-ivory"
               }`}
             >
-              <span className={`flex h-8 w-14 items-center justify-center rounded-full transition-colors ${tab === t.key ? "bg-gold/15" : ""}`}>{ICONS[t.key]}</span>
+              <span className={`relative flex h-8 w-14 items-center justify-center rounded-full transition-colors ${tab === t.key ? "bg-gold/15" : ""}`}>
+                {ICONS[t.key]}
+                {t.key === "today" && count ? (
+                  <span className="absolute -right-0.5 -top-1 min-w-5 rounded-full bg-gold px-1.5 text-[10px] font-bold leading-5 text-white">{count > 99 ? "99+" : count}</span>
+                ) : null}
+              </span>
               {t.label}
             </button>
           ))}

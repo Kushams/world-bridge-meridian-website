@@ -135,6 +135,48 @@ export async function loadPresence(): Promise<Presence[] | null> {
   return error ? null : ((data as Presence[] | null) ?? []);
 }
 
+export interface AttentionData {
+  /** Clients whose latest message is theirs and nobody has replied yet. */
+  waiting: { email: string; body: string; at: string }[];
+  /** Requests still at "Received" three or more days after they arrived. */
+  stuck: Request[];
+  /** Invoices still unpaid (older than a week) or waiting for a payment check. */
+  invoices: { id: string; reference: string; description: string; amount_usd: number; status: string; created_at: string; user_id: string }[];
+}
+
+const DAY = 86400000;
+
+/** Everything that needs a person today, for the staff member's own clients (admins: everyone). RLS limits what comes back. */
+export async function loadAttention(): Promise<AttentionData | null> {
+  const [msgs, reqs, invs] = await Promise.all([
+    db().from("client_messages").select("client_email, sender, kind, body, created_at").order("created_at", { ascending: false }).limit(1500),
+    loadRequests(),
+    db()
+      .from("invoices")
+      .select("id, reference, description, amount_usd, status, created_at, user_id")
+      .eq("kind", "invoice")
+      .in("status", ["unpaid", "needs_review"])
+      .order("created_at", { ascending: true }),
+  ]);
+  if (msgs.error || !reqs || invs.error) return null;
+
+  const latest = new Map<string, { sender: string; kind: string; body: string; created_at: string }>();
+  for (const m of msgs.data ?? []) if (!latest.has(m.client_email)) latest.set(m.client_email, m);
+  const waiting = [...latest.entries()]
+    .filter(([, m]) => m.sender === "client" && (m.kind === "message" || m.kind === "voice"))
+    .map(([email, m]) => ({ email, body: m.kind === "voice" ? "Voice note" : m.body, at: m.created_at }))
+    .sort((a, b) => a.at.localeCompare(b.at));
+
+  const now = Date.now();
+  const stuck = reqs.filter((r) => r.status === "received" && now - new Date(r.submitted_at).getTime() >= 3 * DAY);
+  const invoices = (invs.data ?? [])
+    .filter((i) => i.status === "needs_review" || now - new Date(i.created_at).getTime() >= 7 * DAY)
+    .map((i) => ({ ...i, amount_usd: Number(i.amount_usd) }));
+  return { waiting, stuck, invoices };
+}
+
+export const attentionCount = (a: AttentionData | null) => (a ? a.waiting.length + a.stuck.length + a.invoices.length : 0);
+
 export async function assignClient(clientEmail: string, staffEmail: string | null): Promise<string | null> {
   const { error } = await db().rpc("staff_assign", { p_client_email: clientEmail, p_staff_email: staffEmail });
   return error ? error.message : null;

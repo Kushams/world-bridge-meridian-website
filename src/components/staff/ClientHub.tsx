@@ -492,7 +492,13 @@ function InvoicesBlock({
     setBusy(inv.id);
     const err = await markInvoicePaid(inv.id);
     setBusy(null);
-    onChange(err ? `Not marked: ${err}` : `${inv.reference} marked paid.`);
+    if (err) return onChange(`Not marked: ${err}`);
+    const emailed = await notifyClient(
+      email,
+      "message",
+      `Thank you — we've received your bank transfer of ${usd(inv.amount_usd)} for invoice ${inv.reference} (${inv.description}). Your invoice now shows as Paid.`,
+    );
+    onChange(`${inv.reference} marked paid${emailed ? " and the client has been sent a receipt message." : "."}`);
   }
 
   async function cancel(inv: StaffInvoice) {
