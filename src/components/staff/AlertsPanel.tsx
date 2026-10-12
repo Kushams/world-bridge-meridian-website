@@ -41,30 +41,39 @@ function Item({ title, sub, meta, onClick }: { title: string; sub: string; meta:
   );
 }
 
-/** The staff inbox: what needs a person today. Tapping an item opens that client. */
-export function TodayPanel({ data, clients, onOpenClient }: { data: AttentionData | null | undefined; clients: Client[]; onOpenClient: (email: string) => void }) {
+/** Alerts: what needs a person (stale requests, invoices to chase, card payments left unfinished). Tapping an item opens that client. */
+export function AlertsPanel({ data, clients, onOpenClient }: { data: AttentionData | null | undefined; clients: Client[]; onOpenClient: (email: string) => void }) {
   if (data === undefined) return <p className="text-sm text-stone-dim">Checking what needs attention…</p>;
   if (data === null) return <p className="text-sm text-red-400">Couldn&apos;t load this list. Refresh the page to try again.</p>;
 
   const nameOf = (email: string) => clients.find((c) => c.email === email)?.full_name || email;
   const emailOf = (userId: string) => clients.find((c) => c.id === userId)?.email;
-  const total = data.waiting.length + data.stuck.length + data.invoices.length;
+  const total = data.stuck.length + data.invoices.length + data.checkouts.length;
 
   if (!total) {
     return (
       <div className="rounded-[24px] border hairline bg-charcoal/40 px-6 py-10 text-center">
         <p className="font-display text-2xl text-ivory">All clear ✓</p>
-        <p className="mt-2 text-sm text-stone">No unanswered messages, no stale requests and no overdue invoices.</p>
+        <p className="mt-2 text-sm text-stone">No stale requests, no unfinished card payments and no overdue invoices. New messages are in the Inbox tab.</p>
       </div>
     );
   }
 
   return (
     <div>
-      <Group title="Waiting for your reply" count={data.waiting.length}>
-        {data.waiting.map((w) => (
-          <Item key={w.email} title={nameOf(w.email)} sub={w.body.slice(0, 90)} meta={ago(w.at)} onClick={() => onOpenClient(w.email)} />
-        ))}
+      <Group title="Card payment not finished" count={data.checkouts.length}>
+        {data.checkouts.map((i) => {
+          const email = emailOf(i.user_id);
+          return (
+            <Item
+              key={i.id}
+              title={`${usd(i.amount_usd)} · ${i.description}`}
+              sub={`${email ? nameOf(email) : "Client"} · ${i.reference} · didn't finish paying`}
+              meta={`Started ${ago(i.card_started_at!)}`}
+              onClick={() => email && onOpenClient(email)}
+            />
+          );
+        })}
       </Group>
       <Group title="Requests not started" count={data.stuck.length}>
         {data.stuck.map((r) => (
@@ -84,7 +93,7 @@ export function TodayPanel({ data, clients, onOpenClient }: { data: AttentionDat
             <Item
               key={i.id}
               title={`${usd(i.amount_usd)} · ${i.description}`}
-              sub={`${email ? nameOf(email) : "Client"} · ${i.reference} · issued ${fmtDate(i.created_at)}`}
+              sub={`${email ? nameOf(email) : "Client"} · ${i.reference} · issued ${fmtDate(i.created_at)}${i.last_opened_at ? ` · opened ${ago(i.last_opened_at)}` : " · not opened yet"}`}
               meta={i.status === "needs_review" ? "Check payment" : "Unpaid"}
               onClick={() => email && onOpenClient(email)}
             />
