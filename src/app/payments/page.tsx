@@ -118,6 +118,7 @@ function CardPaymentSection() {
         <ul className="mt-3 space-y-2 text-sm text-stone leading-relaxed">
           <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Card payments start at <span className="text-ivory">US${minimumUsd}</span>.</span></li>
           <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>The provider decides which countries, cards and amounts it accepts, and may ask you to confirm with your bank (3D Secure) or verify your identity. <span className="text-ivory">Cards issued outside the United States may be declined</span> — if that happens, bank transfer or cryptocurrency work everywhere.</span></li>
+          <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span><span className="text-ivory">Using Revolut, PayPal or an exchange?</span> On the secure payment page these work by buying USDC in that app and sending it to the address shown, so they suit clients who already use crypto. If you&apos;d rather not, pay with your card, Apple Pay or Google Pay instead.</span></li>
           <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Only pay an invoice shown in your own account, and check the payment page opens on <span className="text-ivory">{host}</span>.</span></li>
           <li className="flex gap-3"><span aria-hidden className="text-gold">✓</span><span>Refunds follow our booking terms and are handled by us, not by the provider.</span></li>
         </ul>
