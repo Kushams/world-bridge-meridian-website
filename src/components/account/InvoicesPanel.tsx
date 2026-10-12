@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/AuthProvider";
-import { loadInvoices, startCardPayment, type Invoice } from "@/lib/invoices";
-import { CardCheckoutTips } from "@/components/payments/PayMethodPicker";
+import { loadInvoices, parseBankLines, startCardPayment, type Invoice } from "@/lib/invoices";
 
 const BUCKET = "client-documents";
 const usd = (n: number) => `US$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -35,6 +34,56 @@ function useInvoicePdfs(folder: string | null) {
     };
   }, [folder]);
   return pdfs;
+}
+
+/** One line of bank details with its own Copy button, so each value is copied on its own and nothing gets mixed up. */
+function CopyRow({ label, value, copyValue = value, mono = false }: { label: string | null; value: string; copyValue?: string; mono?: boolean }) {
+  const [copied, setCopied] = useState(false);
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(copyValue);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard blocked: the text is still selectable on screen.
+    }
+  }
+  return (
+    <li className="flex items-center justify-between gap-3 border-t border-gold/20 py-3 first:border-t-0 first:pt-0 last:pb-0">
+      <div className="min-w-0">
+        {label ? <p className="text-[11px] uppercase tracking-wider text-stone-dim">{label}</p> : null}
+        <p className={`break-words text-sm text-ivory select-all ${mono ? "font-mono" : ""}`}>{value}</p>
+      </div>
+      <button
+        type="button"
+        onClick={copy}
+        aria-label={`Copy ${label ?? value}`}
+        className="inline-flex h-10 shrink-0 items-center rounded-full border border-line bg-ink px-4 text-[11px] font-semibold uppercase tracking-wide text-ivory active:scale-95 hover:border-gold"
+      >
+        {copied ? "Copied ✓" : "Copy"}
+      </button>
+    </li>
+  );
+}
+
+/** Bank details pasted in by staff for this invoice, one Copy button per line. Only rendered once staff have added them. */
+function BankTransfer({ invoice }: { invoice: Invoice }) {
+  const rows = parseBankLines(invoice.bank_details ?? "");
+  return (
+    <div className="mt-4 rounded-card border border-gold/40 bg-gold/5 p-4">
+      <p className="text-xs font-semibold uppercase tracking-wider text-gold">Pay by bank transfer</p>
+      <ul className="mt-3">
+        {rows.map((r, idx) => (
+          <CopyRow key={`${idx}-${r.value}`} label={r.label || null} value={r.value} />
+        ))}
+        <CopyRow label="Amount (USD)" value={usd(invoice.amount_usd)} copyValue={invoice.amount_usd.toFixed(2)} />
+        <CopyRow label="Payment reference" value={invoice.reference} mono />
+      </ul>
+      <p className="mt-3 text-xs text-stone">
+        Please use the payment reference above so we can match your transfer. We&apos;ll mark the invoice paid as soon as it arrives.
+      </p>
+    </div>
+  );
 }
 
 /** Small paper-style preview of an invoice. */
@@ -78,11 +127,21 @@ export function InvoicesPanel() {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
 
+  // Keep the list fresh: staff may add bank details or mark an invoice paid while this page is open.
   useEffect(() => {
     let alive = true;
+    const refresh = () => {
+      if (document.visibilityState === "visible") loadInvoices().then((list) => alive && list && setInvoices(list));
+    };
     loadInvoices().then((list) => alive && setInvoices(list));
+    const timer = window.setInterval(refresh, 20000);
+    document.addEventListener("visibilitychange", refresh);
+    window.addEventListener("focus", refresh);
     return () => {
       alive = false;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", refresh);
+      window.removeEventListener("focus", refresh);
     };
   }, []);
 
@@ -116,7 +175,7 @@ export function InvoicesPanel() {
   if (invoices.length === 0) {
     return (
       <p className="max-w-xl text-sm text-stone leading-relaxed">
-        No invoices yet. When your consultant sends you one, it will appear here and you can pay it by card, bank transfer or crypto.
+        No invoices yet. When your consultant sends you one, it will appear here and you can pay it by card or crypto.
       </p>
     );
   }
@@ -168,8 +227,16 @@ export function InvoicesPanel() {
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 {i.status === "unpaid" ? (
                   <Button type="button" size="md" disabled={busy !== null} onClick={() => pay(i)}>
-                    {busy === i.id ? "Opening secure payment…" : "Pay by card"}
+                    {busy === i.id ? "Opening secure payment…" : "Pay by card or crypto"}
                   </Button>
+                ) : null}
+                {i.status === "unpaid" ? (
+                  <a
+                    href="/payments#cryptocurrency"
+                    className="inline-flex h-11 items-center rounded-full border border-line px-5 text-xs font-semibold uppercase tracking-wide text-ivory hover:border-gold"
+                  >
+                    Pay manually by crypto
+                  </a>
                 ) : null}
                 {pdf ? (
                   <Button type="button" size="md" variant="outline" disabled={busy !== null} onClick={() => openPdf(pdf)}>
@@ -178,24 +245,19 @@ export function InvoicesPanel() {
                 ) : (
                   <span className="text-xs text-stone-dim">Detailed invoice PDF coming soon from your consultant.</span>
                 )}
-                {i.status === "unpaid" ? (
-                  <a href="/payments#bank-transfer" className="text-xs text-stone underline underline-offset-4 hover:text-ivory">
-                    Or pay by bank transfer or crypto
-                  </a>
-                ) : null}
               </div>
+
+              {i.status === "unpaid" && i.bank_details ? <BankTransfer invoice={i} /> : null}
+
             </div>
           </article>
         );
       })}
 
       {hasUnpaid ? (
-        <>
-          <div className="mt-2">
-            <TurnstileWidget onToken={setToken} resetKey={resetKey} />
-          </div>
-          <CardCheckoutTips />
-        </>
+        <div className="mt-2">
+          <TurnstileWidget onToken={setToken} resetKey={resetKey} />
+        </div>
       ) : null}
       {error ? <p className="text-sm text-red-400">{error}</p> : null}
     </div>

@@ -44,7 +44,7 @@ export function Row({ r, onSaved, onOpenClient }: { r: Request; onSaved: (s: Sta
   }
 
   return (
-    <article className="rounded-card border hairline p-5">
+    <article className="rounded-[24px] border hairline bg-charcoal/40 p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-xs uppercase tracking-wide text-gold">{FORM_LABEL[r.form_type] ?? r.form_type}</p>
@@ -54,36 +54,49 @@ export function Row({ r, onSaved, onOpenClient }: { r: Request; onSaved: (s: Sta
             {r.subject ? ` · ${r.subject}` : ""}
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <label className="sr-only" htmlFor={`st-${r.id}`}>Stage</label>
-          <select id={`st-${r.id}`} value={draft} onChange={(e) => setDraft(e.target.value as Status)} className={`${inputClass} bg-ink`}>
-            {STATUSES.map((s) => (
-              <option key={s.key} value={s.key}>
-                {s.label}
-              </option>
-            ))}
-          </select>
-          <button
-            type="button"
-            disabled={busy || draft === r.status}
-            onClick={save}
-            className="rounded-full bg-ivory px-5 py-2.5 text-xs font-semibold uppercase tracking-wide text-ink disabled:opacity-40"
-          >
-            {busy ? "Saving…" : "Save stage"}
-          </button>
-        </div>
       </div>
-      <div className="mt-3 flex flex-wrap gap-4 text-xs">
-        <button type="button" onClick={() => setOpen((o) => !o)} className="text-stone underline hover:text-ivory">
+      <div role="radiogroup" aria-label="Stage" className="mt-4 flex flex-wrap gap-2">
+        {STATUSES.map((st) => (
+          <button
+            key={st.key}
+            type="button"
+            role="radio"
+            aria-checked={draft === st.key}
+            onClick={() => setDraft(st.key)}
+            className={`min-h-11 rounded-full border px-4 text-xs font-semibold uppercase tracking-wide transition active:scale-95 ${
+              draft === st.key
+                ? "border-gold bg-gold text-white"
+                : st.key === r.status
+                  ? "border-gold/60 text-gold"
+                  : "border-line text-stone hover:border-gold/60 hover:text-ivory"
+            }`}
+          >
+            {st.label}
+            {st.key === r.status ? " ·" : ""}
+          </button>
+        ))}
+      </div>
+      {draft !== r.status ? (
+        <button
+          type="button"
+          disabled={busy}
+          onClick={save}
+          className="mt-3 h-12 w-full rounded-full bg-ivory text-sm font-semibold uppercase tracking-wide text-ink active:scale-[0.98] disabled:opacity-40"
+        >
+          {busy ? "Saving…" : "Save stage and email client"}
+        </button>
+      ) : null}
+      <div className="mt-4 flex flex-wrap gap-2 text-xs">
+        <button type="button" onClick={() => setOpen((o) => !o)} className="inline-flex min-h-10 items-center rounded-full border border-line px-4 font-semibold uppercase tracking-wide text-stone active:scale-95 hover:border-gold hover:text-ivory">
           {open ? "Hide details" : "Show details"}
         </button>
         {r.email && onOpenClient ? (
-          <button type="button" onClick={() => onOpenClient(r.email!.toLowerCase())} className="text-stone underline hover:text-ivory">
+          <button type="button" onClick={() => onOpenClient(r.email!.toLowerCase())} className="inline-flex min-h-10 items-center rounded-full border border-line px-4 font-semibold uppercase tracking-wide text-stone active:scale-95 hover:border-gold hover:text-ivory">
             Open client page
           </button>
         ) : null}
         {r.email ? (
-          <a href={`mailto:${r.email}`} className="text-stone underline hover:text-ivory">
+          <a href={`mailto:${r.email}`} className="inline-flex min-h-10 items-center rounded-full border border-line px-4 font-semibold uppercase tracking-wide text-stone active:scale-95 hover:border-gold hover:text-ivory">
             Email client
           </a>
         ) : null}
@@ -121,18 +134,28 @@ export function RequestsPanel({ onOpenClient }: { onOpenClient: (email: string) 
   if (list === null) return <p className="text-sm text-red-400">Couldn&apos;t load requests. Refresh the page to try again.</p>;
 
   return (
-    <div className="max-w-4xl">
-      <div className="mb-6 flex flex-wrap gap-3">
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search name, email or message" className={`${inputClass} min-w-64 flex-1`} />
-        <select value={stage} onChange={(e) => setStage(e.target.value as typeof stage)} className={`${inputClass} bg-ink`} aria-label="Filter by stage">
-          <option value="open">All open (not closed)</option>
-          <option value="all">Everything</option>
-          {STATUSES.map((s) => (
-            <option key={s.key} value={s.key}>
-              {s.label}
-            </option>
-          ))}
-        </select>
+    <div>
+      <input
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="Search name, email or message"
+        className={`${inputClass} mb-3 h-12 w-full rounded-full px-5`}
+      />
+      <div role="radiogroup" aria-label="Filter by stage" className="-mx-1 mb-5 flex gap-2 overflow-x-auto px-1 pb-1">
+        {([{ key: "open", label: "Open" }, { key: "all", label: "Everything" }, ...STATUSES] as { key: Status | "open" | "all"; label: string }[]).map((f) => (
+          <button
+            key={f.key}
+            type="button"
+            role="radio"
+            aria-checked={stage === f.key}
+            onClick={() => setStage(f.key)}
+            className={`min-h-10 shrink-0 rounded-full border px-4 text-xs font-semibold uppercase tracking-wide active:scale-95 ${
+              stage === f.key ? "border-ivory bg-ivory text-ink" : "border-line text-stone hover:text-ivory"
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
       </div>
       <p className="mb-4 text-xs text-stone-dim">
         {shown.length} of {list.length} requests. Newsletter sign-ups are not listed.

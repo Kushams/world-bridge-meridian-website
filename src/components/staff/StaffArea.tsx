@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@/lib/supabase/AuthProvider";
 import { AuthPanel } from "@/components/account/AuthPanel";
 import { loadMe, personalLink, type StaffMember } from "@/lib/staff";
@@ -9,9 +9,33 @@ import { ClientsPanel } from "./ClientsPanel";
 import { TeamPanel, CopyLink } from "./TeamPanel";
 
 type Tab = "clients" | "requests" | "team";
+
+const icon = "h-6 w-6";
+const ICONS: Record<Tab, ReactNode> = {
+  clients: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={icon} aria-hidden>
+      <circle cx="9" cy="8" r="3.2" />
+      <path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5" />
+      <path d="M16.5 5.2a3 3 0 0 1 0 5.6M18 14.3c1.7.6 2.7 2.2 3 4.7" />
+    </svg>
+  ),
+  requests: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={icon} aria-hidden>
+      <path d="M4 5h16v11H9l-5 4z" />
+      <path d="M8 9.5h8M8 12.5h5" />
+    </svg>
+  ),
+  team: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={icon} aria-hidden>
+      <path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6z" />
+      <path d="M9 12l2 2 4-4" />
+    </svg>
+  ),
+};
+
 const TABS: { key: Tab; label: string; admin?: boolean }[] = [
   { key: "clients", label: "Clients" },
-  { key: "requests", label: "All requests" },
+  { key: "requests", label: "Requests" },
   { key: "team", label: "Team", admin: true },
 ];
 
@@ -76,46 +100,37 @@ export function StaffArea() {
   }
 
   const admin = me.role === "admin";
+  const initials = (me.name || user.email || "?").trim().slice(0, 2).toUpperCase();
+  const tabs = TABS.filter((t) => admin || !t.admin);
 
   return (
-    <div>
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="eyebrow mb-2">Staff</p>
-          <h1 className="font-display text-3xl text-ivory md:text-4xl">World Bridge Meridian staff page</h1>
-          <p className="mt-2 text-sm text-stone">
-            Signed in as {user.email} · {admin ? "Admin: you see every client" : "You see the clients assigned to you"}
+    <div className="mx-auto max-w-3xl pb-28">
+      <header className="flex items-center gap-4 rounded-[28px] border hairline bg-charcoal px-5 py-4 shadow-sm">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-ivory text-sm font-semibold text-ink">{initials}</span>
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-display text-xl text-ivory">{me.name || user.email}</p>
+          <p className="truncate text-xs text-stone">
+            {admin ? "Admin · you see every client" : "Staff · you see your assigned clients"}
           </p>
-          {me.link_code ? (
-            <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-stone">
-              Your personal link: <span className="text-ivory">{personalLink(me.link_code)}</span>
-              <CopyLink text={personalLink(me.link_code)} />
-            </p>
-          ) : null}
         </div>
-        <button type="button" onClick={() => signOut()} className="text-xs text-stone underline hover:text-ivory">
+        <button
+          type="button"
+          onClick={() => signOut()}
+          className="flex h-11 shrink-0 items-center rounded-full border hairline px-4 text-xs font-semibold uppercase tracking-wide text-stone active:scale-95 hover:text-ivory"
+        >
           Sign out
         </button>
-      </div>
+      </header>
 
-      <div role="tablist" aria-label="Staff tools" className="mt-8 inline-flex flex-wrap gap-1 rounded-full border hairline p-1">
-        {TABS.filter((t) => admin || !t.admin).map((t) => (
-          <button
-            key={t.key}
-            role="tab"
-            type="button"
-            aria-selected={tab === t.key}
-            onClick={() => go(t.key)}
-            className={`rounded-full px-5 py-2 text-xs font-semibold uppercase tracking-wide transition-colors ${
-              tab === t.key ? "bg-ivory text-ink" : "text-stone hover:text-ivory"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+      {me.link_code ? (
+        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl border hairline px-5 py-3 text-xs text-stone">
+          <span>Your client link</span>
+          <span className="min-w-0 truncate text-ivory">{personalLink(me.link_code)}</span>
+          <CopyLink text={personalLink(me.link_code)} />
+        </div>
+      ) : null}
 
-      <div className="mt-10">
+      <div className="mt-6">
         {tab === "requests" ? (
           <RequestsPanel onOpenClient={(email) => go("clients", email)} />
         ) : tab === "team" && admin ? (
@@ -124,6 +139,30 @@ export function StaffArea() {
           <ClientsPanel admin={admin} selected={clientEmail} onSelect={(email) => go("clients", email)} />
         )}
       </div>
+
+      <nav
+        role="tablist"
+        aria-label="Staff tools"
+        className="fixed inset-x-0 bottom-0 z-40 border-t hairline bg-ink/95 pb-[env(safe-area-inset-bottom)] backdrop-blur"
+      >
+        <div className="mx-auto flex max-w-3xl">
+          {tabs.map((t) => (
+            <button
+              key={t.key}
+              role="tab"
+              type="button"
+              aria-selected={tab === t.key}
+              onClick={() => go(t.key)}
+              className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] font-semibold uppercase tracking-wide transition-colors active:scale-95 ${
+                tab === t.key ? "text-gold" : "text-stone hover:text-ivory"
+              }`}
+            >
+              <span className={`flex h-8 w-14 items-center justify-center rounded-full transition-colors ${tab === t.key ? "bg-gold/15" : ""}`}>{ICONS[t.key]}</span>
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </nav>
     </div>
   );
 }

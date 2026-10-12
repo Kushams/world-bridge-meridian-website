@@ -44,3 +44,14 @@ the start of the name.
   ePayVista portal, then set the invoice to `paid` or `unpaid` in Table Editor.
 - Card minimum is US$5 on Base/Polygon (US$20 on Ethereum). Invoices under US$5 are rejected by the database.
 - Cards issued outside the US can be declined by the provider. Offer bank transfer or crypto.
+
+## Bank transfer details on an invoice
+
+By default an invoice offers **Pay by card or crypto** (ePayVista) and **Pay manually by crypto**. Bank transfer is never offered up front and nothing bank-related shows until staff add it. When a client comes back to the chat and says they can't pay by card or crypto:
+
+1. Staff page → the client → **Invoices** → **+ Bank transfer details** on that invoice.
+2. Paste the account details and press **Save and show to client**. The client is told in their messages.
+3. Their Invoices page refreshes itself (every 20 seconds and when they return to the tab) and shows the details with **Copy bank details** and **Copy reference** buttons.
+4. When the money arrives, press **Mark paid**. Card and crypto payments are marked automatically.
+
+Details can be edited or removed from the same box. They are stored on the invoice row (`invoices.bank_details`), readable only by that client and by staff who can see the client. SQL: `supabase/invoice-bank-details.sql` (already applied).

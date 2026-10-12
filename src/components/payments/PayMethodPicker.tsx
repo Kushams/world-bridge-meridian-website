@@ -43,6 +43,7 @@ export function CardCheckoutTips() {
     ["US card", "Pay by card"],
     ["Card from Europe or elsewhere", "Card & wallets, or Pay with Coinbase"],
     ["Already have crypto", "Already have crypto?"],
+    ["Revolut, PayPal or an exchange", "Buy on an exchange (buy USDC, then send it)"],
   ];
   return (
     <div className="rounded-card border hairline p-5">

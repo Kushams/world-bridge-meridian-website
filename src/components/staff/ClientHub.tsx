@@ -13,9 +13,11 @@ import {
   loadClientRequests,
   loadProfile,
   loadSignatures,
+  markInvoicePaid,
   notifyClient,
   openFile,
   removeFile,
+  setInvoiceBankDetails,
   uploadFile,
   usd,
   voidInvoice,
@@ -28,6 +30,7 @@ import {
   type StoredFile,
 } from "@/lib/staff";
 import { stemOf } from "@/lib/clientDocs";
+import { parseBankLines, serializeBankLines } from "@/lib/invoices";
 import { inputClass, Row } from "./RequestsPanel";
 
 const DOCS = "client-documents";
@@ -62,9 +65,9 @@ const PROFILE_FIELDS: [string, string][] = [
 const btn = "rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-wide disabled:opacity-40";
 const fileLabel = (name: string) => name.replace(/^\d{10,}-/, "");
 
-function Block({ title, children, note }: { title: string; children: ReactNode; note?: string }) {
+function Block({ title, children, note, id }: { title: string; children: ReactNode; note?: string; id?: string }) {
   return (
-    <section className="rounded-card border hairline p-5 md:p-6">
+    <section id={id} className="scroll-mt-24 rounded-[24px] border hairline bg-charcoal/40 p-5 shadow-sm md:p-6">
       <h3 className="font-display text-xl text-ivory">{title}</h3>
       {note ? <p className="mt-1 text-xs text-stone-dim">{note}</p> : null}
       <div className="mt-4">{children}</div>
@@ -124,6 +127,7 @@ function AccountControls({ email, admin, onDeleted }: { email: string; admin: bo
   if (!flags) return null;
   return (
     <Block
+      id="hub-account"
       title="Account"
       note="Reminders go out automatically 3 and 7 days after our last message if the client hasn't replied. Blocking pauses the account: they can't sign in and get no reminders until you unblock them."
     >
@@ -243,13 +247,36 @@ export function ClientHub({ client, admin, onDeleted }: { client: Client; admin:
         </div>
       </header>
 
+      <nav aria-label="Jump to" className="sticky top-16 z-30 -mx-1 flex gap-2 overflow-x-auto bg-ink/90 px-1 py-2 backdrop-blur">
+        {[
+          ["hub-messages", "Message"],
+          ["hub-requests", "Stage"],
+          ["hub-send", "Send file"],
+          ["hub-invoices", "Invoice"],
+          ["hub-received", "Received"],
+          ["hub-account", "Account"],
+        ].map(([id, label]) => (
+          <a
+            key={id}
+            href={`#${id}`}
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }}
+            className="inline-flex min-h-11 shrink-0 items-center rounded-full border border-line bg-ink px-5 text-xs font-semibold uppercase tracking-wide text-ivory active:scale-95 hover:border-gold"
+          >
+            {label}
+          </a>
+        ))}
+      </nav>
+
       {notice ? (
         <p role="status" className={`text-sm ${notice.startsWith("Not") ? "text-red-400" : "text-gold"}`}>
           {notice}
         </p>
       ) : null}
 
-      <Block title="Messages" note="The client's conversation with us. Documents, invoices, uploads and stage changes appear here automatically; each message you send is also emailed to the client.">
+      <Block id="hub-messages" title="Messages" note="The client's conversation with us. Documents, invoices, uploads and stage changes appear here automatically; each message you send is also emailed to the client.">
         <Thread clientEmail={email} viewer="staff" onSend={(body) => postAsStaff(email, body)}
           onVoice={(audio, seconds) => postVoice(email, "staff", audio, seconds)}
           placeholder="Reply to the client…"
@@ -271,7 +298,7 @@ export function ClientHub({ client, admin, onDeleted }: { client: Client; admin:
         </dl>
       </Block>
 
-      <Block title="Requests" note="Change the stage and the client is emailed automatically.">
+      <Block id="hub-requests" title="Requests" note="Change the stage and the client is emailed automatically.">
         {requests.length ? (
           <div className="space-y-4">
             {requests.map((r) => (
@@ -310,7 +337,7 @@ export function ClientHub({ client, admin, onDeleted }: { client: Client; admin:
 
       <InvoicesBlock email={email} invoices={invoices} pdfs={pdfs} onChange={(m) => (flash(m), load())} onRemovePdf={(f) => remove(DOCS, f)} />
 
-      <Block title="Sent to us by this client" note="Passports, visas and other files they uploaded, plus signed copies.">
+      <Block id="hub-received" title="Sent to us by this client" note="Passports, visas and other files they uploaded, plus signed copies.">
         {RECEIVED.some((c) => (received[c.key] ?? []).length) ? (
           <div className="space-y-4">
             {RECEIVED.map((c) =>
@@ -372,7 +399,7 @@ function SendDocuments({ email, onDone }: { email: string; onDone: (msg: string)
   }
 
   return (
-    <Block title="Send a document" note="PDF, JPG, PNG or WEBP, up to 25 MB. The client sees it straight away.">
+    <Block id="hub-send" title="Send a document" note="PDF, JPG, PNG or WEBP, up to 25 MB. The client sees it straight away.">
       <div className="grid gap-3 sm:grid-cols-3">
         {SEND_TYPES.map((s) => (
           <button
@@ -447,6 +474,27 @@ function InvoicesBlock({
     onChange(`PDF attached to ${inv.reference}${emailed ? " and the client has been emailed." : "."}`);
   }
 
+  async function saveBank(inv: StaffInvoice, text: string) {
+    setBusy(inv.id);
+    const err = await setInvoiceBankDetails(inv.id, text);
+    if (err) {
+      setBusy(null);
+      return onChange(`Not saved: ${err}`);
+    }
+    const added = text.trim().length > 0;
+    const emailed = added && !inv.bank_details ? await notifyClient(email, "message", `Our bank transfer details are now on invoice ${inv.reference}. Open Invoices in your account to copy them.`) : false;
+    setBusy(null);
+    onChange(added ? `Bank details saved on ${inv.reference}. The client sees them now${emailed ? " and has been told." : "."}` : `Bank details removed from ${inv.reference}.`);
+  }
+
+  async function markPaid(inv: StaffInvoice) {
+    if (!window.confirm(`Mark ${inv.reference} (${usd(inv.amount_usd)}) as paid by bank transfer?`)) return;
+    setBusy(inv.id);
+    const err = await markInvoicePaid(inv.id);
+    setBusy(null);
+    onChange(err ? `Not marked: ${err}` : `${inv.reference} marked paid.`);
+  }
+
   async function cancel(inv: StaffInvoice) {
     if (!window.confirm(`Cancel ${inv.reference}? The client won't be able to pay it.`)) return;
     const err = await voidInvoice(inv.id);
@@ -454,7 +502,7 @@ function InvoicesBlock({
   }
 
   return (
-    <Block title="Invoices" note="The client must have an account (they do, if they're listed here).">
+    <Block id="hub-invoices" title="Invoices" note="Create an invoice, attach the PDF, and add bank details if the client wants to pay by transfer.">
       <div className="grid gap-3 sm:grid-cols-[160px_1fr_auto]">
         <input value={amount} onChange={(e) => setAmount(e.target.value)} inputMode="decimal" placeholder="Amount (US$)" className={inputClass} />
         <input value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="What it's for, e.g. Italy art journey — deposit" className={inputClass} />
@@ -467,7 +515,8 @@ function InvoicesBlock({
           {invoices.map((inv) => {
             const pdf = pdfs.find((p) => p.name.toLowerCase().startsWith(inv.reference.toLowerCase()));
             return (
-              <li key={inv.id} className="flex flex-wrap items-center justify-between gap-3 py-4">
+              <li key={inv.id} className="py-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-sm text-ivory">
                     {inv.description} · <span className="font-semibold">{usd(inv.amount_usd)}</span>
@@ -500,7 +549,18 @@ function InvoicesBlock({
                       Cancel
                     </button>
                   ) : null}
+                  {inv.status === "unpaid" || inv.status === "needs_review" ? (
+                    <button type="button" disabled={busy === inv.id} onClick={() => markPaid(inv)} className={`${btn} bg-emerald-600 text-white disabled:opacity-40`}>
+                      Mark paid
+                    </button>
+                  ) : null}
                 </div>
+                </div>
+                {inv.status === "unpaid" || inv.status === "needs_review" ? (
+                  <BankEditor key={`${inv.id}:${inv.bank_details ?? ""}`} inv={inv} busy={busy === inv.id} onSave={(text) => saveBank(inv, text)} />
+                ) : inv.status === "paid" && inv.paid_via ? (
+                  <p className="mt-2 text-xs text-stone-dim">Paid via {inv.paid_via}.</p>
+                ) : null}
               </li>
             );
           })}
@@ -509,5 +569,129 @@ function InvoicesBlock({
         <p className="mt-4 text-sm text-stone-dim">No invoices yet.</p>
       )}
     </Block>
+  );
+}
+
+const BANK_PRESETS: { key: string; label: string; lines: string[] }[] = [
+  { key: "eu", label: "Europe (IBAN)", lines: ["Account name", "IBAN", "BIC / SWIFT", "Bank name"] },
+  { key: "us", label: "US wire / ACH", lines: ["Beneficiary", "Account number", "Routing number (ACH)", "Routing number (wire)", "SWIFT", "Bank name", "Bank address"] },
+  { key: "blank", label: "Blank", lines: ["", ""] },
+];
+
+let rowSeq = 0;
+type Row = { id: number; label: string; value: string };
+const toRows = (lines: { label: string; value: string }[]): Row[] => lines.map((l) => ({ id: ++rowSeq, ...l }));
+
+/** Fill in bank account details for one invoice, one field per row. Labels are editable and rows can be added or removed. */
+function BankEditor({ inv, busy, onSave }: { inv: StaffInvoice; busy: boolean; onSave: (text: string) => void }) {
+  const saved = (inv.bank_details ?? "").trim();
+  const [open, setOpen] = useState(Boolean(saved));
+  const [rows, setRows] = useState<Row[]>(() => toRows(parseBankLines(saved)));
+  const text = serializeBankLines(rows);
+  const dirty = text !== saved;
+
+  const patch = (id: number, change: Partial<Row>) => setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...change } : r)));
+  const start = (labels: string[]) => {
+    setRows(toRows(labels.map((label) => ({ label, value: "" }))));
+    setOpen(true);
+  };
+
+  if (!open) {
+    return (
+      <div className="mt-3">
+        <p className="text-xs text-stone-dim">Client wants to pay by bank transfer? Start from:</p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {BANK_PRESETS.map((pr) => (
+            <button key={pr.key} type="button" onClick={() => start(pr.lines)} className={`${btn} border border-line text-ivory hover:border-gold`}>
+              + {pr.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const field = `${inputClass} min-h-11 w-full`;
+  return (
+    <div className="mt-3 rounded-2xl border border-line p-4">
+      <p className="text-xs font-semibold uppercase tracking-wide text-gold">
+        Bank transfer details {saved ? "· visible to the client" : "· not shown to the client yet"}
+      </p>
+      <p className="mt-1 text-xs text-stone-dim">
+        Edit any label (for example IBAN → Routing number) and paste each value. The client gets a separate Copy button for every row.
+      </p>
+      <ul className="mt-3 space-y-3">
+        {rows.map((r, i) => (
+          <li key={r.id} className="grid grid-cols-[1fr_auto] items-end gap-2 sm:grid-cols-[200px_1fr_auto]">
+            <div className="col-span-2 sm:col-span-1">
+              <label htmlFor={`bl-${inv.id}-${r.id}`} className="sr-only">Label {i + 1}</label>
+              <input
+                id={`bl-${inv.id}-${r.id}`}
+                value={r.label}
+                maxLength={40}
+                onChange={(e) => patch(r.id, { label: e.target.value })}
+                placeholder="Label, e.g. IBAN"
+                className={`${field} font-semibold`}
+              />
+            </div>
+            <div>
+              <label htmlFor={`bv-${inv.id}-${r.id}`} className="sr-only">Value {i + 1}</label>
+              <input
+                id={`bv-${inv.id}-${r.id}`}
+                value={r.value}
+                maxLength={200}
+                onChange={(e) => patch(r.id, { value: e.target.value })}
+                placeholder="Paste the value"
+                className={field}
+              />
+            </div>
+            <button
+              type="button"
+              aria-label={`Remove row ${i + 1}`}
+              onClick={() => setRows((rs) => rs.filter((x) => x.id !== r.id))}
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-stone hover:border-red-400 hover:text-red-400"
+            >
+              ×
+            </button>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button type="button" onClick={() => setRows((rs) => [...rs, ...toRows([{ label: "", value: "" }])])} className={`${btn} border border-line text-ivory hover:border-gold`}>
+          + Add a line
+        </button>
+        {BANK_PRESETS.filter((pr) => pr.key !== "blank").map((pr) => (
+          <button
+            key={pr.key}
+            type="button"
+            onClick={() => {
+              if (!rows.some((r) => r.value.trim()) || window.confirm(`Replace the rows below with the ${pr.label} layout? Values you've typed will be cleared.`)) start(pr.lines);
+            }}
+            className={`${btn} text-stone hover:text-ivory`}
+          >
+            Use {pr.label} layout
+          </button>
+        ))}
+      </div>
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button type="button" disabled={busy || !dirty || text.length < 5} onClick={() => onSave(text)} className={`${btn} bg-ivory text-ink`}>
+          {busy ? "Saving…" : saved ? "Update details" : "Save and show to client"}
+        </button>
+        {saved ? (
+          <button
+            type="button"
+            disabled={busy}
+            onClick={() => {
+              setRows([]);
+              setOpen(false);
+              onSave("");
+            }}
+            className={`${btn} text-stone hover:text-red-400`}
+          >
+            Remove from invoice
+          </button>
+        ) : null}
+      </div>
+    </div>
   );
 }
