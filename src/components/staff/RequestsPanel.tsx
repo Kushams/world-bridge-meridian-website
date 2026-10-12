@@ -83,7 +83,7 @@ export function Row({ r, onSaved, onOpenClient }: { r: Request; onSaved: (s: Sta
           onClick={save}
           className="mt-3 h-12 w-full rounded-full bg-ivory text-sm font-semibold uppercase tracking-wide text-ink active:scale-[0.98] disabled:opacity-40"
         >
-          {busy ? "Saving…" : `Move to ${STATUSES.find((x) => x.key === draft)?.label} and email client`}
+          {busy ? "Saving…" : "Save stage and email client"}
         </button>
       ) : null}
       <div className="mt-4 flex flex-wrap gap-2 text-xs">
