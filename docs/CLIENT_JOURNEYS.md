@@ -52,6 +52,20 @@ On the Staff page client hub, staff can:
 
 The client gets an email for each of these, and tapping the chat line opens the right section of their account.
 
+## Reminder emails (`supabase/reminders.sql` + `send-reminders` Edge Function)
+pg_cron runs `public.run_reminders()` every hour. It calls `send-reminders` using the same Vault key and shared secret as the form trigger.
+- **Client hasn't replied:** if the latest row in a client's thread came from us (a staff message or voice note, a document, a document to sign, a form to return, an invoice, an invoice PDF, or a stage change) and the client hasn't answered for **3 days**, they get "We haven't heard from you" with a **Reply now** button. A second email goes after **7 days**, and that's the limit. No reminder is sent once the latest request is Confirmed or Closed, or if the thread has been quiet for more than 30 days. info@, the admins and the assigned coordinator are BCC'd.
+- **Unassigned client:** at most once a day, info@ and the admins get a list of clients who sent a request more than 24 hours ago and still have no coordinator, each with an "Open this client" link.
+- `public.reminder_log` stores one key per reminder sent (`noreply:<message id>:<1|2>`, `unassigned:<date>`), so nothing is sent twice. To change the timings, edit `NUDGES` / `DAY` in the function.
+
+## Account controls on a client's page (`supabase/client-controls.sql` + `staff-client-action` Edge Function)
+
+- **Send reminder:** emails the "Checking in" reminder now (calls `send-reminders` with `{email}`); info@, admins and the coordinator are copied.
+- **Stop reminders / Turn reminders back on:** sets `client_flags.reminders_off`; `send-reminders` skips the client.
+- **Block / Unblock account:** bans the auth user (`ban_duration`) so they can't sign in, and sets `client_flags.blocked` (no reminders while blocked).
+- **Delete account (admins only):** removes the client's private files, messages, assignment, flags, requests and invoices, then the auth user.
+- Staff can use the first three on their own clients; admins on every client. Checked server-side with the caller's JWT (`is_staff`, `staff_list_clients`, `is_admin`).
+- Admins reading a thread see which staff member wrote each message (only their own messages show as "You").
+
 ## Open ideas (not built)
-- Email admins when a new client is still unassigned after N hours.
-- Let clients pick a package "tier" (e.g. 4-star vs 5-star) on the package page and pass it into the wizard.
+- Price levels: show 2–3 levels per package (e.g. Signature / Luxury / Ultra, each with a "From" price), and pass the chosen one into the wizard's budget step. Exhibitions would stay unpriced and be quoted by invoice.

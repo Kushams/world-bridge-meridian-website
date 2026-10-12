@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { loadThread, type ThreadMessage } from "@/lib/messages";
+import { useAuth } from "@/lib/supabase/AuthProvider";
 import { VoicePlayer, VoiceRecorder } from "./Voice";
 
 const ICONS: Record<string, string> = {
@@ -44,6 +45,12 @@ export function Thread({
   onVoice?: (audio: Blob, seconds: number) => Promise<string | null>;
   placeholder: string;
 }) {
+  const { user } = useAuth();
+  const me = user?.email?.toLowerCase();
+  const authorOf = (m: ThreadMessage) =>
+    m.sender === viewer && (viewer === "client" || !m.author_email || m.author_email === me)
+      ? "You"
+      : m.author_name || (m.sender === "staff" ? "World Bridge Meridian" : m.author_email);
   const [messages, setMessages] = useState<ThreadMessage[] | null>(null);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
@@ -149,7 +156,7 @@ export function Thread({
                     <p className="whitespace-pre-wrap break-words">{m.body}</p>
                   )}
                   <p className={`mt-1 text-[0.7rem] ${m.sender === viewer ? "text-ink/60" : "text-stone-dim"}`}>
-                    {m.sender === viewer ? "You" : m.author_name || (m.sender === "staff" ? "World Bridge Meridian" : m.author_email)} ·{" "}
+                    {authorOf(m)} ·{" "}
                     {when(m.created_at)}
                   </p>
                 </div>
