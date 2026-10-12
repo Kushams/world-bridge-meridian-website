@@ -3,10 +3,10 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@/lib/supabase/AuthProvider";
 import { AuthPanel } from "@/components/account/AuthPanel";
-import { loadMe, personalLink, type StaffMember } from "@/lib/staff";
+import { loadMe, personalLink, pingPresence, type StaffMember } from "@/lib/staff";
 import { RequestsPanel } from "./RequestsPanel";
 import { ClientsPanel } from "./ClientsPanel";
-import { TeamPanel, CopyLink } from "./TeamPanel";
+import { TeamPanel, StaffTeamList, CopyLink } from "./TeamPanel";
 
 type Tab = "clients" | "requests" | "team";
 
@@ -33,10 +33,10 @@ const ICONS: Record<Tab, ReactNode> = {
   ),
 };
 
-const TABS: { key: Tab; label: string; admin?: boolean }[] = [
+const TABS: { key: Tab; label: string }[] = [
   { key: "clients", label: "Clients" },
   { key: "requests", label: "Requests" },
-  { key: "team", label: "Team", admin: true },
+  { key: "team", label: "Team" },
 ];
 
 /** Staff-only tools. Access is enforced in the database (supabase/staff.sql), this only hides the UI. */
@@ -54,6 +54,22 @@ export function StaffArea() {
       alive = false;
     };
   }, [user]);
+
+  // Let admins see that this staff member is online: ping now and every minute while the page is visible.
+  const isStaff = Boolean(me);
+  useEffect(() => {
+    if (!isStaff) return;
+    const ping = () => {
+      if (document.visibilityState === "visible") pingPresence().catch(() => {});
+    };
+    ping();
+    const timer = window.setInterval(ping, 60000);
+    document.addEventListener("visibilitychange", ping);
+    return () => {
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", ping);
+    };
+  }, [isStaff]);
 
   useEffect(() => {
     const h = window.location.hash.slice(1);
@@ -101,7 +117,7 @@ export function StaffArea() {
 
   const admin = me.role === "admin";
   const initials = (me.name || user.email || "?").trim().slice(0, 2).toUpperCase();
-  const tabs = TABS.filter((t) => admin || !t.admin);
+  const tabs = TABS;
 
   return (
     <div className="mx-auto max-w-3xl pb-28">
@@ -110,7 +126,7 @@ export function StaffArea() {
         <div className="min-w-0 flex-1">
           <p className="truncate font-display text-xl text-ivory">{me.name || user.email}</p>
           <p className="truncate text-xs text-stone">
-            {admin ? "Admin · you see every client" : "Staff · you see your assigned clients"}
+            {admin ? "Admin · you see every client" : "Staff"}
           </p>
         </div>
         <button
@@ -133,8 +149,8 @@ export function StaffArea() {
       <div className="mt-6">
         {tab === "requests" ? (
           <RequestsPanel onOpenClient={(email) => go("clients", email)} />
-        ) : tab === "team" && admin ? (
-          <TeamPanel />
+        ) : tab === "team" ? (
+          admin ? <TeamPanel /> : <StaffTeamList />
         ) : (
           <ClientsPanel admin={admin} selected={clientEmail} onSelect={(email) => go("clients", email)} />
         )}
