@@ -6,7 +6,6 @@ import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/AuthProvider";
 import { loadInvoices, startCardPayment, type Invoice } from "@/lib/invoices";
-import { CardCheckoutTips } from "@/components/payments/PayMethodPicker";
 
 const BUCKET = "client-documents";
 const usd = (n: number) => `US$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -238,12 +237,9 @@ export function InvoicesPanel() {
       })}
 
       {hasUnpaid ? (
-        <>
-          <div className="mt-2">
-            <TurnstileWidget onToken={setToken} resetKey={resetKey} />
-          </div>
-          <CardCheckoutTips />
-        </>
+        <div className="mt-2">
+          <TurnstileWidget onToken={setToken} resetKey={resetKey} />
+        </div>
       ) : null}
       {error ? <p className="text-sm text-red-400">{error}</p> : null}
     </div>
