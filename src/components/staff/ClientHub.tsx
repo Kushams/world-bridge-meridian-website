@@ -13,6 +13,7 @@ import {
   loadClientRequests,
   loadProfile,
   loadSignatures,
+  loadSignIns,
   markInvoicePaid,
   notifyClient,
   openFile,
@@ -190,15 +191,17 @@ export function ClientHub({ client, admin, onDeleted }: { client: Client; admin:
   const [pdfs, setPdfs] = useState<StoredFile[]>([]);
   const [received, setReceived] = useState<Record<string, StoredFile[]>>({});
   const [notice, setNotice] = useState("");
+  const [signIns, setSignIns] = useState<string[]>([]);
 
   const load = useCallback(async () => {
-    const [p, r, d, s, inv, pdf, ...rec] = await Promise.all([
+    const [p, r, d, s, inv, pdf, si, ...rec] = await Promise.all([
       loadProfile(client.id),
       loadClientRequests(email),
       listFiles(DOCS, email),
       loadSignatures(email),
       loadClientInvoices(client.id),
       listFiles(DOCS, `${email}/invoices`),
+      loadSignIns(client.id),
       ...RECEIVED.map((c) => listFiles(UPLOADS, `${email}/${c.key}`)),
     ]);
     setProfile(p);
@@ -207,6 +210,7 @@ export function ClientHub({ client, admin, onDeleted }: { client: Client; admin:
     setSigs(s);
     setInvoices(inv ?? []);
     setPdfs(pdf);
+    setSignIns(si);
     setReceived(Object.fromEntries(RECEIVED.map((c, i) => [c.key, rec[i]])));
   }, [client.id, email]);
 
@@ -244,6 +248,12 @@ export function ClientHub({ client, admin, onDeleted }: { client: Client; admin:
             <a href={`mailto:${email}`} className="underline hover:text-ivory">{email}</a>
             {client.phone ? ` · ${client.phone}` : ""} · {client.confirmed ? `joined ${fmtDate(client.created_at)}` : "email not confirmed yet"}
           </p>
+          {signIns.length ? (
+            <p className="text-xs text-stone-dim">
+              Last signed in {new Date(signIns[0]).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+              {signIns.length > 1 ? ` · before that ${signIns.slice(1, 3).map((t) => fmtDate(t)).join(", ")}` : ""}
+            </p>
+          ) : null}
         </div>
       </header>
 

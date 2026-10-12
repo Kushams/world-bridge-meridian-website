@@ -97,14 +97,18 @@ export function Thread({
     refresh();
   }
 
-  async function attach(file: File | undefined) {
-    if (!file || !onAttach) return;
+  async function attach(files: FileList | null) {
+    if (!files?.length || !onAttach) return;
     setAttaching(true);
     setError("");
-    const err = await onAttach(file);
+    let failed = "";
+    for (const file of Array.from(files).slice(0, 10)) {
+      const err = await onAttach(file);
+      if (err) failed = err;
+    }
     setAttaching(false);
     if (picker.current) picker.current.value = "";
-    if (err) return setError(err);
+    if (failed) setError(failed);
     refresh();
   }
 
@@ -172,18 +176,19 @@ export function Thread({
             <input
               ref={picker}
               type="file"
-              accept=".pdf,.jpg,.jpeg,.png,.heic,.webp,.doc,.docx"
+              accept="image/*,.pdf,.doc,.docx,.heic"
+              multiple
               className="sr-only"
               tabIndex={-1}
               aria-hidden
-              onChange={(e) => attach(e.target.files?.[0])}
+              onChange={(e) => attach(e.target.files)}
             />
             <button
               type="button"
               onClick={() => picker.current?.click()}
               disabled={attaching}
-              title="Send us a document"
-              aria-label="Send us a document"
+              title="Attach photos or files"
+              aria-label="Attach photos or files"
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line text-ivory hover:border-gold disabled:opacity-40"
             >
               {attaching ? (

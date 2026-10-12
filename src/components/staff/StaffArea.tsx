@@ -3,18 +3,19 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@/lib/supabase/AuthProvider";
 import { AuthPanel } from "@/components/account/AuthPanel";
-import { attentionCount, loadAttention, loadClients, loadMe, personalLink, pingPresence, type AttentionData, type Client, type StaffMember } from "@/lib/staff";
+import { attentionCount, waitingCount, loadAttention, loadClients, loadMe, personalLink, pingPresence, type AttentionData, type Client, type StaffMember } from "@/lib/staff";
 import { RequestsPanel } from "./RequestsPanel";
 import { ClientsPanel } from "./ClientsPanel";
-import { TodayPanel } from "./TodayPanel";
+import { AlertsPanel } from "./AlertsPanel";
+import { InboxPanel } from "./InboxPanel";
 import { PushControl } from "./PushControl";
 import { TeamPanel, StaffTeamList, CopyLink } from "./TeamPanel";
 
-type Tab = "today" | "clients" | "requests" | "team";
+type Tab = "alerts" | "clients" | "inbox" | "requests" | "team";
 
 const icon = "h-6 w-6";
 const ICONS: Record<Tab, ReactNode> = {
-  today: (
+  alerts: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={icon} aria-hidden>
       <path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6z" />
       <path d="M10 19a2 2 0 0 0 4 0" />
@@ -27,10 +28,16 @@ const ICONS: Record<Tab, ReactNode> = {
       <path d="M16.5 5.2a3 3 0 0 1 0 5.6M18 14.3c1.7.6 2.7 2.2 3 4.7" />
     </svg>
   ),
-  requests: (
+  inbox: (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={icon} aria-hidden>
       <path d="M4 5h16v11H9l-5 4z" />
       <path d="M8 9.5h8M8 12.5h5" />
+    </svg>
+  ),
+  requests: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" className={icon} aria-hidden>
+      <rect x="5" y="4" width="14" height="17" rx="2" />
+      <path d="M9 4h6v3H9zM9 12h6M9 16h4" />
     </svg>
   ),
   team: (
@@ -42,8 +49,9 @@ const ICONS: Record<Tab, ReactNode> = {
 };
 
 const TABS: { key: Tab; label: string }[] = [
-  { key: "today", label: "Inbox" },
+  { key: "alerts", label: "Alerts" },
   { key: "clients", label: "Clients" },
+  { key: "inbox", label: "Inbox" },
   { key: "requests", label: "Requests" },
   { key: "team", label: "Team" },
 ];
@@ -52,7 +60,7 @@ const TABS: { key: Tab; label: string }[] = [
 export function StaffArea() {
   const { user, loading, signOut } = useAuth();
   const [me, setMe] = useState<StaffMember | null | undefined>(undefined);
-  const [tab, setTab] = useState<Tab>("today");
+  const [tab, setTab] = useState<Tab>("alerts");
   const [attention, setAttention] = useState<AttentionData | null | undefined>(undefined);
   const [clients, setClients] = useState<Client[]>([]);
   const [clientEmail, setClientEmail] = useState("");
@@ -104,7 +112,9 @@ export function StaffArea() {
   }, [isStaff]);
 
   // Show the count in the browser tab title, e.g. "(3) Staff".
-  const count = attentionCount(attention ?? null);
+  const alertCount = attentionCount(attention ?? null);
+  const unread = waitingCount(attention ?? null);
+  const count = alertCount + unread;
   useEffect(() => {
     if (!isStaff) return;
     const base = document.title.replace(/^\(\d+\)\s*/, "");
@@ -121,7 +131,8 @@ export function StaffArea() {
       if (client) {
         setClientEmail(client.toLowerCase());
         setTab("clients");
-      } else if (h === "today" || h === "clients" || h === "requests" || h === "team") setTab(h);
+      } else if (h === "today") setTab("alerts");
+      else if (h === "alerts" || h === "clients" || h === "inbox" || h === "requests" || h === "team") setTab(h);
     }, 0);
     return () => clearTimeout(t);
   }, []);
@@ -131,6 +142,19 @@ export function StaffArea() {
     setTab(next);
     history.replaceState(null, "", `#${next}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /** Open a client's conversation: the Clients tab, scrolled to their chat once it has loaded. */
+  function openChat(email: string) {
+    go("clients", email);
+    let tries = 0;
+    const timer = window.setInterval(() => {
+      const el = document.getElementById("hub-messages");
+      if (el || ++tries > 25) {
+        window.clearInterval(timer);
+        el?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 200);
   }
 
   if (loading) return <p className="text-sm text-stone-dim">Loading…</p>;
@@ -191,10 +215,10 @@ export function StaffArea() {
 
       <div className="mt-6">
         <PushControl />
-        {tab === "today" ? (
-          <>
-            <TodayPanel data={attention} clients={clients} onOpenClient={(email) => go("clients", email)} />
-          </>
+        {tab === "alerts" ? (
+          <AlertsPanel data={attention} clients={clients} onOpenClient={(email) => go("clients", email)} />
+        ) : tab === "inbox" ? (
+          <InboxPanel data={attention} clients={clients} onOpenChat={openChat} />
         ) : tab === "requests" ? (
           <RequestsPanel onOpenClient={(email) => go("clients", email)} />
         ) : tab === "team" ? (
@@ -223,9 +247,10 @@ export function StaffArea() {
             >
               <span className={`relative flex h-8 w-14 items-center justify-center rounded-full transition-colors ${tab === t.key ? "bg-gold/15" : ""}`}>
                 {ICONS[t.key]}
-                {t.key === "today" && count ? (
-                  <span className="absolute -right-0.5 -top-1 min-w-5 rounded-full bg-gold px-1.5 text-[10px] font-bold leading-5 text-white">{count > 99 ? "99+" : count}</span>
-                ) : null}
+                {(() => {
+                  const n = t.key === "alerts" ? alertCount : t.key === "inbox" ? unread : 0;
+                  return n ? <span className="absolute -right-0.5 -top-1 min-w-5 rounded-full bg-gold px-1.5 text-[10px] font-bold leading-5 text-white">{n > 99 ? "99+" : n}</span> : null;
+                })()}
               </span>
               {t.label}
             </button>
