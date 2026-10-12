@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { FONT, layout, staffSignature } from "../_shared/email.ts";
 
 // Called by the staff page after staff send a client something. Emails the
 // client a short "something new is in your account" note. Only staff
@@ -61,9 +62,9 @@ async function copyToAdmins(caller: ReturnType<typeof createClient>, client: str
       to,
       reply_to: sender || REPLY_TO,
       subject: `${from} → ${clientName || client}: new message`,
-      html: `<p><b>${esc(from)}</b> sent a message to <b>${esc(clientName || client)}</b> (${esc(client)}):</p>
+      html: layout(`<p><b>${esc(from)}</b> sent a message to <b>${esc(clientName || client)}</b> (${esc(client)}):</p>
         <blockquote style="margin:0;padding:12px 16px;border-left:3px solid #b8964e;background:#f7f4ee;white-space:pre-wrap">${esc(text)}</blockquote>
-        <p><a href="${STAFF_URL}?client=${encodeURIComponent(client)}#clients">Open this client on the staff page</a></p>`,
+        <p><a href="${STAFF_URL}?client=${encodeURIComponent(client)}#clients">Open this client on the staff page</a></p>`),
     }),
   });
   if (!res.ok) console.error("admin copy failed", res.status, await res.text());
@@ -95,6 +96,12 @@ Deno.serve(async (req: Request) => {
   if (!client) return json(404, { ok: false, error: "no account" });
 
   const first = (client.full_name ?? "").trim().split(/\s+/)[0];
+  const { data: who } = await supabase.auth.getUser();
+  const { data: senderRow } = await createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } })
+    .from("staff_members")
+    .select("email, name, role")
+    .eq("email", who.user?.email?.toLowerCase() ?? "")
+    .maybeSingle();
   const kind = body.kind as string;
   const title = String(body.title ?? "").slice(0, kind === "message" ? 2000 : 160);
   if (THREAD[kind]) {
@@ -114,15 +121,15 @@ Deno.serve(async (req: Request) => {
       to: [to],
       reply_to: REPLY_TO,
       subject: msg.subject,
-      html: `<div style="font-family:Georgia,serif;color:#1c1c1c;max-width:560px">
+      html: layout(`<div style="color:#1c1c1c;max-width:560px">
         <p>${first ? `Dear ${esc(first)},` : "Hello,"}</p>
         ${kind === "message"
           ? `<p>${esc(msg.line)}${title ? ":" : "."}</p>${title ? `<blockquote style="margin:0;padding:12px 16px;border-left:3px solid #b8964e;background:#f7f4ee;white-space:pre-wrap">${esc(title)}</blockquote>` : ""}`
           : `<p>${esc(msg.line)}${title ? `: <b>${esc(title)}</b>` : ""}.</p>`}
-        <p style="margin:28px 0"><a href="${ACCOUNT_URL}${msg.hash}" style="background:#1c1c1c;color:#fff;padding:12px 22px;border-radius:999px;text-decoration:none;font-family:Arial,sans-serif;font-size:13px;letter-spacing:.05em;text-transform:uppercase">${esc(msg.button)}</a></p>
+        <p style="margin:28px 0"><a href="${ACCOUNT_URL}${msg.hash}" style="background:#1c1c1c;color:#fff;padding:12px 22px;border-radius:999px;text-decoration:none;font-family:${FONT};font-size:13px;letter-spacing:.05em;text-transform:uppercase">${esc(msg.button)}</a></p>
         <p>Sign in with this email address to see it. If you have any questions, just reply to this email.</p>
-        <p>Warm regards,<br>World Bridge Meridian</p>
-      </div>`,
+        <p>Warm regards,</p>
+      </div>`, staffSignature(senderRow ?? undefined)),
     }),
   });
   if (!res.ok) console.error("Resend send failed", res.status, await res.text());

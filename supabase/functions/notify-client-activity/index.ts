@@ -1,6 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { encodeBase64 } from "jsr:@std/encoding@1/base64";
+import { layout } from "../_shared/email.ts";
 
 // Called by the website after a signed-in client uploads a document, signs one
 // on screen, or returns a signed file. Emails the team, attaching the uploaded
@@ -113,11 +114,11 @@ Deno.serve(async (req: Request) => {
       to: [...recipients],
       reply_to: user.email,
       subject: kind === "message" ? `New message from ${name}` : `Client ${action}: ${String(body.title ?? "").slice(0, 80)} (${name})`,
-      html: `<p><b>${esc(name)}</b> (${esc(user.email)}) ${esc(action)}.</p>
+      html: layout(`<p><b>${esc(name)}</b> (${esc(user.email)}) ${esc(action)}.</p>
         <p>${esc(String(body.title ?? "").slice(0, kind === "message" ? 2000 : 200))}${body.category ? ` &middot; ${esc(String(body.category).slice(0, 40))}` : ""}</p>
         ${fileNote ? `<p>${fileNote}</p>` : ""}
         <p><a href="${STAFF_URL}?client=${encodeURIComponent(folder)}#clients" style="display:inline-block;background:#1c1917;color:#f5f0e6;padding:10px 18px;border-radius:999px;text-decoration:none">${kind === "message" ? "Read and reply" : "Open this client"}</a></p>
-        <p style="color:#78716c;font-size:13px">Opens ${esc(name)}'s page on the staff site (sign in if asked).</p>`,
+        <p style="color:#78716c;font-size:13px">Opens ${esc(name)}'s page on the staff site (sign in if asked).</p>`),
       ...(attachments ? { attachments } : {}),
     }),
   });

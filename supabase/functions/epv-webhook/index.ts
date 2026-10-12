@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { layout } from "../_shared/email.ts";
 
 // Receives ePayVista's "order paid" message. Deploy with JWT verification OFF (they cannot send a Supabase JWT);
 // the HMAC signature below is what proves the message is genuine.
@@ -35,7 +36,7 @@ async function email(to: string, subject: string, html: string) {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject, html }),
+    body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject, html: layout(html) }),
   });
   if (!res.ok) console.error("Resend send failed", res.status, await res.text());
 }

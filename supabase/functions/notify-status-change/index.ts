@@ -1,4 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { FONT, layout } from "../_shared/email.ts";
 
 // Called by the database trigger in supabase/status-emails.sql whenever a
 // request's `status` changes. Same shared-secret check as
@@ -77,14 +78,13 @@ Deno.serve(async (req: Request) => {
     }
 
     const html = `
-      <div style="font:15px/1.6 -apple-system,Segoe UI,sans-serif;color:#222;max-width:560px">
+      <div style="color:#222;max-width:560px">
         <p>Hi ${esc(record.name || "there")},</p>
-        <h2 style="font-family:Georgia,serif;font-weight:normal;margin:16px 0 8px">${esc(message.headline)}</h2>
+        <h2 style="font-family:${FONT};font-weight:500;font-size:20px;margin:16px 0 8px">${esc(message.headline)}</h2>
         <p>${esc(message.body)}</p>
         ${record.subject ? `<p style="color:#666">Regarding: ${esc(record.subject)}</p>` : ""}
         <p><a href="${ACCOUNT_URL}" style="display:inline-block;background:#1c1a17;color:#fff;text-decoration:none;padding:12px 22px;border-radius:999px">View in My World Bridge</a></p>
         <p style="color:#888;font-size:13px">Sign in with this email address to see your request and its progress. Just reply to this email to reach your consultant.</p>
-        <p>— World Bridge Meridian</p>
       </div>`;
 
     const res = await fetch("https://api.resend.com/emails", {
@@ -94,7 +94,7 @@ Deno.serve(async (req: Request) => {
         from: FROM_EMAIL,
         to: [record.email],
         subject: message.subject,
-        html,
+        html: layout(html),
         reply_to: REPLY_TO,
       }),
     });

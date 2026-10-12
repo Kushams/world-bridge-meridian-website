@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { FONT, layout, staffSignature, type Signature } from "../_shared/email.ts";
 
 // Called hourly by pg_cron (supabase/reminders.sql) with the shared secret.
 //  * "We haven't heard from you": when the latest thing in a client's thread
@@ -45,11 +46,11 @@ function esc(value: unknown): string {
     .replaceAll('"', "&quot;");
 }
 
-async function send(to: string[], subject: string, html: string, bcc: string[] = []) {
+async function send(to: string[], subject: string, html: string, bcc: string[] = [], signature?: Signature) {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: FROM_EMAIL, to, bcc: bcc.length ? bcc : undefined, reply_to: INTERNAL_EMAIL, subject, html }),
+    body: JSON.stringify({ from: FROM_EMAIL, to, bcc: bcc.length ? bcc : undefined, reply_to: INTERNAL_EMAIL, subject, html: layout(html, signature) }),
   });
   if (!res.ok) console.error("Resend send failed", res.status, await res.text());
   return res.ok;
@@ -73,7 +74,7 @@ async function nudge(
   m: Msg | undefined,
   request: Req | undefined,
   n: number,
-  staff: { email: string; name: string | null }[],
+  staff: { email: string; name: string | null; role: string }[],
   handler: Map<string, string>,
   team: string[],
 ) {
@@ -85,21 +86,22 @@ async function nudge(
   return await send(
     [email],
     n === 0 ? "Checking in — World Bridge Meridian" : n === 1 ? "We haven't heard from you — World Bridge Meridian" : "Still here when you're ready — World Bridge Meridian",
-    `<div style="font-family:Georgia,serif;color:#1c1c1c;max-width:560px">
+    `<div style="color:#1c1c1c;max-width:560px">
       <p>${first ? `Dear ${esc(first)},` : "Hello,"}</p>
       <p>${n === 0 ? "We wanted to check in with you." : "We haven't heard from you in a little while, so we wanted to check in."} ${esc(what)}, and ${esc(coordinator)} is waiting for your reply.</p>
       ${preview ? `<p style="color:#666">The latest from us:</p>
       <blockquote style="margin:0;padding:12px 16px;border-left:3px solid #b8964e;background:#f7f4ee;white-space:pre-wrap">${esc(preview)}</blockquote>` : ""}
       ${button(`${ACCOUNT_URL}#messages`, "Reply now")}
       <p>If your plans have changed, or you'd like to talk it through, just reply to this email.</p>
-      <p>Warm regards,<br>World Bridge Meridian</p>
+      <p>Warm regards,</p>
     </div>`,
     [...new Set([...team, ...(coordinatorEmail ? [coordinatorEmail] : [])])],
+    staffSignature(staff.find((s) => s.email === coordinatorEmail)),
   );
 }
 
 function button(href: string, label: string) {
-  return `<p style="margin:28px 0"><a href="${href}" style="background:#1c1c1c;color:#fff;padding:12px 22px;border-radius:999px;text-decoration:none;font-family:Arial,sans-serif;font-size:13px;letter-spacing:.05em;text-transform:uppercase">${esc(label)}</a></p>`;
+  return `<p style="margin:28px 0"><a href="${href}" style="background:#1c1c1c;color:#fff;padding:12px 22px;border-radius:999px;text-decoration:none;font-family:${FONT};font-size:13px;letter-spacing:.05em;text-transform:uppercase">${esc(label)}</a></p>`;
 }
 
 Deno.serve(async (req: Request) => {
@@ -195,7 +197,7 @@ Deno.serve(async (req: Request) => {
         team,
         `${unassigned.length} client${unassigned.length === 1 ? "" : "s"} still waiting for a coordinator`,
         `<p>These clients sent a request more than 24 hours ago and nobody is looking after them yet. Open each one and choose a coordinator under "Looked after by".</p>
-        <table style="font:14px/1.5 -apple-system,Segoe UI,sans-serif;border-collapse:collapse">${rows}</table>`,
+        <table style="font-size:14px;line-height:1.5;border-collapse:collapse">${rows}</table>`,
       );
       if (!digest) await release(key);
     }

@@ -1,4 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { layout } from "../_shared/email.ts";
 
 // Both secrets are set on the function (Edge Functions -> Secrets), never
 // in this file: anyone with repo or dashboard-source access would otherwise
@@ -28,7 +29,7 @@ async function sendEmail(to: string, subject: string, html: string) {
       Authorization: `Bearer ${RESEND_API_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject, html }),
+    body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject, html: layout(html) }),
   });
   if (!res.ok) {
     console.error("Resend send failed", res.status, await res.text());
@@ -80,7 +81,6 @@ Deno.serve(async (req: Request) => {
           ${detailsHtml}
           <p>This confirms we received your submission, not that the payment itself has been verified yet. Once our team has checked the transaction on the blockchain, one of our consultants will follow up with you directly to confirm your booking.</p>
           <p>If anything above doesn't look right, please contact us immediately.</p>
-          <p>— World Bridge Meridian</p>
         `,
       );
     }
