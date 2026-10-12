@@ -1,6 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
-import { FONT, layout, staffSignature, type Signature } from "../_shared/email.ts";
+import { FONT, layout, requestNoun, requestTopic, staffSignature, type Signature } from "../_shared/email.ts";
 
 // Called hourly by pg_cron (supabase/reminders.sql) with the shared secret.
 //  * "We haven't heard from you": when the latest thing in a client's thread
@@ -34,7 +34,7 @@ const LABELS: Record<string, string> = {
 };
 
 type Msg = { id: string; client_email: string; sender: string; kind: string; body: string; created_at: string };
-type Req = { email: string; name: string | null; subject: string | null; form_type: string; status: string; submitted_at: string };
+type Req = { email: string; name: string | null; subject: string | null; form_type: string; status: string; submitted_at: string; payload: Record<string, unknown> | null };
 
 const db = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
 
@@ -46,11 +46,11 @@ function esc(value: unknown): string {
     .replaceAll('"', "&quot;");
 }
 
-async function send(to: string[], subject: string, html: string, bcc: string[] = [], signature?: Signature) {
+async function send(to: string[], subject: string, html: string, bcc: string[] = [], signature?: Signature, replyTo: string[] = [INTERNAL_EMAIL]) {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: FROM_EMAIL, to, bcc: bcc.length ? bcc : undefined, reply_to: INTERNAL_EMAIL, subject, html: layout(html, signature) }),
+    body: JSON.stringify({ from: FROM_EMAIL, to, bcc: bcc.length ? bcc : undefined, reply_to: replyTo, subject, html: layout(html, signature) }),
   });
   if (!res.ok) console.error("Resend send failed", res.status, await res.text());
   return res.ok;
@@ -81,11 +81,12 @@ async function nudge(
   const coordinatorEmail = handler.get(email);
   const coordinator = staff.find((s) => s.email === coordinatorEmail)?.name ?? "your travel coordinator";
   const first = (request?.name ?? "").trim().split(/\s+/)[0];
-  const what = request ? `Your ${LABELS[request.form_type] ?? "request"}${request.subject?.includes("—") ? ` (${request.subject.split("—").pop()!.trim()})` : ""} is still open` : "Your account has something waiting for you";
+  const about = request ? requestTopic(request) : "";
+  const what = request ? `Your ${requestNoun(request)}${about ? ` for ${about}` : ""} is still open` : "Your account has something waiting for you";
   const preview = m ? (m.body.length > 280 ? `${m.body.slice(0, 280)}…` : m.body) : "";
   return await send(
     [email],
-    n === 0 ? "Checking in — World Bridge Meridian" : n === 1 ? "We haven't heard from you — World Bridge Meridian" : "Still here when you're ready — World Bridge Meridian",
+    `${n === 0 ? "Checking in" : n === 1 ? "We haven't heard from you" : "Still here when you're ready"}${about ? `: ${about}` : ""} — World Bridge Meridian`,
     `<div style="color:#1c1c1c;max-width:560px">
       <p>${first ? `Dear ${esc(first)},` : "Hello,"}</p>
       <p>${n === 0 ? "We wanted to check in with you." : "We haven't heard from you in a little while, so we wanted to check in."} ${esc(what)}, and ${esc(coordinator)} is waiting for your reply.</p>
@@ -97,6 +98,7 @@ async function nudge(
     </div>`,
     [...new Set([...team, ...(coordinatorEmail ? [coordinatorEmail] : [])])],
     staffSignature(staff.find((s) => s.email === coordinatorEmail)),
+    coordinatorEmail ? [coordinatorEmail, INTERNAL_EMAIL] : [INTERNAL_EMAIL],
   );
 }
 
@@ -122,7 +124,7 @@ Deno.serve(async (req: Request) => {
     db.from("staff_members").select("email, name, role"),
     db.from("client_assignments").select("client_email, staff_email"),
     db.from("client_messages").select("id, client_email, sender, kind, body, created_at").gte("created_at", since).order("created_at", { ascending: false }),
-    db.from("form_submissions").select("email, name, subject, form_type, status, submitted_at").neq("form_type", "newsletter").gte("submitted_at", since).order("submitted_at", { ascending: false }),
+    db.from("form_submissions").select("email, name, subject, form_type, status, submitted_at, payload").neq("form_type", "newsletter").gte("submitted_at", since).order("submitted_at", { ascending: false }),
     db.from("client_flags").select("client_email, reminders_off, blocked"),
   ]);
   for (const r of [staffRes, assignRes, msgRes, reqRes, flagRes]) {
@@ -188,7 +190,7 @@ Deno.serve(async (req: Request) => {
       const rows = unassigned
         .map(([email, r]) => `<tr>
           <td style="padding:6px 12px 6px 0">${esc(r.name || email)}<br><span style="color:#888">${esc(email)}</span></td>
-          <td style="padding:6px 12px 6px 0">${esc(r.subject || LABELS[r.form_type] || r.form_type)}</td>
+          <td style="padding:6px 12px 6px 0">${esc(requestTopic(r) || r.subject || LABELS[r.form_type] || r.form_type)}</td>
           <td style="padding:6px 12px 6px 0">${esc(Math.floor((now - new Date(r.submitted_at).getTime()) / DAY))} days</td>
           <td style="padding:6px 0"><a href="${STAFF_URL}?client=${encodeURIComponent(email)}#clients">Open this client</a></td>
         </tr>`)

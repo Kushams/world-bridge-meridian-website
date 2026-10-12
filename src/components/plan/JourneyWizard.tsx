@@ -19,6 +19,15 @@ import { useAuth } from "@/lib/supabase/AuthProvider";
 import { useCreditBalance } from "@/lib/useCreditBalance";
 import { usdFromCents } from "@/lib/giftCards";
 
+const REQUEST_TYPES: Record<string, string> = {
+  package: "Travel package",
+  cruise: "Cruise",
+  destination: "Destination",
+  "journey-story": "Journey",
+  stay: "Stay",
+  "private-journey": "Private journey",
+};
+
 interface FormState {
   destinationMode: string;
   destinationText: string;
@@ -158,6 +167,14 @@ export function JourneyWizard() {
       additionalInfo: notes ?? initialState.additionalInfo,
     };
   });
+  // The package, cruise, stay or story the client came from, if any.
+  const [request] = useState(() => {
+    if (typeof window === "undefined") return { type: "", item: "" };
+    const params = new URLSearchParams(window.location.search);
+    const type = REQUEST_TYPES[params.get("kind") ?? ""] ?? "";
+    const item = (params.get("item") ?? (type ? params.get("destination") : "") ?? "").slice(0, 200);
+    return type && item ? { type, item } : { type: "", item: "" };
+  });
   // Fill what we already know from a signed-in customer's profile — once,
   // and never over anything already typed or pre-filled from a search.
   const { user, profile } = useAuth();
@@ -216,6 +233,8 @@ export function JourneyWizard() {
       originCity: form.originCity,
       destination: form.destinationText,
       destinationMode: form.destinationMode,
+      requestType: request.type,
+      requestedItem: request.item,
       travelDates: form.dateText || form.dateMode,
       dateFlexibility: form.dateFlexibility,
       travelerCount: form.travelerCount,

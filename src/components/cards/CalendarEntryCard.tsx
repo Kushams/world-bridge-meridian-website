@@ -88,7 +88,16 @@ export function CalendarEntryCard({ entry, today }: { entry: CalendarEntry; toda
           </a>
           {!isPast ? (
             <div className="ml-auto">
-              <Button href="/plan-your-journey" variant="outline" size="md">
+              <Button
+                href={`/travel-details-form?${new URLSearchParams({
+                  event: `${entry.title} — ${entry.venue}, ${entry.city}`,
+                  type: entry.sectionKey,
+                  from: entry.startDate,
+                  to: entry.endDate,
+                }).toString()}`}
+                variant="outline"
+                size="md"
+              >
                 Plan This Trip
               </Button>
             </div>

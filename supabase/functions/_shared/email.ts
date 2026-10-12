@@ -74,3 +74,25 @@ export function layout(inner: string, signature: Signature = TEAM_SIGNATURE): st
 BESPOKE TRAVEL GROUP &nbsp;·&nbsp; <a href="${SITE}" style="color:#d9bd7c;text-decoration:none">WORLDBRIDGEMERIDIAN.COM</a></td></tr>
 </table></td></tr></table></body></html>`;
 }
+
+export interface RequestRow {
+  form_type: string;
+  subject: string | null;
+  payload: Record<string, unknown> | null;
+}
+
+/** The exhibition, cruise, package or place a request is about, e.g. "Rothko — Pace Gallery, New York". */
+export function requestTopic(r: RequestRow): string {
+  const p = r.payload ?? {};
+  const v = r.form_type === "travel-details" ? p.exhibition_or_event : p.requestedItem || p.destination;
+  return String(v ?? "").trim().slice(0, 140);
+}
+
+/** "exhibition travel request", "cruise request", "journey request" … */
+export function requestNoun(r: RequestRow): string {
+  if (r.form_type === "travel-details") return "exhibition travel request";
+  if (r.form_type === "contact") return "enquiry";
+  if (r.form_type !== "journey-request") return "request";
+  const kind = String(r.payload?.requestType ?? "");
+  return kind === "Cruise" ? "cruise request" : kind === "Stay" ? "stay request" : kind === "Private journey" ? "private journey request" : "journey request";
+}

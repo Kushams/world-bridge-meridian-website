@@ -1,5 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { layout } from "../_shared/email.ts";
+import { FONT, layout, requestTopic, type Signature, staffSignature } from "../_shared/email.ts";
 
 // Set as function secrets, never in source. Shared with the database
 // trigger in supabase/forms.sql, which sends the secret as
@@ -12,6 +12,7 @@ const INTERNAL_EMAIL = "info@worldbridgemeridian.group";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const STAFF_URL = "https://worldbridgemeridian.com/staff";
+const ACCOUNT_URL = "https://worldbridgemeridian.com/my-world-bridge";
 
 type FormType = "contact" | "newsletter" | "journey-request" | "travel-details" | "gift-card" | "travel-credits";
 
@@ -30,9 +31,50 @@ const LABELS: Record<FormType, string> = {
   contact: "Contact enquiry",
   newsletter: "Newsletter signup",
   "journey-request": "Journey request",
-  "travel-details": "Exhibition travel itinerary form",
+  "travel-details": "Exhibition travel request",
   "gift-card": "Gift card order — check the crypto payment, then set status to confirmed",
   "travel-credits": "Travel Credits purchase — check the crypto payment, then set status to confirmed",
+};
+
+type Section = { title: string; keys: string[]; client?: boolean };
+
+const SECTIONS: Partial<Record<FormType, Section[]>> = {
+  "journey-request": [
+    { title: "The journey", client: true, keys: ["requestType", "requestedItem", "destination", "destinationMode", "originCity", "travelDates", "dateFlexibility"] },
+    { title: "Who is travelling", client: true, keys: ["travelerType", "travelerCount"] },
+    { title: "Style and preferences", client: true, keys: ["journeyTypes", "interests", "travelPace", "accommodationPreference", "investmentRange", "organize"] },
+    { title: "Personal requirements", keys: ["specialRequirements", "bedPreference", "dietaryRequirements", "allergies"] },
+    { title: "Contact", keys: ["phone", "country", "contactMethod", "hearAboutUs"] },
+    { title: "Travel Credits", keys: ["use_travel_credits", "travel_credits_balance_usd"] },
+  ],
+  "travel-details": [
+    { title: "The exhibition", client: true, keys: ["exhibition_or_event", "event_type", "event_dates", "please_arrange"] },
+    { title: "Travel", client: true, keys: ["departure_city", "departure_date", "return_date", "bed_preference"] },
+    { title: "Primary traveller", keys: ["date_of_birth", "nationality", "phone", "passport_number", "passport_expiry", "uk_eta_status", "passport_photo_attached"] },
+    { title: "Health and dietary", keys: ["dietary_requirements", "allergies"] },
+    { title: "Emergency contact", keys: ["emergency_name", "emergency_relationship", "emergency_phone"] },
+  ],
+};
+
+/** Attribution and housekeeping fields the team never needs to read. */
+const HIDDEN = new Set(["leadId", "name", "email", "notes", "source", "campaign", "landingPage", "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "submissionDate", "payment_method"]);
+
+const FIELD_LABELS: Record<string, string> = {
+  requestType: "Enquiring about",
+  requestedItem: "Name",
+  destinationMode: "Destination type",
+  originCity: "Travelling from",
+  travelerType: "Travelling as",
+  travelerCount: "Travellers",
+  journeyTypes: "Journey type",
+  investmentRange: "Journey investment",
+  organize: "To organise",
+  hearAboutUs: "Heard about us",
+  exhibition_or_event: "Exhibition / event",
+  event_type: "Type",
+  event_dates: "Dates",
+  please_arrange: "Please arrange",
+  uk_eta_status: "UK ETA status",
 };
 
 /** Submissions are attacker-controlled text going into an HTML email. */
@@ -51,42 +93,159 @@ function humanize(key: string): string {
     .replace(/^./, (c) => c.toUpperCase());
 }
 
-function payloadRows(payload: Record<string, unknown> | null): string {
-  if (!payload) return "";
-  return Object.entries(payload)
-    .filter(([, v]) => v !== null && v !== "" && !(Array.isArray(v) && v.length === 0))
-    .map(
-      ([k, v]) =>
-        `<tr><td style="padding:4px 12px 4px 0;vertical-align:top;color:#666">${esc(humanize(k))}</td><td style="padding:4px 0">${esc(
-          Array.isArray(v) ? v.join(", ") : typeof v === "object" ? JSON.stringify(v) : v,
-        )}</td></tr>`,
-    )
+function display(v: unknown): string {
+  return Array.isArray(v) ? v.join(", ") : typeof v === "object" && v !== null ? JSON.stringify(v) : String(v ?? "");
+}
+
+function filled(v: unknown): boolean {
+  return v !== null && v !== undefined && v !== "" && !(Array.isArray(v) && v.length === 0);
+}
+
+const H3 = `style="margin:24px 0 8px;font-family:${FONT};font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#a8813f"`;
+const TD_K = `style="padding:6px 16px 6px 0;vertical-align:top;color:#77716a;white-space:nowrap;font-size:13px"`;
+const TD_V = `style="padding:6px 0;vertical-align:top;font-size:14px;color:#1c1c1c"`;
+
+function rows(pairs: [string, unknown][]): string {
+  return pairs
+    .filter(([, v]) => filled(v))
+    .map(([k, v]) => `<tr><td ${TD_K}>${esc(FIELD_LABELS[k] ?? humanize(k))}</td><td ${TD_V}>${esc(display(v))}</td></tr>`)
     .join("");
 }
 
+function block(title: string, body: string): string {
+  return body ? `<h3 ${H3}>${esc(title)}</h3><table role="presentation" style="border-collapse:collapse;width:100%">${body}</table>` : "";
+}
+
+/** "Date: 03/05/2027 | Location: London | …" rows from the exhibition form, as one table. */
+function itineraryTable(payload: Record<string, unknown>): string {
+  const lines = Object.keys(payload)
+    .filter((k) => /^itinerary_row_\d+$/.test(k))
+    .sort((a, b) => Number(a.split("_").pop()) - Number(b.split("_").pop()))
+    .map((k) => String(payload[k]).split(" | ").map((part) => part.replace(/^[^:]+:\s*/, "")));
+  if (!lines.length) return "";
+  const th = `style="padding:6px 10px 6px 0;text-align:left;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#77716a;border-bottom:1px solid #e8e1d3"`;
+  const td = `style="padding:8px 10px 8px 0;vertical-align:top;font-size:13px;color:#1c1c1c;border-bottom:1px solid #f1ece2"`;
+  return `<h3 ${H3}>Itinerary</h3><table role="presentation" style="border-collapse:collapse;width:100%">
+<tr><th ${th}>Date</th><th ${th}>Location</th><th ${th}>Activity</th><th ${th}>Stay / notes</th></tr>
+${lines.map((c) => `<tr>${[0, 1, 2, 3].map((i) => `<td ${td}>${esc(c[i] && c[i] !== "-" ? c[i] : "")}</td>`).join("")}</tr>`).join("")}
+</table>`;
+}
+
+function travellers(payload: Record<string, unknown>): string {
+  const keys = Object.keys(payload).filter((k) => /^accompanying_traveler_\d+$/.test(k)).sort();
+  return block("Accompanying travellers", keys.map((k, i) => `<tr><td ${TD_K}>Traveller ${i + 2}</td><td ${TD_V}>${esc(payload[k])}</td></tr>`).join(""));
+}
+
+/** Everything the client sent, grouped the way their form was. `clientCopy` keeps passports and contacts out. */
+function details(record: FormRecord, clientCopy: boolean): string {
+  const payload = record.payload ?? {};
+  const sections = SECTIONS[record.form_type];
+  if (!sections) {
+    return clientCopy ? "" : block("Details", rows(Object.entries(payload).filter(([k]) => !HIDDEN.has(k))));
+  }
+  const used = new Set<string>();
+  let html = "";
+  for (const s of sections) {
+    s.keys.forEach((k) => used.add(k));
+    if (clientCopy && !s.client) continue;
+    html += block(s.title, rows(s.keys.map((k) => [k, payload[k]])));
+  }
+  if (record.form_type === "travel-details") {
+    html += itineraryTable(payload);
+    if (!clientCopy) html += travellers(payload);
+  }
+  if (!clientCopy) {
+    const rest = Object.entries(payload).filter(
+      ([k]) => !used.has(k) && !HIDDEN.has(k) && !/^(itinerary_row|accompanying_traveler)_\d+$/.test(k),
+    );
+    html += block("Other details", rows(rest));
+  }
+  return html;
+}
+
+const topic = (record: FormRecord) => requestTopic(record);
+
+/** Client-facing wording per form. */
+function copy(record: FormRecord) {
+  const p = record.payload ?? {};
+  const t = topic(record);
+  switch (record.form_type) {
+    case "travel-details":
+      return {
+        subject: `Your exhibition travel request${t ? `: ${t}` : ""}`,
+        heading: "Your exhibition travel request",
+        intro: t
+          ? `Thank you for planning your visit to <strong>${esc(t)}</strong> with us. Your travel details and itinerary have reached our team.`
+          : "Thank you for planning your exhibition visit with us. Your travel details and itinerary have reached our team.",
+        steps: [
+          "We confirm the exhibition dates, timed entry and any preview or private viewing access.",
+          "We arrange your flights, transfers and hotel around your itinerary.",
+          "Your itinerary and quote arrive in your account, ready to review and confirm.",
+        ],
+      };
+    case "journey-request": {
+      const kind = String(p.requestType ?? "");
+      const label = kind === "Cruise" ? "cruise" : kind === "Travel package" ? "journey" : kind === "Stay" ? "stay" : kind === "Private journey" ? "private journey" : "journey";
+      return {
+        subject: `Your ${label} request${t ? `: ${t}` : ""}`,
+        heading: kind === "Cruise" ? "Your cruise request" : kind === "Private journey" ? "Your private journey request" : "Your journey request",
+        intro: t
+          ? `Thank you for your interest in <strong>${esc(t)}</strong>. Your answers have reached our team, and we're already looking at how to shape it around you.`
+          : "Thank you for designing your journey with us. Your answers have reached our team, and we're already looking at how to shape it around you.",
+        steps: kind === "Cruise"
+          ? [
+              "We check sailing dates, suite categories and availability for your party.",
+              "We add flights, pre- and post-cruise stays and private shore experiences.",
+              "Your proposal arrives in your account, ready to review and refine.",
+            ]
+          : [
+              "Your travel coordinator reviews your answers and may message you with a question or two.",
+              "We prepare a tailored proposal: hotels, experiences and a day-by-day plan.",
+              "Your proposal arrives in your account, ready to review and refine.",
+            ],
+      };
+    }
+    case "gift-card":
+      return { subject: "We've received your gift card order", heading: "Your gift card order", intro: "Thank you. We will verify your payment on the blockchain, then email the gift card code(s).", steps: [] };
+    case "travel-credits":
+      return { subject: "We've received your Travel Credits purchase", heading: "Your Travel Credits purchase", intro: "Thank you. We will verify your payment on the blockchain, then add the credits to your account and email you.", steps: [] };
+    default:
+      return {
+        subject: "Thank you for contacting World Bridge Meridian",
+        heading: "Thank you for getting in touch",
+        intro: "Your message has reached our team, and a member of the team will reply to you personally.",
+        steps: [],
+      };
+  }
+}
+
+type StaffRow = { email: string; name: string | null; role: string };
+
 /** info@, every admin, and the staff member looking after this client (if any). */
-async function teamRecipients(clientEmail: string): Promise<string[]> {
+async function team(clientEmail: string): Promise<{ to: string[]; coordinator?: StaffRow }> {
   const to = new Set([INTERNAL_EMAIL]);
-  const rest = async (path: string) => {
+  const rest = async <T>(path: string): Promise<T[]> => {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
       headers: { apikey: SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}` },
     });
-    return res.ok ? ((await res.json()) as Record<string, string>[]) : [];
+    return res.ok ? ((await res.json()) as T[]) : [];
   };
   try {
-    const [admins, assigned] = await Promise.all([
-      rest("staff_members?select=email&role=eq.admin"),
-      rest(`client_assignments?select=staff_email&client_email=eq.${encodeURIComponent(clientEmail.toLowerCase())}`),
+    const [staff, assigned] = await Promise.all([
+      rest<StaffRow>("staff_members?select=email,name,role"),
+      rest<{ staff_email: string }>(`client_assignments?select=staff_email&client_email=eq.${encodeURIComponent(clientEmail.toLowerCase())}`),
     ]);
-    for (const a of admins) to.add(a.email);
-    for (const a of assigned) if (a.staff_email) to.add(a.staff_email);
+    for (const s of staff) if (s.role === "admin") to.add(s.email);
+    const coordinator = staff.find((s) => s.email === assigned[0]?.staff_email);
+    if (coordinator) to.add(coordinator.email);
+    return { to: [...to], coordinator };
   } catch (err) {
     console.error("team lookup failed", err);
+    return { to: [...to] };
   }
-  return [...to];
 }
 
-async function sendEmail(to: string | string[], subject: string, html: string, replyTo?: string) {
+async function sendEmail(to: string | string[], subject: string, html: string, replyTo: string[], signature?: Signature) {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -97,8 +256,8 @@ async function sendEmail(to: string | string[], subject: string, html: string, r
       from: FROM_EMAIL,
       to: Array.isArray(to) ? to : [to],
       subject,
-      html: layout(html),
-      ...(replyTo ? { reply_to: replyTo } : {}),
+      html: layout(html, signature),
+      reply_to: replyTo,
     }),
   });
   if (!res.ok) {
@@ -122,47 +281,51 @@ Deno.serve(async (req: Request) => {
       return new Response(JSON.stringify({ ok: true, skipped: "card order" }), { headers: { "Content-Type": "application/json" } });
     }
     const label = LABELS[record.form_type] ?? "Website form";
+    const about = topic(record);
+    const newsletter = record.form_type === "newsletter";
+    const { to, coordinator } = newsletter ? { to: [INTERNAL_EMAIL], coordinator: undefined } : await team(record.email);
+    const button = (href: string, text: string) =>
+      `<p style="margin:28px 0"><a href="${href}" style="background:#1c1c1c;color:#fff;padding:12px 22px;border-radius:999px;text-decoration:none;font-family:${FONT};font-size:13px;letter-spacing:.05em;text-transform:uppercase">${esc(text)}</a></p>`;
 
     await sendEmail(
-      record.form_type === "newsletter" ? INTERNAL_EMAIL : await teamRecipients(record.email),
-      `${label}${record.name ? ` — ${record.name}` : ""}`,
+      to,
+      `${label}${about ? `: ${about}` : ""}${record.name ? ` — ${record.name}` : ""}`,
       `
-        <h2>${esc(label)}</h2>
-        <table style="font-size:14px;line-height:1.5;border-collapse:collapse">
-          <tr><td style="padding:4px 12px 4px 0;color:#666">Name</td><td style="padding:4px 0">${esc(record.name || "(not provided)")}</td></tr>
-          <tr><td style="padding:4px 12px 4px 0;color:#666">Email</td><td style="padding:4px 0">${esc(record.email)}</td></tr>
-          ${record.subject ? `<tr><td style="padding:4px 12px 4px 0;color:#666">Subject</td><td style="padding:4px 0">${esc(record.subject)}</td></tr>` : ""}
-          <tr><td style="padding:4px 12px 4px 0;color:#666">Submitted</td><td style="padding:4px 0">${esc(record.submitted_at)}</td></tr>
-          ${payloadRows(record.payload)}
+        <p style="margin:0 0 4px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#a8813f">${esc(label)}</p>
+        <h2 style="margin:0 0 12px;font-size:20px;font-weight:600;line-height:1.35">${esc(about || record.subject || record.name || record.email)}</h2>
+        <table role="presentation" style="border-collapse:collapse;width:100%">
+          ${rows([["Client", record.name || "(not provided)"], ["Email", record.email], ["Looked after by", coordinator ? coordinator.name || coordinator.email : newsletter ? "" : "Not assigned yet"], ["Subject", record.form_type === "contact" ? record.subject : ""], ["Submitted", new Date(record.submitted_at).toUTCString()]])}
         </table>
-        ${record.message ? `<p style="white-space:pre-wrap;margin-top:16px">${esc(record.message)}</p>` : ""}
-        ${record.form_type === "newsletter" ? "" : `<p><a href="${STAFF_URL}?client=${encodeURIComponent(record.email.toLowerCase())}#clients" style="display:inline-block;background:#1c1917;color:#f5f0e6;padding:10px 18px;border-radius:999px;text-decoration:none">Open this client</a></p>`}
+        ${details(record, false)}
+        ${record.message ? `<h3 ${H3}>${record.form_type === "contact" ? "Message" : "Notes from the client"}</h3><p style="white-space:pre-wrap;margin:0;font-size:14px">${esc(record.message)}</p>` : ""}
+        ${newsletter ? "" : button(`${STAFF_URL}?client=${encodeURIComponent(record.email.toLowerCase())}#clients`, "Open this client")}
         <p style="color:#888;font-size:12px">Reply to this email to answer them directly. It's also on the staff page under Requests.</p>
       `,
-      record.email,
+      [record.email],
     );
 
     // Acknowledge the sender, except for the newsletter: that one is a
     // marketing list, and a signup confirmation belongs in the list
     // tooling rather than here.
-    if (record.form_type !== "newsletter") {
+    if (!newsletter) {
+      const c = copy(record);
+      const first = (record.name ?? "").trim().split(/\s+/)[0];
       await sendEmail(
         record.email,
-        record.form_type === "journey-request"
-          ? "We've received your journey request — World Bridge Meridian"
-          : record.form_type === "travel-details"
-            ? "We've received your travel itinerary form — World Bridge Meridian"
-            : record.form_type === "gift-card"
-              ? "We've received your gift card order — World Bridge Meridian"
-              : record.form_type === "travel-credits"
-                ? "We've received your Travel Credits purchase — World Bridge Meridian"
-                : "Thank you for contacting World Bridge Meridian",
+        `${c.subject} — World Bridge Meridian`,
         `
-          <p>Hi ${esc(record.name || "there")},</p>
-          <p>Thank you for reaching out. Your ${record.form_type === "journey-request" ? "journey request" : record.form_type === "travel-details" ? "travel detail form" : record.form_type === "gift-card" ? "gift card order" : record.form_type === "travel-credits" ? "Travel Credits purchase" : "message"} has reached our team and ${record.form_type === "gift-card" ? "we will verify your payment on the blockchain, then email the gift card code(s)." : record.form_type === "travel-credits" ? "we will verify your payment on the blockchain, then add the credits to your account and email you." : "a consultant will be in touch personally."}</p>
-          ${record.message ? `<p style="color:#666">Your message:</p><blockquote style="white-space:pre-wrap;border-left:2px solid #ddd;padding-left:12px;color:#666">${esc(record.message)}</blockquote>` : ""}
+          <p style="margin:0 0 4px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#a8813f">${esc(c.heading)}</p>
+          <p>${first ? `Dear ${esc(first)},` : "Hello,"}</p>
+          <p>${c.intro}</p>
+          ${coordinator ? `<p>${esc(coordinator.name || "Your travel coordinator")} is looking after your request and will be in touch personally.</p>` : ""}
+          ${details(record, true)}
+          ${record.message ? `<h3 ${H3}>${record.form_type === "contact" ? "Your message" : "Your notes"}</h3><p style="white-space:pre-wrap;margin:0;color:#55504a">${esc(record.message)}</p>` : ""}
+          ${c.steps.length ? `<h3 ${H3}>What happens next</h3><ol style="margin:0;padding-left:20px;font-size:14px;line-height:1.7">${c.steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>` : ""}
+          ${button(`${ACCOUNT_URL}#enquiries`, "View your request")}
+          <p style="color:#55504a">You can reply to this email at any time.</p>
         `,
-        INTERNAL_EMAIL,
+        coordinator ? [coordinator.email, INTERNAL_EMAIL] : [INTERNAL_EMAIL],
+        staffSignature(coordinator),
       );
     }
 
