@@ -57,3 +57,27 @@ create or replace trigger push_on_crypto_payment
   after insert on public.crypto_payment_submissions
   for each row
   execute function public.push_notify();
+
+-- More client activity: a new account, a saved journey, Travel Credits spent, a gift card redeemed.
+-- (push-notify also emails the team for these, because nothing else does.)
+create or replace trigger push_on_new_profile
+  after insert on public.profiles
+  for each row
+  execute function public.push_notify();
+
+create or replace trigger push_on_saved_journey
+  after insert on public.saved_journeys
+  for each row
+  execute function public.push_notify();
+
+create or replace trigger push_on_credits_used
+  after insert on public.travel_credit_ledger
+  for each row
+  when (new.delta_cents < 0)
+  execute function public.push_notify();
+
+create or replace trigger push_on_gift_card_redeemed
+  after update of claimed_at on public.gift_cards
+  for each row
+  when (old.claimed_at is null and new.claimed_at is not null)
+  execute function public.push_notify();

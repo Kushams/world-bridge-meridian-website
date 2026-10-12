@@ -41,7 +41,7 @@ export function PushControl() {
   }
 
   return (
-    <div className="mb-4 rounded-2xl border border-gold/50 px-4 py-3">
+    <div className={`mb-4 rounded-2xl border border-gold/50 px-4 ${state === "on" ? "py-2" : "py-3"}`}>
       {state === "needs-install" ? (
         <p className="text-sm text-stone">
           <span className="text-ivory">To get push notifications on iPhone or iPad,</span> tap Share in Safari, choose <em>Add to Home Screen</em>, then open the staff page from the new icon and come back here.
@@ -52,7 +52,7 @@ export function PushControl() {
         </p>
       ) : state === "on" ? (
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-sm text-ivory">Push notifications are on for this device ✓</p>
+          <p className="text-xs text-ivory">Push notifications are on for this device ✓</p>
           <div className="flex gap-2">
             <button type="button" disabled={busy} onClick={async () => setMsg((await sendTestPush()) ?? "Test sent.")} className={`${btn} border border-line text-ivory hover:border-gold`}>
               Send a test

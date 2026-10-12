@@ -42,7 +42,7 @@ const ICONS: Record<Tab, ReactNode> = {
 };
 
 const TABS: { key: Tab; label: string }[] = [
-  { key: "today", label: "Today" },
+  { key: "today", label: "Inbox" },
   { key: "clients", label: "Clients" },
   { key: "requests", label: "Requests" },
   { key: "team", label: "Team" },
@@ -190,9 +190,9 @@ export function StaffArea() {
       ) : null}
 
       <div className="mt-6">
+        <PushControl />
         {tab === "today" ? (
           <>
-            <PushControl />
             <TodayPanel data={attention} clients={clients} onOpenClient={(email) => go("clients", email)} />
           </>
         ) : tab === "requests" ? (
