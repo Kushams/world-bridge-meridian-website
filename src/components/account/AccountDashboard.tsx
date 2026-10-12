@@ -75,10 +75,10 @@ function DeleteAccount() {
 type Tab = "profile" | "messages" | "wallet" | "invoices";
 const WALLET_HASHES = new Set(["wallet", "travel-credits", "gift-cards", "redeem-code"]);
 const INVOICE_HASHES = new Set(["invoices"]);
-const MESSAGE_HASHES = new Set(["messages"]);
+const MESSAGE_HASHES = new Set(["messages", "inbox"]);
 const TABS: { key: Tab; label: string }[] = [
   { key: "profile", label: "Profile" },
-  { key: "messages", label: "Messages" },
+  { key: "messages", label: "Inbox" },
   { key: "wallet", label: "Wallet" },
   ...(CARD_PAYMENTS_ENABLED ? [{ key: "invoices" as const, label: "Invoices" }] : []),
 ];
@@ -182,14 +182,14 @@ export function AccountDashboard() {
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden>
             <path d="M4 5h16v11H9l-5 4z" />
           </svg>
-          Message your coordinator
+          Inbox · message us
           {unread ? <span aria-label="New message" className="h-2.5 w-2.5 rounded-full bg-gold" /> : null}
         </button>
       ) : null}
 
       {tab === "messages" ? (
         <div role="tabpanel" id="panel-messages" aria-labelledby="tab-messages" className="space-y-10">
-          <Section id="messages" eyebrow="Messages" title="Talk to your coordinator">
+          <Section id="messages" eyebrow="Inbox" title="Your messages and updates">
             <MessagesPanel />
           </Section>
         </div>
