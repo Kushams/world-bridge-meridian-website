@@ -74,6 +74,8 @@ export interface StaffInvoice {
   status: "unpaid" | "paid" | "needs_review" | "void";
   created_at: string;
   paid_at: string | null;
+  paid_via: string | null;
+  bank_details: string | null;
   user_id: string;
 }
 
@@ -155,7 +157,7 @@ export async function loadSignatures(email: string): Promise<Signature[]> {
 export async function loadClientInvoices(userId: string): Promise<StaffInvoice[] | null> {
   const { data, error } = await db()
     .from("invoices")
-    .select("id, reference, description, amount_usd, status, created_at, paid_at, user_id")
+    .select("id, reference, description, amount_usd, status, created_at, paid_at, paid_via, bank_details, user_id")
     .eq("kind", "invoice")
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
@@ -173,6 +175,18 @@ export async function createInvoice(email: string, amount: number, description: 
 
 export async function voidInvoice(id: string): Promise<string | null> {
   const { error } = await db().rpc("staff_void_invoice", { p_id: id });
+  return error ? error.message : null;
+}
+
+/** Paste (or clear, with an empty string) the bank transfer details the client sees on this invoice. */
+export async function setInvoiceBankDetails(id: string, details: string): Promise<string | null> {
+  const { error } = await db().rpc("staff_set_invoice_bank_details", { p_id: id, p_details: details });
+  return error ? error.message : null;
+}
+
+/** A bank transfer arrived: mark the invoice paid. */
+export async function markInvoicePaid(id: string): Promise<string | null> {
+  const { error } = await db().rpc("staff_mark_invoice_paid", { p_id: id, p_via: "bank transfer" });
   return error ? error.message : null;
 }
 

@@ -37,6 +37,38 @@ function useInvoicePdfs(folder: string | null) {
   return pdfs;
 }
 
+/** Bank details pasted in by staff for this invoice, with a Copy button. Only rendered once staff have added them. */
+function BankTransfer({ invoice }: { invoice: Invoice }) {
+  const [copied, setCopied] = useState<"details" | "reference" | null>(null);
+  async function copy(what: "details" | "reference", text: string) {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(what);
+      window.setTimeout(() => setCopied(null), 2000);
+    } catch {
+      // Clipboard blocked: the text is still selectable on screen.
+    }
+  }
+  return (
+    <div className="mt-4 rounded-card border border-gold/40 bg-gold/5 p-4">
+      <p className="text-xs font-semibold uppercase tracking-wider text-gold">Pay by bank transfer</p>
+      <pre className="mt-2 whitespace-pre-wrap break-words font-sans text-sm leading-relaxed text-ivory select-all">{invoice.bank_details}</pre>
+      <p className="mt-3 text-xs text-stone">
+        Please put <span className="font-mono text-ivory">{invoice.reference}</span> as the payment reference and send US${invoice.amount_usd.toFixed(2)} (or the
+        equivalent). We&apos;ll mark the invoice paid as soon as the transfer arrives.
+      </p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <Button type="button" size="md" variant="outline" onClick={() => copy("details", invoice.bank_details ?? "")}>
+          {copied === "details" ? "Copied ✓" : "Copy bank details"}
+        </Button>
+        <Button type="button" size="md" variant="outline" onClick={() => copy("reference", invoice.reference)}>
+          {copied === "reference" ? "Copied ✓" : "Copy reference"}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 /** Small paper-style preview of an invoice. */
 function InvoiceSheet({ invoice }: { invoice: Invoice }) {
   return (
@@ -78,11 +110,21 @@ export function InvoicesPanel() {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
 
+  // Keep the list fresh: staff may add bank details or mark an invoice paid while this page is open.
   useEffect(() => {
     let alive = true;
+    const refresh = () => {
+      if (document.visibilityState === "visible") loadInvoices().then((list) => alive && list && setInvoices(list));
+    };
     loadInvoices().then((list) => alive && setInvoices(list));
+    const timer = window.setInterval(refresh, 20000);
+    document.addEventListener("visibilitychange", refresh);
+    window.addEventListener("focus", refresh);
     return () => {
       alive = false;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", refresh);
+      window.removeEventListener("focus", refresh);
     };
   }, []);
 
@@ -168,7 +210,7 @@ export function InvoicesPanel() {
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 {i.status === "unpaid" ? (
                   <Button type="button" size="md" disabled={busy !== null} onClick={() => pay(i)}>
-                    {busy === i.id ? "Opening secure payment…" : "Pay by card"}
+                    {busy === i.id ? "Opening secure payment…" : "Pay by card or crypto"}
                   </Button>
                 ) : null}
                 {pdf ? (
@@ -178,12 +220,27 @@ export function InvoicesPanel() {
                 ) : (
                   <span className="text-xs text-stone-dim">Detailed invoice PDF coming soon from your consultant.</span>
                 )}
-                {i.status === "unpaid" ? (
-                  <a href="/payments#bank-transfer" className="text-xs text-stone underline underline-offset-4 hover:text-ivory">
-                    Or pay by bank transfer or crypto
-                  </a>
-                ) : null}
               </div>
+
+              {i.status === "unpaid" && i.bank_details ? <BankTransfer invoice={i} /> : null}
+
+              {i.status === "unpaid" ? (
+                <details className="mt-4 text-xs text-stone">
+                  <summary className="cursor-pointer underline underline-offset-4 hover:text-ivory">Other ways to pay</summary>
+                  <div className="mt-2 space-y-2 leading-relaxed">
+                    {!i.bank_details ? (
+                      <p>
+                        Prefer a bank transfer? <a href="#messages" className="underline underline-offset-4 hover:text-ivory">Message your consultant</a> and we&apos;ll
+                        add our bank details to this invoice. They appear here as soon as we do.
+                      </p>
+                    ) : null}
+                    <p>
+                      Already hold crypto? Choose <em>Already have crypto</em> inside the secure payment page above, or send it directly from our{" "}
+                      <a href="/payments#bank-transfer" className="underline underline-offset-4 hover:text-ivory">payments page</a>.
+                    </p>
+                  </div>
+                </details>
+              ) : null}
             </div>
           </article>
         );

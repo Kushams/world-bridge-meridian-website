@@ -70,7 +70,7 @@ export function ClientsPanel({ admin, selected, onSelect }: { admin: boolean; se
   if (current) {
     return (
       <div>
-        <button type="button" onClick={() => onSelect("")} className="mb-6 text-xs uppercase tracking-wide text-stone hover:text-ivory">
+        <button type="button" onClick={() => onSelect("")} className="mb-5 inline-flex min-h-11 items-center rounded-full border hairline px-5 text-xs font-semibold uppercase tracking-wide text-stone active:scale-95 hover:text-ivory">
           ← All clients
         </button>
         {admin ? (
@@ -94,9 +94,9 @@ export function ClientsPanel({ admin, selected, onSelect }: { admin: boolean; se
   }
 
   return (
-    <div className="max-w-4xl">
+    <div>
       <div className="mb-4 flex flex-col gap-3 sm:flex-row">
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by name or email" className={`${inputClass} flex-1`} />
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search by name or email" className={`${inputClass} h-12 flex-1 rounded-full px-5`} />
         {admin ? (
           <select value={owner} onChange={(e) => setOwner(e.target.value)} aria-label="Looked after by" className={inputClass}>
             <option value="">Everyone</option>
@@ -117,15 +117,15 @@ export function ClientsPanel({ admin, selected, onSelect }: { admin: boolean; se
           No clients yet. Clients who sign up through your personal link (above) appear here, and an admin can assign others to you.
         </p>
       ) : null}
-      <ul className="divide-y divide-line rounded-card border hairline">
+      <ul className="space-y-3">
         {shown.map((c) => (
           <li key={c.id}>
             <button
               type="button"
               onClick={() => onSelect(c.email)}
-              className="flex w-full items-center gap-4 px-5 py-4 text-left transition-colors hover:bg-ivory/5"
+              className="flex min-h-[72px] w-full items-center gap-4 rounded-[24px] border hairline bg-charcoal/40 px-5 py-3 text-left shadow-sm transition active:scale-[0.99] hover:border-gold/60"
             >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border hairline text-xs text-gold">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-full border hairline bg-ink text-xs text-gold">
                 {c.avatar_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={c.avatar_url} alt="" className="h-full w-full object-cover" />

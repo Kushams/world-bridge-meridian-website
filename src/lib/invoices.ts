@@ -9,6 +9,8 @@ export interface Invoice {
   status: "unpaid" | "paid" | "needs_review" | "void";
   paid_at: string | null;
   created_at: string;
+  /** Pasted in by staff when the client chooses a bank transfer; empty until then. */
+  bank_details: string | null;
 }
 
 export async function loadInvoices(): Promise<Invoice[] | null> {
@@ -16,7 +18,7 @@ export async function loadInvoices(): Promise<Invoice[] | null> {
   if (!supabase) return null;
   const { data, error } = await supabase
     .from("invoices")
-    .select("id, reference, description, amount_usd, status, paid_at, created_at")
+    .select("id, reference, description, amount_usd, status, paid_at, created_at, bank_details")
     .eq("kind", "invoice")
     .order("created_at", { ascending: false });
   if (error) return null;
