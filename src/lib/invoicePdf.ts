@@ -6,7 +6,7 @@ export interface PdfInvoice {
   dueDate: string | null;
   status: "unpaid" | "paid" | "needs_review" | "void";
   paidAt: string | null;
-  currency: "USD" | "EUR" | "GBP";
+  currency: string;
   lines: LineItem[];
   subtotal: number;
   taxPercent: number;
@@ -50,8 +50,8 @@ export async function loadPdfFonts(): Promise<PdfFonts | null> {
   }
 }
 
-const SYMBOL = { USD: "US$", EUR: "€", GBP: "£" } as const;
-const fmt = (n: number, c: keyof typeof SYMBOL) => `${SYMBOL[c]}${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+const SYMBOL: Record<string, string> = { USD: "US$", EUR: "€", GBP: "£" };
+const fmt = (n: number, c: string) => `${SYMBOL[c] ?? `${c} `}${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const day = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
 // Brand palette (matches the website)
