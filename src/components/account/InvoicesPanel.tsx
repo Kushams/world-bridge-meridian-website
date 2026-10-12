@@ -145,6 +145,23 @@ export function InvoicesPanel() {
     };
   }, []);
 
+  // Tell the team the client has seen their unpaid invoices (once per invoice per browser session).
+  useEffect(() => {
+    const supabase = getSupabaseClient();
+    if (!supabase || !invoices) return;
+    for (const i of invoices) {
+      if (i.status !== "unpaid") continue;
+      const key = `wbm-inv-opened:${i.id}`;
+      try {
+        if (window.sessionStorage.getItem(key)) continue;
+        window.sessionStorage.setItem(key, "1");
+      } catch {
+        // Storage blocked: the database only records the first open anyway.
+      }
+      supabase.rpc("client_opened_invoice", { p_id: i.id }).then(() => undefined, () => undefined);
+    }
+  }, [invoices]);
+
   async function pay(invoice: Invoice) {
     setError("");
     setBusy(invoice.id);

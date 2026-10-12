@@ -6,6 +6,7 @@ import { FONT, layout, requestNoun, requestTopic, staffSignature, type Signature
 //  * "We haven't heard from you": when the latest thing in a client's thread
 //    came from us and the client hasn't answered for 3 days, then 7 days.
 //    Never after their request is confirmed or closed.
+//  * Card payment started but not finished: one email an hour later (never more than once per payment).
 //  * Admin digest, at most once a day: clients with a request older than
 //    24 hours and nobody looking after them.
 // Every reminder is recorded in public.reminder_log so it only sends once.
@@ -179,6 +180,43 @@ Deno.serve(async (req: Request) => {
     else await release(key);
   }
 
+  // 1b. Card payments started but not finished: one email, an hour or more after the client reached checkout.
+  let abandoned = 0;
+  const { data: carts } = await db
+    .from("invoices")
+    .select("id, user_id, reference, description, amount_usd, kind, card_started_at")
+    .eq("status", "unpaid")
+    .not("card_started_at", "is", null)
+    .lte("card_started_at", new Date(now - 60 * 60 * 1000).toISOString())
+    .gte("card_started_at", new Date(now - 3 * DAY).toISOString());
+  for (const c of (carts ?? []) as { id: string; user_id: string; reference: string; description: string; amount_usd: number; kind: string }[]) {
+    const { data: u } = await db.auth.admin.getUserById(c.user_id);
+    const email = u.user?.email?.toLowerCase();
+    if (!email || staffEmails.has(email) || quiet.has(email)) continue;
+    const key = `card-abandon:${c.id}`;
+    if (!(await claim(key))) continue;
+    const first = String((u.user?.user_metadata?.full_name as string | undefined) ?? "").trim().split(/\s+/)[0];
+    const coordinatorEmail = handler.get(email);
+    const link = c.kind === "invoice" ? `${ACCOUNT_URL}#invoices` : c.kind === "gift-card" ? "https://worldbridgemeridian.com/gift-cards" : `${ACCOUNT_URL}#wallet`;
+    const ok = await send(
+      [email],
+      `You haven't finished your payment — ${c.reference}`,
+      `<div style="color:#1c1c1c;max-width:560px">
+        <p>${first ? `Dear ${esc(first)},` : "Hello,"}</p>
+        <p>You started a card payment of <b>US$${Number(c.amount_usd).toFixed(2)}</b> for ${esc(c.description)} (${esc(c.reference)}), but it hasn't been completed yet.</p>
+        <p>Nothing has been charged. When you're ready, you can pick up where you left off:</p>
+        ${button(link, c.kind === "invoice" ? "Continue to payment" : "Continue")}
+        <p>If something went wrong at checkout, or you'd rather pay another way (bank transfer or crypto), just reply to this email and we'll help.</p>
+        <p>Warm regards,</p>
+      </div>`,
+      [],
+      staffSignature(staff.find((s) => s.email === coordinatorEmail)),
+      coordinatorEmail ? [coordinatorEmail, INTERNAL_EMAIL] : [INTERNAL_EMAIL],
+    );
+    if (ok) abandoned++;
+    else await release(key);
+  }
+
   // 2. Admin digest of unassigned clients.
   const unassigned = [...latestReq.entries()].filter(
     ([email, r]) => !staffEmails.has(email) && !quiet.has(email) && !handler.has(email) && now - new Date(r.submitted_at).getTime() >= DAY && r.status !== "closed",
@@ -205,5 +243,5 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  return new Response(JSON.stringify({ ok: true, nudged, digest }), { headers: { "Content-Type": "application/json" } });
+  return new Response(JSON.stringify({ ok: true, nudged, abandoned, digest }), { headers: { "Content-Type": "application/json" } });
 });

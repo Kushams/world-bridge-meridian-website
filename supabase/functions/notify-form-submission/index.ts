@@ -1,5 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "jsr:@supabase/supabase-js@2";
 import { FONT, layout, requestTopic, type Signature, staffSignature } from "../_shared/email.ts";
+import { pushToTeam } from "../_shared/push.ts";
 
 // Set as function secrets, never in source. Shared with the database
 // trigger in supabase/forms.sql, which sends the secret as
@@ -313,6 +315,16 @@ Deno.serve(async (req: Request) => {
       `,
       [record.email],
     );
+
+    // Real push notification to the admins and the staff member looking after this client.
+    if (!newsletter) {
+      await pushToTeam(createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } }), record.email, {
+        title: `New ${label}${record.name ? ` from ${record.name}` : ""}`,
+        body: about || record.subject || "Open the staff page to see it",
+        url: `/staff?client=${encodeURIComponent(record.email.toLowerCase())}#clients`,
+        tag: `request-${record.email.toLowerCase()}`,
+      });
+    }
 
     // Acknowledge the sender, except for the newsletter: that one is a
     // marketing list, and a signup confirmation belongs in the list
