@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { Thread } from "@/components/messages/Thread";
-import { postAsStaff } from "@/lib/messages";
+import { postAsStaff, postVoice } from "@/lib/messages";
 import {
   createInvoice,
   fmtDate,
@@ -167,7 +167,10 @@ export function ClientHub({ client }: { client: Client }) {
       ) : null}
 
       <Block title="Messages" note="The client's conversation with us. Documents, invoices, uploads and stage changes appear here automatically; each message you send is also emailed to the client.">
-        <Thread clientEmail={email} viewer="staff" onSend={(body) => postAsStaff(email, body)} placeholder="Reply to the client…" />
+        <Thread clientEmail={email} viewer="staff" onSend={(body) => postAsStaff(email, body)}
+          onVoice={(audio, seconds) => postVoice(email, "staff", audio, seconds)}
+          placeholder="Reply to the client…"
+        />
       </Block>
 
       <Block title="Profile">

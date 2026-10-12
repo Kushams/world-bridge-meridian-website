@@ -10,6 +10,7 @@ export interface ThreadMessage {
   kind: string;
   body: string;
   link: string | null;
+  audio_path: string | null;
   created_at: string;
 }
 
@@ -55,4 +56,42 @@ export async function postAsStaff(clientEmail: string, body: string): Promise<st
     .functions.invoke("notify-client", { body: { email: clientEmail, kind: "message", title: body } })
     .catch(() => undefined);
   return null;
+}
+
+const VOICE_BUCKET = "chat-voice";
+
+/** "audio/webm;codecs=opus" -> ["audio/webm", "webm"] */
+function audioType(blob: Blob): [string, string] {
+  const mime = (blob.type || "audio/webm").split(";")[0];
+  const ext = ({ "audio/webm": "webm", "audio/ogg": "ogg", "audio/mp4": "mp4", "audio/mpeg": "mp3", "audio/aac": "aac", "audio/x-m4a": "m4a" } as Record<string, string>)[mime];
+  return [mime, ext ?? "webm"];
+}
+
+/** Records into the thread's private folder, posts the message, then emails the other side. */
+export async function postVoice(
+  clientEmail: string,
+  viewer: "client" | "staff",
+  blob: Blob,
+  seconds: number,
+): Promise<string | null> {
+  const client = clientEmail.toLowerCase();
+  const [mime, ext] = audioType(blob);
+  const path = `${client}/${Date.now()}.${ext}`;
+  const { error: up } = await db().storage.from(VOICE_BUCKET).upload(path, blob, { contentType: mime });
+  if (up) return up.message;
+  const { error } = await db().rpc("post_voice", { p_client_email: client, p_path: path, p_seconds: Math.round(seconds) });
+  if (error) return error.message;
+  const note = "Voice note — open your messages to listen";
+  db()
+    .functions.invoke(
+      viewer === "client" ? "notify-client-activity" : "notify-client",
+      { body: viewer === "client" ? { kind: "message", title: note } : { email: client, kind: "message", title: note } },
+    )
+    .catch(() => undefined);
+  return null;
+}
+
+export async function voiceUrl(path: string): Promise<string | null> {
+  const { data } = await db().storage.from(VOICE_BUCKET).createSignedUrl(path, 3600);
+  return data?.signedUrl ?? null;
 }
