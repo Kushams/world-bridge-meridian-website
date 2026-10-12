@@ -41,3 +41,9 @@ Add a staff member: `insert into public.staff_members (email, role, name, title,
 
 ## Checks to run
 `npm run lint`, `npx tsc --noEmit` (run `npx next typegen` first in a fresh worktree), `npm run build:cloudflare`.
+
+## Voice notes (PR #60)
+- Tap the mic to record, then tap Send (× discards). Max 5 minutes. UI is in `src/components/messages/Voice.tsx`.
+- Audio is stored in the private bucket `chat-voice` at `<client email>/<ms>.<ext>`. The SQL is in `supabase/voice-notes.sql` (already applied live).
+- The message row has `kind = 'voice'` and `audio_path`, and is written only by the RPC `post_voice(p_client_email, p_path, p_seconds)`.
+- Emails go through the same `notify-client` / `notify-client-activity` message path, so info@ and the admins are copied.
