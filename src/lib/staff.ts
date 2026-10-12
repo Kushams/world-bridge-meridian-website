@@ -144,6 +144,75 @@ export async function loadPresence(): Promise<Presence[] | null> {
   return error ? null : ((data as Presence[] | null) ?? []);
 }
 
+export interface Thread {
+  email: string;
+  sender: string;
+  kind: string;
+  body: string;
+  at: string;
+}
+
+type AttInvoice = { id: string; reference: string; description: string; amount_usd: number; status: string; created_at: string; user_id: string; first_opened_at: string | null; last_opened_at: string | null; card_started_at: string | null };
+
+export interface AttentionData {
+  /** Clients whose latest message is theirs and nobody has replied yet. */
+  waiting: { email: string; body: string; at: string }[];
+  /** Every conversation, most recent first (the Inbox tab). */
+  threads: Thread[];
+  /** Requests still at "Received" three or more days after they arrived. */
+  stuck: Request[];
+  /** Invoices still unpaid (older than a week) or waiting for a payment check. */
+  invoices: AttInvoice[];
+  /** Unpaid invoices where the client reached card checkout at least 15 minutes ago and has not paid. */
+  checkouts: AttInvoice[];
+}
+
+const DAY = 86400000;
+
+/** Everything that needs a person, for the staff member's own clients (admins: everyone). RLS limits what comes back. */
+export async function loadAttention(): Promise<AttentionData | null> {
+  const [msgs, reqs, invs] = await Promise.all([
+    db().from("client_messages").select("client_email, sender, kind, body, created_at").order("created_at", { ascending: false }).limit(1500),
+    loadRequests(),
+    db()
+      .from("invoices")
+      .select("id, reference, description, amount_usd, status, created_at, user_id, first_opened_at, last_opened_at, card_started_at")
+      .eq("kind", "invoice")
+      .in("status", ["unpaid", "needs_review"])
+      .order("created_at", { ascending: true }),
+  ]);
+  if (msgs.error || !reqs || invs.error) return null;
+
+  const latest = new Map<string, { sender: string; kind: string; body: string; created_at: string }>();
+  for (const m of msgs.data ?? []) if (!latest.has(m.client_email)) latest.set(m.client_email, m);
+  const threads: Thread[] = [...latest.entries()]
+    .map(([email, m]) => ({ email, sender: m.sender, kind: m.kind, body: m.kind === "voice" ? "Voice note" : m.body, at: m.created_at }))
+    .sort((a, b) => b.at.localeCompare(a.at));
+  const waiting = threads
+    .filter((t) => t.sender === "client" && (t.kind === "message" || t.kind === "voice"))
+    .map((t) => ({ email: t.email, body: t.body, at: t.at }))
+    .sort((a, b) => a.at.localeCompare(b.at));
+
+  const now = Date.now();
+  const stuck = reqs.filter((r) => r.status === "received" && now - new Date(r.submitted_at).getTime() >= 3 * DAY);
+  const all = (invs.data ?? []).map((i) => ({ ...i, amount_usd: Number(i.amount_usd) })) as AttInvoice[];
+  const isCheckout = (i: AttInvoice) => i.status === "unpaid" && i.card_started_at !== null && now - new Date(i.card_started_at).getTime() >= 15 * 60000 && now - new Date(i.card_started_at).getTime() < 7 * DAY;
+  const checkouts = all.filter(isCheckout);
+  const invoices = all.filter((i) => !isCheckout(i) && (i.status === "needs_review" || now - new Date(i.created_at).getTime() >= 7 * DAY));
+  return { waiting, threads, stuck, invoices, checkouts };
+}
+
+/** What the Alerts tab badge counts: stale requests, invoices to chase and unfinished card payments. */
+export const attentionCount = (a: AttentionData | null) => (a ? a.stuck.length + a.invoices.length + a.checkouts.length : 0);
+/** What the Inbox tab badge counts: conversations waiting for a staff reply. */
+export const waitingCount = (a: AttentionData | null) => (a ? a.waiting.length : 0);
+
+/** Recent sign-ins of one client (newest first), recorded automatically. */
+export async function loadSignIns(userId: string): Promise<string[]> {
+  const { data } = await db().from("client_sign_ins").select("signed_in_at").eq("user_id", userId).order("signed_in_at", { ascending: false }).limit(5);
+  return (data ?? []).map((r: { signed_in_at: string }) => r.signed_in_at);
+}
+
 export async function assignClient(clientEmail: string, staffEmail: string | null): Promise<string | null> {
   const { error } = await db().rpc("staff_assign", { p_client_email: clientEmail, p_staff_email: staffEmail });
   return error ? error.message : null;

@@ -1,6 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { layout } from "../_shared/email.ts";
+import { pushToTeam } from "../_shared/push.ts";
 
 // Receives ePayVista's "order paid" message. Deploy with JWT verification OFF (they cannot send a Supabase JWT);
 // the HMAC signature below is what proves the message is genuine.
@@ -142,6 +143,12 @@ Deno.serve(async (req: Request) => {
       );
     } else if (status === "paid") {
       await email(INTERNAL_EMAIL, `Card payment received — ${invoice.reference}`, `<h2>Card payment received</h2>${details}`);
+      await pushToTeam(db, who.user?.email ?? null, {
+        title: `Payment received: US$${Number(invoice.amount_usd).toFixed(2)}`,
+        body: `${invoice.reference} · ${clientEmail}`,
+        url: who.user?.email ? `/staff?client=${encodeURIComponent(who.user.email.toLowerCase())}#clients` : "/staff#today",
+        tag: `paid-${invoice.reference}`,
+      });
       if (who.user?.email) {
         await email(
           who.user.email,
@@ -154,6 +161,12 @@ Deno.serve(async (req: Request) => {
         );
       }
     } else {
+      await pushToTeam(db, who.user?.email ?? null, {
+        title: "A card payment needs checking",
+        body: `${invoice.reference} · ${clientEmail}`,
+        url: who.user?.email ? `/staff?client=${encodeURIComponent(who.user.email.toLowerCase())}#clients` : "/staff#today",
+        tag: `check-${invoice.reference}`,
+      });
       await email(
         INTERNAL_EMAIL,
         `Card payment needs checking — ${invoice.reference}`,
