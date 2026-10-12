@@ -86,3 +86,46 @@ create or replace trigger push_on_card_started
   for each row
   when (new.card_started_at is not null and new.status = 'unpaid')
   execute function public.push_notify();
+
+-- Sign-ins: every time a client signs in (at most one record an hour; staff sign-ins are not recorded) we keep a row,
+-- staff see "last signed in" on the client's page, and the team (admins + the staff member looking after the client) gets push + email.
+create table if not exists public.client_sign_ins (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null,
+  signed_in_at timestamptz not null default now()
+);
+create index if not exists client_sign_ins_user_idx on public.client_sign_ins (user_id, signed_in_at desc);
+alter table public.client_sign_ins enable row level security;
+revoke all on public.client_sign_ins from anon, authenticated;
+grant select on public.client_sign_ins to authenticated;
+drop policy if exists "Staff read their clients sign-ins" on public.client_sign_ins;
+create policy "Staff read their clients sign-ins" on public.client_sign_ins for select to authenticated using (public.staff_can_see_user(user_id));
+
+create or replace function public.record_client_sign_in()
+returns trigger
+language plpgsql
+security definer
+set search_path = public, auth
+as $$
+begin
+  if new.last_sign_in_at is not null and new.last_sign_in_at is distinct from old.last_sign_in_at
+     and not exists (select 1 from public.staff_members s where lower(s.email) = lower(new.email))
+     and not exists (select 1 from public.client_sign_ins c where c.user_id = new.id and c.signed_in_at > new.last_sign_in_at - interval '1 hour') then
+    insert into public.client_sign_ins (user_id, signed_in_at) values (new.id, new.last_sign_in_at);
+  end if;
+  return new;
+exception when others then
+  return new;
+end;
+$$;
+revoke all on function public.record_client_sign_in() from public, anon, authenticated;
+
+create or replace trigger record_client_sign_in
+  after update of last_sign_in_at on auth.users
+  for each row
+  execute function public.record_client_sign_in();
+
+create or replace trigger push_on_sign_in
+  after insert on public.client_sign_ins
+  for each row
+  execute function public.push_notify();

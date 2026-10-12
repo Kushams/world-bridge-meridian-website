@@ -198,6 +198,12 @@ export const attentionCount = (a: AttentionData | null) => (a ? a.stuck.length +
 /** What the Inbox tab badge counts: conversations waiting for a staff reply. */
 export const waitingCount = (a: AttentionData | null) => (a ? a.waiting.length : 0);
 
+/** Recent sign-ins of one client (newest first), recorded automatically. */
+export async function loadSignIns(userId: string): Promise<string[]> {
+  const { data } = await db().from("client_sign_ins").select("signed_in_at").eq("user_id", userId).order("signed_in_at", { ascending: false }).limit(5);
+  return (data ?? []).map((r: { signed_in_at: string }) => r.signed_in_at);
+}
+
 export async function assignClient(clientEmail: string, staffEmail: string | null): Promise<string | null> {
   const { error } = await db().rpc("staff_assign", { p_client_email: clientEmail, p_staff_email: staffEmail });
   return error ? error.message : null;

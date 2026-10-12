@@ -120,6 +120,11 @@ Deno.serve(async (req: Request) => {
     who = u.email;
     emailAlso = true;
     payload = { title: `${u.name} used Travel Credits`, body: `${usd(Math.abs(Number(r.delta_cents ?? 0)) / 100)}${r.note ? ` · ${text(r.note, 80)}` : ""}`, url: who ? clientUrl(who) : "/staff#clients", tag: `credits-${text(r.id, 40)}` };
+  } else if (body.table === "client_sign_ins") {
+    const u = await userInfo(r.user_id);
+    who = u.email;
+    emailAlso = true;
+    payload = { title: `${u.name} signed in`, body: u.email && u.name !== u.email ? u.email : "Client activity", url: who ? clientUrl(who) : "/staff#clients", tag: `signin-${text(r.user_id, 40)}` };
   } else if (body.table === "gift_cards") {
     const u = await userInfo(r.owner_user_id);
     who = u.email;
