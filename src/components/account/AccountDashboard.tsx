@@ -11,6 +11,7 @@ import { SavedJourneysPanel } from "./SavedJourneysPanel";
 import { InvoicesPanel } from "./InvoicesPanel";
 import { MessagesPanel } from "./MessagesPanel";
 import { countStaffMessagesSince } from "@/lib/messages";
+import { getSupabaseClient } from "@/lib/supabase/client";
 import { CARD_PAYMENTS_ENABLED } from "@/data/cardPayments";
 import { MobileCollapse } from "@/components/ui/MobileCollapse";
 
@@ -128,6 +129,32 @@ function useUnreadFromTeam(email: string | undefined, onInboxTab: boolean) {
   return unread;
 }
 
+/** Unpaid invoices the client has not opened yet (the Invoices tab stamps them as opened, so this works across devices). */
+function useNewInvoices(signedIn: boolean, onInvoicesTab: boolean) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!signedIn) return;
+    let alive = true;
+    const check = async () => {
+      if (onInvoicesTab) return alive ? setCount(0) : undefined;
+      if (document.visibilityState !== "visible") return;
+      const supabase = getSupabaseClient();
+      if (!supabase) return;
+      const { count: n } = await supabase.from("invoices").select("id", { count: "exact", head: true }).eq("kind", "invoice").eq("status", "unpaid").is("first_opened_at", null);
+      if (alive) setCount(n ?? 0);
+    };
+    check();
+    const timer = window.setInterval(check, 45000);
+    document.addEventListener("visibilitychange", check);
+    return () => {
+      alive = false;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", check);
+    };
+  }, [signedIn, onInvoicesTab]);
+  return count;
+}
+
 const badge = (n: number) => (n > 9 ? "9+" : String(n));
 
 /** The signed-in side of /my-world-bridge: Profile (details, enquiries, saved), Messages, Wallet and Invoices tabs. */
@@ -135,6 +162,7 @@ export function AccountDashboard() {
   const tab = useSyncExternalStore(subscribeHash, currentTab, () => "profile" as Tab);
   const { user } = useAuth();
   const unread = useUnreadFromTeam(user?.email ?? undefined, tab === "messages");
+  const newInvoices = useNewInvoices(Boolean(user), tab === "invoices");
 
   // Links such as /my-world-bridge#redeem-code open the Wallet tab; once it has rendered, scroll to the spot.
   useEffect(() => {
@@ -166,16 +194,20 @@ export function AccountDashboard() {
             aria-selected={tab === t}
             aria-controls={`panel-${t}`}
             onClick={() => choose(t)}
-            className={`rounded-full px-1.5 py-2.5 text-[0.7rem] sm:px-6 sm:text-xs font-semibold uppercase tracking-wide transition-colors ${
+            className={`whitespace-nowrap rounded-full px-1 py-2.5 text-[0.68rem] sm:px-6 sm:text-xs font-semibold uppercase tracking-wide transition-colors ${
               tab === t ? "bg-ivory text-ink" : "text-ivory-dim hover:text-gold"
             }`}
           >
             {label}
-            {t === "messages" && unread ? (
-              <span aria-label={`${unread} new message${unread === 1 ? "" : "s"}`} className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1 align-middle text-[10px] font-bold leading-none text-white">
-                {badge(unread)}
-              </span>
-            ) : null}
+            {(() => {
+              const n = t === "messages" ? unread : t === "invoices" ? newInvoices : 0;
+              const what = t === "invoices" ? "new invoice" : "new message";
+              return n ? (
+                <span aria-label={`${n} ${what}${n === 1 ? "" : "s"}`} className="ml-1 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-gold px-1 align-middle text-[9px] font-bold leading-none text-white">
+                  {badge(n)}
+                </span>
+              ) : null;
+            })()}
           </button>
         ))}
       </div>
