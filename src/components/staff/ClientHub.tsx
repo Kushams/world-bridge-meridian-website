@@ -5,7 +5,6 @@ import { Thread } from "@/components/messages/Thread";
 import { postAsStaff, postVoice } from "@/lib/messages";
 import {
   clientAction,
-  createInvoice,
   fmtDate,
   listFiles,
   loadClientFlags,
@@ -19,6 +18,7 @@ import {
   openFile,
   removeFile,
   setInvoiceBankDetails,
+  setInvoiceDueDate,
   uploadFile,
   usd,
   voidInvoice,
@@ -32,6 +32,9 @@ import {
 } from "@/lib/staff";
 import { stemOf } from "@/lib/clientDocs";
 import { parseBankLines, serializeBankLines } from "@/lib/invoices";
+import { money, totals } from "@/lib/money";
+import { buildInvoicePdf, loadEmblem, loadPdfFonts } from "@/lib/invoicePdf";
+import { InvoiceBuilder } from "./InvoiceBuilder";
 import { inputClass, Row } from "./RequestsPanel";
 
 const DOCS = "client-documents";
@@ -345,7 +348,7 @@ export function ClientHub({ client, admin, onDeleted }: { client: Client; admin:
         )}
       </Block>
 
-      <InvoicesBlock email={email} invoices={invoices} pdfs={pdfs} onChange={(m) => (flash(m), load())} onRemovePdf={(f) => remove(DOCS, f)} />
+      <InvoicesBlock client={client} email={email} invoices={invoices} pdfs={pdfs} onChange={(m) => (flash(m), load())} onRemovePdf={(f) => remove(DOCS, f)} />
 
       <Block id="hub-received" title="Sent to us by this client" note="Passports, visas and other files they uploaded, plus signed copies.">
         {RECEIVED.some((c) => (received[c.key] ?? []).length) ? (
@@ -442,33 +445,61 @@ function SendDocuments({ email, onDone }: { email: string; onDone: (msg: string)
 }
 
 function InvoicesBlock({
+  client,
   email,
   invoices,
   pdfs,
   onChange,
   onRemovePdf,
 }: {
+  client: Client;
   email: string;
   invoices: StaffInvoice[];
   pdfs: StoredFile[];
   onChange: (msg: string) => void;
   onRemovePdf: (f: StoredFile) => void;
 }) {
-  const [amount, setAmount] = useState("");
-  const [desc, setDesc] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
 
-  async function create() {
-    const n = Number(amount);
-    if (!(n >= 5) || !desc.trim()) return onChange("Not created: enter an amount of at least US$5 and a description.");
-    setBusy("create");
-    const { reference, error } = await createInvoice(email, n, desc.trim());
-    setBusy(null);
-    if (error) return onChange(`Not created: ${error}`);
-    setAmount("");
-    setDesc("");
-    const emailed = await notifyClient(email, "invoice", `${reference} — ${desc.trim()}`);
-    onChange(`Invoice ${reference} created${emailed ? " and the client has been emailed" : ""}. Attach the PDF below.`);
+  /** (Re)make the branded PDF from the invoice as it stands now (paid stamp, bank details included). */
+  async function generatePdf(inv: StaffInvoice, paidNow = false) {
+    setBusy(inv.id);
+    try {
+      const currency = inv.currency ?? "USD";
+      const lines = inv.line_items?.length
+        ? inv.line_items
+        : [{ title: inv.description, details: "", qty: 1, unit_price: inv.amount ?? inv.amount_usd, amount: inv.amount ?? inv.amount_usd }];
+      const t = totals(lines, inv.tax_percent ?? 0);
+      const blob = await buildInvoicePdf(
+        {
+          reference: inv.reference,
+          createdAt: inv.created_at,
+          dueDate: inv.due_date,
+          status: paidNow ? "paid" : inv.status,
+          paidAt: paidNow ? new Date().toISOString() : inv.paid_at,
+          currency,
+          lines,
+          subtotal: inv.subtotal ?? t.subtotal,
+          taxPercent: inv.tax_percent ?? 0,
+          total: inv.amount ?? t.total,
+          amountUsd: inv.amount_usd,
+          fxRate: inv.fx_rate ?? 1,
+        },
+        { name: client.full_name, email, phone: client.phone },
+        await loadEmblem(),
+        await loadPdfFonts(),
+      );
+      const path = `${email}/invoices/${inv.reference}.pdf`;
+      const old = pdfs.find((p) => p.name.toLowerCase().startsWith(inv.reference.toLowerCase()));
+      if (old) await removeFile(DOCS, old.path);
+      const err = await uploadFile(DOCS, path, new File([blob], `${inv.reference}.pdf`, { type: "application/pdf" }));
+      setBusy(null);
+      onChange(err ? `Not made: ${err}` : paidNow ? `${inv.reference} marked paid. The stamped receipt PDF is saved and the client sees it now.` : `Branded PDF saved for ${inv.reference}. The client sees it now.`);
+    } catch {
+      setBusy(null);
+      onChange("Not made: the PDF could not be generated.");
+    }
   }
 
   async function attach(inv: StaffInvoice, file: File | undefined) {
@@ -501,14 +532,28 @@ function InvoicesBlock({
     if (!window.confirm(`Mark ${inv.reference} (${usd(inv.amount_usd)}) as paid by bank transfer?`)) return;
     setBusy(inv.id);
     const err = await markInvoicePaid(inv.id);
-    setBusy(null);
-    if (err) return onChange(`Not marked: ${err}`);
-    const emailed = await notifyClient(
+    if (err) {
+      setBusy(null);
+      return onChange(`Not marked: ${err}`);
+    }
+    // Tell the client, and replace the invoice PDF with a stamped receipt so their copy shows the official PAID seal.
+    await notifyClient(
       email,
       "message",
       `Thank you — we've received your bank transfer of ${usd(inv.amount_usd)} for invoice ${inv.reference} (${inv.description}). Your invoice now shows as Paid.`,
     );
-    onChange(`${inv.reference} marked paid${emailed ? " and the client has been sent a receipt message." : "."}`);
+    await generatePdf(inv, true);
+  }
+
+  /** Staff nudge: a branded reminder email (and a line in the client's Messages) for an unpaid invoice. */
+  async function remind(inv: StaffInvoice) {
+    const due = inv.due_date ? ` · due ${fmtDate(inv.due_date)}` : "";
+    const label = `${inv.reference} · ${money(inv.amount ?? inv.amount_usd, inv.currency ?? "USD")}${due}`;
+    if (!window.confirm(`Email ${client.full_name || email} a payment reminder for ${label}?`)) return;
+    setBusy(inv.id);
+    const ok = await notifyClient(email, "reminder", label);
+    setBusy(null);
+    onChange(ok ? `Reminder emailed for ${inv.reference}.` : "The reminder could not be sent. Try again.");
   }
 
   async function cancel(inv: StaffInvoice) {
@@ -519,23 +564,32 @@ function InvoicesBlock({
 
   return (
     <Block id="hub-invoices" title="Invoices" note="Create an invoice, attach the PDF, and add bank details if the client wants to pay by transfer.">
-      <div className="grid gap-3 sm:grid-cols-[160px_1fr_auto]">
-        <input value={amount} onChange={(e) => setAmount(e.target.value)} inputMode="decimal" placeholder="Amount (US$)" className={inputClass} />
-        <input value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="What it's for, e.g. Italy art journey — deposit" className={inputClass} />
-        <button type="button" disabled={busy !== null} onClick={create} className={`${btn} bg-ivory text-ink`}>
-          {busy === "create" ? "Creating…" : "Create invoice"}
-        </button>
-      </div>
+      <InvoiceBuilder client={client} onDone={onChange} />
       {invoices.length ? (
-        <ul className="mt-5 divide-y divide-line">
+        <ul className="mt-8 divide-y divide-line">
           {invoices.map((inv) => {
             const pdf = pdfs.find((p) => p.name.toLowerCase().startsWith(inv.reference.toLowerCase()));
+            if (editId === inv.id)
+              return (
+                <li key={inv.id} className="py-4">
+                  <p className="mb-3 text-sm text-ivory">Editing {inv.reference}</p>
+                  <InvoiceBuilder
+                    client={client}
+                    editing={inv}
+                    onCancel={() => setEditId(null)}
+                    onDone={(m) => {
+                      setEditId(null);
+                      onChange(m);
+                    }}
+                  />
+                </li>
+              );
             return (
               <li key={inv.id} className="py-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-sm text-ivory">
-                    {inv.description} · <span className="font-semibold">{usd(inv.amount_usd)}</span>
+                    {inv.description} · <span className="font-semibold">{money(inv.amount ?? inv.amount_usd, inv.currency ?? "USD")}</span>{inv.currency && inv.currency !== "USD" ? <span className="text-xs text-stone-dim"> (about US${inv.amount_usd.toFixed(2)} by card, live rate at checkout)</span> : null}
                   </p>
                   <p className="text-xs text-stone-dim">
                     {inv.reference} · {fmtDate(inv.created_at)} ·{" "}
@@ -550,16 +604,34 @@ function InvoicesBlock({
                       <button type="button" onClick={() => openFile(DOCS, pdf.path)} className={`${btn} border border-line text-ivory hover:border-gold`}>
                         View PDF
                       </button>
+                      <button type="button" disabled={busy === inv.id} onClick={() => generatePdf(inv)} className={`${btn} border border-line text-ivory hover:border-gold`}>
+                        {busy === inv.id ? "Working…" : "Regenerate PDF"}
+                      </button>
                       <button type="button" onClick={() => onRemovePdf(pdf)} className={`${btn} text-stone hover:text-red-400`}>
                         Remove PDF
                       </button>
                     </>
                   ) : (
+                    <>
+                    <button type="button" disabled={busy === inv.id} onClick={() => generatePdf(inv)} className={`${btn} bg-ivory text-ink`}>
+                      {busy === inv.id ? "Working…" : "Generate PDF"}
+                    </button>
                     <label className={`${btn} cursor-pointer border border-line text-ivory hover:border-gold`}>
-                      {busy === inv.id ? "Attaching…" : "Attach PDF"}
+                      Attach own PDF
                       <input type="file" accept="application/pdf" className="sr-only" onChange={(e) => attach(inv, e.target.files?.[0])} />
                     </label>
+                    </>
                   )}
+                  {inv.status === "unpaid" ? (
+                    <button type="button" disabled={busy === inv.id} onClick={() => remind(inv)} className={`${btn} border border-line text-ivory hover:border-gold`}>
+                      Remind
+                    </button>
+                  ) : null}
+                  {inv.status === "unpaid" ? (
+                    <button type="button" onClick={() => setEditId(inv.id)} className={`${btn} border border-line text-ivory hover:border-gold`}>
+                      Edit
+                    </button>
+                  ) : null}
                   {inv.status === "unpaid" ? (
                     <button type="button" onClick={() => cancel(inv)} className={`${btn} text-stone hover:text-red-400`}>
                       Cancel
@@ -572,6 +644,23 @@ function InvoicesBlock({
                   ) : null}
                 </div>
                 </div>
+                {inv.status === "unpaid" || inv.status === "needs_review" ? (
+                  <label className="mt-3 flex flex-wrap items-center gap-2 text-xs text-stone-dim">
+                    Due date
+                    <input
+                      type="date"
+                      defaultValue={inv.due_date ?? ""}
+                      key={`${inv.id}:${inv.due_date ?? ""}`}
+                      onBlur={async (e) => {
+                        const next = e.target.value || null;
+                        if (next === (inv.due_date ?? null)) return;
+                        const err = await setInvoiceDueDate(inv.id, next);
+                        onChange(err ? `Not saved: ${err}` : next ? `Due date for ${inv.reference} set to ${fmtDate(next)}. Regenerate the PDF to show it there.` : `Due date removed from ${inv.reference}.`);
+                      }}
+                      className={`${inputClass} min-h-11`}
+                    />
+                  </label>
+                ) : null}
                 {inv.status === "unpaid" || inv.status === "needs_review" ? (
                   <BankEditor key={`${inv.id}:${inv.bank_details ?? ""}`} inv={inv} busy={busy === inv.id} onSave={(text) => saveBank(inv, text)} />
                 ) : inv.status === "paid" && inv.paid_via ? (

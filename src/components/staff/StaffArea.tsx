@@ -6,6 +6,7 @@ import { AuthPanel } from "@/components/account/AuthPanel";
 import { attentionCount, waitingCount, loadAttention, loadClients, loadMe, personalLink, pingPresence, type AttentionData, type Client, type StaffMember } from "@/lib/staff";
 import { RequestsPanel } from "./RequestsPanel";
 import { ClientsPanel } from "./ClientsPanel";
+import { PriceBookPanel } from "./PriceBookPanel";
 import { AlertsPanel } from "./AlertsPanel";
 import { InboxPanel } from "./InboxPanel";
 import { PushControl } from "./PushControl";
@@ -222,7 +223,17 @@ export function StaffArea() {
         ) : tab === "requests" ? (
           <RequestsPanel onOpenClient={(email) => go("clients", email)} />
         ) : tab === "team" ? (
-          admin ? <TeamPanel /> : <StaffTeamList />
+          admin ? (
+            <>
+              <TeamPanel />
+              <PriceBookPanel />
+            </>
+          ) : (
+            <>
+              <StaffTeamList />
+              <PriceBookPanel />
+            </>
+          )
         ) : (
           <ClientsPanel admin={admin} selected={clientEmail} onSelect={(email) => go("clients", email)} />
         )}
