@@ -110,7 +110,7 @@ export function StaffArea() {
         <div className="min-w-0 flex-1">
           <p className="truncate font-display text-xl text-ivory">{me.name || user.email}</p>
           <p className="truncate text-xs text-stone">
-            {admin ? "Admin · you see every client" : "Staff · you see your assigned clients"}
+            {admin ? "Admin · you see every client" : "Staff"}
           </p>
         </div>
         <button
