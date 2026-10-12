@@ -1,4 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { layout } from "../_shared/email.ts";
 
 // Set as function secrets, never in source. Shared with the database
 // trigger in supabase/forms.sql, which sends the secret as
@@ -96,7 +97,7 @@ async function sendEmail(to: string | string[], subject: string, html: string, r
       from: FROM_EMAIL,
       to: Array.isArray(to) ? to : [to],
       subject,
-      html,
+      html: layout(html),
       ...(replyTo ? { reply_to: replyTo } : {}),
     }),
   });
@@ -127,7 +128,7 @@ Deno.serve(async (req: Request) => {
       `${label}${record.name ? ` — ${record.name}` : ""}`,
       `
         <h2>${esc(label)}</h2>
-        <table style="font:14px/1.5 -apple-system,Segoe UI,sans-serif;border-collapse:collapse">
+        <table style="font-size:14px;line-height:1.5;border-collapse:collapse">
           <tr><td style="padding:4px 12px 4px 0;color:#666">Name</td><td style="padding:4px 0">${esc(record.name || "(not provided)")}</td></tr>
           <tr><td style="padding:4px 12px 4px 0;color:#666">Email</td><td style="padding:4px 0">${esc(record.email)}</td></tr>
           ${record.subject ? `<tr><td style="padding:4px 12px 4px 0;color:#666">Subject</td><td style="padding:4px 0">${esc(record.subject)}</td></tr>` : ""}

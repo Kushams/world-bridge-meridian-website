@@ -1,4 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { layout } from "../_shared/email.ts";
 
 // Both secrets are set on the function (Edge Functions -> Secrets), never
 // in this file: anyone with repo or dashboard-source access would otherwise
@@ -28,7 +29,7 @@ async function sendEmail(to: string, subject: string, html: string) {
       Authorization: `Bearer ${RESEND_API_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject, html }),
+    body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject, html: layout(html) }),
   });
   if (!res.ok) {
     console.error("Resend send failed", res.status, await res.text());

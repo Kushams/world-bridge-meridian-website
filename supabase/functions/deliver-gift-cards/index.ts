@@ -1,5 +1,6 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { layout } from "../_shared/email.ts";
 
 // Called by the database trigger in supabase/gift-cards.sql once staff confirm
 // a gift card order's payment. Emails each card's code to its recipient (and a
@@ -27,7 +28,7 @@ async function send(to: string, subject: string, html: string) {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject, html, reply_to: REPLY_TO }),
+    body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject, html: layout(html), reply_to: REPLY_TO }),
   });
   if (!res.ok) console.error("Resend send failed", res.status, await res.text());
   return res.ok;
@@ -48,7 +49,7 @@ Deno.serve(async (req: Request) => {
     if (error) throw error;
 
     const wrap = (inner: string) =>
-      `<div style="font:15px/1.6 -apple-system,Segoe UI,sans-serif;color:#222;max-width:560px">${inner}<p>— World Bridge Meridian</p></div>`;
+      `<div style="color:#222;max-width:560px">${inner}<p>— World Bridge Meridian</p></div>`;
 
     let sent = 0;
     for (const c of cards ?? []) {
