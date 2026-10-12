@@ -5,7 +5,6 @@ import { Thread } from "@/components/messages/Thread";
 import { postAsStaff, postVoice } from "@/lib/messages";
 import {
   clientAction,
-  createInvoice,
   fmtDate,
   listFiles,
   loadClientFlags,
@@ -31,6 +30,9 @@ import {
 } from "@/lib/staff";
 import { stemOf } from "@/lib/clientDocs";
 import { parseBankLines, serializeBankLines } from "@/lib/invoices";
+import { money, totals } from "@/lib/money";
+import { buildInvoicePdf, loadEmblem } from "@/lib/invoicePdf";
+import { InvoiceBuilder } from "./InvoiceBuilder";
 import { inputClass, Row } from "./RequestsPanel";
 
 const DOCS = "client-documents";
@@ -335,7 +337,7 @@ export function ClientHub({ client, admin, onDeleted }: { client: Client; admin:
         )}
       </Block>
 
-      <InvoicesBlock email={email} invoices={invoices} pdfs={pdfs} onChange={(m) => (flash(m), load())} onRemovePdf={(f) => remove(DOCS, f)} />
+      <InvoicesBlock client={client} email={email} invoices={invoices} pdfs={pdfs} onChange={(m) => (flash(m), load())} onRemovePdf={(f) => remove(DOCS, f)} />
 
       <Block id="hub-received" title="Sent to us by this client" note="Passports, visas and other files they uploaded, plus signed copies.">
         {RECEIVED.some((c) => (received[c.key] ?? []).length) ? (
@@ -432,33 +434,60 @@ function SendDocuments({ email, onDone }: { email: string; onDone: (msg: string)
 }
 
 function InvoicesBlock({
+  client,
   email,
   invoices,
   pdfs,
   onChange,
   onRemovePdf,
 }: {
+  client: Client;
   email: string;
   invoices: StaffInvoice[];
   pdfs: StoredFile[];
   onChange: (msg: string) => void;
   onRemovePdf: (f: StoredFile) => void;
 }) {
-  const [amount, setAmount] = useState("");
-  const [desc, setDesc] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
 
-  async function create() {
-    const n = Number(amount);
-    if (!(n >= 5) || !desc.trim()) return onChange("Not created: enter an amount of at least US$5 and a description.");
-    setBusy("create");
-    const { reference, error } = await createInvoice(email, n, desc.trim());
-    setBusy(null);
-    if (error) return onChange(`Not created: ${error}`);
-    setAmount("");
-    setDesc("");
-    const emailed = await notifyClient(email, "invoice", `${reference} — ${desc.trim()}`);
-    onChange(`Invoice ${reference} created${emailed ? " and the client has been emailed" : ""}. Attach the PDF below.`);
+  /** (Re)make the branded PDF from the invoice as it stands now (paid stamp, bank details included). */
+  async function generatePdf(inv: StaffInvoice) {
+    setBusy(inv.id);
+    try {
+      const currency = inv.currency ?? "USD";
+      const lines = inv.line_items?.length
+        ? inv.line_items
+        : [{ title: inv.description, details: "", qty: 1, unit_price: inv.amount ?? inv.amount_usd, amount: inv.amount ?? inv.amount_usd }];
+      const t = totals(lines, inv.tax_percent ?? 0);
+      const blob = await buildInvoicePdf(
+        {
+          reference: inv.reference,
+          createdAt: inv.created_at,
+          dueDate: inv.due_date,
+          status: inv.status,
+          paidAt: inv.paid_at,
+          currency,
+          lines,
+          subtotal: inv.subtotal ?? t.subtotal,
+          taxPercent: inv.tax_percent ?? 0,
+          total: inv.amount ?? t.total,
+          amountUsd: inv.amount_usd,
+          fxRate: inv.fx_rate ?? 1,
+          bankLines: parseBankLines(inv.bank_details ?? "").map((l) => ({ label: l.label, value: l.value })),
+        },
+        { name: client.full_name, email, phone: client.phone },
+        await loadEmblem(),
+      );
+      const path = `${email}/invoices/${inv.reference}.pdf`;
+      const old = pdfs.find((p) => p.name.toLowerCase().startsWith(inv.reference.toLowerCase()));
+      if (old) await removeFile(DOCS, old.path);
+      const err = await uploadFile(DOCS, path, new File([blob], `${inv.reference}.pdf`, { type: "application/pdf" }));
+      setBusy(null);
+      onChange(err ? `Not made: ${err}` : `Branded PDF saved for ${inv.reference}. The client sees it now.`);
+    } catch {
+      setBusy(null);
+      onChange("Not made: the PDF could not be generated.");
+    }
   }
 
   async function attach(inv: StaffInvoice, file: File | undefined) {
@@ -503,15 +532,9 @@ function InvoicesBlock({
 
   return (
     <Block id="hub-invoices" title="Invoices" note="Create an invoice, attach the PDF, and add bank details if the client wants to pay by transfer.">
-      <div className="grid gap-3 sm:grid-cols-[160px_1fr_auto]">
-        <input value={amount} onChange={(e) => setAmount(e.target.value)} inputMode="decimal" placeholder="Amount (US$)" className={inputClass} />
-        <input value={desc} onChange={(e) => setDesc(e.target.value)} placeholder="What it's for, e.g. Italy art journey — deposit" className={inputClass} />
-        <button type="button" disabled={busy !== null} onClick={create} className={`${btn} bg-ivory text-ink`}>
-          {busy === "create" ? "Creating…" : "Create invoice"}
-        </button>
-      </div>
+      <InvoiceBuilder client={client} onDone={onChange} />
       {invoices.length ? (
-        <ul className="mt-5 divide-y divide-line">
+        <ul className="mt-8 divide-y divide-line">
           {invoices.map((inv) => {
             const pdf = pdfs.find((p) => p.name.toLowerCase().startsWith(inv.reference.toLowerCase()));
             return (
@@ -519,7 +542,7 @@ function InvoicesBlock({
                 <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-sm text-ivory">
-                    {inv.description} · <span className="font-semibold">{usd(inv.amount_usd)}</span>
+                    {inv.description} · <span className="font-semibold">{money(inv.amount ?? inv.amount_usd, inv.currency ?? "USD")}</span>{inv.currency && inv.currency !== "USD" ? <span className="text-xs text-stone-dim"> (US${inv.amount_usd.toFixed(2)} by card)</span> : null}
                   </p>
                   <p className="text-xs text-stone-dim">
                     {inv.reference} · {fmtDate(inv.created_at)} ·{" "}
@@ -534,15 +557,23 @@ function InvoicesBlock({
                       <button type="button" onClick={() => openFile(DOCS, pdf.path)} className={`${btn} border border-line text-ivory hover:border-gold`}>
                         View PDF
                       </button>
+                      <button type="button" disabled={busy === inv.id} onClick={() => generatePdf(inv)} className={`${btn} border border-line text-ivory hover:border-gold`}>
+                        {busy === inv.id ? "Working…" : "Regenerate PDF"}
+                      </button>
                       <button type="button" onClick={() => onRemovePdf(pdf)} className={`${btn} text-stone hover:text-red-400`}>
                         Remove PDF
                       </button>
                     </>
                   ) : (
+                    <>
+                    <button type="button" disabled={busy === inv.id} onClick={() => generatePdf(inv)} className={`${btn} bg-ivory text-ink`}>
+                      {busy === inv.id ? "Working…" : "Generate PDF"}
+                    </button>
                     <label className={`${btn} cursor-pointer border border-line text-ivory hover:border-gold`}>
-                      {busy === inv.id ? "Attaching…" : "Attach PDF"}
+                      Attach own PDF
                       <input type="file" accept="application/pdf" className="sr-only" onChange={(e) => attach(inv, e.target.files?.[0])} />
                     </label>
+                    </>
                   )}
                   {inv.status === "unpaid" ? (
                     <button type="button" onClick={() => cancel(inv)} className={`${btn} text-stone hover:text-red-400`}>

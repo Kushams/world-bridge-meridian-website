@@ -1,4 +1,5 @@
 import { getSupabaseClient } from "@/lib/supabase/client";
+import type { Currency, LineItem } from "@/lib/money";
 
 export type Status = "received" | "in_review" | "proposal_sent" | "confirmed" | "closed";
 
@@ -77,6 +78,14 @@ export interface StaffInvoice {
   paid_via: string | null;
   bank_details: string | null;
   user_id: string;
+  amount_usd_charge?: number;
+  currency: "USD" | "EUR" | "GBP";
+  amount: number | null;
+  subtotal: number | null;
+  tax_percent: number;
+  fx_rate: number;
+  line_items: LineItem[] | null;
+  due_date: string | null;
 }
 
 export interface StoredFile {
@@ -187,11 +196,11 @@ export async function loadSignatures(email: string): Promise<Signature[]> {
 export async function loadClientInvoices(userId: string): Promise<StaffInvoice[] | null> {
   const { data, error } = await db()
     .from("invoices")
-    .select("id, reference, description, amount_usd, status, created_at, paid_at, paid_via, bank_details, user_id")
+    .select("id, reference, description, amount_usd, status, created_at, paid_at, paid_via, bank_details, user_id, currency, amount, subtotal, tax_percent, fx_rate, line_items, due_date")
     .eq("kind", "invoice")
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
-  return error ? null : (data ?? []).map((i) => ({ ...i, amount_usd: Number(i.amount_usd) })) as StaffInvoice[];
+  return error ? null : (data ?? []).map((i) => ({ ...i, amount_usd: Number(i.amount_usd), amount: i.amount == null ? null : Number(i.amount), subtotal: i.subtotal == null ? null : Number(i.subtotal), tax_percent: Number(i.tax_percent ?? 0), fx_rate: Number(i.fx_rate ?? 1) })) as StaffInvoice[];
 }
 
 export async function createInvoice(email: string, amount: number, description: string) {
@@ -201,6 +210,55 @@ export async function createInvoice(email: string, amount: number, description: 
     p_description: description,
   });
   return { reference: (data as string | null) ?? null, error: error?.message ?? null };
+}
+
+/** Creates an invoice from line items; the database recomputes totals. Returns the INV- reference. */
+export async function createInvoiceV2(args: { email: string; currency: Currency; taxPercent: number; fxRate: number; lines: LineItem[]; due: string | null }) {
+  const { data, error } = await db().rpc("staff_create_invoice_v2", {
+    p_email: args.email,
+    p_currency: args.currency,
+    p_tax_percent: args.taxPercent,
+    p_fx_rate: args.fxRate,
+    p_lines: args.lines.map((l) => ({ title: l.title, details: l.details ?? "", qty: l.qty, unit_price: l.unit_price })),
+    p_due: args.due,
+  });
+  return { reference: (data as string | null) ?? null, error: error?.message ?? null };
+}
+
+export interface PriceItem {
+  id: string;
+  name: string;
+  details: string | null;
+  unit_price: number;
+  currency: Currency;
+  unit: string | null;
+  category: "Services" | "Materials" | "Other";
+  active: boolean;
+}
+
+export async function loadPriceBook(): Promise<PriceItem[] | null> {
+  const { data, error } = await db().from("price_book").select("id, name, details, unit_price, currency, unit, category, active").order("category").order("name");
+  return error ? null : (data ?? []).map((p) => ({ ...p, unit_price: Number(p.unit_price) })) as PriceItem[];
+}
+
+/** Admins: add (id null) or change a price book item. Returns an error message or null. */
+export async function savePriceItem(item: Omit<PriceItem, "id"> & { id: string | null }): Promise<string | null> {
+  const { error } = await db().rpc("admin_save_price_item", {
+    p_id: item.id,
+    p_name: item.name,
+    p_details: item.details ?? "",
+    p_unit_price: item.unit_price,
+    p_currency: item.currency,
+    p_unit: item.unit ?? "",
+    p_category: item.category,
+    p_active: item.active,
+  });
+  return error ? error.message : null;
+}
+
+export async function deletePriceItem(id: string): Promise<string | null> {
+  const { error } = await db().rpc("admin_delete_price_item", { p_id: id });
+  return error ? error.message : null;
 }
 
 export async function voidInvoice(id: string): Promise<string | null> {

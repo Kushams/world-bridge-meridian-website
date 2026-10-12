@@ -6,6 +6,7 @@ import { AuthPanel } from "@/components/account/AuthPanel";
 import { loadMe, personalLink, pingPresence, type StaffMember } from "@/lib/staff";
 import { RequestsPanel } from "./RequestsPanel";
 import { ClientsPanel } from "./ClientsPanel";
+import { PriceBookPanel } from "./PriceBookPanel";
 import { TeamPanel, StaffTeamList, CopyLink } from "./TeamPanel";
 
 type Tab = "clients" | "requests" | "team";
@@ -150,7 +151,14 @@ export function StaffArea() {
         {tab === "requests" ? (
           <RequestsPanel onOpenClient={(email) => go("clients", email)} />
         ) : tab === "team" ? (
-          admin ? <TeamPanel /> : <StaffTeamList />
+          admin ? (
+            <>
+              <TeamPanel />
+              <PriceBookPanel />
+            </>
+          ) : (
+            <StaffTeamList />
+          )
         ) : (
           <ClientsPanel admin={admin} selected={clientEmail} onSelect={(email) => go("clients", email)} />
         )}
