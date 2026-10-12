@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@/lib/supabase/AuthProvider";
 import { AuthPanel } from "@/components/account/AuthPanel";
 import { attentionCount, loadAttention, loadClients, loadMe, personalLink, pingPresence, type AttentionData, type Client, type StaffMember } from "@/lib/staff";
 import { RequestsPanel } from "./RequestsPanel";
 import { ClientsPanel } from "./ClientsPanel";
 import { TodayPanel } from "./TodayPanel";
+import { PushControl } from "./PushControl";
 import { TeamPanel, StaffTeamList, CopyLink } from "./TeamPanel";
 
 type Tab = "today" | "clients" | "requests" | "team";
@@ -81,8 +82,7 @@ export function StaffArea() {
     };
   }, [isStaff]);
 
-  // What needs attention: refresh every minute while the page is visible, and nudge when something new arrives.
-  const lastCount = useRef<number | null>(null);
+  // What needs attention: refresh every minute while the page is visible (push notifications cover the rest).
   useEffect(() => {
     if (!isStaff) return;
     let alive = true;
@@ -91,12 +91,6 @@ export function StaffArea() {
       const data = await loadAttention();
       if (!alive) return;
       setAttention(data);
-      const n = attentionCount(data);
-      const before = lastCount.current;
-      lastCount.current = n;
-      if (before !== null && n > before && "Notification" in window && Notification.permission === "granted") {
-        new Notification("World Bridge Meridian staff", { body: `${n - before} new thing${n - before === 1 ? "" : "s"} need your attention` });
-      }
     };
     refresh();
     loadClients().then((c) => alive && setClients(c ?? []));
@@ -119,12 +113,6 @@ export function StaffArea() {
       document.title = base;
     };
   }, [count, isStaff]);
-
-  const [alertsOn, setAlertsOn] = useState(false);
-  useEffect(() => {
-    const t = setTimeout(() => setAlertsOn("Notification" in window && Notification.permission === "granted"), 0);
-    return () => clearTimeout(t);
-  }, []);
 
   useEffect(() => {
     const h = window.location.hash.slice(1);
@@ -204,15 +192,7 @@ export function StaffArea() {
       <div className="mt-6">
         {tab === "today" ? (
           <>
-            {!alertsOn && "Notification" in window && Notification.permission !== "denied" ? (
-              <button
-                type="button"
-                onClick={() => Notification.requestPermission().then((p) => setAlertsOn(p === "granted"))}
-                className="mb-4 flex min-h-11 w-full items-center justify-center rounded-full border border-gold/60 px-5 text-xs font-semibold uppercase tracking-wide text-gold active:scale-[0.98]"
-              >
-                Turn on alerts on this device
-              </button>
-            ) : null}
+            <PushControl />
             <TodayPanel data={attention} clients={clients} onOpenClient={(email) => go("clients", email)} />
           </>
         ) : tab === "requests" ? (
