@@ -170,7 +170,7 @@ export function Thread({
         )}
         <div ref={end} />
       </div>
-      <form onSubmit={send} className="flex flex-wrap items-center gap-2 border-t hairline p-3 sm:flex-nowrap sm:items-end">
+      <form onSubmit={send} className="flex items-end gap-2 border-t hairline p-3">
         {onAttach ? (
           <>
             <input
@@ -189,17 +189,14 @@ export function Thread({
               disabled={attaching}
               title="Attach photos or files"
               aria-label="Attach photos or files"
-              className="flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-full border border-line px-3.5 text-xs font-semibold uppercase tracking-wide text-ivory hover:border-gold disabled:opacity-40"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line text-ivory hover:border-gold disabled:opacity-40"
             >
               {attaching ? (
-                <span className="text-[0.65rem]">Sending…</span>
+                <span className="text-[0.65rem]">…</span>
               ) : (
-                <>
-                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
-                    <path d="M21 11.5l-8.6 8.6a5.5 5.5 0 01-7.8-7.8l8.6-8.6a3.7 3.7 0 015.2 5.2l-8.6 8.6a1.8 1.8 0 01-2.6-2.6l7.9-7.9" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  <span>Attach photo or file</span>
-                </>
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+                  <path d="M21 11.5l-8.6 8.6a5.5 5.5 0 01-7.8-7.8l8.6-8.6a3.7 3.7 0 015.2 5.2l-8.6 8.6a1.8 1.8 0 01-2.6-2.6l7.9-7.9" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               )}
             </button>
           </>
@@ -217,13 +214,13 @@ export function Thread({
             if (e.key === "Enter" && !e.shiftKey) send(e);
           }}
           placeholder={placeholder}
-          className="order-first min-w-0 basis-full resize-none rounded-2xl border border-line bg-transparent px-4 py-2.5 text-sm text-ivory placeholder:text-stone-dim focus:border-gold focus:outline-none sm:order-none sm:basis-0 sm:flex-1"
+          className="min-w-0 flex-1 resize-none rounded-2xl border border-line bg-transparent px-4 py-2.5 text-sm text-ivory placeholder:text-stone-dim focus:border-gold focus:outline-none"
         />
         {onVoice ? <VoiceRecorder onSend={sendVoice} onError={setError} disabled={sending} /> : null}
         <button
           type="submit"
           disabled={!draft.trim() || sending}
-          className="ml-auto rounded-full bg-ivory px-5 py-2.5 text-xs font-semibold uppercase tracking-wide text-ink disabled:opacity-40 sm:ml-0"
+          className="rounded-full bg-ivory px-5 py-2.5 text-xs font-semibold uppercase tracking-wide text-ink disabled:opacity-40"
         >
           {sending ? "Sending…" : "Send"}
         </button>
