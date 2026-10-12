@@ -205,7 +205,7 @@ export async function removeFile(bucket: string, path: string): Promise<string |
   return error ? error.message : null;
 }
 
-export type ClientNotice = "document" | "sign" | "return" | "invoice" | "invoice_pdf";
+export type ClientNotice = "document" | "sign" | "return" | "invoice" | "invoice_pdf" | "message";
 
 /** Emails the client that something new is in their account. Best effort: the upload already succeeded. */
 export async function notifyClient(email: string, kind: ClientNotice, title: string): Promise<boolean> {

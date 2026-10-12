@@ -26,6 +26,14 @@ const LABELS: Record<string, string> = {
   upload: "uploaded a document",
   signed: "signed a document on screen",
   returned: "returned a signed document",
+  message: "sent a message",
+};
+
+// The line shown in the client's Messages thread (supabase/messages.sql).
+const THREAD: Record<string, string> = {
+  upload: "Uploaded",
+  signed: "Signed on screen",
+  returned: "Signed copy returned",
 };
 
 function esc(value: unknown): string {
@@ -64,6 +72,17 @@ Deno.serve(async (req: Request) => {
   const name = (user.user_metadata?.full_name as string | undefined) || user.email;
   const folder = user.email.toLowerCase();
   const path = typeof body.path === "string" ? body.path : "";
+  const kind = body.kind as string;
+  if (THREAD[kind]) {
+    const what = String(body.title ?? "").slice(0, 160);
+    const { error } = await supabase.rpc("log_client_event", {
+      p_client_email: folder,
+      p_kind: kind,
+      p_body: `${THREAD[kind]}${body.category ? ` (${String(body.category).slice(0, 40)})` : ""}${what ? `: ${what}` : ""}`,
+      p_link: "#documents",
+    });
+    if (error) console.error("thread log failed", error.message);
+  }
   let attachments: { filename: string; content: string }[] | undefined;
   let fileNote = "";
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
@@ -87,9 +106,9 @@ Deno.serve(async (req: Request) => {
       from: FROM_EMAIL,
       to: recipients,
       reply_to: user.email,
-      subject: `Client ${action}: ${String(body.title ?? "").slice(0, 80)} (${name})`,
+      subject: kind === "message" ? `New message from ${name}` : `Client ${action}: ${String(body.title ?? "").slice(0, 80)} (${name})`,
       html: `<p><b>${esc(name)}</b> (${esc(user.email)}) ${esc(action)}.</p>
-        <p>${esc(String(body.title ?? "").slice(0, 200))}${body.category ? ` &middot; ${esc(String(body.category).slice(0, 40))}` : ""}</p>
+        <p>${esc(String(body.title ?? "").slice(0, kind === "message" ? 2000 : 200))}${body.category ? ` &middot; ${esc(String(body.category).slice(0, 40))}` : ""}</p>
         ${fileNote ? `<p>${fileNote}</p>` : ""}
         <p><a href="${STAFF_URL}">Open the staff page</a> &rarr; Clients &rarr; ${esc(name)} to see everything from this client.</p>`,
       ...(attachments ? { attachments } : {}),

@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { Thread } from "@/components/messages/Thread";
+import { postAsStaff } from "@/lib/messages";
 import {
   createInvoice,
   fmtDate,
@@ -163,6 +165,10 @@ export function ClientHub({ client }: { client: Client }) {
           {notice}
         </p>
       ) : null}
+
+      <Block title="Messages" note="The client's conversation with us. Documents, invoices, uploads and stage changes appear here automatically; each message you send is also emailed to the client.">
+        <Thread clientEmail={email} viewer="staff" onSend={(body) => postAsStaff(email, body)} placeholder="Reply to the client…" />
+      </Block>
 
       <Block title="Profile">
         <dl className="grid gap-x-6 gap-y-2 text-sm sm:grid-cols-[200px_1fr]">

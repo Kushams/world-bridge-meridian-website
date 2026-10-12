@@ -23,6 +23,16 @@ const MESSAGES: Record<string, { subject: string; line: string; button: string; 
   return: { subject: "A form needs your signature", line: "We've sent you a form to download, sign and send back to us", button: "Open the form", hash: "#documents" },
   invoice: { subject: "You have a new invoice", line: "We've sent you a new invoice, which you can pay by card from your account", button: "View invoice", hash: "#invoices" },
   invoice_pdf: { subject: "Your detailed invoice is ready", line: "The detailed PDF for your invoice is now in your account", button: "View invoice", hash: "#invoices" },
+  message: { subject: "You have a new message", line: "Your travel coordinator has sent you a message", button: "Read and reply", hash: "#messages" },
+};
+
+// The line shown in the client's Messages thread (supabase/messages.sql).
+const THREAD: Record<string, string> = {
+  document: "We sent you a document",
+  sign: "A document is ready for your signature",
+  return: "A form to download, sign and send back",
+  invoice: "New invoice",
+  invoice_pdf: "Detailed invoice PDF added",
 };
 
 const esc = (v: unknown) =>
@@ -58,6 +68,16 @@ Deno.serve(async (req: Request) => {
 
   const first = (client.full_name ?? "").trim().split(/\s+/)[0];
   const title = String(body.title ?? "").slice(0, 160);
+  const kind = body.kind as string;
+  if (THREAD[kind]) {
+    const { error } = await supabase.rpc("log_client_event", {
+      p_client_email: to,
+      p_kind: kind,
+      p_body: title ? `${THREAD[kind]}: ${title}` : THREAD[kind],
+      p_link: msg.hash,
+    });
+    if (error) console.error("thread log failed", error.message);
+  }
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
@@ -68,7 +88,7 @@ Deno.serve(async (req: Request) => {
       subject: msg.subject,
       html: `<div style="font-family:Georgia,serif;color:#1c1c1c;max-width:560px">
         <p>${first ? `Dear ${esc(first)},` : "Hello,"}</p>
-        <p>${esc(msg.line)}${title ? `: <b>${esc(title)}</b>` : ""}.</p>
+        <p>${esc(msg.line)}${title ? `: <b>${esc(title)}</b>` : ""}${kind === "message" ? "" : "."}</p>
         <p style="margin:28px 0"><a href="${ACCOUNT_URL}${msg.hash}" style="background:#1c1c1c;color:#fff;padding:12px 22px;border-radius:999px;text-decoration:none;font-family:Arial,sans-serif;font-size:13px;letter-spacing:.05em;text-transform:uppercase">${esc(msg.button)}</a></p>
         <p>Sign in with this email address to see it. If you have any questions, just reply to this email.</p>
         <p>Warm regards,<br>World Bridge Meridian</p>
