@@ -111,15 +111,15 @@ export function PriceBookPanel() {
         <>
           <ul className="mt-4 divide-y divide-line rounded-[24px] border hairline bg-charcoal/40">
             {items.filter((i) => i.active).map((i) => (
-              <li key={i.id} className="flex items-center justify-between gap-3 px-5 py-3">
+              <li key={i.id} className="flex flex-col gap-2 px-5 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
                 <div className="min-w-0">
-                  <p className="truncate text-sm text-ivory">{i.name}</p>
+                  <p className="break-words text-sm text-ivory">{i.name}</p>
                   <p className="text-xs text-stone-dim">
                     {i.category}
                     {i.details ? ` · ${i.details}` : ""}
                   </p>
                 </div>
-                <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+                <div className="flex shrink-0 flex-wrap items-center gap-2 sm:justify-end">
                   <span className="text-sm text-ivory">
                     {money(i.unit_price, i.currency)}
                     {i.unit ? ` / ${i.unit}` : ""}
