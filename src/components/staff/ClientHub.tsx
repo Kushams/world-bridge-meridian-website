@@ -590,13 +590,16 @@ function BankEditor({ inv, busy, onSave }: { inv: StaffInvoice; busy: boolean; o
       <label htmlFor={`bank-${inv.id}`} className="text-xs font-semibold uppercase tracking-wide text-gold">
         Bank transfer details {saved ? "· visible to the client" : "· not shown to the client yet"}
       </label>
+      <p className="mt-1 text-xs text-stone-dim">
+        Any country or type: IBAN/BIC, US ACH or wire, sort code, SWIFT. Put each detail on its own line as <span className="text-ivory">Label: value</span>, and the client gets a separate Copy button for every line.
+      </p>
       <textarea
         id={`bank-${inv.id}`}
         value={text}
         onChange={(e) => setText(e.target.value)}
         rows={5}
         maxLength={1500}
-        placeholder={"Paste the account details, e.g.\nAccount name: …\nIBAN / account number: …\nBIC / routing: …\nBank name: …"}
+        placeholder={"Paste the account details, one per line, e.g.\nAccount name: …\nAccount number / IBAN: …\nRouting (ACH/wire) / SWIFT / BIC / sort code: …\nBank name: …\nBank address: …"}
         className={`${inputClass} mt-2 w-full resize-y`}
       />
       <div className="mt-3 flex flex-wrap gap-2">
