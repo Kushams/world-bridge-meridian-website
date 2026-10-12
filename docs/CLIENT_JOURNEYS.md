@@ -8,7 +8,7 @@ This is written for the owner and for any agent continuing the work. Every path 
 If they first opened a staff member's personal link (`/?from=youssef`, `/?from=ravi`), the code is remembered in the browser. As soon as they're signed in with a confirmed email, they're assigned to that staff member (`StaffReferral` → `claim_staff_referral`). An existing assignment is never overwritten. Everyone else stays unassigned until an admin picks a coordinator on the Staff page ("Looked after by").
 
 ## 1. Exhibition clients
-Exhibition, museum, art-fair and event listings → **Plan travel** button → `/travel-details-form?event=…&type=…&from=…&to=…`, with the event and dates pre-filled.
+Exhibition, museum, art-fair and event listings → **Plan This Trip** button → `/travel-details-form?event=…&type=…&from=…&to=…`, with the event and dates pre-filled.
 The form has 7 parts: traveller, exhibition and travel preferences, health and diet, emergency contact, companions, proposed itinerary, special requests. Passport/visa uploads go straight into the client's private Documents.
 Saved as `form_type = travel-details` ("Exhibition travel itinerary form").
 
