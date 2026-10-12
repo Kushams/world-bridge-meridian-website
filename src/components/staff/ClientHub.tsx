@@ -454,7 +454,7 @@ function InvoicesBlock({
   const [busy, setBusy] = useState<string | null>(null);
 
   /** (Re)make the branded PDF from the invoice as it stands now (paid stamp, bank details included). */
-  async function generatePdf(inv: StaffInvoice) {
+  async function generatePdf(inv: StaffInvoice, paidNow = false) {
     setBusy(inv.id);
     try {
       const currency = inv.currency ?? "USD";
@@ -467,8 +467,8 @@ function InvoicesBlock({
           reference: inv.reference,
           createdAt: inv.created_at,
           dueDate: inv.due_date,
-          status: inv.status,
-          paidAt: inv.paid_at,
+          status: paidNow ? "paid" : inv.status,
+          paidAt: paidNow ? new Date().toISOString() : inv.paid_at,
           currency,
           lines,
           subtotal: inv.subtotal ?? t.subtotal,
@@ -485,7 +485,7 @@ function InvoicesBlock({
       if (old) await removeFile(DOCS, old.path);
       const err = await uploadFile(DOCS, path, new File([blob], `${inv.reference}.pdf`, { type: "application/pdf" }));
       setBusy(null);
-      onChange(err ? `Not made: ${err}` : `Branded PDF saved for ${inv.reference}. The client sees it now.`);
+      onChange(err ? `Not made: ${err}` : paidNow ? `${inv.reference} marked paid. The stamped receipt PDF is saved and the client sees it now.` : `Branded PDF saved for ${inv.reference}. The client sees it now.`);
     } catch {
       setBusy(null);
       onChange("Not made: the PDF could not be generated.");
@@ -522,8 +522,12 @@ function InvoicesBlock({
     if (!window.confirm(`Mark ${inv.reference} (${usd(inv.amount_usd)}) as paid by bank transfer?`)) return;
     setBusy(inv.id);
     const err = await markInvoicePaid(inv.id);
-    setBusy(null);
-    onChange(err ? `Not marked: ${err}` : `${inv.reference} marked paid.`);
+    if (err) {
+      setBusy(null);
+      return onChange(`Not marked: ${err}`);
+    }
+    // Replace the invoice PDF with a stamped receipt so the client's copy shows the official PAID seal.
+    await generatePdf(inv, true);
   }
 
   async function cancel(inv: StaffInvoice) {

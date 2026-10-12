@@ -281,7 +281,7 @@ export function InvoicesPanel() {
                 ) : null}
                 {pdf ? (
                   <Button type="button" size="md" variant="outline" disabled={busy !== null} onClick={() => openPdf(pdf)}>
-                    {busy === pdf ? "Opening…" : "View invoice (PDF)"}
+                    {busy === pdf ? "Opening…" : i.status === "paid" ? "View receipt (PDF)" : "View invoice (PDF)"}
                   </Button>
                 ) : (
                   <span className="text-xs text-stone-dim">Detailed invoice PDF coming soon from your consultant.</span>
