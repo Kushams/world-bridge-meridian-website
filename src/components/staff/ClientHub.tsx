@@ -338,7 +338,7 @@ export function ClientHub({ client, admin, onDeleted }: { client: Client; admin:
         )}
       </Block>
 
-      <InvoicesBlock client={client} email={email} invoices={invoices} pdfs={pdfs} onChange={(m) => (flash(m), load())} onRemovePdf={(f) => remove(DOCS, f)} />
+      <InvoicesBlock client={client} admin={admin} email={email} invoices={invoices} pdfs={pdfs} onChange={(m) => (flash(m), load())} onRemovePdf={(f) => remove(DOCS, f)} />
 
       <Block id="hub-received" title="Sent to us by this client" note="Passports, visas and other files they uploaded, plus signed copies.">
         {RECEIVED.some((c) => (received[c.key] ?? []).length) ? (
@@ -436,6 +436,7 @@ function SendDocuments({ email, onDone }: { email: string; onDone: (msg: string)
 
 function InvoicesBlock({
   client,
+  admin,
   email,
   invoices,
   pdfs,
@@ -443,6 +444,7 @@ function InvoicesBlock({
   onRemovePdf,
 }: {
   client: Client;
+  admin: boolean;
   email: string;
   invoices: StaffInvoice[];
   pdfs: StoredFile[];
@@ -532,7 +534,7 @@ function InvoicesBlock({
 
   return (
     <Block id="hub-invoices" title="Invoices" note="Create an invoice, attach the PDF, and add bank details if the client wants to pay by transfer.">
-      <InvoiceBuilder client={client} onDone={onChange} />
+      <InvoiceBuilder client={client} admin={admin} onDone={onChange} />
       {invoices.length ? (
         <ul className="mt-8 divide-y divide-line">
           {invoices.map((inv) => {

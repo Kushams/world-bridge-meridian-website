@@ -53,10 +53,11 @@ export function PriceBookPanel() {
     }
   }
 
-  /** Hide an item from the picker (or show it again). Old invoices are never affected. */
+  /** Remove an item from the price book (it can be restored; invoices already made are never affected). */
   async function toggle(i: PriceItem) {
+    if (i.active && !window.confirm(`Remove "${i.name}" from the price book? Invoices already made are not affected, and you can restore it later.`)) return;
     const err = await savePriceItem({ ...i, details: i.details ?? "", unit: i.unit ?? "", active: !i.active });
-    setMsg(err ? `Not saved: ${err}` : i.active ? `"${i.name}" is hidden from the picker.` : `"${i.name}" is back in the picker.`);
+    setMsg(err ? `Not saved: ${err}` : i.active ? `"${i.name}" removed from the price book.` : `"${i.name}" is back in the price book.`);
     if (!err) reload();
   }
 
@@ -64,7 +65,7 @@ export function PriceBookPanel() {
   return (
     <section className="mt-10">
       <h2 className="font-display text-2xl text-ivory">Price book</h2>
-      <p className="mt-1 text-xs text-stone-dim">Staff pick from this list when building an invoice and can still change the price or text on that one invoice. Only admins edit the list.</p>
+      <p className="mt-1 text-xs text-stone-dim">Staff pick from this list when building an invoice and can still change the price or text on that one invoice. Only admins change the list. New items you type while making an invoice are added here automatically.</p>
       <button type="button" onClick={() => setDraft(toDraft(null))} className={`${btn} mt-4 bg-ivory text-ink`}>
         + Add item
       </button>
@@ -89,7 +90,7 @@ export function PriceBookPanel() {
             </select>
           </div>
           <label className="mt-3 flex items-center gap-2 text-sm text-stone">
-            <input type="checkbox" checked={draft.active} onChange={(e) => setDraft({ ...draft, active: e.target.checked })} /> Show in the picker
+            <input type="checkbox" checked={draft.active} onChange={(e) => setDraft({ ...draft, active: e.target.checked })} /> In the price book (untick to remove)
           </label>
           <div className="mt-3 flex gap-2">
             <button type="button" disabled={busy} onClick={save} className={`${btn} bg-ivory text-ink`}>
@@ -107,31 +108,48 @@ export function PriceBookPanel() {
       ) : items === null ? (
         <p className="mt-4 text-sm text-red-400">Couldn&apos;t load the price book. Has supabase/invoice-builder.sql been run?</p>
       ) : (
-        <ul className="mt-4 divide-y divide-line rounded-[24px] border hairline bg-charcoal/40">
-          {items.map((i) => (
-            <li key={i.id} className="flex items-center justify-between gap-3 px-5 py-3">
-              <div className="min-w-0">
-                <p className={`truncate text-sm ${i.active ? "text-ivory" : "text-stone-dim line-through"}`}>{i.name}</p>
-                <p className="text-xs text-stone-dim">
-                  {i.category}
-                  {i.details ? ` · ${i.details}` : ""}
-                </p>
-              </div>
-              <div className="flex shrink-0 items-center gap-2">
-                <span className="text-sm text-ivory">
-                  {money(i.unit_price, i.currency)}
-                  {i.unit ? ` / ${i.unit}` : ""}
-                </span>
-                <button type="button" onClick={() => setDraft(toDraft(i))} className={`${btn} border border-line text-ivory hover:border-gold`}>
-                  Edit
-                </button>
-                <button type="button" onClick={() => toggle(i)} className={`${btn} text-stone hover:text-ivory`}>
-                  {i.active ? "Hide" : "Show"}
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="mt-4 divide-y divide-line rounded-[24px] border hairline bg-charcoal/40">
+            {items.filter((i) => i.active).map((i) => (
+              <li key={i.id} className="flex items-center justify-between gap-3 px-5 py-3">
+                <div className="min-w-0">
+                  <p className="truncate text-sm text-ivory">{i.name}</p>
+                  <p className="text-xs text-stone-dim">
+                    {i.category}
+                    {i.details ? ` · ${i.details}` : ""}
+                  </p>
+                </div>
+                <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
+                  <span className="text-sm text-ivory">
+                    {money(i.unit_price, i.currency)}
+                    {i.unit ? ` / ${i.unit}` : ""}
+                  </span>
+                  <button type="button" onClick={() => setDraft(toDraft(i))} className={`${btn} border border-line text-ivory hover:border-gold`}>
+                    Edit
+                  </button>
+                  <button type="button" onClick={() => toggle(i)} className={`${btn} text-stone hover:text-red-400`}>
+                    Remove
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+          {items.some((i) => !i.active) ? (
+            <details className="mt-4 text-sm">
+              <summary className="cursor-pointer text-xs text-stone underline underline-offset-4 hover:text-ivory">Removed items ({items.filter((i) => !i.active).length})</summary>
+              <ul className="mt-2 divide-y divide-line rounded-2xl border hairline">
+                {items.filter((i) => !i.active).map((i) => (
+                  <li key={i.id} className="flex items-center justify-between gap-3 px-4 py-2">
+                    <span className="truncate text-stone-dim">{i.name}</span>
+                    <button type="button" onClick={() => toggle(i)} className={`${btn} border border-line text-ivory hover:border-gold`}>
+                      Restore
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          ) : null}
+        </>
       )}
     </section>
   );

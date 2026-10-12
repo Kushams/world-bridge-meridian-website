@@ -93,7 +93,6 @@ insert into public.price_book (name, details, unit_price, currency, unit, catego
 select v.name, v.details, v.unit_price, v.currency, v.unit, v.category
 from (values
   ('Accommodation', null::text, 210::numeric, 'EUR', 'day', 'Services'),
-  ('Accommodation (Videographer)', null, 120, 'EUR', null, 'Services'),
   ('Agency/Service Fee', 'Booking & Coordination Fee', 200, 'EUR', null, 'Services'),
   ('ETA Visa', null, 23, 'EUR', null, 'Services'),
   ('Fare revalidation adjustment', null, 300, 'EUR', null, 'Services'),
