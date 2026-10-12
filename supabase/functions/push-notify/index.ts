@@ -38,7 +38,7 @@ Deno.serve(async (req: Request) => {
   if (req.method !== "POST") return json(405, { ok: false });
   if (!NOTIFY_SHARED_SECRET || req.headers.get("x-wbm-notify-secret") !== NOTIFY_SHARED_SECRET) return json(403, { ok: false, error: "forbidden" });
 
-  let body: { table?: string; op?: string; record?: Row };
+  let body: { table?: string; op?: string; trigger?: string; record?: Row };
   try {
     body = await req.json();
   } catch {
@@ -47,6 +47,8 @@ Deno.serve(async (req: Request) => {
   const r = body.record ?? {};
   let who: string | null = null;
   let payload: PushPayload | null = null;
+  // Events that have no email of their own yet: we send the email too.
+  let emailAlso = false;
 
   if (body.table === "client_messages") {
     who = text(r.client_email).toLowerCase();
@@ -74,23 +76,28 @@ Deno.serve(async (req: Request) => {
   } else if (body.table === "invoices") {
     const { data } = await db.auth.admin.getUserById(text(r.user_id));
     who = data.user?.email?.toLowerCase() ?? null;
-    if (r.status === "paid") {
-      payload = { title: `Payment received: ${usd(r.amount_usd)}`, body: `${text(r.reference)} · ${who ?? ""}`, url: who ? clientUrl(who) : "/staff#today", tag: `paid-${text(r.reference)}` };
+    const clientName = text((data.user?.user_metadata?.full_name as string | undefined) || who || "A client", 60);
+    if (body.trigger === "push_on_invoice_opened") {
+      emailAlso = true;
+      payload = { title: `${clientName} opened invoice ${text(r.reference)}`, body: `${usd(r.amount_usd)} · ${text(r.description, 80)}`, url: who ? clientUrl(who) : "/staff#alerts", tag: `opened-${text(r.reference)}` };
+    } else if (body.trigger === "push_on_card_started") {
+      emailAlso = true;
+      payload = { title: `${clientName} started a card payment`, body: `${usd(r.amount_usd)} · ${text(r.reference)}: not finished yet. We'll remind them in about an hour if it stays that way.`, url: who ? clientUrl(who) : "/staff#alerts", tag: `cardstart-${text(r.reference)}` };
+    } else if (r.status === "paid") {
+      payload = { title: `Payment received: ${usd(r.amount_usd)}`, body: `${text(r.reference)} · ${who ?? ""}`, url: who ? clientUrl(who) : "/staff#alerts", tag: `paid-${text(r.reference)}` };
     } else if (r.status === "needs_review") {
-      payload = { title: "A payment needs checking", body: `${text(r.reference)} · ${who ?? ""}`, url: who ? clientUrl(who) : "/staff#today", tag: `check-${text(r.reference)}` };
+      payload = { title: "A payment needs checking", body: `${text(r.reference)} · ${who ?? ""}`, url: who ? clientUrl(who) : "/staff#alerts", tag: `check-${text(r.reference)}` };
     }
   } else if (body.table === "crypto_payment_submissions") {
     who = text(r.payer_email).toLowerCase() || null;
     payload = {
       title: "Crypto payment submitted: needs verifying",
       body: `${text(r.asset, 20)} (${text(r.network, 30)}) from ${text(r.payer_name, 60) || who || "a client"}`,
-      url: who ? clientUrl(who) : "/staff#today",
+      url: who ? clientUrl(who) : "/staff#alerts",
       tag: `crypto-${text(r.id, 40)}`,
     };
   }
 
-  // Events that have no email of their own yet: we send the email too.
-  let emailAlso = false;
   const userInfo = async (id: unknown) => {
     const { data } = await db.auth.admin.getUserById(text(id));
     const email = data.user?.email?.toLowerCase() ?? null;

@@ -10,6 +10,7 @@ import { TravelCreditsPanel } from "./TravelCreditsPanel";
 import { SavedJourneysPanel } from "./SavedJourneysPanel";
 import { InvoicesPanel } from "./InvoicesPanel";
 import { MessagesPanel } from "./MessagesPanel";
+import { latestStaffMessageAt } from "@/lib/messages";
 import { CARD_PAYMENTS_ENABLED } from "@/data/cardPayments";
 import { MobileCollapse } from "@/components/ui/MobileCollapse";
 
@@ -93,9 +94,43 @@ const currentTab = (): Tab => {
   return WALLET_HASHES.has(h) ? "wallet" : "profile";
 };
 
+/** True when our team has written since the client last had the Messages tab open (remembered in this browser). */
+function useUnreadFromTeam(email: string | undefined, onMessagesTab: boolean) {
+  const [unread, setUnread] = useState(false);
+  useEffect(() => {
+    if (!email) return;
+    const key = `wbm-msgs-seen:${email.toLowerCase()}`;
+    let alive = true;
+    const check = async () => {
+      if (document.visibilityState !== "visible") return;
+      let seen = "";
+      try {
+        if (onMessagesTab) window.localStorage.setItem(key, new Date().toISOString());
+        seen = window.localStorage.getItem(key) ?? "";
+      } catch {
+        // Storage blocked: treat as seen so we never nag.
+        seen = new Date().toISOString();
+      }
+      const latest = await latestStaffMessageAt(email);
+      if (alive) setUnread(Boolean(latest && !onMessagesTab && (!seen || latest > seen)));
+    };
+    check();
+    const timer = window.setInterval(check, 60000);
+    document.addEventListener("visibilitychange", check);
+    return () => {
+      alive = false;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", check);
+    };
+  }, [email, onMessagesTab]);
+  return unread;
+}
+
 /** The signed-in side of /my-world-bridge: Profile (details, enquiries, saved), Messages, Wallet and Invoices tabs. */
 export function AccountDashboard() {
   const tab = useSyncExternalStore(subscribeHash, currentTab, () => "profile" as Tab);
+  const { user } = useAuth();
+  const unread = useUnreadFromTeam(user?.email ?? undefined, tab === "messages");
 
   // Links such as /my-world-bridge#redeem-code open the Wallet tab; once it has rendered, scroll to the spot.
   useEffect(() => {
@@ -132,10 +167,25 @@ export function AccountDashboard() {
             }`}
           >
             {label}
+            {t === "messages" && unread ? <span aria-label="New message" className="ml-1.5 inline-block h-2 w-2 rounded-full bg-gold align-middle" /> : null}
           </button>
         ))}
       </div>
       </div>
+
+      {tab !== "messages" ? (
+        <button
+          type="button"
+          onClick={() => choose("messages")}
+          className="fixed bottom-5 left-4 z-40 flex min-h-12 items-center gap-2 rounded-full bg-ivory px-5 text-xs font-semibold uppercase tracking-wide text-ink shadow-lg active:scale-95"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden>
+            <path d="M4 5h16v11H9l-5 4z" />
+          </svg>
+          Message your coordinator
+          {unread ? <span aria-label="New message" className="h-2.5 w-2.5 rounded-full bg-gold" /> : null}
+        </button>
+      ) : null}
 
       {tab === "messages" ? (
         <div role="tabpanel" id="panel-messages" aria-labelledby="tab-messages" className="space-y-10">
