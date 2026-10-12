@@ -157,7 +157,10 @@ export function StaffArea() {
               <PriceBookPanel />
             </>
           ) : (
-            <StaffTeamList />
+            <>
+              <StaffTeamList />
+              <PriceBookPanel />
+            </>
           )
         ) : (
           <ClientsPanel admin={admin} selected={clientEmail} onSelect={(email) => go("clients", email)} />

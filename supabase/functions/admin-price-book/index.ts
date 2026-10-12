@@ -1,7 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-// Staff page → Team → Price book: permanently delete an item. Admins only (is_admin, checked with the caller's own JWT).
+// Staff page → Team → Price book: permanently delete an item. Any staff member (is_staff, checked with the caller's own JWT).
 // Invoices already created keep their own copy of every line, so deleting an item never changes an old invoice.
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -23,9 +23,9 @@ Deno.serve(async (req: Request) => {
     global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } },
     auth: { persistSession: false },
   });
-  const [{ data: who }, { data: isAdmin }] = await Promise.all([asCaller.auth.getUser(), asCaller.rpc("is_admin")]);
+  const [{ data: who }, { data: isStaff }] = await Promise.all([asCaller.auth.getUser(), asCaller.rpc("is_staff")]);
   if (!who.user?.email || !who.user.email_confirmed_at) return json(401, { ok: false, error: "not signed in" });
-  if (isAdmin !== true) return json(403, { ok: false, error: "Admins only" });
+  if (isStaff !== true) return json(403, { ok: false, error: "Staff only" });
 
   let body: { action?: string; id?: string };
   try {

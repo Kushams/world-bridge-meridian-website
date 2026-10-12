@@ -14,7 +14,7 @@ const toDraft = (i: PriceItem | null): Draft =>
     ? { id: i.id, name: i.name, details: i.details ?? "", price: String(i.unit_price), currency: i.currency, unit: i.unit ?? "", category: i.category, active: i.active }
     : { id: null, name: "", details: "", price: "", currency: "EUR", unit: "", category: "Services", active: true };
 
-/** Admins: the shared price list staff pick from when building an invoice. */
+/** Staff: the shared price list staff pick from when building an invoice. */
 export function PriceBookPanel() {
   const [items, setItems] = useState<PriceItem[] | null | undefined>(undefined);
   const [draft, setDraft] = useState<Draft | null>(null);
@@ -73,7 +73,7 @@ export function PriceBookPanel() {
   return (
     <section className="mt-10">
       <h2 className="font-display text-2xl text-ivory">Price book</h2>
-      <p className="mt-1 text-xs text-stone-dim">Staff pick from this list when building an invoice and can still change the price or text on that one invoice. Only admins change the list. New items you type while making an invoice are added here automatically.</p>
+      <p className="mt-1 text-xs text-stone-dim">Staff pick from this list when building an invoice and can still change the price or text on that one invoice. Any staff member can add, edit or remove items. New items you type while making an invoice are added here automatically.</p>
       <button type="button" onClick={() => setDraft(toDraft(null))} className={`${btn} mt-4 bg-ivory text-ink`}>
         + Add item
       </button>

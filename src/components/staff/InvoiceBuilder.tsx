@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createInvoiceV2, loadPriceBook, notifyClient, savePriceItem, uploadFile, type Client, type PriceItem } from "@/lib/staff";
+import { createInvoiceV2, loadPriceBook, notifyClient, removeFile, savePriceItem, updateInvoiceV2, uploadFile, type Client, type PriceItem, type StaffInvoice } from "@/lib/staff";
 import { CURRENCIES, fetchUsdRate, money, totals, type Currency } from "@/lib/money";
 import { buildInvoicePdf, loadEmblem } from "@/lib/invoicePdf";
 import { inputClass } from "./RequestsPanel";
@@ -104,15 +104,25 @@ function PricePicker({ currency, onPick, onClose }: { currency: Currency; onPick
   );
 }
 
-/** Build an invoice from line items. The database recomputes totals; the branded PDF is made and attached on creation. */
-export function InvoiceBuilder({ client, admin, onDone }: { client: Client; admin: boolean; onDone: (msg: string) => void }) {
+/**
+ * Build an invoice from line items, or (with `editing`) change an unpaid one. The database recomputes totals; the branded PDF is made
+ * and attached on creation, and remade after an edit. Every staff member can also grow the price book from here.
+ */
+export function InvoiceBuilder({ client, editing, onDone, onCancel }: { client: Client; editing?: StaffInvoice; onDone: (msg: string) => void; onCancel?: () => void }) {
+  const admin = true; // all staff manage the price book
   const email = client.email;
-  const [currency, setCurrency] = useState<Currency>("EUR");
-  const [tax, setTax] = useState("0");
-  const [due, setDue] = useState("");
-  const [rate, setRate] = useState("");
+  const [currency, setCurrency] = useState<Currency>(editing?.currency ?? "EUR");
+  const [tax, setTax] = useState(editing ? String(editing.tax_percent ?? 0) : "0");
+  const [due, setDue] = useState(editing?.due_date ?? "");
+  const [rate, setRate] = useState(editing ? String(editing.fx_rate ?? 1) : "");
   const [rateNote, setRateNote] = useState("");
-  const [lines, setLines] = useState<Line[]>([blankLine()]);
+  const [lines, setLines] = useState<Line[]>(() =>
+    editing
+      ? editing.line_items?.length
+        ? editing.line_items.map((l) => blankLine({ title: l.title, details: l.details ?? "", qty: String(l.qty), price: String(l.unit_price), save: false }))
+        : [blankLine({ title: editing.description, qty: "1", price: String(editing.amount ?? editing.amount_usd), save: false })]
+      : [blankLine()],
+  );
   const [picker, setPicker] = useState(false);
   const [book, setBook] = useState<PriceItem[]>([]);
   const [busy, setBusy] = useState(false);
@@ -138,6 +148,11 @@ export function InvoiceBuilder({ client, admin, onDone }: { client: Client; admi
         setRateNote("");
         return;
       }
+      if (editing && currency === editing.currency) {
+        setRate(String(editing.fx_rate ?? 1));
+        setRateNote("The rate fixed when this invoice was made. Change it if you want to.");
+        return;
+      }
       setRateNote("Fetching today's rate…");
       fetchUsdRate(currency).then((r) => {
         if (!alive) return;
@@ -153,7 +168,7 @@ export function InvoiceBuilder({ client, admin, onDone }: { client: Client; admi
       alive = false;
       clearTimeout(t);
     };
-  }, [currency]);
+  }, [currency, editing]);
 
   const { subtotal, tax: taxAmount, total } = totals(
     lines.map((l) => ({ qty: Number(l.qty), unit_price: Number(l.price) })),
@@ -186,10 +201,21 @@ export function InvoiceBuilder({ client, admin, onDone }: { client: Client; admi
     if (usd < 5) return setNote("The total must be at least US$5.");
     setBusy(true);
     const payloadLines = clean.map((l) => ({ title: l.title.trim(), details: l.details.trim(), qty: Number(l.qty), unit_price: Number(l.price) }));
-    const { reference, error } = await createInvoiceV2({ email, currency, taxPercent: Number(tax) || 0, fxRate: rateN, lines: payloadLines, due: due || null });
-    if (error || !reference) {
-      setBusy(false);
-      return setNote(`Not created: ${error ?? "something went wrong"}`);
+    let reference: string | null;
+    if (editing) {
+      const err = await updateInvoiceV2({ id: editing.id, currency, taxPercent: Number(tax) || 0, fxRate: rateN, lines: payloadLines, due: due || null });
+      if (err) {
+        setBusy(false);
+        return setNote(`Not saved: ${err}`);
+      }
+      reference = editing.reference;
+    } else {
+      const res = await createInvoiceV2({ email, currency, taxPercent: Number(tax) || 0, fxRate: rateN, lines: payloadLines, due: due || null });
+      if (res.error || !res.reference) {
+        setBusy(false);
+        return setNote(`Not created: ${res.error ?? "something went wrong"}`);
+      }
+      reference = res.reference;
     }
     // Branded PDF, attached straight away so the client's "View invoice (PDF)" button works.
     let pdfOk = false;
@@ -198,7 +224,7 @@ export function InvoiceBuilder({ client, admin, onDone }: { client: Client; admi
       const blob = await buildInvoicePdf(
         {
           reference,
-          createdAt: new Date().toISOString(),
+          createdAt: editing?.created_at ?? new Date().toISOString(),
           dueDate: due || null,
           status: "unpaid",
           paidAt: null,
@@ -213,11 +239,14 @@ export function InvoiceBuilder({ client, admin, onDone }: { client: Client; admi
         { name: client.full_name, email, phone: client.phone },
         await loadEmblem(),
       );
+      if (editing) await removeFile(DOCS, `${email}/invoices/${reference}.pdf`);
       pdfOk = !(await uploadFile(DOCS, `${email}/invoices/${reference}.pdf`, new File([blob], `${reference}.pdf`, { type: "application/pdf" })));
     } catch {
       pdfOk = false;
     }
-    const emailed = await notifyClient(email, "invoice", `${reference} — ${payloadLines[0].title}${payloadLines.length > 1 ? ` + ${payloadLines.length - 1} more` : ""}`);
+    const emailed = editing
+      ? await notifyClient(email, "message", `Invoice ${reference} has been updated. Open Invoices in your account to see the new details.`)
+      : await notifyClient(email, "invoice", `${reference} — ${payloadLines[0].title}${payloadLines.length > 1 ? ` + ${payloadLines.length - 1} more` : ""}`);
     // Remember new typed lines in the price book (admins), so next time they are one tap away.
     let remembered = 0;
     let updated = 0;
@@ -244,6 +273,9 @@ export function InvoiceBuilder({ client, admin, onDone }: { client: Client; admi
     setLines([blankLine()]);
     setTax("0");
     setDue("");
+    if (editing) {
+      return onDone(`Invoice ${reference} updated (${money(total, currency)})${pdfOk ? " and its PDF remade" : " (the PDF could not be remade: use Regenerate PDF)"}${emailed ? "; the client has been told." : "."}${remembered ? ` ${remembered} new item${remembered === 1 ? "" : "s"} saved to the price book.` : ""}${updated ? ` ${updated} price${updated === 1 ? "" : "s"} updated in the price book.` : ""}`);
+    }
     onDone(`Invoice ${reference} created (${money(total, currency)})${pdfOk ? " with its branded PDF" : " (the PDF could not be made: use Generate PDF)"}${emailed ? " and the client has been emailed." : "."}${remembered ? ` ${remembered} new item${remembered === 1 ? "" : "s"} saved to the price book.` : ""}${updated ? ` ${updated} price${updated === 1 ? "" : "s"} updated in the price book.` : ""}`);
   }
 
@@ -362,8 +394,13 @@ export function InvoiceBuilder({ client, admin, onDone }: { client: Client; admi
       </dl>
 
       <button type="button" disabled={busy} onClick={create} className="mt-4 h-12 w-full rounded-full bg-ivory text-sm font-semibold uppercase tracking-wide text-ink active:scale-[0.98] disabled:opacity-40">
-        {busy ? "Creating…" : "Create invoice and PDF"}
+        {busy ? "Saving…" : editing ? "Save changes and remake PDF" : "Create invoice and PDF"}
       </button>
+      {editing && onCancel ? (
+        <button type="button" onClick={onCancel} className="mt-2 h-11 w-full rounded-full border border-line text-xs font-semibold uppercase tracking-wide text-stone hover:text-ivory">
+          Cancel
+        </button>
+      ) : null}
       {note ? (
         <p role="status" className="mt-3 text-sm text-red-400">
           {note}

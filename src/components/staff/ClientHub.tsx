@@ -338,7 +338,7 @@ export function ClientHub({ client, admin, onDeleted }: { client: Client; admin:
         )}
       </Block>
 
-      <InvoicesBlock client={client} admin={admin} email={email} invoices={invoices} pdfs={pdfs} onChange={(m) => (flash(m), load())} onRemovePdf={(f) => remove(DOCS, f)} />
+      <InvoicesBlock client={client} email={email} invoices={invoices} pdfs={pdfs} onChange={(m) => (flash(m), load())} onRemovePdf={(f) => remove(DOCS, f)} />
 
       <Block id="hub-received" title="Sent to us by this client" note="Passports, visas and other files they uploaded, plus signed copies.">
         {RECEIVED.some((c) => (received[c.key] ?? []).length) ? (
@@ -436,7 +436,6 @@ function SendDocuments({ email, onDone }: { email: string; onDone: (msg: string)
 
 function InvoicesBlock({
   client,
-  admin,
   email,
   invoices,
   pdfs,
@@ -444,7 +443,6 @@ function InvoicesBlock({
   onRemovePdf,
 }: {
   client: Client;
-  admin: boolean;
   email: string;
   invoices: StaffInvoice[];
   pdfs: StoredFile[];
@@ -452,6 +450,7 @@ function InvoicesBlock({
   onRemovePdf: (f: StoredFile) => void;
 }) {
   const [busy, setBusy] = useState<string | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
 
   /** (Re)make the branded PDF from the invoice as it stands now (paid stamp, bank details included). */
   async function generatePdf(inv: StaffInvoice, paidNow = false) {
@@ -538,11 +537,26 @@ function InvoicesBlock({
 
   return (
     <Block id="hub-invoices" title="Invoices" note="Create an invoice, attach the PDF, and add bank details if the client wants to pay by transfer.">
-      <InvoiceBuilder client={client} admin={admin} onDone={onChange} />
+      <InvoiceBuilder client={client} onDone={onChange} />
       {invoices.length ? (
         <ul className="mt-8 divide-y divide-line">
           {invoices.map((inv) => {
             const pdf = pdfs.find((p) => p.name.toLowerCase().startsWith(inv.reference.toLowerCase()));
+            if (editId === inv.id)
+              return (
+                <li key={inv.id} className="py-4">
+                  <p className="mb-3 text-sm text-ivory">Editing {inv.reference}</p>
+                  <InvoiceBuilder
+                    client={client}
+                    editing={inv}
+                    onCancel={() => setEditId(null)}
+                    onDone={(m) => {
+                      setEditId(null);
+                      onChange(m);
+                    }}
+                  />
+                </li>
+              );
             return (
               <li key={inv.id} className="py-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
@@ -581,6 +595,11 @@ function InvoicesBlock({
                     </label>
                     </>
                   )}
+                  {inv.status === "unpaid" ? (
+                    <button type="button" onClick={() => setEditId(inv.id)} className={`${btn} border border-line text-ivory hover:border-gold`}>
+                      Edit
+                    </button>
+                  ) : null}
                   {inv.status === "unpaid" ? (
                     <button type="button" onClick={() => cancel(inv)} className={`${btn} text-stone hover:text-red-400`}>
                       Cancel

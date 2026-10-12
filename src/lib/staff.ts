@@ -225,6 +225,19 @@ export async function createInvoiceV2(args: { email: string; currency: Currency;
   return { reference: (data as string | null) ?? null, error: error?.message ?? null };
 }
 
+/** Staff: change an unpaid invoice (lines, prices, currency, tax, due date). The database recomputes totals. */
+export async function updateInvoiceV2(args: { id: string; currency: Currency; taxPercent: number; fxRate: number; lines: LineItem[]; due: string | null }): Promise<string | null> {
+  const { error } = await db().rpc("staff_update_invoice", {
+    p_id: args.id,
+    p_currency: args.currency,
+    p_tax_percent: args.taxPercent,
+    p_fx_rate: args.fxRate,
+    p_lines: args.lines.map((l) => ({ title: l.title, details: l.details ?? "", qty: l.qty, unit_price: l.unit_price })),
+    p_due: args.due,
+  });
+  return error ? error.message : null;
+}
+
 export interface PriceItem {
   id: string;
   name: string;
@@ -241,7 +254,7 @@ export async function loadPriceBook(): Promise<PriceItem[] | null> {
   return error ? null : (data ?? []).map((p) => ({ ...p, unit_price: Number(p.unit_price) })) as PriceItem[];
 }
 
-/** Admins: add (id null) or change a price book item. Returns an error message or null. */
+/** Staff: add (id null) or change a price book item. Returns an error message or null. */
 export async function savePriceItem(item: Omit<PriceItem, "id"> & { id: string | null }): Promise<string | null> {
   const { error } = await db().rpc("admin_save_price_item", {
     p_id: item.id,
