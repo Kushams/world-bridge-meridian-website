@@ -257,8 +257,13 @@ export async function savePriceItem(item: Omit<PriceItem, "id"> & { id: string |
 }
 
 export async function deletePriceItem(id: string): Promise<string | null> {
-  const { error } = await db().rpc("admin_delete_price_item", { p_id: id });
-  return error ? error.message : null;
+  const { data, error } = await db().functions.invoke("admin-price-book", { body: { action: "delete", id } });
+  if ((data as { ok?: boolean } | null)?.ok) return null;
+  if (error && "context" in error && error.context instanceof Response) {
+    const body = (await error.context.json().catch(() => null)) as { error?: string } | null;
+    if (body?.error) return body.error;
+  }
+  return error?.message ?? "Couldn't delete";
 }
 
 /** Change (or clear, with null) the due date of an unpaid invoice. */

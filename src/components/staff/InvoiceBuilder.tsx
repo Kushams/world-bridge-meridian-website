@@ -19,9 +19,11 @@ interface Line {
   fromBook: boolean;
   /** Admins: remember this typed line in the price book when the invoice is created. */
   save: boolean;
+  /** Admins: also change the price book item with the same name to this price. */
+  update: boolean;
 }
 let seq = 0;
-const blankLine = (over: Partial<Line> = {}): Line => ({ id: ++seq, title: "", details: "", qty: "1", price: "", fromBook: false, save: true, ...over });
+const blankLine = (over: Partial<Line> = {}): Line => ({ id: ++seq, title: "", details: "", qty: "1", price: "", fromBook: false, save: true, update: false, ...over });
 
 /** Pick items from the shared price book, grouped like the app's Price book screen. */
 function PricePicker({ currency, onPick, onClose }: { currency: Currency; onPick: (item: PriceItem) => void; onClose: () => void }) {
@@ -112,8 +114,20 @@ export function InvoiceBuilder({ client, admin, onDone }: { client: Client; admi
   const [rateNote, setRateNote] = useState("");
   const [lines, setLines] = useState<Line[]>([blankLine()]);
   const [picker, setPicker] = useState(false);
+  const [book, setBook] = useState<PriceItem[]>([]);
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState("");
+
+  // Admins: keep a copy of the price book to spot lines whose price differs from the book.
+  useEffect(() => {
+    if (!admin) return;
+    let alive = true;
+    loadPriceBook().then((list) => alive && setBook((list ?? []).filter((i) => i.active)));
+    return () => {
+      alive = false;
+    };
+  }, [admin]);
+  const matchOf = (l: Line) => book.find((i) => i.name.trim().toLowerCase() === l.title.trim().toLowerCase());
 
   // Fetch today's rate to US dollars whenever the currency changes (staff can overwrite it).
   useEffect(() => {
@@ -206,11 +220,18 @@ export function InvoiceBuilder({ client, admin, onDone }: { client: Client; admi
     const emailed = await notifyClient(email, "invoice", `${reference} — ${payloadLines[0].title}${payloadLines.length > 1 ? ` + ${payloadLines.length - 1} more` : ""}`);
     // Remember new typed lines in the price book (admins), so next time they are one tap away.
     let remembered = 0;
+    let updated = 0;
     if (admin) {
-      const book = (await loadPriceBook()) ?? [];
-      const known = new Set(book.map((i) => i.name.trim().toLowerCase()));
+      const fresh = (await loadPriceBook()) ?? [];
+      const known = new Set(fresh.map((i) => i.name.trim().toLowerCase()));
       for (const l of clean) {
         const name = l.title.trim();
+        const existing = fresh.find((i) => i.name.trim().toLowerCase() === name.toLowerCase());
+        if (existing && l.update && Number(l.price) !== existing.unit_price) {
+          const err = await savePriceItem({ ...existing, unit_price: Number(l.price), details: l.details.trim() || existing.details });
+          if (!err) updated++;
+          continue;
+        }
         if (l.fromBook || !l.save || known.has(name.toLowerCase())) continue;
         const err = await savePriceItem({ id: null, name, details: l.details.trim(), unit_price: Number(l.price), currency, unit: "", category: "Services", active: true });
         if (!err) {
@@ -223,7 +244,7 @@ export function InvoiceBuilder({ client, admin, onDone }: { client: Client; admi
     setLines([blankLine()]);
     setTax("0");
     setDue("");
-    onDone(`Invoice ${reference} created (${money(total, currency)})${pdfOk ? " with its branded PDF" : " (the PDF could not be made: use Generate PDF)"}${emailed ? " and the client has been emailed." : "."}${remembered ? ` ${remembered} new item${remembered === 1 ? "" : "s"} saved to the price book.` : ""}`);
+    onDone(`Invoice ${reference} created (${money(total, currency)})${pdfOk ? " with its branded PDF" : " (the PDF could not be made: use Generate PDF)"}${emailed ? " and the client has been emailed." : "."}${remembered ? ` ${remembered} new item${remembered === 1 ? "" : "s"} saved to the price book.` : ""}${updated ? ` ${updated} price${updated === 1 ? "" : "s"} updated in the price book.` : ""}`);
   }
 
   const field = `${inputClass} min-h-11 w-full`;
@@ -284,11 +305,20 @@ export function InvoiceBuilder({ client, admin, onDone }: { client: Client; admi
               </button>
             </div>
             <textarea value={l.details} onChange={(e) => patch(l.id, { details: e.target.value })} rows={3} maxLength={1000} placeholder="Details shown under the name (hotel, dates, route, passengers…)" aria-label={`Line ${i + 1} details`} className={`${inputClass} mt-2 w-full resize-y`} />
-            {admin && !l.fromBook && l.title.trim().length >= 3 ? (
-              <label className="mt-2 flex items-center gap-2 text-xs text-stone">
-                <input type="checkbox" checked={l.save} onChange={(e) => patch(l.id, { save: e.target.checked })} />
-                Save this to the price book so I can pick it next time
-              </label>
+            {admin && l.title.trim().length >= 3 ? (
+              matchOf(l) ? (
+                l.price !== "" && Number(l.price) !== matchOf(l)!.unit_price ? (
+                  <label className="mt-2 flex items-center gap-2 text-xs text-stone">
+                    <input type="checkbox" checked={l.update} onChange={(e) => patch(l.id, { update: e.target.checked })} />
+                    Also change the price book price ({money(matchOf(l)!.unit_price, matchOf(l)!.currency)} → {money(Number(l.price), matchOf(l)!.currency)})
+                  </label>
+                ) : null
+              ) : (
+                <label className="mt-2 flex items-center gap-2 text-xs text-stone">
+                  <input type="checkbox" checked={l.save} onChange={(e) => patch(l.id, { save: e.target.checked })} />
+                  Save this to the price book so I can pick it next time
+                </label>
+              )
             ) : null}
             <div className="mt-2 grid grid-cols-[90px_1fr_auto] items-center gap-2">
               <input value={l.qty} onChange={(e) => patch(l.id, { qty: e.target.value })} inputMode="decimal" aria-label={`Line ${i + 1} quantity`} placeholder="Qty" className={field} />
