@@ -191,3 +191,25 @@ end;
 $$;
 revoke all on function public.staff_create_invoice_v2(text, text, numeric, numeric, jsonb, date) from public, anon;
 grant execute on function public.staff_create_invoice_v2(text, text, numeric, numeric, jsonb, date) to authenticated;
+
+-- Staff can change an unpaid invoice's due date at any time (or clear it with null).
+create or replace function public.staff_set_invoice_due_date(p_id uuid, p_due date)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  if not public.is_staff() then
+    raise exception 'Staff only';
+  end if;
+  update public.invoices
+  set due_date = p_due
+  where id = p_id and kind = 'invoice' and status in ('unpaid', 'needs_review') and public.staff_can_see_user(user_id);
+  if not found then
+    raise exception 'Invoice not found, already paid or cancelled';
+  end if;
+end;
+$$;
+revoke all on function public.staff_set_invoice_due_date(uuid, date) from public, anon;
+grant execute on function public.staff_set_invoice_due_date(uuid, date) to authenticated;

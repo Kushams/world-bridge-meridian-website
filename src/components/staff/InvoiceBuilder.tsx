@@ -191,7 +191,6 @@ export function InvoiceBuilder({ client, onDone }: { client: Client; onDone: (ms
           total: t.total,
           amountUsd: usd,
           fxRate: rateN,
-          bankLines: [],
         },
         { name: client.full_name, email, phone: client.phone },
         await loadEmblem(),
@@ -226,10 +225,27 @@ export function InvoiceBuilder({ client, onDone }: { client: Client; onDone: (ms
           Tax %
           <input value={tax} onChange={(e) => setTax(e.target.value)} inputMode="decimal" placeholder="0" className={`${field} mt-1`} />
         </label>
-        <label className="text-xs text-stone-dim">
-          Due date (optional)
-          <input type="date" value={due} onChange={(e) => setDue(e.target.value)} className={`${field} mt-1`} />
-        </label>
+        <div className="col-span-2 text-xs text-stone-dim">
+          <label htmlFor="inv-due">Due date (your choice, or leave empty for &ldquo;due on receipt&rdquo;)</label>
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <input id="inv-due" type="date" value={due} onChange={(e) => setDue(e.target.value)} className={`${field} min-w-44 flex-1`} />
+            {[7, 14, 30].map((d) => (
+              <button
+                key={d}
+                type="button"
+                onClick={() => setDue(new Date(Date.now() + d * 86400000).toISOString().slice(0, 10))}
+                className="min-h-11 rounded-full border border-line px-3 text-xs font-semibold text-ivory hover:border-gold"
+              >
+                +{d} days
+              </button>
+            ))}
+            {due ? (
+              <button type="button" onClick={() => setDue("")} className="min-h-11 px-2 text-xs text-stone hover:text-ivory">
+                Clear
+              </button>
+            ) : null}
+          </div>
+        </div>
         {currency !== "USD" ? (
           <label className="text-xs text-stone-dim">
             1 {currency} = USD

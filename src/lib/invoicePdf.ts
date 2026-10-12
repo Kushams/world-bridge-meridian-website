@@ -13,8 +13,6 @@ export interface PdfInvoice {
   total: number;
   amountUsd: number;
   fxRate: number;
-  /** One entry per bank detail row, already labelled. Empty = bank transfer isn't offered on this invoice. */
-  bankLines: { label: string; value: string }[];
 }
 
 export interface PdfClient {
@@ -23,174 +21,256 @@ export interface PdfClient {
   phone: string | null;
 }
 
+type RGB = [number, number, number];
+
 const SYMBOL = { USD: "US$", EUR: "€", GBP: "£" } as const;
 const fmt = (n: number, c: keyof typeof SYMBOL) => `${SYMBOL[c]}${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-const day = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+const day = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 
-const INK: [number, number, number] = [33, 31, 26];
-const SOFT: [number, number, number] = [110, 101, 82];
-const GOLD: [number, number, number] = [166, 118, 59];
-const CREAM: [number, number, number] = [245, 239, 226];
-const LINE: [number, number, number] = [221, 212, 192];
+// Brand palette (matches the website)
+const FOREST: RGB = [27, 42, 32];
+const INK: RGB = [33, 31, 26];
+const SOFT: RGB = [110, 101, 82];
+const GOLD: RGB = [166, 118, 59];
+const GOLD_LIGHT: RGB = [217, 171, 99];
+const CREAM: RGB = [250, 246, 236];
+const SAND: RGB = [241, 234, 217];
+const LINE: RGB = [225, 215, 192];
+const WHITE: RGB = [255, 255, 255];
+const GREEN: RGB = [30, 140, 90];
 
 const SITE = "worldbridgemeridian.com";
 const EMAIL = "info@worldbridgemeridian.group";
 const PHONE = "+1 (302) 627-3325";
 
-/** A World Bridge Meridian branded invoice as a PDF (A4). `emblem` is a PNG data URL for the logo; omit to leave it out. */
+/** A World Bridge Meridian branded invoice as a vector PDF (A4). `emblem` is a PNG data URL; omit to leave the logo out. */
 export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem?: string | null): Promise<Blob> {
   const { jsPDF } = await import("jspdf");
-  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  const doc = new jsPDF({ unit: "mm", format: "a4", compress: true });
+  doc.setProperties({ title: `Invoice ${inv.reference}`, subject: "Invoice", author: "World Bridge Meridian", creator: "World Bridge Meridian" });
   const W = 210;
-  const L = 15;
-  const R = W - 15;
+  const H = 297;
+  const L = 16;
+  const R = W - 16;
   const cur = inv.currency;
 
-  const text = (s: string, x: number, y: number, o: { size?: number; bold?: boolean; color?: [number, number, number]; align?: "left" | "right" | "center"; spacing?: number } = {}) => {
-    doc.setFont("helvetica", o.bold ? "bold" : "normal");
+  type TextOpts = { size?: number; bold?: boolean; italic?: boolean; font?: "helvetica" | "times"; color?: RGB; align?: "left" | "right" | "center"; spacing?: number };
+  const text = (s: string, x: number, y: number, o: TextOpts = {}) => {
+    const font = o.font ?? "helvetica";
+    doc.setFont(font, o.bold && o.italic ? "bolditalic" : o.bold ? "bold" : o.italic ? "italic" : "normal");
     doc.setFontSize(o.size ?? 9);
     doc.setTextColor(...(o.color ?? INK));
     doc.text(s, x, y, { align: o.align ?? "left", charSpace: o.spacing ?? 0 });
   };
-
-  const header = () => {
-    doc.setFillColor(...GOLD);
-    doc.rect(0, 0, W, 3, "F");
-    if (emblem) doc.addImage(emblem, "PNG", L, 11, 14, 12.6);
-    text("WORLD BRIDGE MERIDIAN", emblem ? L + 18 : L, 17.5, { size: 13, color: INK, spacing: 0.4 });
-    text("BESPOKE TRAVEL GROUP", emblem ? L + 18 : L, 22.5, { size: 6.5, color: GOLD, spacing: 1.4 });
+  const fill = (c: RGB) => doc.setFillColor(...c);
+  const stroke = (c: RGB, w = 0.2) => {
+    doc.setDrawColor(...c);
+    doc.setLineWidth(w);
   };
-  header();
+  const faint = (opacity: number, draw: () => void) => {
+    const g = new (doc as unknown as { GState: new (o: { opacity: number }) => unknown }).GState({ opacity });
+    (doc as unknown as { setGState: (g: unknown) => void }).setGState(g);
+    draw();
+    (doc as unknown as { setGState: (g: unknown) => void }).setGState(new (doc as unknown as { GState: new (o: { opacity: number }) => unknown }).GState({ opacity: 1 }));
+  };
 
-  text("INVOICE", R, 18, { size: 20, bold: true, align: "right" });
-  text(`#${inv.reference}`, R, 24, { size: 9, color: SOFT, align: "right" });
-  text(inv.dueDate ? `Due ${day(inv.dueDate)}` : "Due upon receipt", R, 28.5, { size: 9, color: SOFT, align: "right" });
-  text(`Issued ${day(inv.createdAt)}`, R, 33, { size: 9, color: SOFT, align: "right" });
+  // ---- Page furniture ------------------------------------------------------------------------
+  const watermark = () => {
+    if (emblem) faint(0.035, () => doc.addImage(emblem, "PNG", 86, 150, 118, 105.8));
+  };
+  const footer = () => {
+    fill(FOREST);
+    doc.rect(0, H - 14, W, 14, "F");
+    fill(GOLD);
+    doc.rect(0, H - 14, W, 0.8, "F");
+    text(`World Bridge Meridian  ·  Bespoke Travel Group`, L, H - 6, { size: 7.5, color: CREAM, spacing: 0.3 });
+    text(`${EMAIL}   ·   ${SITE}`, R, H - 6, { size: 7.5, color: GOLD_LIGHT, align: "right" });
+  };
+  const slimHeader = () => {
+    fill(FOREST);
+    doc.rect(0, 0, W, 16, "F");
+    fill(GOLD);
+    doc.rect(0, 16, W, 0.8, "F");
+    if (emblem) doc.addImage(emblem, "PNG", L, 3.2, 10.5, 9.4);
+    text("WORLD BRIDGE MERIDIAN", emblem ? L + 14 : L, 10.2, { size: 9, color: CREAM, spacing: 0.9 });
+    text(`Invoice ${inv.reference}`, R, 10.2, { size: 9, color: GOLD_LIGHT, align: "right" });
+  };
 
-  // From / Bill to
-  let y = 48;
-  text("FROM", L, y, { size: 7, bold: true, color: SOFT, spacing: 0.8 });
-  text("World Bridge Meridian", L, y + 6, { size: 11, bold: true });
-  text("Bespoke Travel Group", L, y + 11, { color: SOFT });
-  text(EMAIL, L, y + 16, { color: SOFT });
-  text(PHONE, L, y + 21, { color: SOFT });
-  text(SITE, L, y + 26, { color: SOFT });
+  // ---- First page header ---------------------------------------------------------------------
+  fill(FOREST);
+  doc.rect(0, 0, W, 54, "F");
+  // soft decorative arc in the corner
+  faint(0.06, () => {
+    fill(GOLD_LIGHT);
+    doc.circle(W + 4, -14, 44, "F");
+  });
+  fill(GOLD);
+  doc.rect(0, 54, W, 1.2, "F");
 
-  text("BILL TO", 112, y, { size: 7, bold: true, color: SOFT, spacing: 0.8 });
-  text(client.name || client.email, 112, y + 6, { size: 11, bold: true });
-  let by = y + 11;
+  if (emblem) doc.addImage(emblem, "PNG", L, 12, 22, 19.7);
+  const tx = emblem ? L + 27 : L;
+  text("WORLD BRIDGE MERIDIAN", tx, 21.5, { size: 14.5, color: CREAM, spacing: 1.1 });
+  text("BESPOKE TRAVEL GROUP", tx, 28, { size: 7, color: GOLD_LIGHT, spacing: 2.2 });
+  doc.setDrawColor(...GOLD);
+  doc.setLineWidth(0.3);
+  doc.line(tx, 31, tx + 62, 31);
+
+  text("Invoice", R, 24, { size: 30, font: "times", italic: true, color: CREAM, align: "right" });
+  text(`No. ${inv.reference}`, R, 32, { size: 9.5, color: GOLD_LIGHT, align: "right" });
+  text(`Issued ${day(inv.createdAt)}`, R, 39, { size: 8.5, color: CREAM, align: "right" });
+  text(inv.dueDate && inv.status !== "paid" ? `Due ${day(inv.dueDate)}` : inv.status === "paid" ? "Settled" : "Due on receipt", R, 44.5, { size: 8.5, color: CREAM, align: "right" });
+
+  watermark();
+
+  // ---- Bill to / From / Amount ----------------------------------------------------------------
+  let y = 67;
+  text("BILLED TO", L, y, { size: 7, bold: true, color: GOLD, spacing: 1.4 });
+  text(client.name || client.email, L, y + 7, { size: 13, font: "times", bold: true });
+  let by = y + 12.5;
   if (client.name) {
-    text(client.email, 112, by, { color: SOFT });
+    text(client.email, L, by, { color: SOFT });
     by += 5;
   }
-  if (client.phone) text(client.phone, 112, by, { color: SOFT });
+  if (client.phone) text(client.phone, L, by, { color: SOFT });
 
-  // Table
-  y = 86;
-  const colQty = 130;
-  const colPrice = 166;
-  const colAmount = R - 2;
+  text("FROM", 100, y, { size: 7, bold: true, color: GOLD, spacing: 1.4 });
+  text("World Bridge Meridian", 100, y + 7, { size: 13, font: "times", bold: true });
+  text(EMAIL, 100, y + 12.5, { color: SOFT });
+  text(`${PHONE}  ·  ${SITE}`, 100, y + 17.5, { color: SOFT });
+
+  // Amount card
+  y = 91;
+  fill(SAND);
+  doc.roundedRect(L, y, R - L, 20, 3, 3, "F");
+  fill(GOLD);
+  doc.roundedRect(L, y, 2.2, 20, 1.1, 1.1, "F");
+  text(inv.status === "paid" ? "AMOUNT PAID" : "AMOUNT DUE", L + 9, y + 7.5, { size: 7, bold: true, color: GOLD, spacing: 1.4 });
+  text(fmt(inv.total, cur), L + 9, y + 16, { size: 21, font: "times", bold: true });
+  const chip = inv.status === "paid" ? "PAID" : inv.dueDate ? `DUE ${new Date(inv.dueDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" }).toUpperCase()}` : "DUE ON RECEIPT";
+  const chipW = 12 + chip.length * 2.2;
+  fill(inv.status === "paid" ? GREEN : FOREST);
+  doc.roundedRect(R - chipW - 7, y + 5.5, chipW, 9, 4.5, 4.5, "F");
+  text(chip, R - 7 - chipW / 2, y + 11.4, { size: 7.5, bold: true, color: WHITE, align: "center" });
+
+  // ---- Line items ------------------------------------------------------------------------------
+  y = 119;
+  const colQty = 128;
+  const colPrice = 163;
+  const colAmount = R - 5;
   const tableHead = (at: number) => {
-    doc.setFillColor(...CREAM);
-    doc.rect(L, at, R - L, 9, "F");
-    text("Description", L + 3, at + 6, { size: 8, bold: true });
-    text("QTY", colQty, at + 6, { size: 8, bold: true, align: "center" });
-    text(`Price, ${cur}`, colPrice, at + 6, { size: 8, bold: true, align: "right" });
-    text(`Amount, ${cur}`, colAmount, at + 6, { size: 8, bold: true, align: "right" });
+    fill(FOREST);
+    doc.roundedRect(L, at, R - L, 10, 2, 2, "F");
+    text("DESCRIPTION", L + 5, at + 6.4, { size: 7, bold: true, color: CREAM, spacing: 1 });
+    text("QTY", colQty, at + 6.4, { size: 7, bold: true, color: CREAM, align: "center" });
+    text(`PRICE`, colPrice, at + 6.4, { size: 7, bold: true, color: CREAM, align: "right" });
+    text(`AMOUNT`, colAmount, at + 6.4, { size: 7, bold: true, color: CREAM, align: "right" });
   };
   tableHead(y);
-  y += 9;
+  y += 10;
 
-  for (const l of inv.lines) {
+  inv.lines.forEach((l, idx) => {
     const detail = (l.details ?? "").trim();
-    const detailLines = detail ? (doc.setFontSize(8.5), doc.splitTextToSize(detail, 100) as string[]) : [];
-    const h = 8 + detailLines.length * 4;
-    if (y + h > 250) {
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8.5);
+    const detailLines = detail ? (doc.splitTextToSize(detail, 96) as string[]) : [];
+    const h = 11 + detailLines.length * 4.1;
+    if (y + h > H - 24) {
+      footer();
       doc.addPage();
-      header();
-      y = 40;
+      slimHeader();
+      watermark();
+      y = 28;
       tableHead(y);
-      y += 9;
+      y += 10;
     }
-    text(l.title, L + 3, y + 6, { size: 9.5, bold: true });
-    detailLines.forEach((ln, i) => text(ln, L + 3, y + 10.5 + i * 4, { size: 8.5, color: SOFT }));
-    text(String(l.qty), colQty, y + 6, { align: "center" });
-    text(fmt(l.unit_price, cur), colPrice, y + 6, { align: "right" });
-    text(fmt(l.amount ?? l.qty * l.unit_price, cur), colAmount, y + 6, { align: "right" });
+    if (idx % 2 === 1) {
+      fill(CREAM);
+      doc.rect(L, y, R - L, h, "F");
+    }
+    text(l.title, L + 5, y + 7, { size: 10, bold: true });
+    detailLines.forEach((ln, i) => text(ln, L + 5, y + 11.8 + i * 4.1, { size: 8.5, color: SOFT }));
+    text(String(l.qty), colQty, y + 7, { align: "center" });
+    text(fmt(l.unit_price, cur), colPrice, y + 7, { align: "right", color: SOFT });
+    text(fmt(l.amount ?? l.qty * l.unit_price, cur), colAmount, y + 7, { align: "right", bold: true });
     y += h;
-    doc.setDrawColor(...LINE);
+    stroke(LINE, 0.2);
     doc.line(L, y, R, y);
-  }
+  });
 
-  // Totals
-  if (y > 235) {
+  // ---- Totals ----------------------------------------------------------------------------------
+  if (y > H - 62) {
+    footer();
     doc.addPage();
-    header();
-    y = 40;
+    slimHeader();
+    watermark();
+    y = 28;
   }
-  y += 8;
-  const tl = 140;
+  y += 9;
+  const tl = 124;
   text("Subtotal", tl, y, { color: SOFT });
   text(fmt(inv.subtotal, cur), colAmount, y, { align: "right" });
   if (inv.taxPercent > 0) {
     y += 6;
-    text(`Tax ${inv.taxPercent}%`, tl, y, { color: SOFT });
+    text(`Tax (${inv.taxPercent}%)`, tl, y, { color: SOFT });
     text(fmt(inv.total - inv.subtotal, cur), colAmount, y, { align: "right" });
   }
-  y += 8;
-  doc.setFillColor(...CREAM);
-  doc.rect(tl - 4, y - 6, R - tl + 4, 10, "F");
-  text("Total", tl, y + 0.5, { size: 11, bold: true });
-  text(fmt(inv.total, cur), colAmount, y + 0.5, { size: 11, bold: true, align: "right" });
+  y += 5;
+  fill(FOREST);
+  doc.roundedRect(tl - 5, y, R - tl + 5, 13, 2.5, 2.5, "F");
+  text("TOTAL", tl, y + 8.4, { size: 8, bold: true, color: GOLD_LIGHT, spacing: 1.4 });
+  text(fmt(inv.total, cur), colAmount, y + 9, { size: 14, font: "times", bold: true, color: CREAM, align: "right" });
+  y += 13;
   if (cur !== "USD") {
-    y += 8;
-    text(`Pay by card or crypto: ${fmt(inv.amountUsd, "USD")} (1 ${cur} = ${inv.fxRate.toFixed(4)} USD)`, colAmount, y, { size: 7.5, color: SOFT, align: "right" });
+    text(`Card and crypto payments settle at ${fmt(inv.amountUsd, "USD")} (1 ${cur} = ${inv.fxRate.toFixed(4)} USD).`, colAmount, y + 6, { size: 7.5, color: SOFT, align: "right" });
+    y += 6;
   }
 
   if (inv.status === "paid") {
-    doc.setTextColor(30, 140, 90);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(34);
-    doc.text("PAID", 60, y - 4, { angle: 14 });
-    if (inv.paidAt) text(day(inv.paidAt), 62, y + 4, { size: 9, color: [30, 140, 90] });
+    doc.setTextColor(...GREEN);
+    doc.setFont("times", "bolditalic");
+    doc.setFontSize(46);
+    faint(0.9, () => doc.text("Paid", 40, y - 6, { angle: 12 }));
+    if (inv.paidAt) text(day(inv.paidAt), 42, y + 5, { size: 9, color: GREEN, spacing: 0.5 });
   }
 
-  // How to pay
-  y += 14;
-  if (y > 225) {
+  // ---- How to pay -----------------------------------------------------------------------------
+  y += 12;
+  if (y > H - 56) {
+    footer();
     doc.addPage();
-    header();
-    y = 40;
+    slimHeader();
+    watermark();
+    y = 30;
   }
-  text("HOW TO PAY", L, y, { size: 7, bold: true, color: SOFT, spacing: 0.8 });
-  y += 6;
-  text("Online, by card or crypto", L, y, { size: 9.5, bold: true });
-  y += 5;
-  text(`Sign in at ${SITE}, open My account > Invoices and choose “Pay by card or crypto”.`, L, y, { color: SOFT });
-  if (inv.bankLines.length) {
-    y += 9;
-    text("By bank transfer", L, y, { size: 9.5, bold: true });
-    y += 5;
-    for (const b of inv.bankLines) {
-      if (y > 262) {
-        doc.addPage();
-        header();
-        y = 40;
-      }
-      text(b.label ? `${b.label}: ${b.value}` : b.value, L, y);
-      y += 5;
-    }
-    text(`Please use ${inv.reference} as the payment reference.`, L, y + 1, { size: 8.5, color: SOFT });
+  if (inv.status !== "paid") {
+    fill(CREAM);
+    doc.roundedRect(L, y, R - L, 30, 3, 3, "F");
+    stroke(GOLD, 0.4);
+    doc.roundedRect(L, y, R - L, 30, 3, 3, "S");
+    text("HOW TO PAY", L + 7, y + 8, { size: 7, bold: true, color: GOLD, spacing: 1.4 });
+    text("Securely online, by card or crypto", L + 7, y + 15, { size: 11, font: "times", bold: true });
+    text(`Sign in at ${SITE}, open My account, then Invoices,`, L + 7, y + 21, { color: SOFT, size: 8.5 });
+    text(`and choose “Pay by card or crypto”.`, L + 7, y + 25.5, { color: SOFT, size: 8.5 });
+    const bx = R - 52;
+    fill(FOREST);
+    doc.roundedRect(bx, y + 9, 45, 12, 6, 6, "F");
+    text("Pay invoice", bx + 22.5, y + 16.6, { size: 9, bold: true, color: CREAM, align: "center", spacing: 0.4 });
+    doc.link(bx, y + 9, 45, 12, { url: `https://${SITE}/my-world-bridge#invoices` });
+    y += 30;
+  } else {
+    text("Thank you. This invoice has been settled in full.", L, y + 4, { size: 11, font: "times", italic: true, color: GREEN });
+    y += 8;
   }
 
-  // Footer on every page
+  y += 12;
+  if (y < H - 28) text("Thank you for travelling with us.", W / 2, y, { size: 12, font: "times", italic: true, color: GOLD, align: "center" });
+
+  // ---- Footer and page numbers --------------------------------------------------------------
+  footer();
   const pages = doc.getNumberOfPages();
   for (let p = 1; p <= pages; p++) {
     doc.setPage(p);
-    doc.setDrawColor(...GOLD);
-    doc.line(L, 280, R, 280);
-    text(`World Bridge Meridian  ·  Bespoke Travel Group  ·  ${EMAIL}  ·  ${SITE}`, L, 285, { size: 7.5, color: SOFT });
-    text(`${inv.reference}   ${p} of ${pages}`, R, 285, { size: 7.5, color: SOFT, align: "right" });
+    text(`${inv.reference}  ·  Page ${p} of ${pages}`, R, H - 18, { size: 7.5, color: SOFT, align: "right" });
   }
 
   return doc.output("blob");

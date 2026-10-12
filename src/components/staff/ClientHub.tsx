@@ -17,6 +17,7 @@ import {
   openFile,
   removeFile,
   setInvoiceBankDetails,
+  setInvoiceDueDate,
   uploadFile,
   usd,
   voidInvoice,
@@ -473,7 +474,6 @@ function InvoicesBlock({
           total: inv.amount ?? t.total,
           amountUsd: inv.amount_usd,
           fxRate: inv.fx_rate ?? 1,
-          bankLines: parseBankLines(inv.bank_details ?? "").map((l) => ({ label: l.label, value: l.value })),
         },
         { name: client.full_name, email, phone: client.phone },
         await loadEmblem(),
@@ -587,6 +587,23 @@ function InvoicesBlock({
                   ) : null}
                 </div>
                 </div>
+                {inv.status === "unpaid" || inv.status === "needs_review" ? (
+                  <label className="mt-3 flex flex-wrap items-center gap-2 text-xs text-stone-dim">
+                    Due date
+                    <input
+                      type="date"
+                      defaultValue={inv.due_date ?? ""}
+                      key={`${inv.id}:${inv.due_date ?? ""}`}
+                      onBlur={async (e) => {
+                        const next = e.target.value || null;
+                        if (next === (inv.due_date ?? null)) return;
+                        const err = await setInvoiceDueDate(inv.id, next);
+                        onChange(err ? `Not saved: ${err}` : next ? `Due date for ${inv.reference} set to ${fmtDate(next)}. Regenerate the PDF to show it there.` : `Due date removed from ${inv.reference}.`);
+                      }}
+                      className={`${inputClass} min-h-11`}
+                    />
+                  </label>
+                ) : null}
                 {inv.status === "unpaid" || inv.status === "needs_review" ? (
                   <BankEditor key={`${inv.id}:${inv.bank_details ?? ""}`} inv={inv} busy={busy === inv.id} onSave={(text) => saveBank(inv, text)} />
                 ) : inv.status === "paid" && inv.paid_via ? (

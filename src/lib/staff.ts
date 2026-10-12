@@ -261,6 +261,12 @@ export async function deletePriceItem(id: string): Promise<string | null> {
   return error ? error.message : null;
 }
 
+/** Change (or clear, with null) the due date of an unpaid invoice. */
+export async function setInvoiceDueDate(id: string, due: string | null): Promise<string | null> {
+  const { error } = await db().rpc("staff_set_invoice_due_date", { p_id: id, p_due: due });
+  return error ? error.message : null;
+}
+
 export async function voidInvoice(id: string): Promise<string | null> {
   const { error } = await db().rpc("staff_void_invoice", { p_id: id });
   return error ? error.message : null;
