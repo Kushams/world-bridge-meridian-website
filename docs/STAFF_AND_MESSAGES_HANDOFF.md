@@ -33,6 +33,10 @@ Add a staff member: `insert into public.staff_members (email, role, name, title,
 - UI: client `My World Bridge → Messages` tab (`src/components/account/MessagesPanel.tsx`);
   staff `/staff → client → Messages` block (`src/components/staff/ClientHub.tsx`); shared `src/components/messages/Thread.tsx`.
   Threads refresh every 15 s while the tab is visible.
+- Clients can also upload from the chat (paperclip). It saves to the same private folder as
+  Itineraries & Documents → "Other" (`client-uploads/<email>/other/`), so it shows in both places and emails the team.
+- Team emails for client activity have a button to `/staff?client=<email>#clients`, which opens that client's page directly.
+  Staff replies are quoted in the client's email with a "Read and reply" button to `/my-world-bridge#messages`.
 
 ## Checks to run
 `npm run lint`, `npx tsc --noEmit` (run `npx next typegen` first in a fresh worktree), `npm run build:cloudflare`.

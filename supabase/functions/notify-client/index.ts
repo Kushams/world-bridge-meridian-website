@@ -67,8 +67,8 @@ Deno.serve(async (req: Request) => {
   if (!client) return json(404, { ok: false, error: "no account" });
 
   const first = (client.full_name ?? "").trim().split(/\s+/)[0];
-  const title = String(body.title ?? "").slice(0, 160);
   const kind = body.kind as string;
+  const title = String(body.title ?? "").slice(0, kind === "message" ? 2000 : 160);
   if (THREAD[kind]) {
     const { error } = await supabase.rpc("log_client_event", {
       p_client_email: to,
@@ -88,7 +88,9 @@ Deno.serve(async (req: Request) => {
       subject: msg.subject,
       html: `<div style="font-family:Georgia,serif;color:#1c1c1c;max-width:560px">
         <p>${first ? `Dear ${esc(first)},` : "Hello,"}</p>
-        <p>${esc(msg.line)}${title ? `: <b>${esc(title)}</b>` : ""}${kind === "message" ? "" : "."}</p>
+        ${kind === "message"
+          ? `<p>${esc(msg.line)}${title ? ":" : "."}</p>${title ? `<blockquote style="margin:0;padding:12px 16px;border-left:3px solid #b8964e;background:#f7f4ee;white-space:pre-wrap">${esc(title)}</blockquote>` : ""}`
+          : `<p>${esc(msg.line)}${title ? `: <b>${esc(title)}</b>` : ""}.</p>`}
         <p style="margin:28px 0"><a href="${ACCOUNT_URL}${msg.hash}" style="background:#1c1c1c;color:#fff;padding:12px 22px;border-radius:999px;text-decoration:none;font-family:Arial,sans-serif;font-size:13px;letter-spacing:.05em;text-transform:uppercase">${esc(msg.button)}</a></p>
         <p>Sign in with this email address to see it. If you have any questions, just reply to this email.</p>
         <p>Warm regards,<br>World Bridge Meridian</p>

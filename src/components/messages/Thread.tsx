@@ -28,19 +28,24 @@ export function Thread({
   viewer,
   onSend,
   onOpen,
+  onAttach,
   placeholder,
 }: {
   clientEmail: string;
   viewer: "client" | "staff";
   onSend: (body: string) => Promise<string | null>;
   onOpen?: (m: ThreadMessage) => void;
+  /** Uploads a file from the chat; resolves to an error message or null. */
+  onAttach?: (file: File) => Promise<string | null>;
   placeholder: string;
 }) {
   const [messages, setMessages] = useState<ThreadMessage[] | null>(null);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
+  const [attaching, setAttaching] = useState(false);
   const end = useRef<HTMLDivElement>(null);
+  const picker = useRef<HTMLInputElement>(null);
   const count = useRef(0);
 
   const refresh = useCallback(async () => {
@@ -77,6 +82,17 @@ export function Thread({
       return;
     }
     setDraft("");
+    refresh();
+  }
+
+  async function attach(file: File | undefined) {
+    if (!file || !onAttach) return;
+    setAttaching(true);
+    setError("");
+    const err = await onAttach(file);
+    setAttaching(false);
+    if (picker.current) picker.current.value = "";
+    if (err) return setError(err);
     refresh();
   }
 
@@ -127,6 +143,35 @@ export function Thread({
         <div ref={end} />
       </div>
       <form onSubmit={send} className="flex items-end gap-2 border-t hairline p-3">
+        {onAttach ? (
+          <>
+            <input
+              ref={picker}
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png,.heic,.webp,.doc,.docx"
+              className="sr-only"
+              tabIndex={-1}
+              aria-hidden
+              onChange={(e) => attach(e.target.files?.[0])}
+            />
+            <button
+              type="button"
+              onClick={() => picker.current?.click()}
+              disabled={attaching}
+              title="Send us a document"
+              aria-label="Send us a document"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line text-ivory hover:border-gold disabled:opacity-40"
+            >
+              {attaching ? (
+                <span className="text-[0.65rem]">…</span>
+              ) : (
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+                  <path d="M21 11.5l-8.6 8.6a5.5 5.5 0 01-7.8-7.8l8.6-8.6a3.7 3.7 0 015.2 5.2l-8.6 8.6a1.8 1.8 0 01-2.6-2.6l7.9-7.9" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              )}
+            </button>
+          </>
+        ) : null}
         <label className="sr-only" htmlFor={`msg-${viewer}`}>
           Message
         </label>

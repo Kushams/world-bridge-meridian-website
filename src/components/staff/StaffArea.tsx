@@ -33,7 +33,13 @@ export function StaffArea() {
 
   useEffect(() => {
     const h = window.location.hash.slice(1);
-    const t = setTimeout(() => (h === "clients" || h === "requests" || h === "team") && setTab(h), 0);
+    const client = new URLSearchParams(window.location.search).get("client");
+    const t = setTimeout(() => {
+      if (client) {
+        setClientEmail(client.toLowerCase());
+        setTab("clients");
+      } else if (h === "clients" || h === "requests" || h === "team") setTab(h);
+    }, 0);
     return () => clearTimeout(t);
   }, []);
 

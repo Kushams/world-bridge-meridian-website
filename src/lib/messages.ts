@@ -52,7 +52,7 @@ export async function postAsStaff(clientEmail: string, body: string): Promise<st
   const { error } = await db().rpc("staff_post_message", { p_client_email: clientEmail, p_body: body });
   if (error) return error.message;
   db()
-    .functions.invoke("notify-client", { body: { email: clientEmail, kind: "message", title: "" } })
+    .functions.invoke("notify-client", { body: { email: clientEmail, kind: "message", title: body } })
     .catch(() => undefined);
   return null;
 }

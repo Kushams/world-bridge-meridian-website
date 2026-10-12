@@ -110,7 +110,8 @@ Deno.serve(async (req: Request) => {
       html: `<p><b>${esc(name)}</b> (${esc(user.email)}) ${esc(action)}.</p>
         <p>${esc(String(body.title ?? "").slice(0, kind === "message" ? 2000 : 200))}${body.category ? ` &middot; ${esc(String(body.category).slice(0, 40))}` : ""}</p>
         ${fileNote ? `<p>${fileNote}</p>` : ""}
-        <p><a href="${STAFF_URL}">Open the staff page</a> &rarr; Clients &rarr; ${esc(name)} to see everything from this client.</p>`,
+        <p><a href="${STAFF_URL}?client=${encodeURIComponent(folder)}#clients" style="display:inline-block;background:#1c1917;color:#f5f0e6;padding:10px 18px;border-radius:999px;text-decoration:none">${kind === "message" ? "Read and reply" : "Open this client"}</a></p>
+        <p style="color:#78716c;font-size:13px">Opens ${esc(name)}'s page on the staff site (sign in if asked).</p>`,
       ...(attachments ? { attachments } : {}),
     }),
   });
