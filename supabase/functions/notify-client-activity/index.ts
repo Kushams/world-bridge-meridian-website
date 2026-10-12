@@ -88,7 +88,13 @@ Deno.serve(async (req: Request) => {
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
   // The staff member looking after this client (supabase/staff.sql) gets a copy.
   const { data: assigned } = await admin.from("client_assignments").select("staff_email").eq("client_email", folder).maybeSingle();
-  const recipients = [INTERNAL_EMAIL, ...(assigned?.staff_email && assigned.staff_email !== INTERNAL_EMAIL ? [assigned.staff_email] : [])];
+  const recipients = new Set([INTERNAL_EMAIL]);
+  if (assigned?.staff_email) recipients.add(assigned.staff_email);
+  // Chat messages are also copied to every admin, so leadership sees every conversation.
+  if (kind === "message") {
+    const { data: admins } = await admin.from("staff_members").select("email").eq("role", "admin");
+    for (const a of admins ?? []) recipients.add(a.email);
+  }
   if (path && path.startsWith(`${folder}/`) && !path.includes("..")) {
     const { data: blob } = await admin.storage.from("client-uploads").download(path);
     if (blob && blob.size <= MAX_ATTACH) {
@@ -104,7 +110,7 @@ Deno.serve(async (req: Request) => {
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       from: FROM_EMAIL,
-      to: recipients,
+      to: [...recipients],
       reply_to: user.email,
       subject: kind === "message" ? `New message from ${name}` : `Client ${action}: ${String(body.title ?? "").slice(0, 80)} (${name})`,
       html: `<p><b>${esc(name)}</b> (${esc(user.email)}) ${esc(action)}.</p>

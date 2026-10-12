@@ -7,6 +7,8 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const STAFF_URL = "https://worldbridgemeridian.com/staff";
 const FROM_EMAIL = "World Bridge Meridian <enquiries@worldbridgemeridian.group>";
 const REPLY_TO = "info@worldbridgemeridian.group";
 const ACCOUNT_URL = "https://worldbridgemeridian.com/my-world-bridge";
@@ -40,6 +42,32 @@ const esc = (v: unknown) =>
 
 const json = (status: number, body: Record<string, unknown>) =>
   new Response(JSON.stringify(body), { status, headers: { ...CORS, "Content-Type": "application/json" } });
+
+// Every staff reply is copied to the admins (info@ and the founder) for oversight.
+async function copyToAdmins(caller: ReturnType<typeof createClient>, client: string, clientName: string | null, text: string) {
+  const { data: who } = await caller.auth.getUser();
+  const sender = who.user?.email?.toLowerCase() ?? "";
+  const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
+  const { data: staff } = await admin.from("staff_members").select("email, name, role");
+  const rows = (staff ?? []) as { email: string; name: string | null; role: string }[];
+  const to = [...new Set([REPLY_TO, ...rows.filter((r) => r.role === "admin").map((r) => r.email)])].filter((e) => e !== sender);
+  if (!to.length) return;
+  const from = rows.find((r) => r.email === sender)?.name || sender;
+  const res = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from: FROM_EMAIL,
+      to,
+      reply_to: sender || REPLY_TO,
+      subject: `${from} → ${clientName || client}: new message`,
+      html: `<p><b>${esc(from)}</b> sent a message to <b>${esc(clientName || client)}</b> (${esc(client)}):</p>
+        <blockquote style="margin:0;padding:12px 16px;border-left:3px solid #b8964e;background:#f7f4ee;white-space:pre-wrap">${esc(text)}</blockquote>
+        <p><a href="${STAFF_URL}?client=${encodeURIComponent(client)}#clients">Open this client on the staff page</a></p>`,
+    }),
+  });
+  if (!res.ok) console.error("admin copy failed", res.status, await res.text());
+}
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
@@ -98,5 +126,6 @@ Deno.serve(async (req: Request) => {
     }),
   });
   if (!res.ok) console.error("Resend send failed", res.status, await res.text());
+  if (kind === "message") await copyToAdmins(supabase, to, client.full_name, title);
   return json(200, { ok: res.ok });
 });

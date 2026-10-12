@@ -28,7 +28,8 @@ Add a staff member: `insert into public.staff_members (email, role, name, title,
 - Activity lines are written automatically: staff sends → `notify-client` logs "We sent you a document: …" etc.;
   client uploads/signs → `notify-client-activity` logs "Uploaded (passport): …"; status changes → trigger `on_status_logged`.
 - Each line carries a link (`#documents`, `#invoices`, `#enquiries`) that opens the existing account section.
-- Emails still go out: staff message → client email "You have a new message"; client message → info@ + assigned staff.
+- Emails still go out: staff message → client email "You have a new message" + a copy to every admin (info@, Earl);
+  client message → info@ + assigned staff + every admin. Everything lands at info@ for oversight.
 - `my_handler()` gives the client their coordinator's name, title, email and profile photo (the staff member's own account photo).
 - UI: client `My World Bridge → Messages` tab (`src/components/account/MessagesPanel.tsx`);
   staff `/staff → client → Messages` block (`src/components/staff/ClientHub.tsx`); shared `src/components/messages/Thread.tsx`.
