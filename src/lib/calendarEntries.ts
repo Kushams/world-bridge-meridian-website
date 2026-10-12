@@ -7,6 +7,9 @@ export interface CalendarEntry {
   sectionLabel: string;
   title: string;
   venue: string;
+  /** Place name for structured data (venue without the organizer prefix). */
+  placeName: string;
+  organizer: string;
   city: string;
   country: string;
   startDate: string;
@@ -30,6 +33,8 @@ function fromArtListing(a: ArtListing): CalendarEntry {
     sectionLabel: artSectionLabels[a.category],
     title: a.title,
     venue: a.venue,
+    placeName: a.venue,
+    organizer: a.venue,
     city: a.city,
     country: a.country,
     startDate: a.startDate,
@@ -48,6 +53,8 @@ function fromWorldEvent(e: WorldEvent): CalendarEntry {
     sectionLabel: eventCategoryLabels[e.category],
     title: e.title,
     venue: `${e.organizer} · ${e.venue}`,
+    placeName: e.venue,
+    organizer: e.organizer,
     city: e.city,
     country: e.country,
     startDate: e.startDate,

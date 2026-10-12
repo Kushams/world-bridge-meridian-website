@@ -26,9 +26,12 @@ export default function Page() {
       eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
       location: {
         "@type": "Place",
-        name: e.venue,
+        name: e.placeName,
         address: { "@type": "PostalAddress", addressLocality: e.city, addressCountry: e.country },
       },
+      organizer: { "@type": "Organization", name: e.organizer, url: e.sourceUrl },
+      performer: { "@type": "Organization", name: e.organizer },
+      offers: { "@type": "Offer", url: e.sourceUrl, availability: "https://schema.org/InStock" },
       url: `${SITE_URL}/calendar`,
     })),
   };
