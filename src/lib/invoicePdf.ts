@@ -152,7 +152,7 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
     doc.roundedRect(R - chipW - 7, y + 5.5, chipW, 9, 4.5, 4.5, "F");
     text("PAID", R - 7 - chipW / 2, y + 11.4, { size: 7.5, bold: true, color: WHITE, align: "center" });
   } else {
-    if (inv.dueDate) text(`due ${day(inv.dueDate)}`, L + 9 + 29, y + 7.5, { size: 7.5, color: SOFT });
+    if (inv.dueDate) text(`·  due ${day(inv.dueDate)}`, L + 9 + 40, y + 7.5, { size: 7.5, color: SOFT });
     const bx = R - 54;
     fill(FOREST);
     doc.roundedRect(bx, y + 4, 47, 12, 6, 6, "F");
