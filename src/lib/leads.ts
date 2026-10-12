@@ -46,6 +46,9 @@ export interface JourneyLead {
   originCity: string;
   destination: string;
   destinationMode: string;
+  /** What the client clicked to start the request, e.g. "Cruise". Empty for a blank Design My Journey. */
+  requestType: string;
+  requestedItem: string;
   travelDates: string;
   dateFlexibility: string;
   travelerCount: string;
@@ -96,6 +99,7 @@ export function buildLeadId() {
 
 export function mailtoBody(lead: JourneyLead): string {
   return [
+    ...(lead.requestedItem ? [`${lead.requestType || "Requested"}: ${lead.requestedItem}`] : []),
     `Destination: ${lead.destinationMode} — ${lead.destination || "n/a"}`,
     `Origin/departure city: ${lead.originCity || "n/a"}`,
     `Travel dates: ${lead.travelDates || "n/a"} (${lead.dateFlexibility || "n/a"})`,
@@ -135,6 +139,8 @@ function flattenForNetlify(lead: JourneyLead): Record<string, string> {
     originCity: lead.originCity,
     destination: lead.destination,
     destinationMode: lead.destinationMode,
+    requestType: lead.requestType,
+    requestedItem: lead.requestedItem,
     travelDates: lead.travelDates,
     dateFlexibility: lead.dateFlexibility,
     travelerCount: lead.travelerCount,
@@ -210,7 +216,7 @@ export async function submitJourneyLead(
     formType: "journey-request",
     name: lead.name,
     email: lead.email,
-    subject: `Journey request — ${lead.destination || lead.destinationMode}`,
+    subject: `${lead.requestType || "Journey"} request — ${lead.requestedItem || lead.destination || lead.destinationMode}`,
     message: lead.notes,
     payload: flattenForNetlify(lead),
     turnstileToken,

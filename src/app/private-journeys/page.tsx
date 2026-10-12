@@ -84,7 +84,11 @@ export default function PrivateJourneysPage() {
                     <h3 className="font-display text-lg text-ivory">{c.title}</h3>
                     <p className="mt-2 text-sm text-stone leading-relaxed">{c.description}</p>
                     <Link
-                      href="/plan-your-journey"
+                      href={`/plan-your-journey?${new URLSearchParams({
+                        kind: "private-journey",
+                        item: c.title,
+                        notes: `I'm interested in "${c.title}".`,
+                      }).toString()}`}
                       className="mt-3 inline-block text-xs font-semibold uppercase tracking-wide text-gold hover:text-ivory transition-colors"
                     >
                       Enquire Privately →

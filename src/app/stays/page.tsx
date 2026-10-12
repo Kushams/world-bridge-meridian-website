@@ -60,6 +60,8 @@ function NotableStayCard({ stay }: { stay: NotableStay }) {
           <Link
             href={`/plan-your-journey?${new URLSearchParams({
               destination: stay.place,
+              kind: "stay",
+              item: stay.name,
               notes: `Interested in staying at ${stay.name}.`,
             }).toString()}`}
             className="text-ivory-dim hover:text-gold transition-colors"

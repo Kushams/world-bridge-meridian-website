@@ -67,5 +67,11 @@ pg_cron runs `public.run_reminders()` every hour. It calls `send-reminders` usin
 - Staff can use the first three on their own clients; admins on every client. Checked server-side with the caller's JWT (`is_staff`, `staff_list_clients`, `is_admin`).
 - Admins reading a thread see which staff member wrote each message (only their own messages show as "You").
 
+## Emails follow what the client chose
+- Every request stores what the client clicked: exhibition cards (`ArtListingCard`, `EventListingCard`, `CalendarEntryCard`) pass `event` ("Title — Venue, City") into the exhibition form (`payload.exhibition_or_event`); package, cruise, destination and journey-story pages (`PricingBlock`, `kind` param), stays and private journeys pass `kind` + `item` into Design My Journey (`payload.requestType` / `payload.requestedItem`).
+- `requestTopic()` / `requestNoun()` in `supabase/functions/_shared/email.ts` turn that into "exhibition travel request for Mark Rothko — Pace Gallery, New York" or "cruise request for Aegean Isles". The submission emails (team + client), stage-change emails and reminders all use them, so subjects and wording name the exact exhibition, cruise or package.
+- Exhibition emails show the exhibition, travel and itinerary tables and exhibition next steps; cruise and journey emails show the journey answers and their own next steps. The client copy never includes passport or emergency details.
+- Native Reply on client emails (submission, stage change, reminders, staff messages) goes to the assigned coordinator, with info@ also on the reply; with no coordinator it goes to info@. Emails are signed by the coordinator when there is one.
+
 ## Open ideas (not built)
 - Price levels: show 2–3 levels per package (e.g. Signature / Luxury / Ultra, each with a "From" price), and pass the chosen one into the wizard's budget step. Exhibitions would stay unpriced and be quoted by invoice.

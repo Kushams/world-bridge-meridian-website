@@ -21,6 +21,7 @@ export function PricingBlock({
     (saveItem
       ? `/plan-your-journey?${new URLSearchParams({
           destination: saveItem.title,
+          kind: saveItem.type,
           notes: `I'm interested in "${saveItem.title}" (https://worldbridgemeridian.com${saveItem.href}).`,
         }).toString()}`
       : "/plan-your-journey");

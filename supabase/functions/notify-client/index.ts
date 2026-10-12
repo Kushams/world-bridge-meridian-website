@@ -119,7 +119,7 @@ Deno.serve(async (req: Request) => {
     body: JSON.stringify({
       from: FROM_EMAIL,
       to: [to],
-      reply_to: REPLY_TO,
+      reply_to: senderRow ? [senderRow.email, REPLY_TO] : REPLY_TO,
       subject: msg.subject,
       html: layout(`<div style="color:#1c1c1c;max-width:560px">
         <p>${first ? `Dear ${esc(first)},` : "Hello,"}</p>
