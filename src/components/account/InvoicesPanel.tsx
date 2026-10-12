@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/AuthProvider";
-import { fetchLiveUsdRate, type Currency } from "@/lib/money";
+import { fetchLiveUsdRate, rateText, type Currency } from "@/lib/money";
 import { loadInvoices, parseBankLines, startCardPayment, type Invoice } from "@/lib/invoices";
 import { money } from "@/lib/money";
 
@@ -283,7 +283,7 @@ export function InvoicesPanel() {
                       <>
                         <p className="mt-1 text-sm font-semibold text-gold">≈ {usd(Math.round(own(i) * rates[i.currency].rate * 100) / 100)} to pay by card or crypto</p>
                         <p className="text-[11px] text-stone-dim">
-                          Live rate: 1 {i.currency} = {rates[i.currency].rate.toFixed(4)} USD · updated {rates[i.currency].at.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })} · refreshes every minute
+                          Live rate: 1 {i.currency} = {rateText(rates[i.currency].rate)} USD · updated {rates[i.currency].at.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })} · refreshes every minute
                         </p>
                       </>
                     ) : (

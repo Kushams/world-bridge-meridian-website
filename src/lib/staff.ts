@@ -79,7 +79,7 @@ export interface StaffInvoice {
   bank_details: string | null;
   user_id: string;
   amount_usd_charge?: number;
-  currency: "USD" | "EUR" | "GBP";
+  currency: string;
   amount: number | null;
   subtotal: number | null;
   tax_percent: number;

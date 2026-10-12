@@ -27,7 +27,7 @@ function json(status: number, body: Record<string, unknown>) {
 
 /** Live rate: 1 unit of `from` in US dollars. Coinbase spot price (moves all day), falling back to the European Central Bank daily rate. Null if both fail. */
 async function liveUsdRate(from: string): Promise<number | null> {
-  const ok = (r: number) => (r > 0.2 && r < 5 ? r : null);
+  const ok = (r: number) => (r > 0 && r < 1000 ? r : null);
   try {
     const res = await fetch(`https://api.coinbase.com/v2/prices/${from}-USD/spot`, { signal: AbortSignal.timeout(4000) });
     if (res.ok) {

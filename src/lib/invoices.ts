@@ -13,7 +13,7 @@ export interface Invoice {
   /** Pasted in by staff when the client chooses a bank transfer; empty until then. */
   bank_details: string | null;
   /** The invoice's own currency and total. amount_usd is what card / crypto charges. Older invoices have no amount (USD). */
-  currency: "USD" | "EUR" | "GBP";
+  currency: string;
   amount: number | null;
   subtotal: number | null;
   tax_percent: number;

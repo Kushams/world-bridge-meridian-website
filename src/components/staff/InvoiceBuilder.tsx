@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createInvoiceV2, loadPriceBook, notifyClient, removeFile, savePriceItem, updateInvoiceV2, uploadFile, type Client, type PriceItem, type StaffInvoice } from "@/lib/staff";
-import { CURRENCIES, fetchLiveUsdRate, money, totals, type Currency } from "@/lib/money";
+import { CURRENCY_LIST, fetchLiveUsdRate, money, rateText, totals, type Currency } from "@/lib/money";
 import { buildInvoicePdf, loadEmblem, loadPdfFonts } from "@/lib/invoicePdf";
 import { inputClass } from "./RequestsPanel";
 
@@ -152,7 +152,7 @@ export function InvoiceBuilder({ client, editing, onDone, onCancel }: { client: 
       fetchLiveUsdRate(currency).then((r) => {
         if (!alive) return;
         if (r) {
-          setRate(r.toFixed(4));
+          setRate(rateText(r));
           setRateNote(`Live rate, for the estimate only. The card and crypto charge is worked out again at the live rate when the client taps pay.`);
         } else {
           setRateNote("Couldn't fetch the rate: type it in.");
@@ -251,7 +251,7 @@ export function InvoiceBuilder({ client, editing, onDone, onCancel }: { client: 
         const name = l.title.trim();
         const existing = fresh.find((i) => i.name.trim().toLowerCase() === name.toLowerCase());
         if (existing || l.fromBook || !l.save || known.has(name.toLowerCase())) continue;
-        const err = await savePriceItem({ id: null, name, details: l.details.trim(), unit_price: 0, currency, unit: "", category: "Services", active: true });
+        const err = await savePriceItem({ id: null, name, details: l.details.trim(), unit_price: 0, currency: "USD", unit: "", category: "Services", active: true });
         if (!err) {
           remembered++;
           known.add(name.toLowerCase());
@@ -275,9 +275,9 @@ export function InvoiceBuilder({ client, editing, onDone, onCancel }: { client: 
         <label className="text-xs text-stone-dim">
           Currency
           <select value={currency} onChange={(e) => setCurrency(e.target.value as Currency)} className={`${field} mt-1 bg-ink`}>
-            {CURRENCIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
+            {CURRENCY_LIST.map((c) => (
+              <option key={c.code} value={c.code}>
+                {c.code} · {c.name}
               </option>
             ))}
           </select>
