@@ -8,6 +8,9 @@ const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const NOTIFY_SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
 const FROM_EMAIL = "World Bridge Meridian <enquiries@worldbridgemeridian.group>";
 const INTERNAL_EMAIL = "info@worldbridgemeridian.group";
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const STAFF_URL = "https://worldbridgemeridian.com/staff";
 
 type FormType = "contact" | "newsletter" | "journey-request" | "travel-details" | "gift-card" | "travel-credits";
 
@@ -60,7 +63,29 @@ function payloadRows(payload: Record<string, unknown> | null): string {
     .join("");
 }
 
-async function sendEmail(to: string, subject: string, html: string, replyTo?: string) {
+/** info@, every admin, and the staff member looking after this client (if any). */
+async function teamRecipients(clientEmail: string): Promise<string[]> {
+  const to = new Set([INTERNAL_EMAIL]);
+  const rest = async (path: string) => {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+      headers: { apikey: SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}` },
+    });
+    return res.ok ? ((await res.json()) as Record<string, string>[]) : [];
+  };
+  try {
+    const [admins, assigned] = await Promise.all([
+      rest("staff_members?select=email&role=eq.admin"),
+      rest(`client_assignments?select=staff_email&client_email=eq.${encodeURIComponent(clientEmail.toLowerCase())}`),
+    ]);
+    for (const a of admins) to.add(a.email);
+    for (const a of assigned) if (a.staff_email) to.add(a.staff_email);
+  } catch (err) {
+    console.error("team lookup failed", err);
+  }
+  return [...to];
+}
+
+async function sendEmail(to: string | string[], subject: string, html: string, replyTo?: string) {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
@@ -69,7 +94,7 @@ async function sendEmail(to: string, subject: string, html: string, replyTo?: st
     },
     body: JSON.stringify({
       from: FROM_EMAIL,
-      to: [to],
+      to: Array.isArray(to) ? to : [to],
       subject,
       html,
       ...(replyTo ? { reply_to: replyTo } : {}),
@@ -98,7 +123,7 @@ Deno.serve(async (req: Request) => {
     const label = LABELS[record.form_type] ?? "Website form";
 
     await sendEmail(
-      INTERNAL_EMAIL,
+      record.form_type === "newsletter" ? INTERNAL_EMAIL : await teamRecipients(record.email),
       `${label}${record.name ? ` — ${record.name}` : ""}`,
       `
         <h2>${esc(label)}</h2>
@@ -110,7 +135,8 @@ Deno.serve(async (req: Request) => {
           ${payloadRows(record.payload)}
         </table>
         ${record.message ? `<p style="white-space:pre-wrap;margin-top:16px">${esc(record.message)}</p>` : ""}
-        <p style="color:#888;font-size:12px">Reply to this email to answer them directly. Full record in Supabase → Table Editor → form_submissions (${esc(record.id)}).</p>
+        ${record.form_type === "newsletter" ? "" : `<p><a href="${STAFF_URL}?client=${encodeURIComponent(record.email.toLowerCase())}#clients" style="display:inline-block;background:#1c1917;color:#f5f0e6;padding:10px 18px;border-radius:999px;text-decoration:none">Open this client</a></p>`}
+        <p style="color:#888;font-size:12px">Reply to this email to answer them directly. It's also on the staff page under Requests.</p>
       `,
       record.email,
     );
