@@ -233,7 +233,7 @@ export function InvoicesPanel() {
                 <div className="text-right">
                   <p className="font-display text-2xl text-ivory">{ownMoney(i)}</p>
                   {i.currency && i.currency !== "USD" && i.status === "unpaid" ? (
-                    <p className="text-xs text-stone-dim">≈ {usd(i.amount_usd)} by card or crypto</p>
+                    <p className="text-xs text-stone-dim">About {usd(i.amount_usd)} by card or crypto, converted at the live rate when you pay</p>
                   ) : null}
                 </div>
               </div>

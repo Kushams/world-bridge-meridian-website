@@ -19,14 +19,12 @@ interface Line {
   fromBook: boolean;
   /** Admins: remember this typed line in the price book when the invoice is created. */
   save: boolean;
-  /** Admins: also change the price book item with the same name to this price. */
-  update: boolean;
 }
 let seq = 0;
-const blankLine = (over: Partial<Line> = {}): Line => ({ id: ++seq, title: "", details: "", qty: "1", price: "", fromBook: false, save: true, update: false, ...over });
+const blankLine = (over: Partial<Line> = {}): Line => ({ id: ++seq, title: "", details: "", qty: "1", price: "", fromBook: false, save: true, ...over });
 
 /** Pick items from the shared price book, grouped like the app's Price book screen. */
-function PricePicker({ currency, onPick, onClose }: { currency: Currency; onPick: (item: PriceItem) => void; onClose: () => void }) {
+function PricePicker({ onPick, onClose }: { onPick: (item: PriceItem) => void; onClose: () => void }) {
   const [items, setItems] = useState<PriceItem[] | null | undefined>(undefined);
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<"All" | PriceItem["category"]>("All");
@@ -90,10 +88,7 @@ function PricePicker({ currency, onPick, onClose }: { currency: Currency; onPick
                     <span className="block truncate text-sm text-ivory">{i.name}</span>
                     {i.details ? <span className="block truncate text-xs text-stone-dim">{i.details}</span> : null}
                   </span>
-                  <span className={`shrink-0 text-sm ${i.currency === currency ? "text-ivory" : "text-gold"}`}>
-                    {money(i.unit_price, i.currency)}
-                    {i.unit ? ` / ${i.unit}` : ""}
-                  </span>
+                  {i.unit ? <span className="shrink-0 text-sm text-stone-dim">per {i.unit}</span> : null}
                 </button>
               </li>
             ))}
@@ -158,7 +153,7 @@ export function InvoiceBuilder({ client, editing, onDone, onCancel }: { client: 
         if (!alive) return;
         if (r) {
           setRate(r.toFixed(4));
-          setRateNote(`ECB rate today. Card and crypto will charge in US dollars at this rate.`);
+          setRateNote(`ECB rate today, for the estimate only. The card and crypto charge is worked out again at the live rate when the client taps pay.`);
         } else {
           setRateNote("Couldn't fetch the rate: type it in.");
         }
@@ -181,12 +176,11 @@ export function InvoiceBuilder({ client, editing, onDone, onCancel }: { client: 
 
   function addFromBook(item: PriceItem) {
     setLines((ls) => {
-      const fresh = blankLine({ title: item.name, details: item.details ?? "", price: String(item.unit_price), fromBook: true, save: false });
+      // No standard prices: the staff member types the real, current price.
+      const fresh = blankLine({ title: item.name, details: item.details ?? "", price: "", fromBook: true, save: false });
       const onlyBlank = ls.length === 1 && !ls[0].title && !ls[0].price;
       return onlyBlank ? [fresh] : [...ls, fresh];
     });
-    if (item.currency !== currency && lines.every((l) => !l.title && !l.price)) setCurrency(item.currency);
-    else if (item.currency !== currency) setNote(`"${item.name}" is priced in ${item.currency} but this invoice is in ${currency}. Check the price.`);
   }
 
   async function create() {
@@ -249,20 +243,14 @@ export function InvoiceBuilder({ client, editing, onDone, onCancel }: { client: 
       : await notifyClient(email, "invoice", `${reference} — ${payloadLines[0].title}${payloadLines.length > 1 ? ` + ${payloadLines.length - 1} more` : ""}`);
     // Remember new typed lines in the price book (admins), so next time they are one tap away.
     let remembered = 0;
-    let updated = 0;
     if (admin) {
       const fresh = (await loadPriceBook()) ?? [];
       const known = new Set(fresh.map((i) => i.name.trim().toLowerCase()));
       for (const l of clean) {
         const name = l.title.trim();
         const existing = fresh.find((i) => i.name.trim().toLowerCase() === name.toLowerCase());
-        if (existing && l.update && Number(l.price) !== existing.unit_price) {
-          const err = await savePriceItem({ ...existing, unit_price: Number(l.price), details: l.details.trim() || existing.details });
-          if (!err) updated++;
-          continue;
-        }
-        if (l.fromBook || !l.save || known.has(name.toLowerCase())) continue;
-        const err = await savePriceItem({ id: null, name, details: l.details.trim(), unit_price: Number(l.price), currency, unit: "", category: "Services", active: true });
+        if (existing || l.fromBook || !l.save || known.has(name.toLowerCase())) continue;
+        const err = await savePriceItem({ id: null, name, details: l.details.trim(), unit_price: 0, currency, unit: "", category: "Services", active: true });
         if (!err) {
           remembered++;
           known.add(name.toLowerCase());
@@ -274,9 +262,9 @@ export function InvoiceBuilder({ client, editing, onDone, onCancel }: { client: 
     setTax("0");
     setDue("");
     if (editing) {
-      return onDone(`Invoice ${reference} updated (${money(total, currency)})${pdfOk ? " and its PDF remade" : " (the PDF could not be remade: use Regenerate PDF)"}${emailed ? "; the client has been told." : "."}${remembered ? ` ${remembered} new item${remembered === 1 ? "" : "s"} saved to the price book.` : ""}${updated ? ` ${updated} price${updated === 1 ? "" : "s"} updated in the price book.` : ""}`);
+      return onDone(`Invoice ${reference} updated (${money(total, currency)})${pdfOk ? " and its PDF remade" : " (the PDF could not be remade: use Regenerate PDF)"}${emailed ? "; the client has been told." : "."}${remembered ? ` ${remembered} new item${remembered === 1 ? "" : "s"} saved to the price book.` : ""}`);
     }
-    onDone(`Invoice ${reference} created (${money(total, currency)})${pdfOk ? " with its branded PDF" : " (the PDF could not be made: use Generate PDF)"}${emailed ? " and the client has been emailed." : "."}${remembered ? ` ${remembered} new item${remembered === 1 ? "" : "s"} saved to the price book.` : ""}${updated ? ` ${updated} price${updated === 1 ? "" : "s"} updated in the price book.` : ""}`);
+    onDone(`Invoice ${reference} created (${money(total, currency)})${pdfOk ? " with its branded PDF" : " (the PDF could not be made: use Generate PDF)"}${emailed ? " and the client has been emailed." : "."}${remembered ? ` ${remembered} new item${remembered === 1 ? "" : "s"} saved to the price book.` : ""}`);
   }
 
   const field = `${inputClass} min-h-11 w-full`;
@@ -337,20 +325,11 @@ export function InvoiceBuilder({ client, editing, onDone, onCancel }: { client: 
               </button>
             </div>
             <textarea value={l.details} onChange={(e) => patch(l.id, { details: e.target.value })} rows={3} maxLength={1000} placeholder="Details shown under the name (hotel, dates, route, passengers…)" aria-label={`Line ${i + 1} details`} className={`${inputClass} mt-2 w-full resize-y`} />
-            {admin && l.title.trim().length >= 3 ? (
-              matchOf(l) ? (
-                l.price !== "" && Number(l.price) !== matchOf(l)!.unit_price ? (
-                  <label className="mt-2 flex items-center gap-2 text-xs text-stone">
-                    <input type="checkbox" checked={l.update} onChange={(e) => patch(l.id, { update: e.target.checked })} />
-                    Also change the price book price ({money(matchOf(l)!.unit_price, matchOf(l)!.currency)} → {money(Number(l.price), matchOf(l)!.currency)})
-                  </label>
-                ) : null
-              ) : (
-                <label className="mt-2 flex items-center gap-2 text-xs text-stone">
-                  <input type="checkbox" checked={l.save} onChange={(e) => patch(l.id, { save: e.target.checked })} />
-                  Save this to the price book so I can pick it next time
-                </label>
-              )
+            {l.title.trim().length >= 3 && !matchOf(l) ? (
+              <label className="mt-2 flex items-center gap-2 text-xs text-stone">
+                <input type="checkbox" checked={l.save} onChange={(e) => patch(l.id, { save: e.target.checked })} />
+                Add this name to the price book (no price is saved)
+              </label>
             ) : null}
             <div className="mt-2 grid grid-cols-[90px_1fr_auto] items-center gap-2">
               <input value={l.qty} onChange={(e) => patch(l.id, { qty: e.target.value })} inputMode="decimal" aria-label={`Line ${i + 1} quantity`} placeholder="Qty" className={field} />
@@ -387,7 +366,7 @@ export function InvoiceBuilder({ client, editing, onDone, onCancel }: { client: 
         </div>
         {currency !== "USD" && rateN > 0 ? (
           <div className="flex justify-between text-xs text-stone-dim">
-            <dt>Card / crypto charge</dt>
+            <dt>Estimated card / crypto charge today</dt>
             <dd>{money(usd, "USD")}</dd>
           </div>
         ) : null}
@@ -406,7 +385,7 @@ export function InvoiceBuilder({ client, editing, onDone, onCancel }: { client: 
           {note}
         </p>
       ) : null}
-      {picker ? <PricePicker currency={currency} onPick={addFromBook} onClose={() => setPicker(false)} /> : null}
+      {picker ? <PricePicker onPick={addFromBook} onClose={() => setPicker(false)} /> : null}
     </div>
   );
 }

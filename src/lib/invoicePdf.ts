@@ -291,7 +291,7 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
   text(fmt(inv.total, cur), colAmount, y + 9, { size: 14, font: "times", bold: true, color: CREAM, align: "right" });
   y += 13;
   if (cur !== "USD") {
-    text(`Card and crypto payments settle at ${fmt(inv.amountUsd, "USD")} (1 ${cur} = ${inv.fxRate.toFixed(4)} USD).`, colAmount, y + 6, { size: 7.5, color: SOFT, align: "right" });
+    text(`Card and crypto payments are converted to US dollars at the live rate when you pay (about ${fmt(inv.amountUsd, "USD")} today).`, colAmount, y + 6, { size: 7.5, color: SOFT, align: "right" });
     y += 6;
   }
 

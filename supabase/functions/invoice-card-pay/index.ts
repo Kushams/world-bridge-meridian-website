@@ -3,6 +3,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 
 // Starts a card payment for one of the signed-in client's own invoices.
 // The amount always comes from the database, never from the browser.
+// EUR / GBP invoices are converted to US dollars here, at the live rate, the moment the client taps pay.
 // Secrets (Edge Functions -> Secrets): EPV_API_KEY, TURNSTILE_SECRET_KEY. Never put them in this file.
 const EPV_API_KEY = Deno.env.get("EPV_API_KEY");
 const EPV_BASE = Deno.env.get("EPV_BASE_URL") ?? "https://pay.epayvista.com"; // sandbox: https://pay.epayvista.com/sandbox
@@ -22,6 +23,18 @@ const CORS_HEADERS = {
 
 function json(status: number, body: Record<string, unknown>) {
   return new Response(JSON.stringify(body), { status, headers: { ...CORS_HEADERS, "Content-Type": "application/json" } });
+}
+
+/** Live rate from the European Central Bank (via frankfurter.dev): 1 unit of `from` in US dollars. Null if unavailable. */
+async function liveUsdRate(from: string): Promise<number | null> {
+  try {
+    const res = await fetch(`https://api.frankfurter.dev/v1/latest?base=${from}&symbols=USD`, { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) return null;
+    const r = Number(((await res.json()) as { rates?: { USD?: number } }).rates?.USD);
+    return r > 0.2 && r < 5 ? r : null;
+  } catch {
+    return null;
+  }
 }
 
 async function verifyTurnstile(token: string, ip: string | null): Promise<boolean> {
@@ -61,7 +74,7 @@ Deno.serve(async (req: Request) => {
   const db = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
   const { data: invoice } = await db
     .from("invoices")
-    .select("id, reference, description, amount_usd, status, card_url")
+    .select("id, reference, description, amount_usd, status, card_url, currency, amount, fx_rate")
     .eq("id", body.invoiceId)
     .eq("user_id", u.user.id)
     .maybeSingle();
@@ -70,13 +83,27 @@ Deno.serve(async (req: Request) => {
   if (invoice.status === "void") return json(409, { ok: false, error: "This invoice was cancelled." });
   if (invoice.status === "needs_review") return json(409, { ok: false, error: "We're checking a payment on this invoice. We'll be in touch." });
 
+  // Convert at today's rate. USD invoices keep their amount. If the rate service is down we fall back to the rate saved on the invoice.
+  let amountUsd = Number(invoice.amount_usd);
+  let customerId = invoice.reference;
+  if (invoice.currency && invoice.currency !== "USD" && Number(invoice.amount) > 0) {
+    const rate = (await liveUsdRate(invoice.currency)) ?? Number(invoice.fx_rate);
+    const usd = Math.round(Number(invoice.amount) * rate * 100) / 100;
+    if (usd >= 5) {
+      amountUsd = usd;
+      // A new rate means a new payment session (the provider reuses a session for the same customer ID), so make the ID unique per tap.
+      customerId = `${invoice.reference}-${Date.now().toString(36)}`;
+      await db.from("invoices").update({ amount_usd: amountUsd, fx_rate: rate }).eq("id", invoice.id);
+    }
+  }
+
   // Same customerID + chain + currency returns the existing session, so retrying is safe.
   const res = await fetch(`${EPV_BASE}/api/v1/payment`, {
     method: "POST",
     headers: { "API-Key": EPV_API_KEY, "Content-Type": "application/json", "User-Agent": "WorldBridgeMeridian-Invoices/1.0" },
     body: JSON.stringify({
-      customerID: invoice.reference,
-      amountInUSD: Number(invoice.amount_usd),
+      customerID: customerId,
+      amountInUSD: amountUsd,
       customerEmail: u.user.email,
       blockchainCode: EPV_CHAIN,
       currencyCode: EPV_CURRENCY,

@@ -529,6 +529,17 @@ function InvoicesBlock({
     await generatePdf(inv, true);
   }
 
+  /** Staff nudge: a branded reminder email (and a line in the client's Messages) for an unpaid invoice. */
+  async function remind(inv: StaffInvoice) {
+    const due = inv.due_date ? ` · due ${fmtDate(inv.due_date)}` : "";
+    const label = `${inv.reference} · ${money(inv.amount ?? inv.amount_usd, inv.currency ?? "USD")}${due}`;
+    if (!window.confirm(`Email ${client.full_name || email} a payment reminder for ${label}?`)) return;
+    setBusy(inv.id);
+    const ok = await notifyClient(email, "reminder", label);
+    setBusy(null);
+    onChange(ok ? `Reminder emailed for ${inv.reference}.` : "The reminder could not be sent. Try again.");
+  }
+
   async function cancel(inv: StaffInvoice) {
     if (!window.confirm(`Cancel ${inv.reference}? The client won't be able to pay it.`)) return;
     const err = await voidInvoice(inv.id);
@@ -562,7 +573,7 @@ function InvoicesBlock({
                 <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-sm text-ivory">
-                    {inv.description} · <span className="font-semibold">{money(inv.amount ?? inv.amount_usd, inv.currency ?? "USD")}</span>{inv.currency && inv.currency !== "USD" ? <span className="text-xs text-stone-dim"> (US${inv.amount_usd.toFixed(2)} by card)</span> : null}
+                    {inv.description} · <span className="font-semibold">{money(inv.amount ?? inv.amount_usd, inv.currency ?? "USD")}</span>{inv.currency && inv.currency !== "USD" ? <span className="text-xs text-stone-dim"> (about US${inv.amount_usd.toFixed(2)} by card, live rate at checkout)</span> : null}
                   </p>
                   <p className="text-xs text-stone-dim">
                     {inv.reference} · {fmtDate(inv.created_at)} ·{" "}
@@ -595,6 +606,11 @@ function InvoicesBlock({
                     </label>
                     </>
                   )}
+                  {inv.status === "unpaid" ? (
+                    <button type="button" disabled={busy === inv.id} onClick={() => remind(inv)} className={`${btn} border border-line text-ivory hover:border-gold`}>
+                      Remind
+                    </button>
+                  ) : null}
                   {inv.status === "unpaid" ? (
                     <button type="button" onClick={() => setEditId(inv.id)} className={`${btn} border border-line text-ivory hover:border-gold`}>
                       Edit

@@ -26,6 +26,7 @@ const MESSAGES: Record<string, { subject: string; line: string; button: string; 
   return: { subject: "A form needs your signature", line: "We've sent you a form to download, sign and send back to us", button: "Open the form", hash: "#documents" },
   invoice: { subject: "You have a new invoice", line: "We've sent you a new invoice, which you can pay by card from your account", button: "View invoice", hash: "#invoices" },
   invoice_pdf: { subject: "Your detailed invoice is ready", line: "The detailed PDF for your invoice is now in your account", button: "View invoice", hash: "#invoices" },
+  reminder: { subject: "A friendly reminder about your invoice", line: "This is a friendly reminder that your invoice is still awaiting payment", button: "View and pay invoice", hash: "#invoices" },
   message: { subject: "You have a new message", line: "Your travel coordinator has sent you a message", button: "Read and reply", hash: "#messages" },
 };
 
@@ -36,6 +37,7 @@ const THREAD: Record<string, string> = {
   return: "A form to download, sign and send back",
   invoice: "New invoice",
   invoice_pdf: "Detailed invoice PDF added",
+  reminder: "Payment reminder",
 };
 
 const esc = (v: unknown) =>
@@ -107,7 +109,7 @@ Deno.serve(async (req: Request) => {
   if (THREAD[kind]) {
     const { error } = await supabase.rpc("log_client_event", {
       p_client_email: to,
-      p_kind: kind,
+      p_kind: kind === "reminder" ? "invoice" : kind, // thread rows only allow the older kinds
       p_body: title ? `${THREAD[kind]}: ${title}` : THREAD[kind],
       p_link: msg.hash,
     });
