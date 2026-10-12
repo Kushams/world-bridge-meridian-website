@@ -68,3 +68,29 @@ async function openCheckout(fn: string, body: Record<string, unknown>, token: st
   const url = (data as { url?: string } | null)?.url;
   return url ? { url, error: null } : { url: null, error: "We couldn't start the card payment just now. Please try again." };
 }
+
+export interface BankLine {
+  label: string;
+  value: string;
+}
+
+/** Splits saved bank details into rows: "Label: value" lines become a label and a value, anything else is a value only. */
+export function parseBankLines(text: string): BankLine[] {
+  return text
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const m = /^([^:：]{1,40})[:：]\s*(.+)$/.exec(line);
+      return m ? { label: m[1].trim(), value: m[2].trim() } : { label: "", value: line };
+    });
+}
+
+/** The reverse: rows back into the text saved on the invoice. Empty values are dropped; a colon can't live in a label. */
+export function serializeBankLines(lines: BankLine[]): string {
+  return lines
+    .map((l) => ({ label: l.label.replace(/[:：\r\n]+/g, " ").trim().slice(0, 40), value: l.value.replace(/[\r\n]+/g, " ").trim() }))
+    .filter((l) => l.value)
+    .map((l) => (l.label ? `${l.label}: ${l.value}` : l.value))
+    .join("\n");
+}

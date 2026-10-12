@@ -30,6 +30,7 @@ import {
   type StoredFile,
 } from "@/lib/staff";
 import { stemOf } from "@/lib/clientDocs";
+import { parseBankLines, serializeBankLines } from "@/lib/invoices";
 import { inputClass, Row } from "./RequestsPanel";
 
 const DOCS = "client-documents";
@@ -571,39 +572,109 @@ function InvoicesBlock({
   );
 }
 
-/** Paste bank account details for one invoice. They appear on the client's invoice as soon as you save. */
+const BANK_PRESETS: { key: string; label: string; lines: string[] }[] = [
+  { key: "eu", label: "Europe (IBAN)", lines: ["Account name", "IBAN", "BIC / SWIFT", "Bank name"] },
+  { key: "us", label: "US wire / ACH", lines: ["Beneficiary", "Account number", "Routing number (ACH)", "Routing number (wire)", "SWIFT", "Bank name", "Bank address"] },
+  { key: "blank", label: "Blank", lines: ["", ""] },
+];
+
+let rowSeq = 0;
+type Row = { id: number; label: string; value: string };
+const toRows = (lines: { label: string; value: string }[]): Row[] => lines.map((l) => ({ id: ++rowSeq, ...l }));
+
+/** Fill in bank account details for one invoice, one field per row. Labels are editable and rows can be added or removed. */
 function BankEditor({ inv, busy, onSave }: { inv: StaffInvoice; busy: boolean; onSave: (text: string) => void }) {
-  const [open, setOpen] = useState(Boolean(inv.bank_details));
-  const [text, setText] = useState(inv.bank_details ?? "");
   const saved = (inv.bank_details ?? "").trim();
-  const dirty = text.trim() !== saved;
+  const [open, setOpen] = useState(Boolean(saved));
+  const [rows, setRows] = useState<Row[]>(() => toRows(parseBankLines(saved)));
+  const text = serializeBankLines(rows);
+  const dirty = text !== saved;
+
+  const patch = (id: number, change: Partial<Row>) => setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...change } : r)));
+  const start = (labels: string[]) => {
+    setRows(toRows(labels.map((label) => ({ label, value: "" }))));
+    setOpen(true);
+  };
 
   if (!open) {
     return (
-      <button type="button" onClick={() => setOpen(true)} className={`${btn} mt-3 border border-line text-ivory hover:border-gold`}>
-        + Bank transfer details
-      </button>
+      <div className="mt-3">
+        <p className="text-xs text-stone-dim">Client wants to pay by bank transfer? Start from:</p>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {BANK_PRESETS.map((pr) => (
+            <button key={pr.key} type="button" onClick={() => start(pr.lines)} className={`${btn} border border-line text-ivory hover:border-gold`}>
+              + {pr.label}
+            </button>
+          ))}
+        </div>
+      </div>
     );
   }
+
+  const field = `${inputClass} min-h-11 w-full`;
   return (
     <div className="mt-3 rounded-2xl border border-line p-4">
-      <label htmlFor={`bank-${inv.id}`} className="text-xs font-semibold uppercase tracking-wide text-gold">
+      <p className="text-xs font-semibold uppercase tracking-wide text-gold">
         Bank transfer details {saved ? "· visible to the client" : "· not shown to the client yet"}
-      </label>
-      <p className="mt-1 text-xs text-stone-dim">
-        Any country or type: IBAN/BIC, US ACH or wire, sort code, SWIFT. Put each detail on its own line as <span className="text-ivory">Label: value</span>, and the client gets a separate Copy button for every line.
       </p>
-      <textarea
-        id={`bank-${inv.id}`}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        rows={5}
-        maxLength={1500}
-        placeholder={"Paste the account details, one per line, e.g.\nAccount name: …\nAccount number / IBAN: …\nRouting (ACH/wire) / SWIFT / BIC / sort code: …\nBank name: …\nBank address: …"}
-        className={`${inputClass} mt-2 w-full resize-y`}
-      />
+      <p className="mt-1 text-xs text-stone-dim">
+        Edit any label (for example IBAN → Routing number) and paste each value. The client gets a separate Copy button for every row.
+      </p>
+      <ul className="mt-3 space-y-3">
+        {rows.map((r, i) => (
+          <li key={r.id} className="grid grid-cols-[1fr_auto] items-end gap-2 sm:grid-cols-[200px_1fr_auto]">
+            <div className="col-span-2 sm:col-span-1">
+              <label htmlFor={`bl-${inv.id}-${r.id}`} className="sr-only">Label {i + 1}</label>
+              <input
+                id={`bl-${inv.id}-${r.id}`}
+                value={r.label}
+                maxLength={40}
+                onChange={(e) => patch(r.id, { label: e.target.value })}
+                placeholder="Label, e.g. IBAN"
+                className={`${field} font-semibold`}
+              />
+            </div>
+            <div>
+              <label htmlFor={`bv-${inv.id}-${r.id}`} className="sr-only">Value {i + 1}</label>
+              <input
+                id={`bv-${inv.id}-${r.id}`}
+                value={r.value}
+                maxLength={200}
+                onChange={(e) => patch(r.id, { value: e.target.value })}
+                placeholder="Paste the value"
+                className={field}
+              />
+            </div>
+            <button
+              type="button"
+              aria-label={`Remove row ${i + 1}`}
+              onClick={() => setRows((rs) => rs.filter((x) => x.id !== r.id))}
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-stone hover:border-red-400 hover:text-red-400"
+            >
+              ×
+            </button>
+          </li>
+        ))}
+      </ul>
       <div className="mt-3 flex flex-wrap gap-2">
-        <button type="button" disabled={busy || !dirty || text.trim().length < 5} onClick={() => onSave(text)} className={`${btn} bg-ivory text-ink`}>
+        <button type="button" onClick={() => setRows((rs) => [...rs, ...toRows([{ label: "", value: "" }])])} className={`${btn} border border-line text-ivory hover:border-gold`}>
+          + Add a line
+        </button>
+        {BANK_PRESETS.filter((pr) => pr.key !== "blank").map((pr) => (
+          <button
+            key={pr.key}
+            type="button"
+            onClick={() => {
+              if (!rows.some((r) => r.value.trim()) || window.confirm(`Replace the rows below with the ${pr.label} layout? Values you've typed will be cleared.`)) start(pr.lines);
+            }}
+            className={`${btn} text-stone hover:text-ivory`}
+          >
+            Use {pr.label} layout
+          </button>
+        ))}
+      </div>
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button type="button" disabled={busy || !dirty || text.length < 5} onClick={() => onSave(text)} className={`${btn} bg-ivory text-ink`}>
           {busy ? "Saving…" : saved ? "Update details" : "Save and show to client"}
         </button>
         {saved ? (
@@ -611,7 +682,8 @@ function BankEditor({ inv, busy, onSave }: { inv: StaffInvoice; busy: boolean; o
             type="button"
             disabled={busy}
             onClick={() => {
-              setText("");
+              setRows([]);
+              setOpen(false);
               onSave("");
             }}
             className={`${btn} text-stone hover:text-red-400`}

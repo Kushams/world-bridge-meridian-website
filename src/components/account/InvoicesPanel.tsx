@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/AuthProvider";
-import { loadInvoices, startCardPayment, type Invoice } from "@/lib/invoices";
+import { loadInvoices, parseBankLines, startCardPayment, type Invoice } from "@/lib/invoices";
 
 const BUCKET = "client-documents";
 const usd = (n: number) => `US$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -66,18 +66,6 @@ function CopyRow({ label, value, copyValue = value, mono = false }: { label: str
   );
 }
 
-/** Splits the pasted text into rows: "Label: value" lines become a label and a value, anything else is shown as-is. */
-function parseBankLines(text: string): { label: string | null; value: string }[] {
-  return text
-    .split(/\r?\n/)
-    .map((l) => l.trim())
-    .filter(Boolean)
-    .map((line) => {
-      const m = /^([^:：]{1,40})[:：]\s*(.+)$/.exec(line);
-      return m ? { label: m[1].trim(), value: m[2].trim() } : { label: null, value: line };
-    });
-}
-
 /** Bank details pasted in by staff for this invoice, one Copy button per line. Only rendered once staff have added them. */
 function BankTransfer({ invoice }: { invoice: Invoice }) {
   const rows = parseBankLines(invoice.bank_details ?? "");
@@ -86,7 +74,7 @@ function BankTransfer({ invoice }: { invoice: Invoice }) {
       <p className="text-xs font-semibold uppercase tracking-wider text-gold">Pay by bank transfer</p>
       <ul className="mt-3">
         {rows.map((r, idx) => (
-          <CopyRow key={`${idx}-${r.value}`} label={r.label} value={r.value} />
+          <CopyRow key={`${idx}-${r.value}`} label={r.label || null} value={r.value} />
         ))}
         <CopyRow label="Amount (USD)" value={usd(invoice.amount_usd)} copyValue={invoice.amount_usd.toFixed(2)} />
         <CopyRow label="Payment reference" value={invoice.reference} mono />
