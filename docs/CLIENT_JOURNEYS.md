@@ -58,5 +58,14 @@ pg_cron runs `public.run_reminders()` every hour. It calls `send-reminders` usin
 - **Unassigned client:** at most once a day, info@ and the admins get a list of clients who sent a request more than 24 hours ago and still have no coordinator, each with an "Open this client" link.
 - `public.reminder_log` stores one key per reminder sent (`noreply:<message id>:<1|2>`, `unassigned:<date>`), so nothing is sent twice. To change the timings, edit `NUDGES` / `DAY` in the function.
 
+## Account controls on a client's page (`supabase/client-controls.sql` + `staff-client-action` Edge Function)
+
+- **Send reminder:** emails the "Checking in" reminder now (calls `send-reminders` with `{email}`); info@, admins and the coordinator are copied.
+- **Stop reminders / Turn reminders back on:** sets `client_flags.reminders_off`; `send-reminders` skips the client.
+- **Block / Unblock account:** bans the auth user (`ban_duration`) so they can't sign in, and sets `client_flags.blocked` (no reminders while blocked).
+- **Delete account (admins only):** removes the client's private files, messages, assignment, flags, requests and invoices, then the auth user.
+- Staff can use the first three on their own clients; admins on every client. Checked server-side with the caller's JWT (`is_staff`, `staff_list_clients`, `is_admin`).
+- Admins reading a thread see which staff member wrote each message (only their own messages show as "You").
+
 ## Open ideas (not built)
 - Price levels: show 2–3 levels per package (e.g. Signature / Luxury / Ultra, each with a "From" price), and pass the chosen one into the wizard's budget step. Exhibitions would stay unpriced and be quoted by invoice.
