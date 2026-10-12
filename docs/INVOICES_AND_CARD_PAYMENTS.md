@@ -1,7 +1,7 @@
 # Invoices and card payments (staff guide)
 
 Clients pay by card from their own account. Your consultant creates an invoice; the client opens it under
-**My World Bridge Meridian -> Wallet -> Invoices** and taps **Pay by card**. They pay on ePayVista's page; ePayVista
+**My World Bridge Meridian -> Invoices** and taps **Pay by card**. They pay on ePayVista's page; ePayVista
 tells us it is paid; the invoice flips to **Paid** by itself and we get an email.
 
 ## One-time setup (the owner)
@@ -26,6 +26,18 @@ In the Supabase SQL editor:
 
 The client must already have an account with that email. It returns the invoice reference (e.g. INV-3F9A1C20).
 Tell the client it is waiting in their account. To cancel an invoice: Table Editor -> invoices -> set `status` to `void`.
+
+### Attach the detailed invoice PDF (optional, recommended)
+The client sees a **View invoice (PDF)** button on the invoice once you upload it:
+
+1. Supabase -> Storage -> bucket **client-documents** -> open the client's folder (their email, all lower case;
+   create it if needed).
+2. Inside it, **Create folder** named `invoices` and open it.
+3. **Upload file**: the PDF, named so it **starts with the invoice reference**, e.g. `INV-3F9A1C20.pdf` or
+   `INV-3F9A1C20 - Italy deposit.pdf`.
+
+Only that client can open it. To replace it, delete the old file and upload the new one with the same reference at
+the start of the name.
 
 ## If something looks wrong
 - Status **needs_review**: the provider's amount or state did not match the invoice. Check the payment in the
