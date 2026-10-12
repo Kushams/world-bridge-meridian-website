@@ -216,3 +216,27 @@ export async function notifyClient(email: string, kind: ClientNotice, title: str
     return false;
   }
 }
+
+export interface ClientFlags {
+  reminders_off: boolean;
+  blocked: boolean;
+}
+
+export async function loadClientFlags(email: string): Promise<ClientFlags> {
+  const { data } = await db().from("client_flags").select("reminders_off, blocked").eq("client_email", email).maybeSingle();
+  return (data as ClientFlags | null) ?? { reminders_off: false, blocked: false };
+}
+
+export type ClientAction = "remind" | "stop_reminders" | "resume_reminders" | "block" | "unblock" | "delete";
+
+/** Account controls on a client's page (staff-client-action). Returns an error message, or null. */
+export async function clientAction(email: string, action: ClientAction): Promise<string | null> {
+  const { data, error } = await db().functions.invoke("staff-client-action", { body: { email, action } });
+  const out = data as { ok?: boolean; error?: string } | null;
+  if (out?.ok) return null;
+  if (error && "context" in error && error.context instanceof Response) {
+    const body = (await error.context.json().catch(() => null)) as { error?: string } | null;
+    if (body?.error) return body.error;
+  }
+  return out?.error ?? error?.message ?? "Something went wrong";
+}

@@ -4,9 +4,11 @@ import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { Thread } from "@/components/messages/Thread";
 import { postAsStaff, postVoice } from "@/lib/messages";
 import {
+  clientAction,
   createInvoice,
   fmtDate,
   listFiles,
+  loadClientFlags,
   loadClientInvoices,
   loadClientRequests,
   loadProfile,
@@ -18,6 +20,8 @@ import {
   usd,
   voidInvoice,
   type Client,
+  type ClientAction,
+  type ClientFlags,
   type Request,
   type Signature,
   type StaffInvoice,
@@ -93,7 +97,86 @@ function FileRow({ f, bucket, extra, onRemove }: { f: StoredFile; bucket: string
 }
 
 /** Everything for one client: profile, requests, documents sent, invoices and what they've sent us. */
-export function ClientHub({ client }: { client: Client }) {
+function AccountControls({ email, admin, onDeleted }: { email: string; admin: boolean; onDeleted: () => void }) {
+  const [flags, setFlags] = useState<ClientFlags | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  useEffect(() => {
+    let alive = true;
+    loadClientFlags(email).then((f) => alive && setFlags(f));
+    return () => {
+      alive = false;
+    };
+  }, [email]);
+
+  async function run(action: ClientAction, confirmText: string, done: string, next?: Partial<ClientFlags>) {
+    if (confirmText && !window.confirm(confirmText)) return;
+    setBusy(true);
+    const err = await clientAction(email, action);
+    setBusy(false);
+    setMsg(err ? `Not done: ${err}` : done);
+    if (err) return;
+    if (action === "delete") return onDeleted();
+    if (next) setFlags((f) => (f ? { ...f, ...next } : f));
+  }
+
+  if (!flags) return null;
+  return (
+    <Block
+      title="Account"
+      note="Reminders go out automatically 3 and 7 days after our last message if the client hasn't replied. Blocking pauses the account: they can't sign in and get no reminders until you unblock them."
+    >
+      <p className="mb-4 text-sm">
+        <span className={flags.blocked ? "text-red-400" : "text-gold"}>{flags.blocked ? "Blocked" : "Active"}</span>
+        <span className="text-stone-dim"> · Reminders {flags.blocked || flags.reminders_off ? "off" : "on"}</span>
+      </p>
+      <div className="flex flex-wrap gap-2">
+        <button type="button" disabled={busy || flags.blocked} className={`${btn} border hairline text-ivory hover:border-gold`}
+          onClick={() => run("remind", "Email this client a reminder now?", "Reminder sent.")}>
+          Send reminder
+        </button>
+        {flags.reminders_off ? (
+          <button type="button" disabled={busy} className={`${btn} border hairline text-ivory hover:border-gold`}
+            onClick={() => run("resume_reminders", "", "Automatic reminders are back on.", { reminders_off: false })}>
+            Turn reminders back on
+          </button>
+        ) : (
+          <button type="button" disabled={busy} className={`${btn} border hairline text-ivory hover:border-gold`}
+            onClick={() => run("stop_reminders", "Stop automatic reminders for this client?", "Automatic reminders stopped.", { reminders_off: true })}>
+            Stop reminders
+          </button>
+        )}
+        {flags.blocked ? (
+          <button type="button" disabled={busy} className={`${btn} border hairline text-ivory hover:border-gold`}
+            onClick={() => run("unblock", "Unblock this account? They'll be able to sign in again.", "Account unblocked.", { blocked: false })}>
+            Unblock account
+          </button>
+        ) : (
+          <button type="button" disabled={busy} className={`${btn} border border-red-400/60 text-red-300 hover:border-red-400`}
+            onClick={() => run("block", "Block this account? They won't be able to sign in until you unblock them.", "Account blocked.", { blocked: true })}>
+            Block account
+          </button>
+        )}
+        {admin ? (
+          <button type="button" disabled={busy} className={`${btn} bg-red-500/80 text-white hover:bg-red-500`}
+            onClick={() =>
+              run(
+                "delete",
+                `Permanently delete ${email}? Their account, messages, requests, invoices and files are removed. This can't be undone.`,
+                "Account deleted.",
+              )
+            }>
+            Delete account
+          </button>
+        ) : null}
+      </div>
+      {msg ? <p role="status" className={`mt-3 text-xs ${msg.startsWith("Not") ? "text-red-400" : "text-gold"}`}>{msg}</p> : null}
+    </Block>
+  );
+}
+
+export function ClientHub({ client, admin, onDeleted }: { client: Client; admin: boolean; onDeleted: () => void }) {
   const email = client.email;
   const [profile, setProfile] = useState<Record<string, unknown> | null>(null);
   const [requests, setRequests] = useState<Request[]>([]);
@@ -259,6 +342,8 @@ export function ClientHub({ client }: { client: Client }) {
           </div>
         ) : null}
       </Block>
+
+      <AccountControls email={email} admin={admin} onDeleted={onDeleted} />
     </div>
   );
 }

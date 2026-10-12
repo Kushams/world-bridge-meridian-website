@@ -8,6 +8,8 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 //  * Admin digest, at most once a day: clients with a request older than
 //    24 hours and nobody looking after them.
 // Every reminder is recorded in public.reminder_log so it only sends once.
+// Clients flagged in public.client_flags (reminders off, or blocked) are skipped.
+// Body {email} sends one reminder now (called by staff-client-action).
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const NOTIFY_SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -65,6 +67,37 @@ async function release(key: string) {
   await db.from("reminder_log").delete().eq("key", key);
 }
 
+/** n = 0 for a reminder sent by hand from the staff page, 1/2 for the automatic ones. */
+async function nudge(
+  email: string,
+  m: Msg | undefined,
+  request: Req | undefined,
+  n: number,
+  staff: { email: string; name: string | null }[],
+  handler: Map<string, string>,
+  team: string[],
+) {
+  const coordinatorEmail = handler.get(email);
+  const coordinator = staff.find((s) => s.email === coordinatorEmail)?.name ?? "your travel coordinator";
+  const first = (request?.name ?? "").trim().split(/\s+/)[0];
+  const what = request ? `Your ${LABELS[request.form_type] ?? "request"}${request.subject?.includes("—") ? ` (${request.subject.split("—").pop()!.trim()})` : ""} is still open` : "Your account has something waiting for you";
+  const preview = m ? (m.body.length > 280 ? `${m.body.slice(0, 280)}…` : m.body) : "";
+  return await send(
+    [email],
+    n === 0 ? "Checking in — World Bridge Meridian" : n === 1 ? "We haven't heard from you — World Bridge Meridian" : "Still here when you're ready — World Bridge Meridian",
+    `<div style="font-family:Georgia,serif;color:#1c1c1c;max-width:560px">
+      <p>${first ? `Dear ${esc(first)},` : "Hello,"}</p>
+      <p>${n === 0 ? "We wanted to check in with you." : "We haven't heard from you in a little while, so we wanted to check in."} ${esc(what)}, and ${esc(coordinator)} is waiting for your reply.</p>
+      ${preview ? `<p style="color:#666">The latest from us:</p>
+      <blockquote style="margin:0;padding:12px 16px;border-left:3px solid #b8964e;background:#f7f4ee;white-space:pre-wrap">${esc(preview)}</blockquote>` : ""}
+      ${button(`${ACCOUNT_URL}#messages`, "Reply now")}
+      <p>If your plans have changed, or you'd like to talk it through, just reply to this email.</p>
+      <p>Warm regards,<br>World Bridge Meridian</p>
+    </div>`,
+    [...new Set([...team, ...(coordinatorEmail ? [coordinatorEmail] : [])])],
+  );
+}
+
 function button(href: string, label: string) {
   return `<p style="margin:28px 0"><a href="${href}" style="background:#1c1c1c;color:#fff;padding:12px 22px;border-radius:999px;text-decoration:none;font-family:Arial,sans-serif;font-size:13px;letter-spacing:.05em;text-transform:uppercase">${esc(label)}</a></p>`;
 }
@@ -76,13 +109,21 @@ Deno.serve(async (req: Request) => {
   const now = Date.now();
   const since = new Date(now - LOOKBACK).toISOString();
 
-  const [staffRes, assignRes, msgRes, reqRes] = await Promise.all([
+  let manual = "";
+  try {
+    manual = String(((await req.json()) as { email?: string }).email ?? "").trim().toLowerCase();
+  } catch {
+    // Scheduled runs send an empty body.
+  }
+
+  const [staffRes, assignRes, msgRes, reqRes, flagRes] = await Promise.all([
     db.from("staff_members").select("email, name, role"),
     db.from("client_assignments").select("client_email, staff_email"),
     db.from("client_messages").select("id, client_email, sender, kind, body, created_at").gte("created_at", since).order("created_at", { ascending: false }),
     db.from("form_submissions").select("email, name, subject, form_type, status, submitted_at").neq("form_type", "newsletter").gte("submitted_at", since).order("submitted_at", { ascending: false }),
+    db.from("client_flags").select("client_email, reminders_off, blocked"),
   ]);
-  for (const r of [staffRes, assignRes, msgRes, reqRes]) {
+  for (const r of [staffRes, assignRes, msgRes, reqRes, flagRes]) {
     if (r.error) return new Response(JSON.stringify({ ok: false, error: r.error.message }), { status: 500 });
   }
   const staff = staffRes.data as { email: string; name: string | null; role: string }[];
@@ -97,12 +138,24 @@ Deno.serve(async (req: Request) => {
     if (!latestReq.has(email)) latestReq.set(email, r);
   }
 
+  const quiet = new Set(
+    (flagRes.data as { client_email: string; reminders_off: boolean; blocked: boolean }[])
+      .filter((f) => f.reminders_off || f.blocked)
+      .map((f) => f.client_email),
+  );
+
+  if (manual) {
+    const m = (msgRes.data as Msg[]).find((x) => x.client_email === manual && x.sender !== "client" && (x.sender === "staff" || OURS.has(x.kind)));
+    const ok = await nudge(manual, m, latestReq.get(manual), 0, staff, handler, team);
+    return new Response(JSON.stringify({ ok }), { headers: { "Content-Type": "application/json" } });
+  }
+
   // 1. Clients who haven't replied.
   let nudged = 0;
   const latestMsg = new Map<string, Msg>();
   for (const m of msgRes.data as Msg[]) if (!latestMsg.has(m.client_email)) latestMsg.set(m.client_email, m);
   for (const [email, m] of latestMsg) {
-    if (staffEmails.has(email)) continue;
+    if (staffEmails.has(email) || quiet.has(email)) continue;
     const waitingOnClient = m.sender === "staff" || (m.sender === "system" && OURS.has(m.kind));
     if (!waitingOnClient) continue;
     const request = latestReq.get(email);
@@ -117,32 +170,14 @@ Deno.serve(async (req: Request) => {
     const key = `noreply:${m.id}:${due.n}`;
     if (!(await claim(key))) continue;
 
-    const coordinatorEmail = handler.get(email);
-    const coordinator = staff.find((s) => s.email === coordinatorEmail)?.name ?? "your travel coordinator";
-    const first = (request?.name ?? "").trim().split(/\s+/)[0];
-    const what = request ? `Your ${LABELS[request.form_type] ?? "request"}${request.subject?.includes("—") ? ` (${request.subject.split("—").pop()!.trim()})` : ""} is still open` : "Your account has something waiting for you";
-    const preview = m.body.length > 280 ? `${m.body.slice(0, 280)}…` : m.body;
-    const ok = await send(
-      [email],
-      due.n === 1 ? "We haven't heard from you — World Bridge Meridian" : "Still here when you're ready — World Bridge Meridian",
-      `<div style="font-family:Georgia,serif;color:#1c1c1c;max-width:560px">
-        <p>${first ? `Dear ${esc(first)},` : "Hello,"}</p>
-        <p>We haven't heard from you in a little while, so we wanted to check in. ${esc(what)}, and ${esc(coordinator)} is waiting for your reply.</p>
-        <p style="color:#666">The latest from us:</p>
-        <blockquote style="margin:0;padding:12px 16px;border-left:3px solid #b8964e;background:#f7f4ee;white-space:pre-wrap">${esc(preview)}</blockquote>
-        ${button(`${ACCOUNT_URL}#messages`, "Reply now")}
-        <p>If your plans have changed, or you'd like to talk it through, just reply to this email.</p>
-        <p>Warm regards,<br>World Bridge Meridian</p>
-      </div>`,
-      [...new Set([...team, ...(coordinatorEmail ? [coordinatorEmail] : [])])],
-    );
+    const ok = await nudge(email, m, request, due.n, staff, handler, team);
     if (ok) nudged++;
     else await release(key);
   }
 
   // 2. Admin digest of unassigned clients.
   const unassigned = [...latestReq.entries()].filter(
-    ([email, r]) => !staffEmails.has(email) && !handler.has(email) && now - new Date(r.submitted_at).getTime() >= DAY && r.status !== "closed",
+    ([email, r]) => !staffEmails.has(email) && !quiet.has(email) && !handler.has(email) && now - new Date(r.submitted_at).getTime() >= DAY && r.status !== "closed",
   );
   let digest = false;
   if (unassigned.length) {

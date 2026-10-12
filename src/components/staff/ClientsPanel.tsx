@@ -81,7 +81,14 @@ export function ClientsPanel({ admin, selected, onSelect }: { admin: boolean; se
             onSaved={(staff) => setClients((cs) => cs?.map((c) => (c.email === current.email ? { ...c, assigned_to: staff } : c)))}
           />
         ) : null}
-        <ClientHub client={current} />
+        <ClientHub
+          client={current}
+          admin={admin}
+          onDeleted={() => {
+            setClients((cs) => cs?.filter((c) => c.email !== current.email));
+            onSelect("");
+          }}
+        />
       </div>
     );
   }
