@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createInvoiceV2, loadPriceBook, notifyClient, removeFile, savePriceItem, updateInvoiceV2, uploadFile, type Client, type PriceItem, type StaffInvoice } from "@/lib/staff";
-import { CURRENCIES, fetchUsdRate, money, totals, type Currency } from "@/lib/money";
+import { CURRENCIES, fetchLiveUsdRate, money, totals, type Currency } from "@/lib/money";
 import { buildInvoicePdf, loadEmblem, loadPdfFonts } from "@/lib/invoicePdf";
 import { inputClass } from "./RequestsPanel";
 
@@ -149,11 +149,11 @@ export function InvoiceBuilder({ client, editing, onDone, onCancel }: { client: 
         return;
       }
       setRateNote("Fetching today's rate…");
-      fetchUsdRate(currency).then((r) => {
+      fetchLiveUsdRate(currency).then((r) => {
         if (!alive) return;
         if (r) {
           setRate(r.toFixed(4));
-          setRateNote(`ECB rate today, for the estimate only. The card and crypto charge is worked out again at the live rate when the client taps pay.`);
+          setRateNote(`Live rate, for the estimate only. The card and crypto charge is worked out again at the live rate when the client taps pay.`);
         } else {
           setRateNote("Couldn't fetch the rate: type it in.");
         }

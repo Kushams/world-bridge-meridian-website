@@ -26,6 +26,21 @@ export function totals(lines: { qty: number; unit_price: number }[], taxPercent:
   return { subtotal, tax, total: roundMoney(subtotal + tax) };
 }
 
+/** Live rate to US dollars (Coinbase spot price, moves all day); falls back to the daily European Central Bank rate. null if neither works. */
+export async function fetchLiveUsdRate(from: Currency): Promise<number | null> {
+  if (from === "USD") return 1;
+  try {
+    const res = await fetch(`https://api.coinbase.com/v2/prices/${from}-USD/spot`, { cache: "no-store" });
+    if (res.ok) {
+      const rate = Number(((await res.json()) as { data?: { amount?: string } }).data?.amount);
+      if (rate > 0.2 && rate < 5) return rate;
+    }
+  } catch {
+    // fall through to the ECB rate
+  }
+  return fetchUsdRate(from);
+}
+
 /** Today's rate to US dollars from the European Central Bank feed. null if it can't be fetched (staff can type one). */
 export async function fetchUsdRate(from: Currency): Promise<number | null> {
   if (from === "USD") return 1;

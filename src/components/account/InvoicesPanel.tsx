@@ -5,12 +5,40 @@ import { Button } from "@/components/ui/Button";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/AuthProvider";
+import { fetchLiveUsdRate, type Currency } from "@/lib/money";
 import { loadInvoices, parseBankLines, startCardPayment, type Invoice } from "@/lib/invoices";
 import { money } from "@/lib/money";
 
 const BUCKET = "client-documents";
 const usd = (n: number) => `US$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 const fmt = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+
+/** Live USD rates for the currencies of the unpaid invoices on screen, refreshed every minute while the page is open. */
+function useLiveRates(currencies: string[]) {
+  const key = [...new Set(currencies)].sort().join(",");
+  const [rates, setRates] = useState<Record<string, { rate: number; at: Date }>>({});
+  useEffect(() => {
+    const list = key ? (key.split(",") as Currency[]) : [];
+    if (!list.length) return;
+    let alive = true;
+    const refresh = async () => {
+      if (document.visibilityState !== "visible") return;
+      for (const c of list) {
+        const rate = await fetchLiveUsdRate(c);
+        if (alive && rate) setRates((r) => ({ ...r, [c]: { rate, at: new Date() } }));
+      }
+    };
+    refresh();
+    const timer = window.setInterval(refresh, 60000);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      alive = false;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [key]);
+  return rates;
+}
 
 const own = (i: Invoice) => i.amount ?? i.amount_usd;
 const ownMoney = (i: Invoice) => money(own(i), i.currency ?? "USD");
@@ -136,6 +164,7 @@ export function InvoicesPanel() {
   const [resetKey, setResetKey] = useState(0);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const rates = useLiveRates((invoices ?? []).filter((i) => i.status === "unpaid" && i.currency && i.currency !== "USD").map((i) => i.currency as string));
 
   // Keep the list fresh: staff may add bank details or mark an invoice paid while this page is open.
   useEffect(() => {
@@ -250,7 +279,16 @@ export function InvoicesPanel() {
                 <div className="text-right">
                   <p className="font-display text-2xl text-ivory">{ownMoney(i)}</p>
                   {i.currency && i.currency !== "USD" && i.status === "unpaid" ? (
-                    <p className="text-xs text-stone-dim">About {usd(i.amount_usd)} by card or crypto, converted at the live rate when you pay</p>
+                    rates[i.currency] ? (
+                      <>
+                        <p className="mt-1 text-sm font-semibold text-gold">≈ {usd(Math.round(own(i) * rates[i.currency].rate * 100) / 100)} to pay by card or crypto</p>
+                        <p className="text-[11px] text-stone-dim">
+                          Live rate: 1 {i.currency} = {rates[i.currency].rate.toFixed(4)} USD · updated {rates[i.currency].at.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })} · refreshes every minute
+                        </p>
+                      </>
+                    ) : (
+                      <p className="text-xs text-stone-dim">Checking the live rate…</p>
+                    )
                   ) : null}
                 </div>
               </div>
