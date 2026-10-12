@@ -9,6 +9,7 @@ import { ProfileForm } from "./ProfileForm";
 import { TravelCreditsPanel } from "./TravelCreditsPanel";
 import { SavedJourneysPanel } from "./SavedJourneysPanel";
 import { InvoicesPanel } from "./InvoicesPanel";
+import { MessagesPanel } from "./MessagesPanel";
 import { CARD_PAYMENTS_ENABLED } from "@/data/cardPayments";
 import { MobileCollapse } from "@/components/ui/MobileCollapse";
 
@@ -70,11 +71,13 @@ function DeleteAccount() {
   );
 }
 
-type Tab = "profile" | "wallet" | "invoices";
+type Tab = "profile" | "messages" | "wallet" | "invoices";
 const WALLET_HASHES = new Set(["wallet", "travel-credits", "gift-cards", "redeem-code"]);
 const INVOICE_HASHES = new Set(["invoices"]);
+const MESSAGE_HASHES = new Set(["messages"]);
 const TABS: { key: Tab; label: string }[] = [
   { key: "profile", label: "Profile" },
+  { key: "messages", label: "Messages" },
   { key: "wallet", label: "Wallet" },
   ...(CARD_PAYMENTS_ENABLED ? [{ key: "invoices" as const, label: "Invoices" }] : []),
 ];
@@ -86,10 +89,11 @@ function subscribeHash(cb: () => void) {
 const currentTab = (): Tab => {
   const h = window.location.hash.slice(1);
   if (CARD_PAYMENTS_ENABLED && INVOICE_HASHES.has(h)) return "invoices";
+  if (MESSAGE_HASHES.has(h)) return "messages";
   return WALLET_HASHES.has(h) ? "wallet" : "profile";
 };
 
-/** The signed-in side of /my-world-bridge: Profile (details, enquiries, saved), Wallet and Invoices tabs. */
+/** The signed-in side of /my-world-bridge: Profile (details, enquiries, saved), Messages, Wallet and Invoices tabs. */
 export function AccountDashboard() {
   const tab = useSyncExternalStore(subscribeHash, currentTab, () => "profile" as Tab);
 
@@ -113,7 +117,7 @@ export function AccountDashboard() {
       <ProfileHero />
 
       <div className="sticky top-[4.4rem] z-30 -mx-1 bg-ink/95 px-1 py-2 backdrop-blur">
-      <div id="account-tabs" role="tablist" aria-label="Account sections" className={`scroll-mt-40 grid gap-1 rounded-full border border-line bg-ink p-1 sm:inline-grid ${TABS.length === 3 ? "grid-cols-3 sm:min-w-[30rem]" : "grid-cols-2 sm:min-w-[22rem]"}`}>
+      <div id="account-tabs" role="tablist" aria-label="Account sections" className={`scroll-mt-40 grid gap-1 rounded-full border border-line bg-ink p-1 sm:inline-grid ${TABS.length === 4 ? "grid-cols-4 sm:min-w-[38rem]" : "grid-cols-3 sm:min-w-[30rem]"}`}>
         {TABS.map(({ key: t, label }) => (
           <button
             key={t}
@@ -123,7 +127,7 @@ export function AccountDashboard() {
             aria-selected={tab === t}
             aria-controls={`panel-${t}`}
             onClick={() => choose(t)}
-            className={`rounded-full px-3 py-2.5 text-xs sm:px-6 font-semibold uppercase tracking-wide transition-colors ${
+            className={`rounded-full px-1.5 py-2.5 text-[0.7rem] sm:px-6 sm:text-xs font-semibold uppercase tracking-wide transition-colors ${
               tab === t ? "bg-ivory text-ink" : "text-ivory-dim hover:text-gold"
             }`}
           >
@@ -133,7 +137,13 @@ export function AccountDashboard() {
       </div>
       </div>
 
-      {tab === "invoices" ? (
+      {tab === "messages" ? (
+        <div role="tabpanel" id="panel-messages" aria-labelledby="tab-messages" className="space-y-10">
+          <Section id="messages" eyebrow="Messages" title="Talk to your coordinator">
+            <MessagesPanel />
+          </Section>
+        </div>
+      ) : tab === "invoices" ? (
         <div role="tabpanel" id="panel-invoices" aria-labelledby="tab-invoices" className="space-y-10">
           <Section id="invoices" eyebrow="Invoices" title="Invoices from your consultant">
             <InvoicesPanel />

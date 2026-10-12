@@ -10,6 +10,7 @@ import { PageTransition } from "@/components/motion/PageTransition";
 import { AttributionCapture } from "@/components/AttributionCapture";
 import { SignInPopup } from "@/components/account/SignInPopup";
 import { InviteClaimer } from "@/components/invite/InviteClaimer";
+import { StaffReferral } from "@/components/staff/StaffReferral";
 import { TawkChat } from "@/components/TawkChat";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 import { AuthProvider } from "@/lib/supabase/AuthProvider";
@@ -118,6 +119,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <TouchRipple />
           <AttributionCapture />
           <InviteClaimer />
+          <StaffReferral />
           <SignInPopup />
           <a
             href="#main-content"

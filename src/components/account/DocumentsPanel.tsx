@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { displayName, useAuth } from "@/lib/supabase/AuthProvider";
-import { docKind, docTitle, notifyTeam, safeName, type DocKind } from "@/lib/clientDocs";
+import { docKind, docTitle, notifyTeam, safeName, stemOf, type DocKind } from "@/lib/clientDocs";
 import { SignDocumentDialog } from "./SignDocumentDialog";
 
 const BUCKET = "client-documents";
@@ -24,7 +24,6 @@ const fmtSize = (bytes: number | null) =>
   bytes == null ? "" : bytes > 1_000_000 ? `${(bytes / 1_000_000).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1000))} KB`;
 
 /** Stem used to match a returned file to the document it answers. */
-const stemOf = (name: string) => safeName(name.replace(/^(SIGN|RETURN) - /, "").replace(/\.[^.]+$/, ""));
 
 /**
  * Files staff put in this client's folder. Plain files can be viewed. Files
@@ -97,15 +96,16 @@ export function DocumentsPanel() {
     if (file.size > 10 * 1024 * 1024) return setNotice("That file is over 10 MB. Please send a smaller one.");
     setBusy(doc.name);
     const ext = file.name.includes(".") ? file.name.slice(file.name.lastIndexOf(".")) : "";
+    const path = `${folder}/returned/${stemOf(doc.name)}__returned${safeName(ext)}`;
     const { error } = await supabase.storage
       .from(UPLOADS)
-      .upload(`${folder}/returned/${stemOf(doc.name)}__returned${safeName(ext)}`, file, {
+      .upload(path, file, {
         contentType: file.type || undefined,
         upsert: false,
       });
     setBusy(null);
     if (error) return setNotice("We couldn't upload that file. Please use a PDF, JPG or PNG and try again.");
-    notifyTeam("returned", doc.title);
+    notifyTeam("returned", doc.title, undefined, path);
     setNotice("Received. Thank you — our team has been told.");
     load();
   }

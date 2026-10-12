@@ -27,6 +27,9 @@ export function safeName(name: string): string {
   return name.normalize("NFKD").replace(/[^\w.-]+/g, "_").replace(/_+/g, "_").slice(-80);
 }
 
+/** Matches a RETURN document to the signed copy the client sends back. */
+export const stemOf = (name: string) => safeName(name.replace(/^(SIGN|RETURN) - /, "").replace(/\.[^.]+$/, ""));
+
 export async function sha256Hex(buffer: ArrayBuffer): Promise<string> {
   const digest = await crypto.subtle.digest("SHA-256", buffer);
   return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, "0")).join("");
@@ -36,9 +39,10 @@ export async function sha256Hex(buffer: ArrayBuffer): Promise<string> {
  * Tell the team something arrived. Best effort: the upload or signature is
  * already saved, so a failed email must never show the client an error.
  */
-export async function notifyTeam(kind: "upload" | "signed" | "returned", title: string, category?: string) {
+/** Emails the team; `path` (in client-uploads) is attached to the email. */
+export async function notifyTeam(kind: "upload" | "signed" | "returned", title: string, category?: string, path?: string) {
   try {
-    await getSupabaseClient()?.functions.invoke("notify-client-activity", { body: { kind, title, category } });
+    await getSupabaseClient()?.functions.invoke("notify-client-activity", { body: { kind, title, category, path } });
   } catch {
     /* ignore */
   }
