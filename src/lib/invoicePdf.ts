@@ -23,14 +23,12 @@ export interface PdfClient {
 
 type RGB = [number, number, number];
 
-/** Base64 TTF files for the PDF's typefaces (Montserrat like the site, Playfair Display for titles and amounts). */
-export type PdfFonts = Record<"mont" | "montBold" | "play" | "playBold" | "playItalic", string>;
+/** Base64 TTF files for the PDF's typeface: Montserrat, like the site. */
+export type PdfFonts = Record<"mont" | "montBold" | "montItalic", string>;
 const FONT_FILES: Record<keyof PdfFonts, string> = {
   mont: "Montserrat-Regular",
   montBold: "Montserrat-SemiBold",
-  play: "PlayfairDisplay-Medium",
-  playBold: "PlayfairDisplay-Bold",
-  playItalic: "PlayfairDisplay-MediumItalic",
+  montItalic: "Montserrat-Italic",
 };
 
 /** Fetches the PDF fonts from /fonts/pdf. Returns null if any is missing (the PDF then falls back to built-in fonts). */
@@ -84,14 +82,12 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
     };
     add("mont", "Montserrat", "normal");
     add("montBold", "Montserrat", "bold");
-    add("play", "Playfair", "normal");
-    add("playBold", "Playfair", "bold");
-    add("playItalic", "Playfair", "italic");
-    add("playItalic", "Playfair", "bolditalic");
+    add("montItalic", "Montserrat", "italic");
+    add("montItalic", "Montserrat", "bolditalic");
   }
-  // Sans = Montserrat, serif = Playfair Display; the built-in Helvetica / Times when the fonts could not be loaded.
+  // Everything is Montserrat; the built-in Helvetica / Times only when the font files could not be loaded.
   const setF = (font: "helvetica" | "times", style: "normal" | "bold" | "italic" | "bolditalic") => {
-    if (fonts) doc.setFont(font === "times" ? "Playfair" : "Montserrat", font === "times" ? style : style === "bold" || style === "bolditalic" ? "bold" : "normal");
+    if (fonts) doc.setFont("Montserrat", style);
     else doc.setFont(font, style);
   };
   const W = 210;
@@ -222,7 +218,7 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
   doc.setLineWidth(0.3);
   doc.line(tx, 31, tx + 62, 31);
 
-  text(inv.status === "paid" ? "Receipt" : "Invoice", R, 24, { size: 30, font: "times", italic: true, color: CREAM, align: "right" });
+  text(inv.status === "paid" ? "Receipt" : "Invoice", R, 24, { size: 26, font: "times", bold: true, color: CREAM, align: "right" });
   text(`No. ${inv.reference}`, R, 32, { size: 9.5, color: GOLD_LIGHT, align: "right" });
   text(`Issued ${day(inv.createdAt)}`, R, 39, { size: 8.5, color: CREAM, align: "right" });
   text(inv.dueDate && inv.status !== "paid" ? `Due ${day(inv.dueDate)}` : inv.status === "paid" ? (inv.paidAt ? `Paid ${day(inv.paidAt)}` : "Paid") : "Due on receipt", R, 44.5, { size: 8.5, color: CREAM, align: "right" });
