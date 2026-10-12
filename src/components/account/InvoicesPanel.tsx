@@ -158,7 +158,7 @@ export function InvoicesPanel() {
   if (invoices.length === 0) {
     return (
       <p className="max-w-xl text-sm text-stone leading-relaxed">
-        No invoices yet. When your consultant sends you one, it will appear here and you can pay it by card, bank transfer or crypto.
+        No invoices yet. When your consultant sends you one, it will appear here and you can pay it by card or crypto.
       </p>
     );
   }
@@ -213,6 +213,14 @@ export function InvoicesPanel() {
                     {busy === i.id ? "Opening secure payment…" : "Pay by card or crypto"}
                   </Button>
                 ) : null}
+                {i.status === "unpaid" ? (
+                  <a
+                    href="/payments#cryptocurrency"
+                    className="inline-flex h-11 items-center rounded-full border border-line px-5 text-xs font-semibold uppercase tracking-wide text-ivory hover:border-gold"
+                  >
+                    Pay manually by crypto
+                  </a>
+                ) : null}
                 {pdf ? (
                   <Button type="button" size="md" variant="outline" disabled={busy !== null} onClick={() => openPdf(pdf)}>
                     {busy === pdf ? "Opening…" : "View invoice (PDF)"}
@@ -224,23 +232,6 @@ export function InvoicesPanel() {
 
               {i.status === "unpaid" && i.bank_details ? <BankTransfer invoice={i} /> : null}
 
-              {i.status === "unpaid" ? (
-                <details className="mt-4 text-xs text-stone">
-                  <summary className="cursor-pointer underline underline-offset-4 hover:text-ivory">Other ways to pay</summary>
-                  <div className="mt-2 space-y-2 leading-relaxed">
-                    {!i.bank_details ? (
-                      <p>
-                        Prefer a bank transfer? <a href="#messages" className="underline underline-offset-4 hover:text-ivory">Message your consultant</a> and we&apos;ll
-                        add our bank details to this invoice. They appear here as soon as we do.
-                      </p>
-                    ) : null}
-                    <p>
-                      Already hold crypto? Choose <em>Already have crypto</em> inside the secure payment page above, or send it directly from our{" "}
-                      <a href="/payments#bank-transfer" className="underline underline-offset-4 hover:text-ivory">payments page</a>.
-                    </p>
-                  </div>
-                </details>
-              ) : null}
             </div>
           </article>
         );

@@ -47,7 +47,7 @@ the start of the name.
 
 ## Bank transfer details on an invoice
 
-Nothing bank-related shows on an invoice until staff add it. If a client says they can't pay by card or crypto:
+By default an invoice offers **Pay by card or crypto** (ePayVista) and **Pay manually by crypto**. Bank transfer is never offered up front and nothing bank-related shows until staff add it. When a client comes back to the chat and says they can't pay by card or crypto:
 
 1. Staff page → the client → **Invoices** → **+ Bank transfer details** on that invoice.
 2. Paste the account details and press **Save and show to client**. The client is told in their messages.
