@@ -9,6 +9,7 @@ const EPV_API_KEY = Deno.env.get("EPV_API_KEY");
 const EPV_BASE = Deno.env.get("EPV_BASE_URL") ?? "https://pay.epayvista.com"; // sandbox: https://pay.epayvista.com/sandbox
 const EPV_CURRENCY = Deno.env.get("EPV_CURRENCY") ?? "USDC"; // sandbox: TUSDC
 const EPV_CHAIN = Deno.env.get("EPV_CHAIN") ?? "base";
+const REUSE_MS = 20 * 60 * 1000; // a client who taps Pay again within this time gets the same checkout
 const SITE_URL = Deno.env.get("SITE_URL") ?? "https://worldbridgemeridian.com";
 const TURNSTILE_SECRET_KEY = Deno.env.get("TURNSTILE_SECRET_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -92,21 +93,37 @@ Deno.serve(async (req: Request) => {
   if (invoice.status === "void") return json(409, { ok: false, error: "This invoice was cancelled." });
   if (invoice.status === "needs_review") return json(409, { ok: false, error: "We're checking a payment on this invoice. We'll be in touch." });
 
-  // Convert at today's rate. USD invoices keep their amount. If the rate service is down we fall back to the rate saved on the invoice.
+  // One payment per invoice. Every checkout session is recorded (invoice_card_sessions).
+  // A client who taps Pay again within a few minutes is sent back to the very same checkout. Once a checkout has gone stale
+  // (or the dollar amount has really moved) it is marked cancelled in our records and the next tap opens a fresh one under a new random reference. A cancelled session stays on file, so a late payment on it still finds its invoice.
+  const { data: sessionRows } = await db
+    .from("invoice_card_sessions")
+    .select("reference_id, amount_usd, created_at, cancelled_at")
+    .eq("invoice_id", invoice.id)
+    .order("created_at", { ascending: false });
+  const sessions = (sessionRows ?? []) as { reference_id: string; amount_usd: number; created_at: string; cancelled_at: string | null }[];
+  const latest = sessions.find((x) => !x.cancelled_at);
+
+  // Today's amount in US dollars. USD invoices keep their amount. If the rate service is down we use the rate saved on the invoice.
   let amountUsd = Number(invoice.amount_usd);
-  let customerId = invoice.reference;
+  let rate: number | null = null;
   if (invoice.currency && invoice.currency !== "USD" && Number(invoice.amount) > 0) {
-    const rate = (await liveUsdRate(invoice.currency)) ?? Number(invoice.fx_rate);
+    rate = (await liveUsdRate(invoice.currency)) ?? Number(invoice.fx_rate);
     const usd = Math.round(Number(invoice.amount) * rate * 100) / 100;
-    if (usd >= 5) {
-      amountUsd = usd;
-      // A new rate means a new payment session (the provider reuses a session for the same customer ID), so make the ID unique per tap.
-      customerId = `${invoice.reference}-${Date.now().toString(36)}`;
-      await db.from("invoices").update({ amount_usd: amountUsd, fx_rate: rate }).eq("id", invoice.id);
-    }
+    if (usd >= 5) amountUsd = usd;
+  }
+  const close = (a: number, b: number) => Math.abs(a - b) <= Math.max(0.5, b * 0.005);
+
+  if (latest && invoice.card_url && Date.now() - new Date(latest.created_at).getTime() < REUSE_MS && close(Number(latest.amount_usd), amountUsd)) {
+    return json(200, { ok: true, url: invoice.card_url, reused: true });
   }
 
-  // Same customerID + chain + currency returns the existing session, so retrying is safe.
+  // The old checkout is finished with: clear it from our records before opening the next one.
+  if (latest) await db.from("invoice_card_sessions").update({ cancelled_at: new Date().toISOString() }).eq("invoice_id", invoice.id).is("cancelled_at", null);
+
+  // Every checkout gets its own random reference, so ePayVista never hands back an old session for the same invoice.
+  // Our invoice_card_sessions table ties it back to the invoice.
+  const customerId = `WBM-${crypto.randomUUID().replace(/-/g, "").slice(0, 12).toUpperCase()}`;
   const res = await fetch(`${EPV_BASE}/api/v1/payment`, {
     method: "POST",
     headers: { "API-Key": EPV_API_KEY, "Content-Type": "application/json", "User-Agent": "WorldBridgeMeridian-Invoices/1.0" },
@@ -118,7 +135,7 @@ Deno.serve(async (req: Request) => {
       currencyCode: EPV_CURRENCY,
       returnUrl: `${SITE_URL}/my-world-bridge#invoices`,
       cancelUrl: `${SITE_URL}/my-world-bridge#invoices`,
-      orderSummary: `${invoice.reference} — ${invoice.description}`.slice(0, 1000),
+      orderSummary: `${invoice.reference} \u2014 ${invoice.description}`.slice(0, 1000),
     }),
   });
   if (!res.ok) {
@@ -131,6 +148,17 @@ Deno.serve(async (req: Request) => {
     return json(502, { ok: false, error: "The card payment provider returned something unexpected. Please try again later." });
   }
 
-  await db.from("invoices").update({ card_reference: created.reference_id, card_url: created.url }).eq("id", invoice.id);
+  // The provider may hand back the checkout it already has for this invoice number. Then that one is live again, at its own amount.
+  const known = sessions.find((x) => x.reference_id === created.reference_id);
+  const sessionAmount = known ? Number(known.amount_usd) : amountUsd;
+  if (known) {
+    await db.from("invoice_card_sessions").update({ cancelled_at: null }).eq("reference_id", created.reference_id);
+  } else {
+    await db.from("invoice_card_sessions").insert({ reference_id: created.reference_id, invoice_id: invoice.id, customer_id: customerId, amount_usd: amountUsd });
+  }
+  await db
+    .from("invoices")
+    .update({ card_reference: created.reference_id, card_url: created.url, amount_usd: sessionAmount, ...(rate && !known ? { fx_rate: rate } : {}) })
+    .eq("id", invoice.id);
   return json(200, { ok: true, url: created.url });
 });

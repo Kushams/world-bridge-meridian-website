@@ -7,6 +7,7 @@ import { attentionCount, waitingCount, loadAttention, loadClients, loadMe, perso
 import { RequestsPanel } from "./RequestsPanel";
 import { ClientsPanel } from "./ClientsPanel";
 import { PriceBookPanel } from "./PriceBookPanel";
+import { MoneyPanel } from "./MoneyPanel";
 import { AlertsPanel } from "./AlertsPanel";
 import { InboxPanel } from "./InboxPanel";
 import { PushControl } from "./PushControl";
@@ -225,11 +226,15 @@ export function StaffArea() {
         ) : tab === "team" ? (
           admin ? (
             <>
+              <MoneyPanel clients={clients} admin />
+              <div className="mt-10" />
               <TeamPanel />
               <PriceBookPanel />
             </>
           ) : (
             <>
+              <MoneyPanel clients={clients} admin={false} />
+              <div className="mt-10" />
               <StaffTeamList />
               <PriceBookPanel />
             </>

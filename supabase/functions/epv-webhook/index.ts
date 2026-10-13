@@ -91,13 +91,31 @@ Deno.serve(async (req: Request) => {
   if (!msg.reference_id || msg.status !== "CLOSED") return reply(200, { ok: true, ignored: true });
 
   const db = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
-  const { data: invoice } = await db
-    .from("invoices")
-    .select("id, reference, user_id, description, amount_usd, status, kind, order_details")
-    .eq("card_reference", msg.reference_id)
-    .maybeSingle<{ id: string; reference: string; user_id: string; description: string; amount_usd: number; status: string; kind: string; order_details: Record<string, string> | null }>();
-  if (!invoice) return reply(200, { ok: true, unknown: true }); // not one of ours; 2xx stops retries
-  if (invoice.status === "paid") return reply(200, { ok: true, duplicate: true });
+  type Inv = { id: string; reference: string; user_id: string; description: string; amount_usd: number; status: string; kind: string; order_details: Record<string, string> | null; paid_txid?: string | null };
+  const cols = "id, reference, user_id, description, amount_usd, status, kind, order_details, paid_txid";
+  // Every checkout session we ever opened for an invoice is on file, so a payment on an older session still finds its invoice.
+  const { data: session } = await db.from("invoice_card_sessions").select("invoice_id, amount_usd").eq("reference_id", msg.reference_id).maybeSingle<{ invoice_id: string; amount_usd: number }>();
+  const { data: found } = session
+    ? await db.from("invoices").select(cols).eq("id", session.invoice_id).maybeSingle<Inv>()
+    : await db.from("invoices").select(cols).eq("card_reference", msg.reference_id).maybeSingle<Inv>();
+  if (!found) return reply(200, { ok: true, unknown: true }); // not one of ours; 2xx stops retries
+  // The amount this session asked for (which may differ from the invoice's latest dollar amount).
+  const invoice: Inv = { ...found, amount_usd: session ? Number(session.amount_usd) : Number(found.amount_usd) };
+  if (found.status === "paid") {
+    // Same message again (ePayVista retries): ignore. A different transaction on an invoice already paid is a double payment.
+    const txid = msg.txid || "";
+    if (txid && found.paid_txid && txid !== found.paid_txid) {
+      const { data: who } = await db.auth.admin.getUserById(found.user_id);
+      const clientEmail = who.user?.email ?? "(unknown)";
+      await email(
+        INTERNAL_EMAIL,
+        `Second payment received — ${found.reference}`,
+        `<h2>An invoice that was already paid has been paid again</h2><p><strong>Invoice:</strong> ${found.reference} — ${found.description}</p><p><strong>Client:</strong> ${clientEmail}</p><p><strong>Second transaction:</strong> ${txid}</p><p>Please refund or credit the second payment in the ePayVista portal.</p>`,
+      );
+      await pushToTeam(db, who.user?.email ?? null, { title: "Double payment: refund needed", body: `${found.reference} · ${clientEmail}`, url: who.user?.email ? `/staff?client=${encodeURIComponent(who.user.email.toLowerCase())}#clients` : "/staff#alerts", tag: `double-${found.reference}` });
+    }
+    return reply(200, { ok: true, duplicate: true });
+  }
 
   // Don't trust the message alone: ask ePayVista for the order and check it is paid for the amount we invoiced.
   const check = await fetch(`${EPV_BASE}/api/v1/payment/reference/${encodeURIComponent(msg.reference_id)}`, {
@@ -114,6 +132,7 @@ Deno.serve(async (req: Request) => {
     .from("invoices")
     .update({
       status,
+      amount_usd: invoice.amount_usd,
       paid_at: status === "paid" ? new Date().toISOString() : null,
       paid_via: "card",
       paid_txid: msg.txid || order.explorerTransaction || null,
@@ -146,7 +165,7 @@ Deno.serve(async (req: Request) => {
       await pushToTeam(db, who.user?.email ?? null, {
         title: `Payment received: US$${Number(invoice.amount_usd).toFixed(2)}`,
         body: `${invoice.reference} · ${clientEmail}`,
-        url: who.user?.email ? `/staff?client=${encodeURIComponent(who.user.email.toLowerCase())}#clients` : "/staff#today",
+        url: who.user?.email ? `/staff?client=${encodeURIComponent(who.user.email.toLowerCase())}#clients` : "/staff#alerts",
         tag: `paid-${invoice.reference}`,
       });
       if (who.user?.email) {
@@ -154,17 +173,17 @@ Deno.serve(async (req: Request) => {
           who.user.email,
           `Payment received — ${invoice.reference}`,
           invoice.kind === "travel-credits"
-            ? `<p>Thank you — we've received your card payment of US$${Number(invoice.amount_usd).toFixed(2)} (${invoice.reference}). Your Travel Credits are now in your account: https://worldbridgemeridian.com/my-world-bridge#wallet</p>`
+            ? `<p>Thank you — we've received your card payment of US$${Number(invoice.amount_usd).toFixed(2)} (${invoice.reference}). Your Travel Credits are now in your account, and your receipt is under Purchase receipts: https://worldbridgemeridian.com/my-world-bridge#wallet</p>`
             : invoice.kind === "gift-card"
-              ? `<p>Thank you — we've received your card payment of US$${Number(invoice.amount_usd).toFixed(2)} (${invoice.reference}). The gift card code${invoice.order_details?.quantity === "1" ? " is" : "s are"} being emailed now.</p>`
-              : `<p>Thank you — we've received your card payment for invoice ${invoice.reference} (US$${Number(invoice.amount_usd).toFixed(2)}). Your consultant will confirm it with you in writing.</p>`,
+              ? `<p>Thank you — we've received your card payment of US$${Number(invoice.amount_usd).toFixed(2)} (${invoice.reference}). The gift card code${invoice.order_details?.quantity === "1" ? " is" : "s are"} being emailed now, and your receipt is under Purchase receipts in your wallet: https://worldbridgemeridian.com/my-world-bridge#wallet</p>`
+              : `<p>Thank you — we've received your card payment for invoice ${invoice.reference} (US$${Number(invoice.amount_usd).toFixed(2)}). Your receipt is ready: sign in, open Invoices and tap Download receipt (https://worldbridgemeridian.com/my-world-bridge#invoices). Your consultant will confirm it with you in writing.</p>`,
         );
       }
     } else {
       await pushToTeam(db, who.user?.email ?? null, {
         title: "A card payment needs checking",
         body: `${invoice.reference} · ${clientEmail}`,
-        url: who.user?.email ? `/staff?client=${encodeURIComponent(who.user.email.toLowerCase())}#clients` : "/staff#today",
+        url: who.user?.email ? `/staff?client=${encodeURIComponent(who.user.email.toLowerCase())}#clients` : "/staff#alerts",
         tag: `check-${invoice.reference}`,
       });
       await email(

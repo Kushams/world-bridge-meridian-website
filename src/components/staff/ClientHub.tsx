@@ -35,6 +35,7 @@ import { parseBankLines, serializeBankLines } from "@/lib/invoices";
 import { money, totals } from "@/lib/money";
 import { buildInvoicePdf, loadEmblem, loadPdfFonts } from "@/lib/invoicePdf";
 import { InvoiceBuilder } from "./InvoiceBuilder";
+import { NotesTimeline } from "./NotesTimeline";
 import { inputClass, Row } from "./RequestsPanel";
 
 const DOCS = "client-documents";
@@ -263,6 +264,7 @@ export function ClientHub({ client, admin, onDeleted }: { client: Client; admin:
       <nav aria-label="Jump to" className="sticky top-16 z-30 -mx-1 flex gap-2 overflow-x-auto bg-ink/90 px-1 py-2 backdrop-blur">
         {[
           ["hub-messages", "Message"],
+          ["hub-notes", "Notes"],
           ["hub-requests", "Stage"],
           ["hub-send", "Send file"],
           ["hub-invoices", "Invoice"],
@@ -346,6 +348,10 @@ export function ClientHub({ client, admin, onDeleted }: { client: Client; admin:
         ) : (
           <p className="text-sm text-stone-dim">Nothing sent yet.</p>
         )}
+      </Block>
+
+      <Block id="hub-notes" title="Notes & timeline" note="Private to staff. Never shown to the client.">
+        <NotesTimeline email={email} admin={admin} invoices={invoices} requests={requests} signatures={sigs} signIns={signIns} />
       </Block>
 
       <InvoicesBlock client={client} email={email} invoices={invoices} pdfs={pdfs} onChange={(m) => (flash(m), load())} onRemovePdf={(f) => remove(DOCS, f)} />

@@ -9,6 +9,7 @@ import { redeemGiftCard } from "@/lib/redeemGiftCard";
 import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { GiftCardPreview } from "@/components/gift-cards/GiftCardPreview";
 import type { GiftDesign } from "@/lib/giftCards";
+import { PurchaseReceipts } from "./PurchaseReceipts";
 
 interface Bucket {
   id: string;
@@ -276,6 +277,8 @@ export function TravelCreditsPanel() {
           </ul>
         </div>
       ) : null}
+
+      <PurchaseReceipts />
     </div>
   );
 }

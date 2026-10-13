@@ -207,6 +207,31 @@ export const attentionCount = (a: AttentionData | null) => (a ? a.stuck.length +
 /** What the Inbox tab badge counts: conversations waiting for a staff reply. */
 export const waitingCount = (a: AttentionData | null) => (a ? a.waiting.length : 0);
 
+export interface ClientNote {
+  id: string;
+  client_email: string;
+  author_email: string;
+  author_name: string | null;
+  body: string;
+  created_at: string;
+}
+
+/** Private staff notes on a client (the client never sees these). */
+export async function loadNotes(clientEmail: string): Promise<ClientNote[]> {
+  const { data } = await db().from("client_notes").select("id, client_email, author_email, author_name, body, created_at").eq("client_email", clientEmail.toLowerCase()).order("created_at", { ascending: false }).limit(200);
+  return (data as ClientNote[] | null) ?? [];
+}
+
+export async function addNote(clientEmail: string, body: string): Promise<string | null> {
+  const { error } = await db().rpc("staff_add_note", { p_client_email: clientEmail, p_body: body });
+  return error ? error.message : null;
+}
+
+export async function removeNote(id: string): Promise<string | null> {
+  const { error } = await db().rpc("staff_remove_note", { p_id: id });
+  return error ? error.message : null;
+}
+
 /** Recent sign-ins of one client (newest first), recorded automatically. */
 export async function loadSignIns(userId: string): Promise<string[]> {
   const { data } = await db().from("client_sign_ins").select("signed_in_at").eq("user_id", userId).order("signed_in_at", { ascending: false }).limit(5);
@@ -270,6 +295,31 @@ export async function loadClientInvoices(userId: string): Promise<StaffInvoice[]
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
   return error ? null : (data ?? []).map((i) => ({ ...i, amount_usd: Number(i.amount_usd), amount: i.amount == null ? null : Number(i.amount), subtotal: i.subtotal == null ? null : Number(i.subtotal), tax_percent: Number(i.tax_percent ?? 0), fx_rate: Number(i.fx_rate ?? 1) })) as StaffInvoice[];
+}
+
+export interface MoneyRow {
+  id: string;
+  reference: string;
+  description: string;
+  amount_usd: number;
+  status: "unpaid" | "paid" | "needs_review" | "void";
+  kind: string;
+  created_at: string;
+  paid_at: string | null;
+  paid_via: string | null;
+  due_date: string | null;
+  card_started_at: string | null;
+  user_id: string;
+}
+
+/** Every invoice and website order the signed-in admin can see, for the money overview (US dollar amounts). */
+export async function loadMoneyRows(): Promise<MoneyRow[] | null> {
+  const { data, error } = await db()
+    .from("invoices")
+    .select("id, reference, description, amount_usd, status, kind, created_at, paid_at, paid_via, due_date, card_started_at, user_id")
+    .order("created_at", { ascending: false })
+    .limit(2000);
+  return error ? null : (data ?? []).map((r) => ({ ...r, amount_usd: Number(r.amount_usd) })) as MoneyRow[];
 }
 
 export async function createInvoice(email: string, amount: number, description: string) {
