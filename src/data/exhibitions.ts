@@ -1,4 +1,4 @@
-import { unsplashPhoto } from "./images";
+import { unsplashPhoto, localImage } from "./images";
 
 /**
  * Real, currently-running (or clearly upcoming) exhibitions and art fairs at
@@ -598,7 +598,7 @@ export const artListings: ArtListing[] = [
     description: "New paintings by Kylie Manning, opening during Frieze week.",
     sourceUrl: "https://www.pacegallery.com/exhibitions/",
     sourceLabel: "pacegallery.com",
-    heroImage: unsplashPhoto("1566954979172-eaba308acdf0"),
+    heroImage: localImage("/images/exhibitions-kylie-manning-mudlarkers.jpg"),
   },
   {
     slug: "kiki-smith-untethered-journey-pace-los-angeles",
