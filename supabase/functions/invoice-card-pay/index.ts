@@ -93,10 +93,9 @@ Deno.serve(async (req: Request) => {
   if (invoice.status === "void") return json(409, { ok: false, error: "This invoice was cancelled." });
   if (invoice.status === "needs_review") return json(409, { ok: false, error: "We're checking a payment on this invoice. We'll be in touch." });
 
-  // One payment per invoice, always under the invoice number. Every checkout session is recorded (invoice_card_sessions).
+  // One payment per invoice. Every checkout session is recorded (invoice_card_sessions).
   // A client who taps Pay again within a few minutes is sent back to the very same checkout. Once a checkout has gone stale
-  // (or the dollar amount has really moved) it is marked cancelled in our records and the next tap opens a fresh one under the
-  // same invoice number. A cancelled session stays on file, so a late payment on it still finds its invoice.
+  // (or the dollar amount has really moved) it is marked cancelled in our records and the next tap opens a fresh one under a new random reference. A cancelled session stays on file, so a late payment on it still finds its invoice.
   const { data: sessionRows } = await db
     .from("invoice_card_sessions")
     .select("reference_id, amount_usd, created_at, cancelled_at")
@@ -122,18 +121,21 @@ Deno.serve(async (req: Request) => {
   // The old checkout is finished with: clear it from our records before opening the next one.
   if (latest) await db.from("invoice_card_sessions").update({ cancelled_at: new Date().toISOString() }).eq("invoice_id", invoice.id).is("cancelled_at", null);
 
+  // Every checkout gets its own random reference, so ePayVista never hands back an old session for the same invoice.
+  // Our invoice_card_sessions table ties it back to the invoice.
+  const customerId = `WBM-${crypto.randomUUID().replace(/-/g, "").slice(0, 12).toUpperCase()}`;
   const res = await fetch(`${EPV_BASE}/api/v1/payment`, {
     method: "POST",
     headers: { "API-Key": EPV_API_KEY, "Content-Type": "application/json", "User-Agent": "WorldBridgeMeridian-Invoices/1.0" },
     body: JSON.stringify({
-      customerID: invoice.reference,
+      customerID: customerId,
       amountInUSD: amountUsd,
       customerEmail: u.user.email,
       blockchainCode: EPV_CHAIN,
       currencyCode: EPV_CURRENCY,
       returnUrl: `${SITE_URL}/my-world-bridge#invoices`,
       cancelUrl: `${SITE_URL}/my-world-bridge#invoices`,
-      orderSummary: `${invoice.reference} \u2014 ${invoice.description}`.slice(0, 1000),
+      orderSummary: `${customerId} \u2014 ${invoice.description}`.slice(0, 1000),
     }),
   });
   if (!res.ok) {
@@ -152,7 +154,7 @@ Deno.serve(async (req: Request) => {
   if (known) {
     await db.from("invoice_card_sessions").update({ cancelled_at: null }).eq("reference_id", created.reference_id);
   } else {
-    await db.from("invoice_card_sessions").insert({ reference_id: created.reference_id, invoice_id: invoice.id, customer_id: invoice.reference, amount_usd: amountUsd });
+    await db.from("invoice_card_sessions").insert({ reference_id: created.reference_id, invoice_id: invoice.id, customer_id: customerId, amount_usd: amountUsd });
   }
   await db
     .from("invoices")
