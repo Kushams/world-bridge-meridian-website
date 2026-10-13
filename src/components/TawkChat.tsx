@@ -10,6 +10,9 @@ interface TawkApi {
   onChatMinimized?: () => void;
   onChatMessageStaff?: () => void;
   maximize?: () => void;
+  showWidget?: () => void;
+  hideWidget?: () => void;
+  onChatHidden?: () => void;
 }
 const api = () => (window as unknown as { Tawk_API?: TawkApi }).Tawk_API;
 
@@ -35,7 +38,7 @@ const readPos = (): Pos => {
  * Live chat routed to our own team, via Tawk.to (free). Renders nothing until the property/widget IDs are set
  * (see .env.example).
  *
- * Tawk's own round bubble is hidden and replaced by our button, which can be dragged anywhere on the screen
+ * Tawk's own round bubble is never shown: our button replaces it, and can be dragged anywhere on the screen
  * (and remembers where you left it). Tapping it opens the same Tawk chat window. The button is not shown on the
  * staff page: staff reply from Tawk itself, and it would sit over the bottom tab bar.
  */
@@ -69,12 +72,17 @@ export function TawkChat() {
     };
   }, []);
 
-  // Listen to the chat window so our button hides while it is open and shows a dot for new replies.
+  // Tawk's own green bubble is never shown. Its widget stays hidden until our button opens the chat window; when the
+  // window is closed it is hidden again and our button comes back.
   useEffect(() => {
     const w = window as unknown as { Tawk_API?: TawkApi };
     w.Tawk_API = w.Tawk_API ?? {};
     const t = w.Tawk_API;
-    const prev = { max: t.onChatMaximized, min: t.onChatMinimized, msg: t.onChatMessageStaff };
+    const prev = { load: t.onLoad, max: t.onChatMaximized, min: t.onChatMinimized, hid: t.onChatHidden, msg: t.onChatMessageStaff };
+    t.onLoad = () => {
+      prev.load?.();
+      t.hideWidget?.();
+    };
     t.onChatMaximized = () => {
       prev.max?.();
       setOpen(true);
@@ -83,11 +91,18 @@ export function TawkChat() {
     t.onChatMinimized = () => {
       prev.min?.();
       setOpen(false);
+      t.hideWidget?.();
+    };
+    t.onChatHidden = () => {
+      prev.hid?.();
+      setOpen(false);
     };
     t.onChatMessageStaff = () => {
       prev.msg?.();
       setUnread(true);
     };
+    // The script may already have loaded (client-side navigation).
+    t.hideWidget?.();
   }, []);
 
   const maxX = Math.max(EDGE, size.w - SIZE - EDGE);
@@ -97,8 +112,15 @@ export function TawkChat() {
 
   const openChat = useCallback(() => {
     const t = api();
-    if (t?.maximize) t.maximize();
-    else if (t) t.onLoad = () => api()?.maximize?.();
+    if (t?.maximize) {
+      t.showWidget?.();
+      t.maximize();
+    } else if (t) {
+      t.onLoad = () => {
+        api()?.showWidget?.();
+        api()?.maximize?.();
+      };
+    }
   }, []);
 
   function onPointerDown(e: React.PointerEvent<HTMLButtonElement>) {
@@ -136,25 +158,12 @@ export function TawkChat() {
     });
   }
 
-  // Staff answer from Tawk itself, so its own bubble must never show over the staff pages.
-  useEffect(() => {
-    const w = window as unknown as { Tawk_API?: TawkApi & { hideWidget?: () => void; showWidget?: () => void } };
-    const t = (w.Tawk_API = w.Tawk_API ?? {});
-    const apply = () => (onStaffPage ? t.hideWidget?.() : t.showWidget?.());
-    apply();
-    const prevLoad = t.onLoad;
-    t.onLoad = () => {
-      prevLoad?.();
-      apply();
-    };
-  }, [onStaffPage]);
-
   if (!propertyId || !widgetId) return null;
 
   return (
     <>
       {/* Hide Tawk's own bubble; its chat window still opens from our button. */}
-      <style>{`#tawk-bubble-container{display:none !important}${onStaffPage ? ` iframe[title*="chat widget"],iframe[src*="tawk.to"],[id^="tawk"]{display:none !important}` : ""}`}</style>
+      <style>{`#tawk-bubble-container{display:none !important}`}</style>
       <Script id="tawk-to" strategy="afterInteractive" src={`https://embed.tawk.to/${propertyId}/${widgetId}`} crossOrigin="anonymous" />
       {mounted && !open && !onStaffPage ? (
         <button
