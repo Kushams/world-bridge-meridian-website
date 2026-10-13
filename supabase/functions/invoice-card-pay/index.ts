@@ -93,16 +93,17 @@ Deno.serve(async (req: Request) => {
   if (invoice.status === "void") return json(409, { ok: false, error: "This invoice was cancelled." });
   if (invoice.status === "needs_review") return json(409, { ok: false, error: "We're checking a payment on this invoice. We'll be in touch." });
 
-  // One payment per invoice. Every session is recorded (invoice_card_sessions) and always carries the invoice number as the
-  // customer ID. A client who taps Pay again within a few minutes is sent back to the very same checkout. A new session is
-  // only made once the old one is stale or the dollar amount has really moved.
+  // One payment per invoice, always under the invoice number. Every checkout session is recorded (invoice_card_sessions).
+  // A client who taps Pay again within a few minutes is sent back to the very same checkout. Once a checkout has gone stale
+  // (or the dollar amount has really moved) it is marked cancelled in our records and the next tap opens a fresh one under the
+  // same invoice number. A cancelled session stays on file, so a late payment on it still finds its invoice.
   const { data: sessionRows } = await db
     .from("invoice_card_sessions")
-    .select("reference_id, amount_usd, created_at")
+    .select("reference_id, amount_usd, created_at, cancelled_at")
     .eq("invoice_id", invoice.id)
     .order("created_at", { ascending: false });
-  const sessions = (sessionRows ?? []) as { reference_id: string; amount_usd: number; created_at: string }[];
-  const latest = sessions[0];
+  const sessions = (sessionRows ?? []) as { reference_id: string; amount_usd: number; created_at: string; cancelled_at: string | null }[];
+  const latest = sessions.find((x) => !x.cancelled_at);
 
   // Today's amount in US dollars. USD invoices keep their amount. If the rate service is down we use the rate saved on the invoice.
   let amountUsd = Number(invoice.amount_usd);
@@ -118,50 +119,44 @@ Deno.serve(async (req: Request) => {
     return json(200, { ok: true, url: invoice.card_url, reused: true });
   }
 
-  const create = (customerID: string) =>
-    fetch(`${EPV_BASE}/api/v1/payment`, {
-      method: "POST",
-      headers: { "API-Key": EPV_API_KEY, "Content-Type": "application/json", "User-Agent": "WorldBridgeMeridian-Invoices/1.0" },
-      body: JSON.stringify({
-        customerID,
-        amountInUSD: amountUsd,
-        customerEmail: u.user.email,
-        blockchainCode: EPV_CHAIN,
-        currencyCode: EPV_CURRENCY,
-        returnUrl: `${SITE_URL}/my-world-bridge#invoices`,
-        cancelUrl: `${SITE_URL}/my-world-bridge#invoices`,
-        orderSummary: `${invoice.reference} — ${invoice.description}`.slice(0, 1000),
-      }),
-    });
+  // The old checkout is finished with: clear it from our records before opening the next one.
+  if (latest) await db.from("invoice_card_sessions").update({ cancelled_at: new Date().toISOString() }).eq("invoice_id", invoice.id).is("cancelled_at", null);
 
-  // The provider reuses a session for the same customer ID, so first ask with the plain invoice number.
-  let customerId = invoice.reference;
-  let res = await create(customerId);
-  let created: { url?: string; reference_id?: string } = res.ok ? await res.json() : {};
-  const old = created.reference_id ? sessions.find((x) => x.reference_id === created.reference_id) : undefined;
-  if (res.ok && old && !close(Number(old.amount_usd), amountUsd)) {
-    // It handed back the old session with the old amount: ask again under a numbered ID so the new amount applies.
-    customerId = `${invoice.reference}-${sessions.length + 1}`;
-    res = await create(customerId);
-    created = res.ok ? await res.json() : {};
-  }
+  const res = await fetch(`${EPV_BASE}/api/v1/payment`, {
+    method: "POST",
+    headers: { "API-Key": EPV_API_KEY, "Content-Type": "application/json", "User-Agent": "WorldBridgeMeridian-Invoices/1.0" },
+    body: JSON.stringify({
+      customerID: invoice.reference,
+      amountInUSD: amountUsd,
+      customerEmail: u.user.email,
+      blockchainCode: EPV_CHAIN,
+      currencyCode: EPV_CURRENCY,
+      returnUrl: `${SITE_URL}/my-world-bridge#invoices`,
+      cancelUrl: `${SITE_URL}/my-world-bridge#invoices`,
+      orderSummary: `${invoice.reference} \u2014 ${invoice.description}`.slice(0, 1000),
+    }),
+  });
   if (!res.ok) {
     console.error("ePayVista create payment failed", res.status, await res.text());
     return json(502, { ok: false, error: "The card payment provider couldn't start this payment. Please try again, or pay by bank transfer or crypto." });
   }
+  const created: { url?: string; reference_id?: string } = await res.json();
   if (!created.url || !created.reference_id || !created.url.startsWith("https://pay.epayvista.com/")) {
     console.error("ePayVista unexpected response", JSON.stringify(created).slice(0, 300));
     return json(502, { ok: false, error: "The card payment provider returned something unexpected. Please try again later." });
   }
 
-  const reused = sessions.find((x) => x.reference_id === created.reference_id);
-  const sessionAmount = reused ? Number(reused.amount_usd) : amountUsd;
-  if (!reused) {
-    await db.from("invoice_card_sessions").insert({ reference_id: created.reference_id, invoice_id: invoice.id, customer_id: customerId, amount_usd: amountUsd });
+  // The provider may hand back the checkout it already has for this invoice number. Then that one is live again, at its own amount.
+  const known = sessions.find((x) => x.reference_id === created.reference_id);
+  const sessionAmount = known ? Number(known.amount_usd) : amountUsd;
+  if (known) {
+    await db.from("invoice_card_sessions").update({ cancelled_at: null }).eq("reference_id", created.reference_id);
+  } else {
+    await db.from("invoice_card_sessions").insert({ reference_id: created.reference_id, invoice_id: invoice.id, customer_id: invoice.reference, amount_usd: amountUsd });
   }
   await db
     .from("invoices")
-    .update({ card_reference: created.reference_id, card_url: created.url, amount_usd: sessionAmount, ...(rate && !reused ? { fx_rate: rate } : {}) })
+    .update({ card_reference: created.reference_id, card_url: created.url, amount_usd: sessionAmount, ...(rate && !known ? { fx_rate: rate } : {}) })
     .eq("id", invoice.id);
   return json(200, { ok: true, url: created.url });
 });

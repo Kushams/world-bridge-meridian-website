@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fmtDate, loadMoneyRows, usd, type Client, type MoneyRow } from "@/lib/staff";
+import { fmtDate, loadMoneyRows, loadTeam, staffName, usd, type Client, type MoneyRow, type TeamMember } from "@/lib/staff";
 
 const sum = (rows: MoneyRow[]) => rows.reduce((n, r) => n + r.amount_usd, 0);
 
@@ -18,16 +18,22 @@ function Stat({ label, value, sub, tone }: { label: string; value: string; sub?:
 const METHOD: Record<string, string> = { card: "Card", "bank transfer": "Bank transfer", crypto: "Crypto" };
 
 /** Admins: how much has come in, what is still owed and what is overdue. All amounts in US dollars (what card and crypto charge). */
-export function MoneyPanel({ clients }: { clients: Client[] }) {
-  const [rows, setRows] = useState<MoneyRow[] | null | undefined>(undefined);
+export function MoneyPanel({ clients, admin }: { clients: Client[]; admin: boolean }) {
+  const [allRows, setRows] = useState<MoneyRow[] | null | undefined>(undefined);
+  const [team, setTeam] = useState<TeamMember[]>([]);
 
   useEffect(() => {
     let alive = true;
     loadMoneyRows().then((r) => alive && setRows(r));
+    if (admin) loadTeam().then((t) => alive && setTeam(t));
     return () => {
       alive = false;
     };
-  }, []);
+  }, [admin]);
+
+  // Staff only ever see (and are only counted for) the clients they look after. Admins see everyone.
+  const mine = new Set(clients.map((c) => c.id));
+  const rows = allRows === undefined || allRows === null ? allRows : admin ? allRows : allRows.filter((r) => mine.has(r.user_id));
 
   if (rows === undefined) return <p className="mt-8 text-sm text-stone-dim">Loading the money overview…</p>;
   if (rows === null) return <p className="mt-8 text-sm text-red-400">Couldn&apos;t load the money overview.</p>;
@@ -64,12 +70,15 @@ export function MoneyPanel({ clients }: { clients: Client[] }) {
 
   return (
     <section className="mt-2">
-      <h2 className="font-display text-2xl text-ivory">Money</h2>
-      <p className="mt-1 text-xs text-stone-dim">US dollar amounts (what card and crypto charge). Invoices in other currencies are shown at their dollar value.</p>
+      <h2 className="font-display text-2xl text-ivory">{admin ? "Money" : "Your earnings"}</h2>
+      <p className="mt-1 text-xs text-stone-dim">
+        {admin ? "US dollar amounts (what card and crypto charge). Invoices in other currencies are shown at their dollar value." : "Payments from the clients you look after, in US dollars. Only you and the admins can see this."}
+      </p>
 
       <div className="mt-4 grid grid-cols-2 gap-3">
         <Stat label="Paid this month" value={usd(sum(paidThis))} sub={`${paidThis.length} invoice${paidThis.length === 1 ? "" : "s"}`} tone="gold" />
         <Stat label="Paid last month" value={usd(sum(paidLast))} sub={`${paidLast.length} invoice${paidLast.length === 1 ? "" : "s"}`} />
+        <Stat label="Paid all time" value={usd(sum(paid(invoices)))} sub={`${paid(invoices).length} invoice${paid(invoices).length === 1 ? "" : "s"}`} />
         <Stat label="Still owed" value={usd(sum(unpaid))} sub={`${unpaid.length} unpaid`} />
         <Stat label="Overdue" value={usd(sum(overdue))} sub={`${overdue.length} past their due date`} tone={overdue.length ? "red" : undefined} />
         <Stat label="Card payments unfinished" value={String(unfinished.length)} sub={unfinished.length ? usd(sum(unfinished)) : "none"} />
@@ -89,6 +98,8 @@ export function MoneyPanel({ clients }: { clients: Client[] }) {
           </ul>
         </div>
       ) : null}
+
+      {admin ? <ByStaff rows={invoices} clients={clients} team={team} startThis={startThis} startLast={startLast} /> : null}
 
       {chase.length ? (
         <div className="mt-4">
@@ -135,5 +146,52 @@ export function MoneyPanel({ clients }: { clients: Client[] }) {
         </p>
       ) : null}
     </section>
+  );
+}
+
+/** Admins: what each staff member's clients have paid (this month, last month, all time) and still owe. */
+function ByStaff({ rows, clients, team, startThis, startLast }: { rows: MoneyRow[]; clients: Client[]; team: TeamMember[]; startThis: number; startLast: number }) {
+  const owner = (userId: string) => clients.find((c) => c.id === userId)?.assigned_to ?? "";
+  const people = [...team.filter((m) => m.role === "staff"), ...team.filter((m) => m.role === "admin")];
+  const keys = [...people.map((m) => m.email), ""];
+  const table = keys
+    .map((email) => {
+      const mineRows = rows.filter((r) => owner(r.user_id) === email);
+      const paidRows = mineRows.filter((r) => r.status === "paid" && r.paid_at);
+      const at = (r: MoneyRow) => new Date(r.paid_at!).getTime();
+      return {
+        email,
+        name: email ? staffName(people.find((m) => m.email === email)!) : "Unassigned clients",
+        month: sum(paidRows.filter((r) => at(r) >= startThis)),
+        last: sum(paidRows.filter((r) => at(r) >= startLast && at(r) < startThis)),
+        all: sum(paidRows),
+        owed: sum(mineRows.filter((r) => r.status === "unpaid")),
+        clients: clients.filter((c) => (c.assigned_to ?? "") === email).length,
+      };
+    })
+    .filter((r) => r.email || r.all || r.owed)
+    .sort((a, b) => b.all - a.all);
+  if (!table.length) return null;
+  return (
+    <div className="mt-4">
+      <h3 className="mb-2 text-sm font-semibold text-ivory">By staff member</h3>
+      <p className="mb-2 text-xs text-stone-dim">Counted from the clients each person looks after.</p>
+      <ul className="divide-y divide-line rounded-2xl border hairline bg-charcoal/40">
+        {table.map((r) => (
+          <li key={r.email || "none"} className="px-4 py-3 text-sm">
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="truncate font-semibold text-ivory">{r.name}</span>
+              <span className="shrink-0 text-gold">{usd(r.all)} all time</span>
+            </div>
+            <div className="mt-1 grid grid-cols-3 gap-2 text-xs text-stone-dim">
+              <span>This month<br /><span className="text-ivory">{usd(r.month)}</span></span>
+              <span>Last month<br /><span className="text-ivory">{usd(r.last)}</span></span>
+              <span>Owed<br /><span className="text-ivory">{usd(r.owed)}</span></span>
+            </div>
+            <p className="mt-1 text-[11px] text-stone-dim">{r.clients} client{r.clients === 1 ? "" : "s"}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

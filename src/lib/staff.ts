@@ -207,6 +207,31 @@ export const attentionCount = (a: AttentionData | null) => (a ? a.stuck.length +
 /** What the Inbox tab badge counts: conversations waiting for a staff reply. */
 export const waitingCount = (a: AttentionData | null) => (a ? a.waiting.length : 0);
 
+export interface ClientNote {
+  id: string;
+  client_email: string;
+  author_email: string;
+  author_name: string | null;
+  body: string;
+  created_at: string;
+}
+
+/** Private staff notes on a client (the client never sees these). */
+export async function loadNotes(clientEmail: string): Promise<ClientNote[]> {
+  const { data } = await db().from("client_notes").select("id, client_email, author_email, author_name, body, created_at").eq("client_email", clientEmail.toLowerCase()).order("created_at", { ascending: false }).limit(200);
+  return (data as ClientNote[] | null) ?? [];
+}
+
+export async function addNote(clientEmail: string, body: string): Promise<string | null> {
+  const { error } = await db().rpc("staff_add_note", { p_client_email: clientEmail, p_body: body });
+  return error ? error.message : null;
+}
+
+export async function removeNote(id: string): Promise<string | null> {
+  const { error } = await db().rpc("staff_remove_note", { p_id: id });
+  return error ? error.message : null;
+}
+
 /** Recent sign-ins of one client (newest first), recorded automatically. */
 export async function loadSignIns(userId: string): Promise<string[]> {
   const { data } = await db().from("client_sign_ins").select("signed_in_at").eq("user_id", userId).order("signed_in_at", { ascending: false }).limit(5);

@@ -226,13 +226,15 @@ export function StaffArea() {
         ) : tab === "team" ? (
           admin ? (
             <>
-              <MoneyPanel clients={clients} />
+              <MoneyPanel clients={clients} admin />
               <div className="mt-10" />
               <TeamPanel />
               <PriceBookPanel />
             </>
           ) : (
             <>
+              <MoneyPanel clients={clients} admin={false} />
+              <div className="mt-10" />
               <StaffTeamList />
               <PriceBookPanel />
             </>
