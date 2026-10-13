@@ -598,7 +598,7 @@ export const artListings: ArtListing[] = [
     description: "New paintings by Kylie Manning, opening during Frieze week.",
     sourceUrl: "https://www.pacegallery.com/exhibitions/",
     sourceLabel: "pacegallery.com",
-    heroImage: localImage("/images/exhibitions-kylie-manning-mudlarkers.jpg"),
+    heroImage: localImage("/images/exhibitions-kylie-manning-mudlarkers.webp"),
   },
   {
     slug: "kiki-smith-untethered-journey-pace-los-angeles",
