@@ -15,7 +15,8 @@
     "leads:export": "node lead-generation/scripts/export_leads.mjs",
     "leads:report": "node lead-generation/scripts/generate_report.mjs",
     "leads:prune": "node lead-generation/scripts/prune_leads.mjs",
-    "leads:batches": "node lead-generation/scripts/export_batches.mjs"
+    "leads:batches": "node lead-generation/scripts/export_batches.mjs",
+    "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",
