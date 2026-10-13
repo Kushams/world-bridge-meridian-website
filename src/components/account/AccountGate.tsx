@@ -10,7 +10,7 @@ const RETURN_KEY = "wbm_return";
  * Wrap anything that needs a signed-in customer (buying gift cards or credits,
  * the Invite Program). Signed out → sign up / sign in right here (email,
  * password, magic link or Google); signed in → the content. We remember the
- * page so email-confirmation and Google sign-in bring the customer back to it.
+ * page (with its address details, e.g. the exhibition being planned) so email-confirmation and Google sign-in bring the customer back to it.
  */
 export function AccountGate({ title, intro, children }: { title: string; intro: string; children: ReactNode }) {
   const { user, loading, recovering, configured } = useAuth();
@@ -19,7 +19,7 @@ export function AccountGate({ title, intro, children }: { title: string; intro: 
   useEffect(() => {
     try {
       if (signedIn) localStorage.removeItem(RETURN_KEY);
-      else localStorage.setItem(RETURN_KEY, JSON.stringify({ path: window.location.pathname + window.location.hash, at: Date.now() }));
+      else localStorage.setItem(RETURN_KEY, JSON.stringify({ path: window.location.pathname + window.location.search + window.location.hash, at: Date.now() }));
     } catch {
       /* private mode: the gate still works, we just can't return the customer */
     }
