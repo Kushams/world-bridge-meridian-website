@@ -272,6 +272,31 @@ export async function loadClientInvoices(userId: string): Promise<StaffInvoice[]
   return error ? null : (data ?? []).map((i) => ({ ...i, amount_usd: Number(i.amount_usd), amount: i.amount == null ? null : Number(i.amount), subtotal: i.subtotal == null ? null : Number(i.subtotal), tax_percent: Number(i.tax_percent ?? 0), fx_rate: Number(i.fx_rate ?? 1) })) as StaffInvoice[];
 }
 
+export interface MoneyRow {
+  id: string;
+  reference: string;
+  description: string;
+  amount_usd: number;
+  status: "unpaid" | "paid" | "needs_review" | "void";
+  kind: string;
+  created_at: string;
+  paid_at: string | null;
+  paid_via: string | null;
+  due_date: string | null;
+  card_started_at: string | null;
+  user_id: string;
+}
+
+/** Every invoice and website order the signed-in admin can see, for the money overview (US dollar amounts). */
+export async function loadMoneyRows(): Promise<MoneyRow[] | null> {
+  const { data, error } = await db()
+    .from("invoices")
+    .select("id, reference, description, amount_usd, status, kind, created_at, paid_at, paid_via, due_date, card_started_at, user_id")
+    .order("created_at", { ascending: false })
+    .limit(2000);
+  return error ? null : (data ?? []).map((r) => ({ ...r, amount_usd: Number(r.amount_usd) })) as MoneyRow[];
+}
+
 export async function createInvoice(email: string, amount: number, description: string) {
   const { data, error } = await db().rpc("staff_create_invoice", {
     p_email: email,
