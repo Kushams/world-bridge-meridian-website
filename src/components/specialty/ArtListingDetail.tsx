@@ -156,6 +156,12 @@ export function ArtListingDetail({ listing }: { listing: ArtListing }) {
                     <dt className="text-stone-dim">Location</dt>
                     <dd className="mt-0.5 text-ivory">{place}</dd>
                   </div>
+                  {listing.hours ? (
+                    <div>
+                      <dt className="text-stone-dim">Opening hours</dt>
+                      <dd className="mt-0.5 text-ivory">{listing.hours}</dd>
+                    </div>
+                  ) : null}
                 </dl>
                 <div className="mt-6 flex flex-col gap-3">
                   {isPast ? (

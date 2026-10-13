@@ -38,6 +38,8 @@ export interface ArtListing {
   about?: string[];
   /** Street address of the venue, when verified. */
   address?: string;
+  /** Opening days and hours of the venue, when the venue states them. */
+  hours?: string;
 }
 
 export const artListings: ArtListing[] = [
