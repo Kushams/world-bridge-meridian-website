@@ -135,7 +135,7 @@ Deno.serve(async (req: Request) => {
       currencyCode: EPV_CURRENCY,
       returnUrl: `${SITE_URL}/my-world-bridge#invoices`,
       cancelUrl: `${SITE_URL}/my-world-bridge#invoices`,
-      orderSummary: `${customerId} \u2014 ${invoice.description}`.slice(0, 1000),
+      orderSummary: `${invoice.reference} \u2014 ${invoice.description}`.slice(0, 1000),
     }),
   });
   if (!res.ok) {
