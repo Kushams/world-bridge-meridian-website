@@ -6,6 +6,7 @@ import { TurnstileWidget } from "@/components/forms/TurnstileWidget";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/AuthProvider";
 import { fetchLiveUsdRate, rateText, type Currency } from "@/lib/money";
+import { downloadReceipt } from "@/lib/receipt";
 import { loadInvoices, parseBankLines, startCardPayment, type Invoice } from "@/lib/invoices";
 import { money } from "@/lib/money";
 
@@ -157,7 +158,7 @@ function InvoiceSheet({ invoice }: { invoice: Invoice }) {
 
 /** Invoices your consultant has sent: a visual card each, the detailed PDF when uploaded, and "Pay by card" for unpaid ones. */
 export function InvoicesPanel() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const pdfs = useInvoicePdfs(user?.email?.toLowerCase() ?? null);
   const [invoices, setInvoices] = useState<Invoice[] | null | undefined>(undefined);
   const [token, setToken] = useState<string | null>(null);
@@ -213,6 +214,14 @@ export function InvoicesPanel() {
       return;
     }
     window.location.assign(url);
+  }
+
+  async function receipt(i: Invoice) {
+    setError("");
+    setBusy(`receipt:${i.id}`);
+    const ok = await downloadReceipt(i, { name: profile?.full_name ?? null, email: user?.email ?? "", phone: profile?.phone ?? null });
+    setBusy(null);
+    if (!ok) setError("We couldn't make your receipt just now. Please try again in a moment.");
   }
 
   async function openPdf(name: string) {
@@ -334,9 +343,13 @@ export function InvoicesPanel() {
                     Pay manually by crypto
                   </a>
                 ) : null}
-                {pdf ? (
+                {i.status === "paid" ? (
+                  <Button type="button" size="md" variant="outline" disabled={busy !== null} onClick={() => receipt(i)}>
+                    {busy === `receipt:${i.id}` ? "Preparing…" : "Download receipt"}
+                  </Button>
+                ) : pdf ? (
                   <Button type="button" size="md" variant="outline" disabled={busy !== null} onClick={() => openPdf(pdf)}>
-                    {busy === pdf ? "Opening…" : i.status === "paid" ? "View receipt (PDF)" : "View invoice (PDF)"}
+                    {busy === pdf ? "Opening…" : "View invoice (PDF)"}
                   </Button>
                 ) : (
                   <span className="text-xs text-stone-dim">Detailed invoice PDF coming soon from your consultant.</span>
