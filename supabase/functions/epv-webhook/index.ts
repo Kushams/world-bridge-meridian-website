@@ -173,9 +173,9 @@ Deno.serve(async (req: Request) => {
           who.user.email,
           `Payment received — ${invoice.reference}`,
           invoice.kind === "travel-credits"
-            ? `<p>Thank you — we've received your card payment of US$${Number(invoice.amount_usd).toFixed(2)} (${invoice.reference}). Your Travel Credits are now in your account: https://worldbridgemeridian.com/my-world-bridge#wallet</p>`
+            ? `<p>Thank you — we've received your card payment of US$${Number(invoice.amount_usd).toFixed(2)} (${invoice.reference}). Your Travel Credits are now in your account, and your receipt is under Purchase receipts: https://worldbridgemeridian.com/my-world-bridge#wallet</p>`
             : invoice.kind === "gift-card"
-              ? `<p>Thank you — we've received your card payment of US$${Number(invoice.amount_usd).toFixed(2)} (${invoice.reference}). The gift card code${invoice.order_details?.quantity === "1" ? " is" : "s are"} being emailed now.</p>`
+              ? `<p>Thank you — we've received your card payment of US$${Number(invoice.amount_usd).toFixed(2)} (${invoice.reference}). The gift card code${invoice.order_details?.quantity === "1" ? " is" : "s are"} being emailed now, and your receipt is under Purchase receipts in your wallet: https://worldbridgemeridian.com/my-world-bridge#wallet</p>`
               : `<p>Thank you — we've received your card payment for invoice ${invoice.reference} (US$${Number(invoice.amount_usd).toFixed(2)}). Your receipt is ready: sign in, open Invoices and tap Download receipt (https://worldbridgemeridian.com/my-world-bridge#invoices). Your consultant will confirm it with you in writing.</p>`,
         );
       }
