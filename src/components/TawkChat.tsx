@@ -136,12 +136,25 @@ export function TawkChat() {
     });
   }
 
+  // Staff answer from Tawk itself, so its own bubble must never show over the staff pages.
+  useEffect(() => {
+    const w = window as unknown as { Tawk_API?: TawkApi & { hideWidget?: () => void; showWidget?: () => void } };
+    const t = (w.Tawk_API = w.Tawk_API ?? {});
+    const apply = () => (onStaffPage ? t.hideWidget?.() : t.showWidget?.());
+    apply();
+    const prevLoad = t.onLoad;
+    t.onLoad = () => {
+      prevLoad?.();
+      apply();
+    };
+  }, [onStaffPage]);
+
   if (!propertyId || !widgetId) return null;
 
   return (
     <>
       {/* Hide Tawk's own bubble; its chat window still opens from our button. */}
-      <style>{`#tawk-bubble-container{display:none !important}`}</style>
+      <style>{`#tawk-bubble-container{display:none !important}${onStaffPage ? ` iframe[title*="chat widget"],iframe[src*="tawk.to"],[id^="tawk"]{display:none !important}` : ""}`}</style>
       <Script id="tawk-to" strategy="afterInteractive" src={`https://embed.tawk.to/${propertyId}/${widgetId}`} crossOrigin="anonymous" />
       {mounted && !open && !onStaffPage ? (
         <button
