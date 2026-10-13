@@ -3,7 +3,7 @@ import { packages } from "@/data/packages";
 import { cruises } from "@/data/cruises";
 import { experiences } from "@/data/experiences";
 import { journal } from "@/data/journal";
-import { artListings } from "@/data/exhibitions";
+import { artListings, artListingHref } from "@/data/exhibitions";
 import { journeyStories } from "@/data/journey-stories";
 import { worldEvents, eventCategoryLabels } from "@/data/events";
 import { culturalAccessPrograms } from "@/data/culturalAccess";
@@ -13,7 +13,6 @@ import { stays } from "@/data/stays";
 import { notableStays } from "@/data/topStays";
 import { team } from "@/data/team";
 
-const artHrefByCategory = { gallery: "/exhibitions", museum: "/museums", fair: "/art-fairs" } as const;
 const artTypeByCategory = { gallery: "Exhibition", museum: "Museum Exhibition", fair: "Art Fair" } as const;
 
 export interface SearchItem {
@@ -99,7 +98,7 @@ function buildIndex(): SearchItem[] {
       type: artTypeByCategory[a.category],
       title: a.title,
       subtitle: `${a.venue} · ${a.city}`,
-      href: artHrefByCategory[a.category],
+      href: artListingHref(a),
       image: a.heroImage,
       keywords: `${a.title} ${a.venue} ${a.city} ${a.country}`.toLowerCase(),
     });

@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { ArtListing } from "@/data/exhibitions";
+import Link from "next/link";
+import { ArtListing, artListingHref, planTripHref } from "@/data/exhibitions";
 import { Button } from "@/components/ui/Button";
 
 export function formatDate(iso: string) {
@@ -49,7 +50,7 @@ export function ArtListingCard({ listing, today }: { listing: ArtListing; today:
         isPast ? "opacity-70" : ""
       }`}
     >
-      <div className="relative h-32 w-full shrink-0 md:h-48">
+      <Link href={artListingHref(listing)} aria-label={`${listing.title}: full details`} className="relative block h-32 w-full shrink-0 md:h-48">
         <Image
           src={listing.heroImage}
           alt="Gallery interior"
@@ -61,38 +62,31 @@ export function ArtListingCard({ listing, today }: { listing: ArtListing; today:
         <span className={`absolute left-4 top-4 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${badgeTone[status.tone]}`}>
           {status.label}
         </span>
-      </div>
+      </Link>
       <div className="flex flex-1 flex-col p-6 md:p-7">
         <p className="eyebrow mb-2">
           {listing.venue} · {listing.city}, {listing.country}
         </p>
-        <h3 className="font-display text-xl text-ivory leading-snug">{listing.title}</h3>
+        <h3 className="font-display text-xl text-ivory leading-snug">
+          <Link href={artListingHref(listing)} className="transition-colors hover:text-gold">
+            {listing.title}
+          </Link>
+        </h3>
         <p className="mt-2 text-sm text-stone-dim">
           {formatDate(listing.startDate)} – {formatDate(listing.endDate)}
         </p>
         <p className="mt-3 flex-1 text-sm text-stone leading-relaxed md:mt-4">{listing.description}</p>
 
-        <div className="mt-4 flex flex-wrap items-center gap-4 border-t hairline pt-4 md:mt-6 md:pt-5">
-          <a
-            href={listing.sourceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-xs uppercase tracking-wide text-stone-dim hover:text-gold transition-colors"
+        <div className="mt-4 flex flex-wrap items-center gap-3 border-t hairline pt-4 md:mt-6 md:pt-5">
+          <Link
+            href={artListingHref(listing)}
+            className="text-xs uppercase tracking-wide text-stone-dim transition-colors hover:text-gold"
           >
-            Verify on {listing.sourceLabel} ↗
-          </a>
+            View details →
+          </Link>
           {!isPast ? (
             <div className="ml-auto">
-              <Button
-                href={`/travel-details-form?${new URLSearchParams({
-                  event: `${listing.title} — ${listing.venue}, ${listing.city}`,
-                  type: listing.category,
-                  from: listing.startDate,
-                  to: listing.endDate,
-                }).toString()}`}
-                variant="outline"
-                size="md"
-              >
+              <Button href={planTripHref(listing)} variant="outline" size="md">
                 Plan This Trip
               </Button>
             </div>

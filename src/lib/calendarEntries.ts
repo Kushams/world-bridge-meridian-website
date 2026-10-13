@@ -1,4 +1,4 @@
-import { artListings, type ArtListing } from "@/data/exhibitions";
+import { artListings, artListingHref, type ArtListing } from "@/data/exhibitions";
 import { worldEvents, eventCategoryLabels, type WorldEvent } from "@/data/events";
 
 export interface CalendarEntry {
@@ -18,6 +18,8 @@ export interface CalendarEntry {
   sourceUrl: string;
   sourceLabel: string;
   heroImage: string;
+  /** The entry's own page on our site, when it has one (art listings do). */
+  href?: string;
 }
 
 const artSectionLabels: Record<ArtListing["category"], string> = {
@@ -43,6 +45,7 @@ function fromArtListing(a: ArtListing): CalendarEntry {
     sourceUrl: a.sourceUrl,
     sourceLabel: a.sourceLabel,
     heroImage: a.heroImage,
+    href: artListingHref(a),
   };
 }
 
