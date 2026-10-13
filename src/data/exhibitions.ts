@@ -34,6 +34,10 @@ export interface ArtListing {
   sourceUrl: string;
   sourceLabel: string;
   heroImage: string;
+  /** Longer write-up for the exhibition's own page, one paragraph per entry. Only facts that were checked against the venue's own page. */
+  about?: string[];
+  /** Street address of the venue, when verified. */
+  address?: string;
 }
 
 export const artListings: ArtListing[] = [
@@ -595,8 +599,15 @@ export const artListings: ArtListing[] = [
     country: "United Kingdom",
     startDate: "2026-10-13",
     endDate: "2026-11-14",
-    description: "New paintings by Kylie Manning, opening during Frieze week.",
-    sourceUrl: "https://www.pacegallery.com/exhibitions/",
+    description: "New paintings by Kylie Manning, her first solo exhibition in London.",
+    address: "5 Hanover Square, London",
+    about: [
+      "Pace presents The Mudlarkers, an exhibition of new paintings by New York-based artist Kylie Manning, at its London gallery. It is her first solo exhibition in London.",
+      "The paintings are described as works held at the apex of a tide, where one state has not yet yielded to the next. Manning works in vivid colour and shifting compositions, and the figures in the paintings are partly erased, leaving traces of bodies and faces.",
+      "Her materials tie the work to the city. She paints with Hampshire and London clay and silt taken from the Thames, a nod to London's tradition of mudlarking, the search for lost objects along the river's shore. The show also draws on her upbringing in Alaska and on Marcel Duchamp's idea of the infrathin, the fleeting trace of an absence.",
+      "A companion exhibition, curated by Akis Kokkinos, runs at the B. & M. Theocharakis Foundation in Athens from 6 October 2026 to 28 February 2027.",
+    ],
+    sourceUrl: "https://www.pacegallery.com/exhibitions/kylie-manning-the-mudlarkers/",
     sourceLabel: "pacegallery.com",
     heroImage: localImage("/images/exhibitions-kylie-manning-mudlarkers.webp"),
   },
@@ -1605,4 +1616,37 @@ export function listingsByCategory(category: ArtListing["category"]) {
   return artListings
     .filter((l) => l.category === category)
     .sort((a, b) => a.startDate.localeCompare(b.startDate));
+}
+
+const ROUTE_BASE: Record<ArtListing["category"], string> = { gallery: "/exhibitions", museum: "/museums", fair: "/art-fairs" };
+const CATEGORY_LABEL: Record<ArtListing["category"], string> = { gallery: "Gallery Exhibitions", museum: "Museum Exhibitions", fair: "Art Fairs" };
+
+/** Where a listing's own page lives, e.g. /exhibitions/kylie-manning-the-mudlarkers-pace-london */
+export function artListingHref(l: Pick<ArtListing, "category" | "slug">) {
+  return `${ROUTE_BASE[l.category]}/${l.slug}`;
+}
+
+export const artCategoryBase = (category: ArtListing["category"]) => ROUTE_BASE[category];
+export const artCategoryLabel = (category: ArtListing["category"]) => CATEGORY_LABEL[category];
+
+export function getArtListing(category: ArtListing["category"], slug: string) {
+  return artListings.find((l) => l.category === category && l.slug === slug);
+}
+
+/** "Plan This Trip" takes the visitor to the travel form with this exhibition and its dates filled in. */
+export function planTripHref(l: Pick<ArtListing, "title" | "venue" | "city" | "category" | "startDate" | "endDate">) {
+  return `/travel-details-form?${new URLSearchParams({
+    event: `${l.title} — ${l.venue}, ${l.city}`,
+    type: l.category,
+    from: l.startDate,
+    to: l.endDate,
+  }).toString()}`;
+}
+
+/** Other shows at the same venue first, then others in the same city, newest first; never the listing itself. */
+export function relatedArtListings(l: ArtListing, today: string, limit = 3) {
+  const others = artListings.filter((o) => o.slug !== l.slug && o.endDate >= today);
+  const sameVenue = others.filter((o) => o.venue === l.venue);
+  const sameCity = others.filter((o) => o.city === l.city && o.venue !== l.venue);
+  return [...sameVenue, ...sameCity].slice(0, limit);
 }

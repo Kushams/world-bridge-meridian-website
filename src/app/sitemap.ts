@@ -7,6 +7,7 @@ import { experiences } from "@/data/experiences";
 import { journal } from "@/data/journal";
 import { team } from "@/data/team";
 import { journeyStories } from "@/data/journey-stories";
+import { artListings, artListingHref } from "@/data/exhibitions";
 
 export const dynamic = "force-static";
 
@@ -91,6 +92,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
   for (const s of journeyStories) {
     entries.push({ url: `${SITE_URL}/journey-stories/${s.slug}`, lastModified: now });
+  }
+
+  for (const l of artListings) {
+    entries.push({ url: `${SITE_URL}${artListingHref(l)}`, lastModified: now });
   }
 
   return entries;

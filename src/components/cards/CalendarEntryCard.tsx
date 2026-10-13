@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { CalendarEntry } from "@/lib/calendarEntries";
 import { Button } from "@/components/ui/Button";
 
@@ -71,13 +72,26 @@ export function CalendarEntryCard({ entry, today }: { entry: CalendarEntry; toda
         <p className="eyebrow !text-[0.65rem] mb-2">
           {entry.venue} · {entry.city}, {entry.country}
         </p>
-        <h3 className="font-display text-lg text-ivory leading-snug">{entry.title}</h3>
+        <h3 className="font-display text-lg text-ivory leading-snug">
+          {entry.href ? (
+            <Link href={entry.href} className="transition-colors hover:text-gold">
+              {entry.title}
+            </Link>
+          ) : (
+            entry.title
+          )}
+        </h3>
         <p className="mt-2 text-sm text-stone-dim">
           {formatDate(entry.startDate)} – {formatDate(entry.endDate)}
         </p>
         <p className="mt-3 flex-1 text-sm text-stone leading-relaxed md:mt-4">{entry.description}</p>
 
         <div className="mt-4 flex flex-wrap items-center gap-4 border-t hairline pt-4 md:mt-6 md:pt-5">
+          {entry.href ? (
+            <Link href={entry.href} className="text-xs uppercase tracking-wide text-stone-dim transition-colors hover:text-gold">
+              View details →
+            </Link>
+          ) : null}
           <a
             href={entry.sourceUrl}
             target="_blank"
