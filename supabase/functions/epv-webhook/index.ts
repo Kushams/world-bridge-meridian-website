@@ -2,6 +2,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { layout } from "../_shared/email.ts";
 import { pushToTeam } from "../_shared/push.ts";
+import { amountAsked, isDoublePayment, isOrderClosed, judgePayment, needsFulfilment, signatureValid, type EpvMessage } from "../_shared/pay-rules.ts";
 
 // Receives ePayVista's "order paid" message. Deploy with JWT verification OFF (they cannot send a Supabase JWT);
 // the HMAC signature below is what proves the message is genuine.
@@ -15,22 +16,8 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const FROM_EMAIL = "World Bridge Meridian <payments@worldbridgemeridian.group>";
 const INTERNAL_EMAIL = "info@worldbridgemeridian.group";
 
-const enc = new TextEncoder();
 const reply = (status: number, body: Record<string, unknown>) =>
   new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
-
-async function hmacHex(secret: string, raw: Uint8Array): Promise<string> {
-  const key = await crypto.subtle.importKey("raw", enc.encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  const sig = new Uint8Array(await crypto.subtle.sign("HMAC", key, raw));
-  return Array.from(sig, (b) => b.toString(16).padStart(2, "0")).join("");
-}
-
-function safeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
-}
 
 async function email(to: string, subject: string, html: string) {
   if (!RESEND_API_KEY) return;
@@ -78,17 +65,15 @@ Deno.serve(async (req: Request) => {
   if (!EPV_CALLBACK_SECRET || !EPV_API_KEY) return reply(500, { ok: false });
 
   const raw = new Uint8Array(await req.arrayBuffer());
-  const given = (req.headers.get("X-EPV-Signature") ?? "").toLowerCase();
-  const expected = await hmacHex(EPV_CALLBACK_SECRET, raw);
-  if (!safeEqual(given, expected)) return reply(401, { ok: false, error: "bad signature" });
+  if (!(await signatureValid(EPV_CALLBACK_SECRET, raw, req.headers.get("X-EPV-Signature")))) return reply(401, { ok: false, error: "bad signature" });
 
-  let msg: { reference_id?: string; status?: string; txid?: string; amount_in_usd?: string };
+  let msg: EpvMessage;
   try {
     msg = JSON.parse(new TextDecoder().decode(raw));
   } catch {
     return reply(400, { ok: false });
   }
-  if (!msg.reference_id || msg.status !== "CLOSED") return reply(200, { ok: true, ignored: true });
+  if (!isOrderClosed(msg)) return reply(200, { ok: true, ignored: true });
 
   const db = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
   type Inv = { id: string; reference: string; user_id: string; description: string; amount_usd: number; status: string; kind: string; order_details: Record<string, string> | null; paid_txid?: string | null };
@@ -100,11 +85,11 @@ Deno.serve(async (req: Request) => {
     : await db.from("invoices").select(cols).eq("card_reference", msg.reference_id).maybeSingle<Inv>();
   if (!found) return reply(200, { ok: true, unknown: true }); // not one of ours; 2xx stops retries
   // The amount this session asked for (which may differ from the invoice's latest dollar amount).
-  const invoice: Inv = { ...found, amount_usd: session ? Number(session.amount_usd) : Number(found.amount_usd) };
+  const invoice: Inv = { ...found, amount_usd: amountAsked(session, found) };
   if (found.status === "paid") {
     // Same message again (ePayVista retries): ignore. A different transaction on an invoice already paid is a double payment.
     const txid = msg.txid || "";
-    if (txid && found.paid_txid && txid !== found.paid_txid) {
+    if (isDoublePayment(found.paid_txid, txid)) {
       const { data: who } = await db.auth.admin.getUserById(found.user_id);
       const clientEmail = who.user?.email ?? "(unknown)";
       await email(
@@ -124,9 +109,7 @@ Deno.serve(async (req: Request) => {
   if (!check.ok) return reply(502, { ok: false, error: "could not confirm" }); // non-2xx makes ePayVista retry
   const order: { paymentState?: string; amountInUSD?: string; explorerTransaction?: string | null } = await check.json();
 
-  const sameAmount = Number(order.amountInUSD) === Number(invoice.amount_usd);
-  const paid = order.paymentState === "FILLED";
-  const status = paid && sameAmount ? "paid" : "needs_review";
+  const status = judgePayment(order, invoice.amount_usd);
 
   const { data: updated } = await db
     .from("invoices")
@@ -146,8 +129,8 @@ Deno.serve(async (req: Request) => {
     const clientEmail = who.user?.email ?? "(unknown)";
     const txid = msg.txid || order.explorerTransaction || "";
     let fulfilError = "";
-    if (status === "paid" && invoice.kind !== "invoice" && who.user?.email) {
-      fulfilError = await fulfilOrder(db, invoice, who.user.email, msg.reference_id, txid);
+    if (needsFulfilment(status, invoice.kind, who.user?.email)) {
+      fulfilError = await fulfilOrder(db, invoice, who.user!.email!, msg.reference_id, txid);
       if (fulfilError) await db.from("invoices").update({ status: "needs_review" }).eq("id", invoice.id);
     }
     const details = `<p><strong>Invoice:</strong> ${invoice.reference} — ${invoice.description}</p>
