@@ -35,6 +35,7 @@ import { parseBankLines, serializeBankLines } from "@/lib/invoices";
 import { money, totals } from "@/lib/money";
 import { buildInvoicePdf, loadEmblem, loadPdfFonts } from "@/lib/invoicePdf";
 import { InvoiceBuilder } from "./InvoiceBuilder";
+import { TravelAuthSender } from "./TravelAuthSender";
 import { NotesTimeline } from "./NotesTimeline";
 import { inputClass, Row } from "./RequestsPanel";
 
@@ -325,7 +326,7 @@ export function ClientHub({ client, admin, onDeleted }: { client: Client; admin:
         )}
       </Block>
 
-      <SendDocuments email={email} onDone={(m) => (flash(m), load())} />
+      <SendDocuments email={email} client={client} requests={requests} onDone={(m) => (flash(m), load())} />
 
       <Block title="Documents sent to this client" note="What they see under Itineraries & Documents.">
         {docs.length ? (
@@ -394,7 +395,7 @@ export function ClientHub({ client, admin, onDeleted }: { client: Client; admin:
   );
 }
 
-function SendDocuments({ email, onDone }: { email: string; onDone: (msg: string) => void }) {
+function SendDocuments({ email, client, requests, onDone }: { email: string; client: Client; requests: Request[]; onDone: (msg: string) => void }) {
   const [type, setType] = useState<(typeof SEND_TYPES)[number]["key"]>("view");
   const [title, setTitle] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -446,6 +447,7 @@ function SendDocuments({ email, onDone }: { email: string; onDone: (msg: string)
           {busy ? "Sending…" : "Send to client"}
         </button>
       </div>
+      <TravelAuthSender email={email} clientName={client.full_name} clientPhone={client.phone} requests={requests} onDone={onDone} />
     </Block>
   );
 }

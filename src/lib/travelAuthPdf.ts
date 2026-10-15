@@ -8,7 +8,6 @@ const SOFT: RGB = [110, 101, 82];
 const GOLD: RGB = [166, 118, 59];
 const GOLD_LIGHT: RGB = [217, 171, 99];
 const CREAM: RGB = [250, 246, 236];
-const SAND: RGB = [241, 234, 217];
 const LINE: RGB = [200, 188, 160];
 
 const SITE = "worldbridgemeridian.com";
@@ -63,7 +62,6 @@ export async function buildTravelAuthPdf(d: TravelAuthData, emblem?: string | nu
   const H = 297;
   const L = 16;
   const R = W - 16;
-  const COL = (R - L - 8) / 2;
 
   type Opts = { size?: number; bold?: boolean; italic?: boolean; color?: RGB; align?: "left" | "right" | "center"; spacing?: number };
   const text = (s: string, x: number, y: number, o: Opts = {}) => {
