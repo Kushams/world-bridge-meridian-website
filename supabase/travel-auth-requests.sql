@@ -1,27 +1,63 @@
 -- Travel Authorisation Form: "fill in and sign on screen".
 --
--- Staff send a request (exhibition, destination, who covers costs, their own signature line).
+-- Staff send a request (exhibition, destination, who covers costs); the form is signed for the company by the founder.
 -- The client opens it, checks and corrects their details, signs on screen, and the site creates the signed PDF.
 -- Correcting a detail also updates the client's profile (name, phone, nationality: the only
 -- travel details the profile holds; passport numbers are deliberately never stored there).
 --
 -- Run once in the Supabase SQL editor. Safe to re-run: tables use "if not exists", functions "create or replace",
--- and the policies are dropped and re-created.
+-- and the policies are only added if they are missing.
 -- Needs supabase/staff.sql, client-uploads-signing.sql and profiles-enquiries.sql to have been run first.
 
--- A staff member's saved signature image (PNG data URL), placed on forms they send. Private to that staff member.
-create table if not exists public.staff_signatures (
-  email text primary key references public.staff_members (email) on delete cascade on update cascade,
+-- The one signature World Bridge Meridian signs these forms with (the founder's). Every form carries it, whoever
+-- sends it. Nobody can read or write this table directly: staff read it through company_signer() and only an
+-- admin can change it through admin_set_company_signature().
+create table if not exists public.company_signature (
+  id boolean primary key default true check (id),
+  name text not null,
+  title text not null,
   signature text not null check (length(signature) < 400000 and signature like 'data:image/png;base64,%'),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  updated_by text
 );
-alter table public.staff_signatures enable row level security;
+alter table public.company_signature enable row level security;
+revoke all on public.company_signature from anon, authenticated;
 
-drop policy if exists "Staff manage their own signature" on public.staff_signatures;
-create policy "Staff manage their own signature" on public.staff_signatures
-  for all to authenticated
-  using (public.is_staff() and email = public.verified_email())
-  with check (public.is_staff() and email = public.verified_email());
+create or replace function public.company_signer()
+returns table (name text, title text, signature text)
+language plpgsql
+stable
+security definer
+set search_path = public, auth
+as $fn$
+begin
+  if not public.is_staff() then
+    raise exception 'Staff only';
+  end if;
+  return query select c.name, c.title, c.signature from public.company_signature c;
+end;
+$fn$;
+revoke all on function public.company_signer() from public, anon;
+grant execute on function public.company_signer() to authenticated;
+
+create or replace function public.admin_set_company_signature(p_name text, p_title text, p_signature text)
+returns void
+language plpgsql
+security definer
+set search_path = public, auth
+as $fn$
+begin
+  if not public.is_admin() then
+    raise exception 'Admins only';
+  end if;
+  insert into public.company_signature (id, name, title, signature, updated_by)
+  values (true, left(trim(p_name), 120), left(trim(p_title), 120), p_signature, public.verified_email())
+  on conflict (id) do update
+    set name = excluded.name, title = excluded.title, signature = excluded.signature, updated_at = now(), updated_by = excluded.updated_by;
+end;
+$fn$;
+revoke all on function public.admin_set_company_signature(text, text, text) from public, anon;
+grant execute on function public.admin_set_company_signature(text, text, text) to authenticated;
 
 -- One row per form sent. Written only by the functions below, never directly from the browser.
 create table if not exists public.travel_auth_requests (
@@ -46,15 +82,23 @@ create table if not exists public.travel_auth_requests (
 create index if not exists travel_auth_requests_client_idx on public.travel_auth_requests (lower(client_email));
 alter table public.travel_auth_requests enable row level security;
 
-drop policy if exists "Clients read their own travel forms" on public.travel_auth_requests;
-create policy "Clients read their own travel forms" on public.travel_auth_requests
-  for select to authenticated using (lower(client_email) = public.verified_email());
+do $do$
+begin
+  create policy "Clients read their own travel forms" on public.travel_auth_requests
+    for select to authenticated using (lower(client_email) = public.verified_email());
+exception when duplicate_object then null;
+end
+$do$;
 
-drop policy if exists "Staff read travel forms" on public.travel_auth_requests;
-create policy "Staff read travel forms" on public.travel_auth_requests
-  for select to authenticated using (public.is_staff() and public.staff_can_see(client_email));
+do $do$
+begin
+  create policy "Staff read travel forms" on public.travel_auth_requests
+    for select to authenticated using (public.is_staff() and public.staff_can_see(client_email));
+exception when duplicate_object then null;
+end
+$do$;
 
--- Staff: send a form. The signature comes from the sender's own saved signature, never from the browser's request.
+-- Staff: send a form. The "signed for us by" name, title and signature always come from company_signature.
 create or replace function public.staff_create_travel_auth(
   p_email text,
   p_exhibition text,
@@ -62,8 +106,6 @@ create or replace function public.staff_create_travel_auth(
   p_destination text,
   p_covered_by text,
   p_purpose text,
-  p_signer_name text,
-  p_signer_title text,
   p_prefill jsonb
 ) returns uuid
 language plpgsql
@@ -72,7 +114,7 @@ set search_path = public, auth
 as $fn$
 declare
   v_id uuid;
-  v_sig text;
+  v_signer public.company_signature%rowtype;
 begin
   if not public.is_staff() or not public.staff_can_see(p_email) then
     raise exception 'Not allowed';
@@ -80,18 +122,21 @@ begin
   if p_kind not in ('uk', 'other') or coalesce(trim(p_destination), '') = '' then
     raise exception 'Destination required';
   end if;
-  select signature into v_sig from public.staff_signatures where email = public.verified_email();
+  select * into v_signer from public.company_signature;
+  if not found then
+    raise exception 'The company signature has not been set up yet';
+  end if;
   insert into public.travel_auth_requests
     (client_email, created_by, exhibition, destination_kind, destination, covered_by, purpose, signer_name, signer_title, signer_signature, prefill)
   values
     (lower(trim(p_email)), public.verified_email(), left(coalesce(p_exhibition, ''), 300), p_kind, left(trim(p_destination), 200), left(coalesce(p_covered_by, ''), 200),
-     left(coalesce(p_purpose, ''), 400), left(p_signer_name, 120), left(p_signer_title, 120), v_sig, coalesce(p_prefill, '{}'::jsonb))
+     left(coalesce(p_purpose, ''), 400), v_signer.name, v_signer.title, v_signer.signature, coalesce(p_prefill, '{}'::jsonb))
   returning id into v_id;
   return v_id;
 end;
 $fn$;
-revoke all on function public.staff_create_travel_auth(text, text, text, text, text, text, text, text, jsonb) from public, anon;
-grant execute on function public.staff_create_travel_auth(text, text, text, text, text, text, text, text, jsonb) to authenticated;
+revoke all on function public.staff_create_travel_auth(text, text, text, text, text, text, jsonb) from public, anon;
+grant execute on function public.staff_create_travel_auth(text, text, text, text, text, text, jsonb) to authenticated;
 
 -- Staff: cancel a form that hasn't been signed yet.
 create or replace function public.staff_void_travel_auth(p_id uuid)

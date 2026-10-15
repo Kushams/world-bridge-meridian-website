@@ -4,8 +4,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { artListings, type ArtListing } from "@/data/exhibitions";
 import { loadEmblem, loadPdfFonts } from "@/lib/invoicePdf";
 import { buildTravelAuthPdf } from "@/lib/travelAuthPdf";
-import { destinationFor, matchListing, staffTitle, travelAuthFromRequest, travelAuthPrefill, venueName, type Destination } from "@/lib/travelAuthData";
-import { createTravelAuth, loadMySignature, loadTravelAuthFor, saveMySignature, voidTravelAuth, type TravelAuthRequest } from "@/lib/travelAuth";
+import { destinationFor, matchListing, travelAuthFromRequest, travelAuthPrefill, venueName, type Destination } from "@/lib/travelAuthData";
+import { createTravelAuth, loadCompanySigner, loadTravelAuthFor, saveCompanySigner, voidTravelAuth, type CompanySigner, type TravelAuthRequest } from "@/lib/travelAuth";
 import { getSupabaseClient } from "@/lib/supabase/client";
 import { loadMe, notifyClient, uploadFile, type Request, type StaffMember } from "@/lib/staff";
 import { SignaturePad, type SignaturePadHandle } from "@/components/ui/SignaturePad";
@@ -47,7 +47,8 @@ export function TravelAuthSender({
   const [coveredBy, setCoveredBy] = useState("Pace Gallery");
   const [mode, setMode] = useState<"screen" | "print">("screen");
   const [me, setMe] = useState<StaffMember | null>(null);
-  const [signature, setSignature] = useState<string | null>(null);
+  const [signer, setSigner] = useState<CompanySigner | null>(null);
+  const [signerLoaded, setSignerLoaded] = useState(false);
   const [drawing, setDrawing] = useState(false);
   const [sent, setSent] = useState<TravelAuthRequest[]>([]);
   const [busy, setBusy] = useState<"preview" | "send" | "sig" | null>(null);
@@ -56,10 +57,11 @@ export function TravelAuthSender({
   const reloadSent = useCallback(async () => setSent(await loadTravelAuthFor(email)), [email]);
   useEffect(() => {
     let live = true;
-    loadMe().then(async (m) => {
+    loadMe().then((m) => live && setMe(m));
+    loadCompanySigner().then((c) => {
       if (!live) return;
-      setMe(m);
-      if (m) setSignature(await loadMySignature(m.email));
+      setSigner(c);
+      setSignerLoaded(true);
     });
     const t = setTimeout(reloadSent, 0);
     return () => {
@@ -81,8 +83,6 @@ export function TravelAuthSender({
     if (l.category === "gallery") setCoveredBy(venueName(l.venue));
   }
 
-  const signerName = me ? me.name || me.email : "";
-  const signerTitle = me ? staffTitle(me) : "";
   const purpose = exhibition ? `Exhibition travel: ${exhibition}` : "";
 
   async function build(): Promise<Blob> {
@@ -94,7 +94,7 @@ export function TravelAuthSender({
       destination: kind,
       destinationText: place,
       coveredBy,
-      signer: { name: signerName, title: signerTitle, signature: signature ?? undefined },
+      signer: { name: signer?.name ?? "", title: signer?.title ?? "", signature: signer?.signature },
       purpose,
     });
     return buildTravelAuthPdf(data, emblem, fonts);
@@ -111,14 +111,15 @@ export function TravelAuthSender({
 
   async function saveSignature() {
     const png = pad.current?.toDataUrl();
-    if (!png || !me) return onDone("Draw your signature first, then save it.");
+    if (!png || !signer) return onDone("Draw the signature first, then save it.");
     setBusy("sig");
-    const err = await saveMySignature(me.email, png);
+    const next = { ...signer, signature: png };
+    const err = await saveCompanySigner(next);
     setBusy(null);
     if (err) return onDone(`Signature not saved: ${err}`);
-    setSignature(png);
+    setSigner(next);
     setDrawing(false);
-    onDone("Your signature is saved. It will be placed on every travel form you send.");
+    onDone("The company signature is updated. It is placed on every travel form from now on.");
   }
 
   async function send() {
@@ -138,7 +139,7 @@ export function TravelAuthSender({
         const emailed = await notifyClient(email, "return", name);
         return onDone(`Sent. ${email} can download "${name}" in their account${emailed ? " and has been emailed." : ", but the email to them didn't send."}`);
       }
-      if (!me) return onDone("Not sent: we couldn't confirm who you are. Refresh and try again.");
+      if (!signer) return onDone("Not sent: the company signature isn't set up yet. An admin needs to set it first.");
       const prefill = travelAuthPrefill({ profile: { full_name: clientName, phone: clientPhone }, payload: request?.payload ?? null });
       const { id, error } = await createTravelAuth({
         email,
@@ -147,8 +148,6 @@ export function TravelAuthSender({
         destination: place,
         coveredBy,
         purpose,
-        signerName,
-        signerTitle,
         prefill,
       });
       if (error || !id) return onDone(`Not sent: ${error ?? "unknown error"}`);
@@ -235,34 +234,37 @@ export function TravelAuthSender({
       </div>
 
       <div className="mt-4 rounded-control border border-line p-3">
-        <p className="text-xs text-stone">
-          Signed for World Bridge Meridian by <span className="text-ivory">{signerName || "…"}</span>
-          {signerTitle ? `, ${signerTitle}` : ""}
-        </p>
-        {signature && !drawing ? (
+        {signer ? (
+          <p className="text-xs text-stone">
+            Every form is signed for World Bridge Meridian by <span className="text-ivory">{signer.name}</span>, {signer.title}, automatically.
+          </p>
+        ) : (
+          <p className="text-xs text-stone">{signerLoaded ? "The company signature isn't set up yet, so forms can't be sent on screen." : "Loading…"}</p>
+        )}
+        {signer && !drawing ? (
           <div className="mt-2 flex flex-wrap items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={signature} alt="Your saved signature" className="h-12 rounded bg-white px-2" />
-            <button type="button" onClick={() => setDrawing(true)} className="text-xs text-stone underline hover:text-ivory">
-              Draw it again
-            </button>
+            <img src={signer.signature} alt={`${signer.name}'s signature`} className="h-12 rounded bg-white px-2" />
+            {me?.role === "admin" ? (
+              <button type="button" onClick={() => setDrawing(true)} className="text-xs text-stone underline hover:text-ivory">
+                Change signature
+              </button>
+            ) : null}
           </div>
-        ) : (
+        ) : null}
+        {signer && drawing ? (
           <div className="mt-2 space-y-2">
-            <p className="text-xs text-stone">{signature ? "Draw your new signature." : "No signature saved yet. Draw yours once and it is used on every form you send."}</p>
-            <SignaturePad ref={pad} label="Your signature" className="h-28" />
+            <SignaturePad ref={pad} label={`${signer.name}'s new signature`} className="h-28" />
             <div className="flex gap-3">
               <button type="button" disabled={busy !== null} onClick={saveSignature} className="rounded-full border border-line px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-ivory disabled:opacity-40">
-                {busy === "sig" ? "Saving…" : "Save my signature"}
+                {busy === "sig" ? "Saving…" : "Save signature"}
               </button>
-              {signature ? (
-                <button type="button" onClick={() => setDrawing(false)} className="text-xs text-stone underline">
-                  Keep the old one
-                </button>
-              ) : null}
+              <button type="button" onClick={() => setDrawing(false)} className="text-xs text-stone underline">
+                Keep the current one
+              </button>
             </div>
           </div>
-        )}
+        ) : null}
       </div>
 
       <div className="mt-3 flex flex-wrap gap-2">
@@ -277,7 +279,7 @@ export function TravelAuthSender({
         <button type="button" disabled={busy !== null} onClick={preview} className="rounded-full border border-line px-4 py-2 text-xs font-semibold uppercase tracking-wide text-ivory disabled:opacity-40">
           {busy === "preview" ? "Preparing…" : "Preview"}
         </button>
-        <button type="button" disabled={busy !== null || !place.trim() || !exhibition.trim()} onClick={send} className="rounded-full bg-ivory px-4 py-2 text-xs font-semibold uppercase tracking-wide text-ink disabled:opacity-40">
+        <button type="button" disabled={busy !== null || !place.trim() || !exhibition.trim() || (mode === "screen" && !signer)} onClick={send} className="rounded-full bg-ivory px-4 py-2 text-xs font-semibold uppercase tracking-wide text-ink disabled:opacity-40">
           {busy === "send" ? "Sending…" : "Send to client"}
         </button>
       </div>

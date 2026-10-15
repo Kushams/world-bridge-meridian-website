@@ -44,8 +44,6 @@ export async function createTravelAuth(args: {
   destination: string;
   coveredBy: string;
   purpose: string;
-  signerName: string;
-  signerTitle: string;
   prefill: TravelAuthValues;
 }): Promise<{ id: string | null; error: string | null }> {
   const { data, error } = await db().rpc("staff_create_travel_auth", {
@@ -55,8 +53,6 @@ export async function createTravelAuth(args: {
     p_destination: args.destination,
     p_covered_by: args.coveredBy,
     p_purpose: args.purpose,
-    p_signer_name: args.signerName,
-    p_signer_title: args.signerTitle,
     p_prefill: args.prefill,
   });
   return error ? { id: null, error: error.message } : { id: data as string, error: null };
@@ -67,14 +63,21 @@ export async function voidTravelAuth(id: string): Promise<string | null> {
   return error ? error.message : null;
 }
 
-/** The signed-in staff member's saved signature (PNG data URL), if they have one. */
-export async function loadMySignature(email: string): Promise<string | null> {
-  const { data } = await db().from("staff_signatures").select("signature").eq("email", email.toLowerCase()).maybeSingle();
-  return (data as { signature: string } | null)?.signature ?? null;
+/** Who signs every form for World Bridge Meridian (the founder), with the signature image (PNG data URL). */
+export interface CompanySigner {
+  name: string;
+  title: string;
+  signature: string;
 }
 
-export async function saveMySignature(email: string, signature: string): Promise<string | null> {
-  const { error } = await db().from("staff_signatures").upsert({ email: email.toLowerCase(), signature, updated_at: new Date().toISOString() });
+export async function loadCompanySigner(): Promise<CompanySigner | null> {
+  const { data, error } = await db().rpc("company_signer");
+  return error ? null : ((data as CompanySigner[] | null)?.[0] ?? null);
+}
+
+/** Admins only. */
+export async function saveCompanySigner(signer: CompanySigner): Promise<string | null> {
+  const { error } = await db().rpc("admin_set_company_signature", { p_name: signer.name, p_title: signer.title, p_signature: signer.signature });
   return error ? error.message : null;
 }
 
