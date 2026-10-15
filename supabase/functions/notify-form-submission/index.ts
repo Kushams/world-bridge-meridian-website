@@ -1,6 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { FONT, layout, requestTopic, type Signature, staffSignature } from "../_shared/email.ts";
+import { hidePassport, mask } from "../_shared/privacy.ts";
 import { pushToTeam } from "../_shared/push.ts";
 
 // Set as function secrets, never in source. Shared with the database
@@ -110,7 +111,7 @@ const TD_V = `style="padding:6px 0;vertical-align:top;font-size:14px;color:#1c1c
 function rows(pairs: [string, unknown][]): string {
   return pairs
     .filter(([, v]) => filled(v))
-    .map(([k, v]) => `<tr><td ${TD_K}>${esc(FIELD_LABELS[k] ?? humanize(k))}</td><td ${TD_V}>${esc(display(v))}</td></tr>`)
+    .map(([k, v]) => `<tr><td ${TD_K}>${esc(FIELD_LABELS[k] ?? humanize(k))}</td><td ${TD_V}>${esc(k === "passport_number" ? mask(v) : display(v))}</td></tr>`)
     .join("");
 }
 
@@ -135,7 +136,7 @@ ${lines.map((c) => `<tr>${[0, 1, 2, 3].map((i) => `<td ${td}>${esc(c[i] && c[i] 
 
 function travellers(payload: Record<string, unknown>): string {
   const keys = Object.keys(payload).filter((k) => /^accompanying_traveler_\d+$/.test(k)).sort();
-  return block("Accompanying travellers", keys.map((k, i) => `<tr><td ${TD_K}>Traveller ${i + 2}</td><td ${TD_V}>${esc(payload[k])}</td></tr>`).join(""));
+  return block("Accompanying travellers", keys.map((k, i) => `<tr><td ${TD_K}>Traveller ${i + 2}</td><td ${TD_V}>${esc(hidePassport(payload[k]))}</td></tr>`).join(""));
 }
 
 /** One display row; the selected package/cruise is labelled by its type, and echoes of it are dropped. */
@@ -156,6 +157,9 @@ function details(record: FormRecord, clientCopy: boolean): string {
   }
   const used = new Set<string>();
   let html = "";
+  if (!clientCopy && record.form_type === "travel-details") {
+    html += `<p style="margin:0 0 8px;font-size:13px;color:#77716a">Passport numbers are partly hidden in email. Open the client's page on the staff site (you will be asked to sign in) for the full details.</p>`;
+  }
   for (const s of sections) {
     s.keys.forEach((k) => used.add(k));
     if (clientCopy && !s.client) continue;
