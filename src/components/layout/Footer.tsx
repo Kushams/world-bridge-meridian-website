@@ -12,8 +12,9 @@ export function Footer() {
   return (
     <footer className="mt-auto border-t hairline bg-charcoal">
       <Container className="py-10 md:py-20">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.3fr_repeat(3,1fr)] lg:gap-12">
-          <div>
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-10 xl:grid-cols-[1.3fr_repeat(3,1fr)] xl:gap-12">
+          {/* Brand block: its own row from lg up to xl (iPad-size screens), where the first of four columns is too narrow for the name. */}
+          <div className="lg:col-span-3 xl:col-span-1">
             <Logo size="large" />
             <p className="mt-4 max-w-xs text-sm text-stone leading-relaxed md:mt-6">
               {company.footerTagline}
