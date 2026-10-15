@@ -13,14 +13,6 @@ const inputClass =
 const labelClass = "mb-2 block text-xs uppercase tracking-wide text-stone";
 
 const EVENT_TYPES = ["Gallery exhibition", "Museum exhibition", "Art fair", "Other"];
-const ARRANGE_OPTIONS = [
-  "Exhibition / fair tickets",
-  "Private views & guided tours",
-  "Flights",
-  "Accommodation",
-  "Transfers & ground transport",
-  "Dining & cultural programme",
-];
 const TYPE_FROM_QUERY: Record<string, string> = {
   gallery: "Gallery exhibition",
   museum: "Museum exhibition",
@@ -197,8 +189,6 @@ export function TravelDetailsForm() {
     add("exhibition_or_event", eventName.trim());
     add("event_type", eventType);
     add("event_dates", eventDates.trim());
-    const arrange = form.getAll("arrange").map(String);
-    if (arrange.length) payload.please_arrange = arrange.join(", ");
 
     // Part 5 – Accompanying travelers
     for (let i = 1; i <= companions; i++) {
@@ -348,7 +338,6 @@ export function TravelDetailsForm() {
               />
             </div>
           </div>
-          <Choice label="What would you like us to arrange?" name="arrange" options={ARRANGE_OPTIONS} type="checkbox" />
         </div>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
           <Field label="Preferred departure city / airport" name="departure_city" />
