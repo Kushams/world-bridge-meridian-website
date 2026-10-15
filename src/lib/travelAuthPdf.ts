@@ -42,7 +42,7 @@ export interface TravelAuthData {
   authorisedTitle?: string;
 }
 
-/** The World Bridge Meridian Travel Authorisation Form: two A4 pages with room to write and sign. `emblem` is a PNG data URL. */
+/** The World Bridge Meridian Travel Authorisation Form: one A4 page. `emblem` is a PNG data URL. */
 export async function buildTravelAuthPdf(d: TravelAuthData, emblem?: string | null, fonts?: PdfFonts | null): Promise<Blob> {
   const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ unit: "mm", format: "a4", compress: true });
@@ -90,166 +90,129 @@ export async function buildTravelAuthPdf(d: TravelAuthData, emblem?: string | nu
     return (doc.splitTextToSize(s, width) as string[])[0] ?? "";
   };
 
-  // ---- Page furniture -------------------------------------------------------------------------
-  const TOTAL_PAGES = 2;
-  const furniture = (page: number) => {
-    if (emblem) faint(0.035, () => doc.addImage(emblem, "PNG", 76, 118, 118, 105.8));
-    fill(FOREST);
-    doc.rect(0, H - 12, W, 12, "F");
-    fill(GOLD);
-    doc.rect(0, H - 12, W, 0.7, "F");
-    text("World Bridge Meridian  ·  Bespoke Travel Group", L, H - 5, { size: 7, color: CREAM, spacing: 0.3 });
-    text(`Page ${page} of ${TOTAL_PAGES}`, 103, H - 5, { size: 7, color: CREAM, align: "center" });
-    text(`${EMAIL}   ·   ${SITE}`, R, H - 5, { size: 7, color: GOLD_LIGHT, align: "right" });
-  };
-
-  // First page header
+  // ---- Header and footer ----------------------------------------------------------------------
   fill(FOREST);
-  doc.rect(0, 0, W, 36, "F");
+  doc.rect(0, 0, W, 30, "F");
   faint(0.06, () => {
     fill(GOLD_LIGHT);
     doc.circle(W + 4, -14, 40, "F");
   });
   fill(GOLD);
-  doc.rect(0, 36, W, 1.1, "F");
-  if (emblem) doc.addImage(emblem, "PNG", L, 6, 16, 14.3);
-  const tx = emblem ? L + 20 : L;
-  text("WORLD BRIDGE MERIDIAN", tx, 13.5, { size: 12.5, color: CREAM, spacing: 1 });
-  text("BESPOKE TRAVEL GROUP", tx, 18.5, { size: 6.5, color: GOLD_LIGHT, spacing: 2 });
+  doc.rect(0, 30, W, 1.1, "F");
+  if (emblem) doc.addImage(emblem, "PNG", L, 5, 14, 12.5);
+  const tx = emblem ? L + 18 : L;
+  text("WORLD BRIDGE MERIDIAN", tx, 11.5, { size: 12.5, color: CREAM, spacing: 1 });
+  text("BESPOKE TRAVEL GROUP", tx, 16, { size: 6.5, color: GOLD_LIGHT, spacing: 2 });
   stroke(GOLD, 0.3);
-  doc.line(tx, 21, tx + 56, 21);
-  text("TRAVEL AUTHORISATION FORM", L, 31, { size: 11, bold: true, color: CREAM, spacing: 1.2 });
-  text("Strictly confidential", R, 31, { size: 7.5, italic: true, color: GOLD_LIGHT, align: "right" });
-  furniture(1);
+  doc.line(tx, 18.2, tx + 56, 18.2);
+  text("TRAVEL AUTHORISATION FORM", L, 26, { size: 11, bold: true, color: CREAM, spacing: 1.2 });
+  text("Strictly confidential", R, 26, { size: 7.5, italic: true, color: GOLD_LIGHT, align: "right" });
+
+  if (emblem) faint(0.035, () => doc.addImage(emblem, "PNG", 76, 118, 118, 105.8));
+
+  fill(FOREST);
+  doc.rect(0, H - 12, W, 12, "F");
+  fill(GOLD);
+  doc.rect(0, H - 12, W, 0.7, "F");
+  text("World Bridge Meridian  ·  Bespoke Travel Group", L, H - 5, { size: 7, color: CREAM, spacing: 0.3 });
+  text(`${EMAIL}   ·   ${SITE}`, R, H - 5, { size: 7, color: GOLD_LIGHT, align: "right" });
 
   // ---- Building blocks ------------------------------------------------------------------------
-  let y = 50;
+  let y = 38;
+  let firstSection = true;
   const section = (n: string, title: string) => {
-    text(n, L, y, { size: 8.5, bold: true, color: GOLD });
-    text(title.toUpperCase(), L + 8, y, { size: 8.5, bold: true, spacing: 1.2 });
+    if (!firstSection) y += 4.6;
+    firstSection = false;
+    text(n, L, y, { size: 8, bold: true, color: GOLD });
+    text(title.toUpperCase(), L + 7, y, { size: 8, bold: true, spacing: 1.1 });
     stroke(GOLD, 0.35);
-    doc.line(L, y + 2.4, R, y + 2.4);
-    y += 9;
+    doc.line(L, y + 2.2, R, y + 2.2);
+    y += 5.6;
   };
   /** A labelled value, or a blank line to write on. */
-  const field = (label: string, value: string | undefined, x: number, width: number, at = y, lineAt = 10.2) => {
-    text(label.toUpperCase(), x, at + 2.6, { size: 6, bold: true, color: GOLD, spacing: 0.7 });
+  const field = (label: string, value: string | undefined, x: number, width: number, at = y, lineAt = 8.8) => {
+    text(label.toUpperCase(), x, at + 2.5, { size: 6, bold: true, color: GOLD, spacing: 0.7 });
     stroke(LINE, 0.25);
     doc.line(x, at + lineAt, x + width, at + lineAt);
-    if (value && value.trim()) text(fit(value.trim(), width - 1, 9), x, at + lineAt - 1.8, { size: 9 });
+    if (value && value.trim()) text(fit(value.trim(), width - 1, 9), x, at + lineAt - 1.4, { size: 9 });
   };
-  const ROW = 14.5;
-  const pair = (a: [string, string | undefined], b?: [string, string | undefined]) => {
-    field(a[0], a[1], L, b ? COL : R - L);
-    if (b) field(b[0], b[1], L + COL + 8, COL);
+  const ROW = 11.8;
+  const GAP = 6;
+  const UNIT = (R - L - 2 * GAP) / 3;
+  /** One row of fields; each cell spans 1, 2 or 3 thirds of the page width. */
+  const row = (...cells: [string, string | undefined, number][]) => {
+    let x = L;
+    for (const [label, value, span] of cells) {
+      const width = UNIT * span + GAP * (span - 1);
+      field(label, value, x, width);
+      x += width + GAP;
+    }
     y += ROW;
   };
   const checkbox = (label: string, x: number, at: number) => {
     stroke(SOFT, 0.3);
-    doc.rect(x, at - 3, 3.6, 3.6);
-    text(label, x + 5.5, at, { size: 8.4 });
+    doc.rect(x, at - 2.9, 3.3, 3.3);
+    text(label, x + 5, at, { size: 8.2 });
   };
-  const para = (s: string, size = 8.6, gap = 4.8) => {
+  const para = (s: string, size = 8.3, gap = 4.3) => {
     setF("normal");
     doc.setFontSize(size);
     const lines = doc.splitTextToSize(s, R - L) as string[];
     lines.forEach((ln, i) => text(ln, L, y + i * gap, { size }));
     y += lines.length * gap;
   };
-  const gap = (mm = 9) => {
-    y += mm;
-  };
 
   // 01 Traveller
   section("01", "Traveller");
-  pair(["Full name (as on passport)", d.name], ["Date of birth", d.dateOfBirth]);
-  pair(["Nationality", d.nationality], ["Contact phone", d.phone]);
-  pair(["Passport number", d.passportNumber], ["Passport expiry", d.passportExpiry]);
-  pair(["Country of issue", d.passportCountry], ["Accompanying travellers (names)", d.companions]);
-  gap(5);
+  row(["Full name (as on passport)", d.name, 2], ["Date of birth", d.dateOfBirth, 1]);
+  row(["Nationality", d.nationality, 1], ["Passport number", d.passportNumber, 1], ["Passport expiry", d.passportExpiry, 1]);
+  row(["Country of issue", d.passportCountry, 1], ["Contact phone", d.phone, 2]);
 
   // 02 Trip
   section("02", "The trip");
-  pair(["Travel destination", d.destination], ["Departing from", d.departingFrom]);
-  pair(["Travel dates: from", d.travelFrom], ["to", d.travelTo]);
-  pair(["Purpose of travel", d.purpose]);
-  gap(5);
+  row(["Travel destination", d.destination, 1], ["Departing from", d.departingFrom, 2]);
+  row(["Travel dates: from", d.travelFrom, 1], ["to", d.travelTo, 1], ["Accompanied by (names)", d.companions, 1]);
+  row(["Purpose of travel", d.purpose, 3]);
 
   // 03 Arrangements and costs
   section("03", "Authorised arrangements and costs");
-  for (const [k, v] of [
-    ["Flights", "to be booked by World Bridge Meridian on the traveller's behalf."],
-    ["Accommodation", "to be booked by World Bridge Meridian on the traveller's behalf."],
-    ["Ground transport and other services", "to be arranged by World Bridge Meridian, where needed."],
-  ] as const) {
-    fill(GOLD);
-    doc.circle(L + 1.1, y - 1.1, 0.75, "F");
-    setF("bold");
-    doc.setFontSize(8.6);
-    text(k + ":", L + 5, y, { size: 8.6, bold: true });
-    text(v, L + 5 + doc.getTextWidth(k + ":") + 1.8, y, { size: 8.6 });
-    y += 6.2;
-  }
-  gap(2.5);
-  para("All approved travel costs are arranged by World Bridge Meridian on behalf of the traveller, and are reimbursed to the traveller by:");
-  gap(3);
-  field("Costs covered by", d.coveredBy, L, R - L);
-  y += ROW;
-  text("Continued on the next page", R, H - 18, { size: 7.5, italic: true, color: SOFT, align: "right" });
-
-  // ---- Page 2 -----------------------------------------------------------------------------------
-  doc.addPage();
-  fill(FOREST);
-  doc.rect(0, 0, W, 16, "F");
-  fill(GOLD);
-  doc.rect(0, 16, W, 0.8, "F");
-  if (emblem) doc.addImage(emblem, "PNG", L, 3.2, 10.5, 9.4);
-  text("WORLD BRIDGE MERIDIAN", emblem ? L + 14 : L, 10.2, { size: 9, color: CREAM, spacing: 0.9 });
-  text("Travel Authorisation Form", R, 10.2, { size: 9, color: GOLD_LIGHT, align: "right" });
-  furniture(2);
-  y = 32;
+  para("World Bridge Meridian will book the traveller's flights, accommodation, ground transport and any other services, on the traveller's behalf. All approved travel costs are arranged by World Bridge Meridian and are reimbursed to the traveller by:");
+  y += 2.5;
+  row(["Costs covered by", d.coveredBy, 3]);
 
   // 04 Entry status
   let n = 4;
   if (d.entryPermit) {
     section("04", `Entry status (${d.entryPermit})`);
-    text("CURRENT STATUS", L, y, { size: 6, bold: true, color: GOLD, spacing: 0.7 });
-    y += 7;
-    checkbox("Not yet applied", L, y);
-    checkbox("Applied, awaiting a decision", L + 46, y);
-    checkbox("Approved", L + 108, y);
-    y += 11;
-    field("Any previous visa or entry refusals? Please give details", "", L, R - L);
-    y += ROW;
-    gap(5);
+    text("CURRENT STATUS", L, y + 1.5, { size: 6, bold: true, color: GOLD, spacing: 0.7 });
+    checkbox("Not yet applied", L + 36, y + 1.9);
+    checkbox("Applied, awaiting a decision", L + 72, y + 1.9);
+    checkbox("Approved", L + 126, y + 1.9);
+    y += 6;
+    row(["Any previous visa or entry refusals? Please give details", "", 3]);
     n = 5;
   }
 
   // Emergency contact
   section(String(n).padStart(2, "0"), "Emergency contact");
-  pair(["Full name", d.emergencyName], ["Relationship", d.emergencyRelationship]);
-  pair(["Contact phone", d.emergencyPhone], ["Contact email", d.emergencyEmail]);
-  gap(5);
+  row(["Full name", d.emergencyName, 2], ["Relationship", d.emergencyRelationship, 1]);
+  row(["Contact phone", d.emergencyPhone, 1], ["Contact email", d.emergencyEmail, 2]);
 
   // Authorisation
   section(String(n + 1).padStart(2, "0"), "Authorisation and declaration");
   para(
     "I confirm that the information on this form is accurate and complete. By signing below, I authorise World Bridge Meridian to arrange travel and related services on my behalf, and to use these details, including my passport details, only to make and manage my travel arrangements.",
-    8.8,
-    5.2,
+    8.3,
+    4.3,
   );
-  gap(8);
-  field("Traveller signature", "", L, COL, y, 20);
-  field("Date signed", "", L + COL + 8, COL, y, 20);
-  y += 28;
-  field("Signed for World Bridge Meridian (name)", d.authorisedBy, L, COL, y, 14);
-  field("Title", d.authorisedTitle, L + COL + 8, COL, y, 14);
-  y += 22;
-
-  fill(SAND);
-  doc.roundedRect(L, y, R - L, 10, 1.5, 1.5, "F");
-  text("Please return the signed form to your World Bridge Meridian coordinator, or upload it in My World Bridge.", W / 2, y + 6.2, { size: 7.4, italic: true, color: SOFT, align: "center" });
-  y += 10;
+  y += 3.5;
+  const SIGN = 2 * UNIT + GAP;
+  field("Traveller signature", "", L, SIGN, y, 14);
+  field("Date signed", "", L + SIGN + GAP, UNIT, y, 14);
+  y += 17;
+  field("Signed for World Bridge Meridian (name)", d.authorisedBy, L, SIGN, y);
+  field("Title", d.authorisedTitle, L + SIGN + GAP, UNIT, y);
+  y += ROW;
   if (y > H - 14) throw new Error(`Travel authorisation form overflowed the page (${y.toFixed(1)}mm)`);
 
   return doc.output("blob");
