@@ -8,7 +8,7 @@ import { pathToFileURL } from "node:url";
 
 const root = path.resolve(import.meta.dirname, "../..");
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), "wbm-pdf-"));
-for (const f of ["invoicePdf", "orderReceiptPdf", "pdfStamp", "money"]) {
+for (const f of ["invoicePdf", "orderReceiptPdf", "pdfStamp", "money", "travelAuthPdf"]) {
   const src = fs.readFileSync(path.join(root, "src/lib", f + ".ts"), "utf8").replace(/from "(\.\/[A-Za-z]+)"/g, 'from "$1.ts"');
   fs.writeFileSync(path.join(dir, f + ".ts"), src);
 }
@@ -17,6 +17,7 @@ fs.symlinkSync(path.join(root, "node_modules"), path.join(dir, "node_modules"), 
 
 export const { buildInvoicePdf } = await import(pathToFileURL(path.join(dir, "invoicePdf.ts")).href);
 export const { buildOrderReceiptPdf } = await import(pathToFileURL(path.join(dir, "orderReceiptPdf.ts")).href);
+export const { buildTravelAuthPdf } = await import(pathToFileURL(path.join(dir, "travelAuthPdf.ts")).href);
 
 const F = path.join(root, "public/fonts/pdf");
 const b64 = (n) => fs.readFileSync(path.join(F, n + ".ttf")).toString("base64");

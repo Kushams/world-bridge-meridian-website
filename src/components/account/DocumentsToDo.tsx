@@ -5,6 +5,7 @@ import { getSupabaseClient } from "@/lib/supabase/client";
 import { displayName, useAuth } from "@/lib/supabase/AuthProvider";
 import { docKind, docTitle, notifyTeam, safeName, stemOf, type DocKind } from "@/lib/clientDocs";
 import { SignDocumentDialog } from "./SignDocumentDialog";
+import { TravelFormRows, usePendingTravelForms } from "./TravelFormRows";
 
 const BUCKET = "client-documents";
 const UPLOADS = "client-uploads";
@@ -26,6 +27,7 @@ export function DocumentsToDo() {
   const [busy, setBusy] = useState<string | null>(null);
   const [signing, setSigning] = useState<Pending | null>(null);
   const [notice, setNotice] = useState("");
+  const { forms, reload: reloadForms } = usePendingTravelForms(Boolean(folder));
 
   const load = useCallback(async () => {
     const supabase = getSupabaseClient();
@@ -67,12 +69,24 @@ export function DocumentsToDo() {
     load();
   }
 
-  if (!pending.length && !notice) return null;
+  if (!pending.length && !forms.length && !notice) return null;
   return (
     <div className="rounded-card border border-gold/50 bg-gold/5 p-5">
       <p className="eyebrow">Waiting on you</p>
-      {pending.length ? (
+      {pending.length || forms.length ? (
         <ul className="mt-3 divide-y divide-line">
+          {folder ? (
+            <TravelFormRows
+              forms={forms}
+              email={folder}
+              buttonClass="min-h-11 rounded-full bg-ivory px-5 text-xs font-semibold uppercase tracking-wide text-ink hover:opacity-90"
+              onSigned={() => {
+                setNotice("Signed. Thank you: your signed form is saved and our team has been told.");
+                reloadForms();
+                load();
+              }}
+            />
+          ) : null}
           {pending.map((d) => (
             <li key={d.name} className="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
               <div className="min-w-0">
