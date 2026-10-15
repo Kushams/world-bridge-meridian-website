@@ -238,7 +238,8 @@ export async function buildTravelAuthPdf(d: TravelAuthData, emblem?: string | nu
   field("Date signed", d.signedOn, L + SIGN + GAP, UNIT, y, 13);
   y += 16;
   field("Signed for World Bridge Meridian (name)", d.authorisedBy, L, SIGN, y, d.authorisedSignature ? 13 : 8.8);
-  if (d.authorisedSignature) signature(d.authorisedSignature, L + SIGN - 46, y + 2.6, 44, 10, "right");
+  // Taller than the name row: it rises into the empty gap above the row, clear of the label on the left.
+  if (d.authorisedSignature) signature(d.authorisedSignature, L + SIGN - 60, y - 2.4, 56, 15.4, "right");
   field("Title", d.authorisedTitle, L + SIGN + GAP, UNIT, y, d.authorisedSignature ? 13 : 8.8);
   y += d.authorisedSignature ? 14 : ROW;
   if (d.signedNote) text(fit(d.signedNote, R - L, 6.5), L, y + 1.5, { size: 6.5, italic: true, color: SOFT });
