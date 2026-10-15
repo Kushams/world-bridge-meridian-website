@@ -100,6 +100,15 @@ export async function buildTravelAuthPdf(d: TravelAuthData, emblem?: string | nu
     return (doc.splitTextToSize(s, width) as string[])[0] ?? "";
   };
 
+  /** Places a signature image inside a box without stretching it, left- or right-aligned. */
+  const signature = (img: string, x: number, y: number, boxW: number, boxH: number, align: "left" | "right" = "left") => {
+    const { width, height } = doc.getImageProperties(img);
+    const scale = Math.min(boxW / width, boxH / height);
+    const w = width * scale;
+    const h = height * scale;
+    doc.addImage(img, "PNG", align === "left" ? x : x + boxW - w, y + (boxH - h), w, h);
+  };
+
   // ---- Header and footer ----------------------------------------------------------------------
   fill(FOREST);
   doc.rect(0, 0, W, 30, "F");
@@ -224,12 +233,12 @@ export async function buildTravelAuthPdf(d: TravelAuthData, emblem?: string | nu
   y += 3.5;
   const SIGN = 2 * UNIT + GAP;
   field("Traveller signature", "", L, SIGN, y, 13);
-  if (d.travellerSignature) doc.addImage(d.travellerSignature, "PNG", L + 1, y + 3.4, 33, 9.4);
+  if (d.travellerSignature) signature(d.travellerSignature, L + 1, y + 2.6, 40, 10);
   else if (d.travellerTypedName) text(fit(d.travellerTypedName, SIGN - 2, 15), L + 1, y + 11.4, { size: 15, italic: true });
   field("Date signed", d.signedOn, L + SIGN + GAP, UNIT, y, 13);
   y += 16;
   field("Signed for World Bridge Meridian (name)", d.authorisedBy, L, SIGN, y, d.authorisedSignature ? 13 : 8.8);
-  if (d.authorisedSignature) doc.addImage(d.authorisedSignature, "PNG", L + SIGN - 36, y + 3.4, 33, 9.4);
+  if (d.authorisedSignature) signature(d.authorisedSignature, L + SIGN - 46, y + 2.6, 44, 10, "right");
   field("Title", d.authorisedTitle, L + SIGN + GAP, UNIT, y, d.authorisedSignature ? 13 : 8.8);
   y += d.authorisedSignature ? 14 : ROW;
   if (d.signedNote) text(fit(d.signedNote, R - L, 6.5), L, y + 1.5, { size: 6.5, italic: true, color: SOFT });
