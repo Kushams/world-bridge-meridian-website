@@ -20,7 +20,6 @@ export interface TravelAuthData {
   nationality?: string;
   passportNumber?: string;
   passportExpiry?: string;
-  passportCountry?: string;
   phone?: string;
   destination?: string;
   departingFrom?: string;
@@ -36,9 +35,22 @@ export interface TravelAuthData {
   emergencyRelationship?: string;
   emergencyPhone?: string;
   emergencyEmail?: string;
+  /** Which "current status" box to tick in the entry-status section. */
+  entryStatus?: "not_applied" | "applied" | "approved";
+  /** Details of any previous visa or entry refusals. */
+  refusals?: string;
   /** Who signs for World Bridge Meridian. */
   authorisedBy?: string;
   authorisedTitle?: string;
+  /** PNG data URL of the World Bridge Meridian signature, placed above the signer's name. */
+  authorisedSignature?: string;
+  /** Traveller's signature: a drawn PNG data URL, or else their typed name is printed as the signature. */
+  travellerSignature?: string;
+  travellerTypedName?: string;
+  /** Date signed, already formatted (e.g. "15/10/2026"). */
+  signedOn?: string;
+  /** Printed small at the foot of the form, e.g. "Signed electronically by … on … · Ref …". */
+  signedNote?: string;
 }
 
 /** The World Bridge Meridian Travel Authorisation Form: one A4 page. `emblem` is a PNG data URL. */
@@ -147,9 +159,14 @@ export async function buildTravelAuthPdf(d: TravelAuthData, emblem?: string | nu
     }
     y += ROW;
   };
-  const checkbox = (label: string, x: number, at: number) => {
+  const checkbox = (label: string, x: number, at: number, ticked = false) => {
     stroke(SOFT, 0.3);
     doc.rect(x, at - 2.9, 3.3, 3.3);
+    if (ticked) {
+      stroke(FOREST, 0.5);
+      doc.line(x + 0.6, at - 1.2, x + 1.4, at - 0.2);
+      doc.line(x + 1.4, at - 0.2, x + 2.8, at - 2.5);
+    }
     text(label, x + 5, at, { size: 8.2 });
   };
   const para = (s: string, size = 8.3, gap = 4.3) => {
@@ -165,7 +182,7 @@ export async function buildTravelAuthPdf(d: TravelAuthData, emblem?: string | nu
   section("01", "Traveller");
   row(["Full name (as on passport)", d.name, 2], ["Date of birth", d.dateOfBirth, 1]);
   row(["Nationality", d.nationality, 1], ["Passport number", d.passportNumber, 1], ["Passport expiry", d.passportExpiry, 1]);
-  row(["Country of issue", d.passportCountry, 1], ["Contact phone", d.phone, 2]);
+  row(["Contact phone", d.phone, 3]);
 
   // 02 Trip
   section("02", "The trip");
@@ -184,11 +201,11 @@ export async function buildTravelAuthPdf(d: TravelAuthData, emblem?: string | nu
   if (d.entryPermit) {
     section("04", `Entry status (${d.entryPermit})`);
     text("CURRENT STATUS", L, y + 1.5, { size: 6, bold: true, color: GOLD, spacing: 0.7 });
-    checkbox("Not yet applied", L + 36, y + 1.9);
-    checkbox("Applied, awaiting a decision", L + 72, y + 1.9);
-    checkbox("Approved", L + 126, y + 1.9);
+    checkbox("Not yet applied", L + 36, y + 1.9, d.entryStatus === "not_applied");
+    checkbox("Applied, awaiting a decision", L + 72, y + 1.9, d.entryStatus === "applied");
+    checkbox("Approved", L + 126, y + 1.9, d.entryStatus === "approved");
     y += 6;
-    row(["Any previous visa or entry refusals? Please give details", "", 3]);
+    row(["Any previous visa or entry refusals? Please give details", d.refusals, 3]);
     n = 5;
   }
 
@@ -207,11 +224,15 @@ export async function buildTravelAuthPdf(d: TravelAuthData, emblem?: string | nu
   y += 3.5;
   const SIGN = 2 * UNIT + GAP;
   field("Traveller signature", "", L, SIGN, y, 13);
-  field("Date signed", "", L + SIGN + GAP, UNIT, y, 13);
+  if (d.travellerSignature) doc.addImage(d.travellerSignature, "PNG", L + 1, y + 3.4, 33, 9.4);
+  else if (d.travellerTypedName) text(fit(d.travellerTypedName, SIGN - 2, 15), L + 1, y + 11.4, { size: 15, italic: true });
+  field("Date signed", d.signedOn, L + SIGN + GAP, UNIT, y, 13);
   y += 16;
-  field("Signed for World Bridge Meridian (name)", d.authorisedBy, L, SIGN, y);
-  field("Title", d.authorisedTitle, L + SIGN + GAP, UNIT, y);
-  y += ROW;
+  field("Signed for World Bridge Meridian (name)", d.authorisedBy, L, SIGN, y, d.authorisedSignature ? 13 : 8.8);
+  if (d.authorisedSignature) doc.addImage(d.authorisedSignature, "PNG", L + SIGN - 36, y + 3.4, 33, 9.4);
+  field("Title", d.authorisedTitle, L + SIGN + GAP, UNIT, y, d.authorisedSignature ? 13 : 8.8);
+  y += d.authorisedSignature ? 14 : ROW;
+  if (d.signedNote) text(fit(d.signedNote, R - L, 6.5), L, y + 1.5, { size: 6.5, italic: true, color: SOFT });
   if (y > H - 14) throw new Error(`Travel authorisation form overflowed the page (${y.toFixed(1)}mm)`);
 
   return doc.output("blob");

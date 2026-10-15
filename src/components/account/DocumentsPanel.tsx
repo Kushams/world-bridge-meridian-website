@@ -5,6 +5,7 @@ import { getSupabaseClient } from "@/lib/supabase/client";
 import { displayName, useAuth } from "@/lib/supabase/AuthProvider";
 import { docKind, docTitle, notifyTeam, safeName, stemOf, type DocKind } from "@/lib/clientDocs";
 import { SignDocumentDialog } from "./SignDocumentDialog";
+import { TravelFormRows, usePendingTravelForms } from "./TravelFormRows";
 
 const BUCKET = "client-documents";
 const UPLOADS = "client-uploads";
@@ -42,6 +43,7 @@ export function DocumentsPanel() {
   const [busy, setBusy] = useState<string | null>(null);
   const [signing, setSigning] = useState<Doc | null>(null);
   const [notice, setNotice] = useState("");
+  const { forms, reload: reloadForms } = usePendingTravelForms(Boolean(folder));
 
   const load = useCallback(async () => {
     const supabase = getSupabaseClient();
@@ -119,7 +121,7 @@ export function DocumentsPanel() {
   }
   if (docs === null) return <p className="text-sm text-stone-dim">Loading your documents…</p>;
 
-  if (docs.length === 0) {
+  if (docs.length === 0 && forms.length === 0) {
     return (
       <div className="rounded-card border hairline bg-charcoal p-8 text-center">
         <h3 className="font-display text-xl text-ivory">No documents yet</h3>
@@ -138,6 +140,19 @@ export function DocumentsPanel() {
     <>
       {notice ? <p className="mb-3 text-xs text-gold">{notice}</p> : null}
       <ul className="divide-y divide-line rounded-card border hairline">
+        {folder ? (
+          <TravelFormRows
+            forms={forms}
+            email={folder}
+            className="p-4 md:p-5"
+            buttonClass="rounded-full bg-ivory px-5 py-2 text-xs font-semibold uppercase tracking-wide text-ink hover:opacity-90"
+            onSigned={() => {
+              setNotice("Signed. Thank you: your signed form is saved and our team has been told.");
+              reloadForms();
+              load();
+            }}
+          />
+        ) : null}
         {docs.map((d) => {
           const path = `${folder}/${d.name}`;
           const signedAt = signed[path];

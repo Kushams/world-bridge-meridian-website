@@ -447,7 +447,7 @@ function SendDocuments({ email, client, requests, onDone }: { email: string; cli
           {busy ? "Sending…" : "Send to client"}
         </button>
       </div>
-      <TravelAuthSender email={email} clientName={client.full_name} clientPhone={client.phone} requests={requests} onDone={onDone} />
+      <TravelAuthSender key={requests.find((r) => r.form_type === "travel-details")?.id ?? "no-request"} email={email} clientName={client.full_name} clientPhone={client.phone} requests={requests} onDone={onDone} />
     </Block>
   );
 }
