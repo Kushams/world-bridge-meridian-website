@@ -24,7 +24,7 @@ export function Hero() {
         </div>
       </div>
 
-      <Container className="relative pb-12 pt-3 md:pb-16 lg:pb-28 lg:pt-40">
+      <Container className="relative z-20 pb-12 pt-3 md:pb-16 lg:pb-28 lg:pt-40">
         <p className="eyebrow mb-5 reveal reveal-visible lg:!text-[color:var(--color-gold-bright)]">{company.heroEyebrow}</p>
         <h1 className="max-w-4xl font-display text-5xl leading-[1.02] tracking-[-0.02em] text-ivory sm:text-6xl md:text-7xl lg:text-8xl lg:text-on-photo text-balance-pretty">
           {company.heroHeadlineLines.map((line, i) => (

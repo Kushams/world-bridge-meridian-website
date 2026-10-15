@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { CulturalAccessProgram } from "@/data/culturalAccess";
 import { Button } from "@/components/ui/Button";
+import { venueLine } from "@/lib/place";
 
 const categoryLabel: Record<CulturalAccessProgram["category"], string> = {
   museum: "Museum",
@@ -25,7 +26,7 @@ export function CulturalAccessCard({ program }: { program: CulturalAccessProgram
       </div>
       <div className="flex flex-1 flex-col p-6 md:p-7">
         <p className="eyebrow mb-2">
-          {program.institution} · {program.city}, {program.country}
+          {venueLine(program.institution, program.city, program.country)}
         </p>
         <h3 className="font-display text-xl text-ivory leading-snug">{program.programName}</h3>
         <p className="mt-4 flex-1 text-sm text-stone leading-relaxed">{program.description}</p>

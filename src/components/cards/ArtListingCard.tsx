@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArtListing, artListingHref, planTripHref } from "@/data/exhibitions";
 import { Button } from "@/components/ui/Button";
+import { venueLine } from "@/lib/place";
 
 export function formatDate(iso: string) {
   return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-US", {
@@ -65,7 +66,7 @@ export function ArtListingCard({ listing, today }: { listing: ArtListing; today:
       </Link>
       <div className="flex flex-1 flex-col p-6 md:p-7">
         <p className="eyebrow mb-2">
-          {listing.venue} · {listing.city}, {listing.country}
+          {venueLine(listing.venue, listing.city, listing.country)}
         </p>
         <h3 className="font-display text-xl text-ivory leading-snug">
           <Link href={artListingHref(listing)} className="transition-colors hover:text-gold">

@@ -40,7 +40,8 @@ export function PageHero({
       ) : (
         <div className="bg-grid-texture absolute inset-0 opacity-30" />
       )}
-      <Container className="relative pb-10 pt-28 md:pb-16 md:pt-36">
+      {/* z-20: always above the blur fade at the top of the photo, so heading text is never blurred. */}
+      <Container className="relative z-20 pb-10 pt-28 md:pb-16 md:pt-36">
         <p className={`eyebrow mb-4 ${image ? "eyebrow-on-photo" : ""}`}>{eyebrow}</p>
         <h1
           className={`max-w-3xl font-display text-4xl md:text-6xl lg:text-7xl leading-[1.04] tracking-[-0.02em] text-balance-pretty ${
