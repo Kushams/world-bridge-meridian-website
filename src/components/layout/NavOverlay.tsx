@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { menuGroups, legalLinks } from "@/data/nav";
 import { company } from "@/data/company";
+import { WHATSAPP_GENERAL, whatsappHref } from "@/lib/whatsapp";
 import { Button } from "@/components/ui/Button";
 import { avatarUrl, displayName, useAuth } from "@/lib/supabase/AuthProvider";
 
@@ -201,6 +202,16 @@ export function NavOverlay({
                 className="flex min-h-12 items-center justify-center rounded-control border border-line px-4 py-2 text-sm text-ivory hover:border-gold hover:text-gold"
               >
                 {company.phone}
+              </a>
+            ) : null}
+            {company.whatsapp ? (
+              <a
+                href={whatsappHref(company.whatsapp, WHATSAPP_GENERAL)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex min-h-12 items-center justify-center rounded-control border border-line px-4 py-2 text-sm text-ivory hover:border-gold hover:text-gold"
+              >
+                WhatsApp us
               </a>
             ) : null}
           </div>

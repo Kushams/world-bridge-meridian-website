@@ -14,6 +14,8 @@ export const company = {
   founderTitle: "Founder & CEO",
   email: "info@worldbridgemeridian.group",
   phone: "+1 (302) 627-3325" as string | null,
+  /** The same number is used for WhatsApp. */
+  whatsapp: "+1 (302) 627-3325" as string | null,
   address: null as string | null, // "[ADDRESS TO BE PROVIDED]"
   cooName: "Justin Warkovsky" as string | null,
   cryptoAcceptedSince: 2015,

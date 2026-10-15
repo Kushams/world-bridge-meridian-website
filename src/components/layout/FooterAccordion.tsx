@@ -50,7 +50,7 @@ export function FooterAccordion({ columns }: { columns: NavGroup[] }) {
                 >
                   <ul className="grid grid-cols-2 gap-x-4 gap-y-1 pb-4">
                     {col.links.map((link) => {
-                      const external = link.href.startsWith("mailto:") || link.href.startsWith("tel:");
+                      const external = link.href.startsWith("mailto:") || link.href.startsWith("tel:") || link.href.startsWith("https://wa.me/");
                       const cls =
                         "inline-block break-words py-1.5 text-sm text-ivory-dim hover:text-gold transition-colors";
                       return (
