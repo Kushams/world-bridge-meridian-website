@@ -121,7 +121,7 @@ export async function buildTravelAuthPdf(d: TravelAuthData, emblem?: string | nu
   let y = 38;
   let firstSection = true;
   const section = (n: string, title: string) => {
-    if (!firstSection) y += 4.6;
+    if (!firstSection) y += 4;
     firstSection = false;
     text(n, L, y, { size: 8, bold: true, color: GOLD });
     text(title.toUpperCase(), L + 7, y, { size: 8, bold: true, spacing: 1.1 });
@@ -158,8 +158,9 @@ export async function buildTravelAuthPdf(d: TravelAuthData, emblem?: string | nu
     setF("normal");
     doc.setFontSize(size);
     const lines = doc.splitTextToSize(s, R - L) as string[];
-    lines.forEach((ln, i) => text(ln, L, y + i * gap, { size }));
-    y += lines.length * gap;
+    // Start a little below the rule, the same distance the field labels sit from it.
+    lines.forEach((ln, i) => text(ln, L, y + 3.6 + i * gap, { size }));
+    y += 3.6 + lines.length * gap;
   };
 
   // 01 Traveller
@@ -207,9 +208,9 @@ export async function buildTravelAuthPdf(d: TravelAuthData, emblem?: string | nu
   );
   y += 3.5;
   const SIGN = 2 * UNIT + GAP;
-  field("Traveller signature", "", L, SIGN, y, 14);
-  field("Date signed", "", L + SIGN + GAP, UNIT, y, 14);
-  y += 17;
+  field("Traveller signature", "", L, SIGN, y, 13);
+  field("Date signed", "", L + SIGN + GAP, UNIT, y, 13);
+  y += 16;
   field("Signed for World Bridge Meridian (name)", d.authorisedBy, L, SIGN, y);
   field("Title", d.authorisedTitle, L + SIGN + GAP, UNIT, y);
   y += ROW;
