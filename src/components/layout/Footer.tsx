@@ -4,6 +4,7 @@ import { Logo } from "./Logo";
 import { NewsletterForm } from "./NewsletterForm";
 import { FooterAccordion } from "./FooterAccordion";
 import { company } from "@/data/company";
+import { WHATSAPP_GENERAL, whatsappHref } from "@/lib/whatsapp";
 import { footerColumns, legalLinks } from "@/data/nav";
 
 export function Footer() {
@@ -57,6 +58,7 @@ export function Footer() {
                   ...(company.phone
                     ? [{ label: company.phone, href: `tel:${company.phone.replace(/[^+\d]/g, "")}` }]
                     : []),
+                  ...(company.whatsapp ? [{ label: "WhatsApp us", href: whatsappHref(company.whatsapp, WHATSAPP_GENERAL) }] : []),
                 ],
               },
               {
@@ -98,6 +100,18 @@ export function Footer() {
                 {company.phone ?? "[PHONE NUMBER TO BE PROVIDED]"}
               </a>
             </li>
+            {company.whatsapp ? (
+              <li>
+                <a
+                  href={whatsappHref(company.whatsapp, WHATSAPP_GENERAL)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block -my-1.5 py-1.5 hover:text-gold transition-colors"
+                >
+                  WhatsApp us
+                </a>
+              </li>
+            ) : null}
           </ul>
          </div>
          <div className="min-w-0">

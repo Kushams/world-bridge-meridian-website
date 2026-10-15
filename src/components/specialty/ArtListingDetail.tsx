@@ -8,6 +8,8 @@ import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Button } from "@/components/ui/Button";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SwipeRow } from "@/components/ui/SwipeRow";
+import { company } from "@/data/company";
+import { whatsappForExhibition, whatsappHref } from "@/lib/whatsapp";
 import { ArtListingCard, formatDate, statusFor } from "@/components/cards/ArtListingCard";
 import {
   LAST_VERIFIED,
@@ -171,6 +173,16 @@ export function ArtListingDetail({ listing }: { listing: ArtListing }) {
                       Plan This Trip
                     </Button>
                   )}
+                  {!isPast && company.whatsapp ? (
+                    <a
+                      href={whatsappHref(company.whatsapp, whatsappForExhibition(listing.title, listing.venue))}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex min-h-12 items-center justify-center rounded-control border border-line px-4 py-2 text-sm text-ivory transition-colors hover:border-gold hover:text-gold"
+                    >
+                      Ask us on WhatsApp
+                    </a>
+                  ) : null}
                   <a
                     href={listing.sourceUrl}
                     target="_blank"

@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { company } from "@/data/company";
+import { WHATSAPP_GENERAL, whatsappHref } from "@/lib/whatsapp";
 import { themeImage } from "@/data/images";
 
 export const metadata: Metadata = {
@@ -46,6 +47,20 @@ export default function ContactPage() {
                   {company.phone ?? "[PHONE NUMBER TO BE PROVIDED]"}
                 </a>
               </div>
+              {company.whatsapp ? (
+                <div>
+                  <p className="eyebrow mb-3">WhatsApp</p>
+                  <a
+                    href={whatsappHref(company.whatsapp, WHATSAPP_GENERAL)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-display text-xl text-ivory hover:text-gold transition-colors"
+                  >
+                    Message us on WhatsApp
+                  </a>
+                  <p className="mt-1 text-xs text-stone-dim">Opens WhatsApp with a message ready for you to add your name and send.</p>
+                </div>
+              ) : null}
               <div>
                 <p className="eyebrow mb-3">Address</p>
                 <p className="text-stone-dim">{company.address ?? "[ADDRESS TO BE PROVIDED]"}</p>
