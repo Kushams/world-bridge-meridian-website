@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { CalendarEntry } from "@/lib/calendarEntries";
 import { Button } from "@/components/ui/Button";
+import { venueLine } from "@/lib/place";
 
 export function formatDate(iso: string) {
   return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-US", {
@@ -70,7 +71,7 @@ export function CalendarEntryCard({ entry, today }: { entry: CalendarEntry; toda
       </div>
       <div className="flex flex-1 flex-col p-5 md:p-6">
         <p className="eyebrow !text-[0.65rem] mb-2">
-          {entry.venue} · {entry.city}, {entry.country}
+          {venueLine(entry.venue, entry.city, entry.country)}
         </p>
         <h3 className="font-display text-lg text-ivory leading-snug">
           {entry.href ? (

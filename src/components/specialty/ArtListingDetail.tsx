@@ -10,6 +10,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SwipeRow } from "@/components/ui/SwipeRow";
 import { company } from "@/data/company";
 import { whatsappForExhibition, whatsappHref } from "@/lib/whatsapp";
+import { uniquePlace, venueLine } from "@/lib/place";
 import { ArtListingCard, formatDate, statusFor } from "@/components/cards/ArtListingCard";
 import {
   LAST_VERIFIED,
@@ -45,14 +46,14 @@ export function ArtListingDetail({ listing }: { listing: ArtListing }) {
   const base = artCategoryBase(listing.category);
   const related = relatedArtListings(listing, today);
   const planHref = planTripHref(listing);
-  const place = [listing.address, listing.city, listing.country].filter(Boolean).join(", ");
+  const place = uniquePlace([listing.address, listing.city, listing.country]);
   const mapHref = `https://www.google.com/maps/search/?${new URLSearchParams({ api: "1", query: `${listing.venue}, ${listing.address ?? listing.city}` }).toString()}`;
   const paragraphs = listing.about?.length ? listing.about : [listing.description];
 
   return (
     <>
       <PageHero
-        eyebrow={`${listing.venue} · ${listing.city}, ${listing.country}`}
+        eyebrow={venueLine(listing.venue, listing.city, listing.country)}
         title={listing.title}
         description={`${formatDate(listing.startDate)} – ${formatDate(listing.endDate)}. ${status.label}.`}
         image={listing.heroImage}
