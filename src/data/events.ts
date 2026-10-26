@@ -12,7 +12,7 @@ import { themeImage, unsplashPhoto } from "./images";
  * We are not affiliated with any event, organizer or venue listed here.
  */
 
-export const EVENTS_LAST_VERIFIED = "2026-10-19";
+export const EVENTS_LAST_VERIFIED = "2026-10-26";
 
 export type EventCategory =
   | "convention"
@@ -1578,6 +1578,134 @@ export const worldEvents: WorldEvent[] = [
     sourceUrl: "https://www.chicagomarathon.com/about/future-event-dates/",
     sourceLabel: "chicagomarathon.com",
     heroImage: unsplashPhoto("1714662660476"),
+  },
+  {
+    slug: "nitto-atp-finals-2026",
+    category: "sporting",
+    title: "Nitto ATP Finals 2026",
+    organizer: "ATP",
+    venue: "Inalpi Arena",
+    city: "Turin",
+    country: "Italy",
+    startDate: "2026-11-15",
+    endDate: "2026-11-22",
+    description:
+      "The season-ending men's tennis championship, held at the Inalpi Arena in Turin from 15 to 22 November 2026 per the official event site.",
+    sourceUrl: "https://www.nittoatpfinals.com/en/event/overview",
+    sourceLabel: "nittoatpfinals.com",
+    heroImage: unsplashPhoto("1719762888013-6ae1e96d0eb8"),
+  },
+  {
+    slug: "rolex-sydney-hobart-2026",
+    category: "sporting",
+    title: "Rolex Sydney Hobart Yacht Race 2026",
+    organizer: "Cruising Yacht Club of Australia",
+    venue: "Sydney Harbour",
+    city: "Sydney",
+    country: "Australia",
+    startDate: "2026-12-26",
+    endDate: "2026-12-26",
+    description:
+      "The offshore yacht race to Hobart starts on Sydney Harbour on 26 December 2026, per the official race site.",
+    sourceUrl: "https://www.rolexsydneyhobart.com/",
+    sourceLabel: "rolexsydneyhobart.com",
+    heroImage: unsplashPhoto("1616128618694-96e9e896ecb7"),
+  },
+  {
+    slug: "afc-asian-cup-2027",
+    category: "sporting",
+    title: "AFC Asian Cup Saudi Arabia 2027",
+    organizer: "Asian Football Confederation",
+    venue: "Riyadh, Jeddah and Al Khobar",
+    city: "Riyadh",
+    country: "Saudi Arabia",
+    startDate: "2027-01-07",
+    endDate: "2027-02-05",
+    description:
+      "Asia's continental football championship, scheduled from 7 January to 5 February 2027 with Saudi Arabia hosting in Riyadh, Jeddah and Al Khobar, per the AFC.",
+    sourceUrl: "https://www.the-afc.com/en/national/afc_asian_cup.html/news/dates-for-afc-asian-cup-saudi-arabia-2027%E2%84%A2-recommended",
+    sourceLabel: "the-afc.com",
+    heroImage: unsplashPhoto("1699138346782-8a8b211c3da2"),
+  },
+  {
+    slug: "sundance-film-festival-2027",
+    category: "film",
+    title: "Sundance Film Festival 2027",
+    organizer: "Sundance Institute",
+    venue: "Boulder",
+    city: "Boulder",
+    country: "United States",
+    startDate: "2027-01-21",
+    endDate: "2027-01-31",
+    description:
+      "The 2027 festival runs 21 to 31 January and marks its first edition in Boulder, Colorado, per the Sundance Institute announcement.",
+    sourceUrl: "https://www.sundance.org/blogs/2027-sundance-film-festival-to-take-place-january-21-31-in-boulder-colorado/",
+    sourceLabel: "sundance.org",
+    heroImage: unsplashPhoto("1779906904964-454d04a227a1"),
+  },
+  {
+    slug: "sapporo-snow-festival-2027",
+    category: "cultural",
+    title: "Sapporo Snow Festival 2027 (77th)",
+    organizer: "Sapporo Snow Festival Executive Committee",
+    venue: "Odori, Tsudome and Susukino sites",
+    city: "Sapporo",
+    country: "Japan",
+    startDate: "2027-02-04",
+    endDate: "2027-02-11",
+    description:
+      "The 77th festival runs eight days from 4 to 11 February 2027 across the Odori, Tsudome and Susukino venues, per the official site; programme details are still being updated.",
+    sourceUrl: "https://www.snowfes.com/news/948.html",
+    sourceLabel: "snowfes.com",
+    heroImage: unsplashPhoto("1682367905664-e36b30f15b19"),
+  },
+  {
+    slug: "rio-carnival-2027",
+    category: "cultural",
+    title: "Rio Carnival 2027 Sambadrome Parades",
+    organizer: "LIESA",
+    venue: "Marquês de Sapucaí (Sambadrome)",
+    city: "Rio de Janeiro",
+    country: "Brazil",
+    startDate: "2027-02-07",
+    endDate: "2027-02-09",
+    description:
+      "The Special Group samba school parades are scheduled for 7, 8 and 9 February 2027, with the champions' parade listed for 13 February, per LIESA.",
+    sourceUrl: "https://liesa.org.br/carnaval/",
+    sourceLabel: "liesa.org.br",
+    heroImage: unsplashPhoto("1703145217874-47c91be335e0"),
+  },
+  {
+    slug: "sydney-mardi-gras-parade-2027",
+    category: "cultural",
+    title: "Sydney Gay & Lesbian Mardi Gras Parade 2027",
+    organizer: "Sydney Gay and Lesbian Mardi Gras",
+    venue: "Oxford Street, Flinders Street and Anzac Parade",
+    city: "Sydney",
+    country: "Australia",
+    startDate: "2027-03-06",
+    endDate: "2027-03-06",
+    description:
+      "The 2027 parade is listed for Saturday 6 March 2027, with the parade day running 18:00 to 23:00; times are subject to change, per the organiser.",
+    sourceUrl: "https://www.mardigras.org.au/event/parade/",
+    sourceLabel: "mardigras.org.au",
+    heroImage: unsplashPhoto("1616128618694-96e9e896ecb7"),
+  },
+  {
+    slug: "lollapalooza-brasil-2027",
+    category: "music-festival",
+    title: "Lollapalooza Brasil 2027",
+    organizer: "Lollapalooza Brasil",
+    venue: "Autódromo de Interlagos",
+    city: "São Paulo",
+    country: "Brazil",
+    startDate: "2027-03-19",
+    endDate: "2027-03-21",
+    description:
+      "Three days at the Autódromo de Interlagos in São Paulo on 19, 20 and 21 March 2027, per the official festival site.",
+    sourceUrl: "https://www.lollapaloozabr.com/",
+    sourceLabel: "lollapaloozabr.com",
+    heroImage: unsplashPhoto("1500252185289-40ca85eb23a7"),
   },
 ];
 
