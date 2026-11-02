@@ -12,7 +12,7 @@ import { themeImage, unsplashPhoto } from "./images";
  * We are not affiliated with any event, organizer or venue listed here.
  */
 
-export const EVENTS_LAST_VERIFIED = "2026-10-26";
+export const EVENTS_LAST_VERIFIED = "2026-11-02";
 
 export type EventCategory =
   | "convention"
@@ -282,7 +282,7 @@ export const worldEvents: WorldEvent[] = [
     category: "film",
     title: "Festival de Cannes 2027",
     organizer: "Festival de Cannes",
-    venue: "Palais des Festivals",
+    venue: "Cannes",
     city: "Cannes",
     country: "France",
     startDate: "2027-05-11",
@@ -1706,6 +1706,86 @@ export const worldEvents: WorldEvent[] = [
     sourceUrl: "https://www.lollapaloozabr.com/",
     sourceLabel: "lollapaloozabr.com",
     heroImage: unsplashPhoto("1500252185289-40ca85eb23a7"),
+  },
+  {
+    slug: "slush-helsinki-2026",
+    category: "tech",
+    title: "Slush 2026",
+    organizer: "Slush",
+    venue: "Helsinki",
+    city: "Helsinki",
+    country: "Finland",
+    startDate: "2026-11-18",
+    endDate: "2026-11-19",
+    description:
+      "Slush 2026 in Helsinki on 18-19 November, per the official Slush site.",
+    sourceUrl: "https://www.slush.org/",
+    sourceLabel: "slush.org",
+    heroImage: unsplashPhoto("1505373877841-8d25f7d46678"),
+  },
+  {
+    slug: "computex-taipei-2027",
+    category: "tech",
+    title: "COMPUTEX Taipei 2027",
+    organizer: "COMPUTEX Taipei",
+    venue: "Taipei Nangang Exhibition Center, TWTC Exhibition Hall 1 and TICC",
+    city: "Taipei",
+    country: "Taiwan",
+    startDate: "2027-06-01",
+    endDate: "2027-06-04",
+    description:
+      "COMPUTEX Taipei returns 1-4 June 2027 across the Nangang Exhibition Center, TWTC Exhibition Hall 1 and the Taipei International Convention Center, per the official site.",
+    sourceUrl: "https://www.computextaipei.com.tw/en/index.html",
+    sourceLabel: "computextaipei.com.tw",
+    heroImage: unsplashPhoto("1505373877841-8d25f7d46678"),
+  },
+  {
+    slug: "indianapolis-500-2027",
+    category: "sporting",
+    title: "Indianapolis 500 2027",
+    organizer: "INDYCAR / Indianapolis Motor Speedway",
+    venue: "Indianapolis Motor Speedway",
+    city: "Indianapolis",
+    country: "United States",
+    startDate: "2027-05-18",
+    endDate: "2027-05-30",
+    description:
+      "The 2027 Indianapolis 500 runs 18-30 May 2027 at Indianapolis Motor Speedway, with race day on Sunday 30 May, per the official speedway site.",
+    sourceUrl: "https://www.indianapolismotorspeedway.com/events/indy500",
+    sourceLabel: "indianapolismotorspeedway.com",
+    heroImage: unsplashPhoto("1588993608283-7f0eda4438be"),
+  },
+  {
+    slug: "cheltenham-festival-2027",
+    category: "sporting",
+    title: "Cheltenham Festival 2027",
+    organizer: "The Jockey Club",
+    venue: "Cheltenham Racecourse",
+    city: "Cheltenham",
+    country: "United Kingdom",
+    startDate: "2027-03-16",
+    endDate: "2027-03-19",
+    description:
+      "The Cheltenham Festival takes place 16-19 March 2027, per The Jockey Club's official Cheltenham page.",
+    sourceUrl: "https://www.thejockeyclub.co.uk/cheltenham/",
+    sourceLabel: "thejockeyclub.co.uk",
+    heroImage: unsplashPhoto("1507514604110-ba3347c457f6"),
+  },
+  {
+    slug: "cannes-lions-2027",
+    category: "professional",
+    title: "Cannes Lions 2027",
+    organizer: "Cannes Lions",
+    venue: "Cannes",
+    city: "Cannes",
+    country: "France",
+    startDate: "2027-06-21",
+    endDate: "2027-06-25",
+    description:
+      "The Cannes Lions festival of creativity runs 21-25 June 2027 in Cannes, per the official site.",
+    sourceUrl: "https://www.canneslions.com/",
+    sourceLabel: "canneslions.com",
+    heroImage: unsplashPhoto("1736766920028-ee18c15c02ac"),
   },
 ];
 
