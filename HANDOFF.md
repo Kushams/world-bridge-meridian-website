@@ -302,7 +302,7 @@ Merged into `main` (PRs #85 to #90): `supabase/travel-auth-requests.sql`; `src/l
 On branch `claude/no-passport-in-email` (not merged): `supabase/functions/notify-client-activity/index.ts`, `supabase/functions/notify-form-submission/index.ts`,
 `supabase/functions/_shared/privacy.ts`, `tests/privacy.test.mjs`.
 
-On branch `claude/handoff` (this commit): `HANDOFF.md`, `docs/handoff-artifacts/` (README, `diana-verification/`, `creators-email/`, `qa-scripts/`).
+On branch `claude/handoff` (this commit): `HANDOFF.md`, `docs/handoff-artifacts/` (README, `diana-verification/`, `creators-email/`, `qa-scripts/`, `recover-files-from-session-transcript.py`).
 
 Live database/functions changes made outside git (recorded here because they are not visible in the repo): migration `travel_auth_requests` applied; one row in
 `company_signature` (name "Earl Anderson", title "Founder & Chief Executive Officer", signature image); edge functions `notify-client-activity` v11 and `notify-form-submission` v13 deployed.

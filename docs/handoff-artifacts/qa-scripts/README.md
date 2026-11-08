@@ -24,3 +24,7 @@ Status: recovered verbatim from the session transcript after the scratch folder 
 | `exhibition-header-screenshots.mjs` | The exhibition page header at 390, 360 and iPad width. Arguments: label, then page path. |
 | `whatsapp-links.mjs` | Checks the WhatsApp links (contact page, an exhibition page, mobile footer) and takes screenshots. |
 | `ipad-footer.mjs` | Footer at iPad mini / Air / Pro sizes, portrait and landscape: checks for overlap and sideways scrolling. |
+| `screenshot-html-email.mjs` | Takes a full-page screenshot of any HTML email file (used to review the creators' email). |
+| `travel-form-pdf-with-signature.mjs` | Renders the Travel Authorisation Form PDF with a signature image on the company line (needs a stand-in PNG; the real signature is not in git). |
+
+Not a QA script: `../recover-files-from-session-transcript.py` replays the file-creating commands found in a Claude Code session transcript (`.jsonl`) into a work folder. It was used on 2026-11-08 to recover these scripts after the scratch folder was lost. Edit its paths and file list before reuse.
