@@ -1,0 +1,34 @@
+import { createRequire } from "node:module";
+import http from "node:http"; import fs from "node:fs"; import path from "node:path";
+const require = createRequire("/opt/node-tools/node_modules/");
+const { chromium } = require("playwright");
+const OUT = "/home/user/world-bridge-meridian-website/out";
+const SH = "/tmp/wbm-qa/wa/"; fs.mkdirSync(SH, { recursive: true });
+const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".woff2": "font/woff2", ".webp": "image/webp" };
+const server = http.createServer((req, res) => { let p = decodeURIComponent(new URL(req.url, "http://x").pathname); let f = path.join(OUT, p); if (!fs.existsSync(f) || fs.statSync(f).isDirectory()) f = fs.existsSync(f + ".html") ? f + ".html" : path.join(f, "index.html"); if (!fs.existsSync(f)) { res.writeHead(404); return res.end(); } res.writeHead(200, { "content-type": types[path.extname(f)] ?? "application/octet-stream" }); fs.createReadStream(f).pipe(res); });
+await new Promise((r) => server.listen(4175, r));
+const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
+async function open(url, w, h, mobile) {
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, isMobile: mobile, hasTouch: mobile });
+  await ctx.addInitScript(() => localStorage.setItem("wbm-cookie-consent", "essential"));
+  const page = await ctx.newPage();
+  await page.route(/challenges\.cloudflare\.com|googletagmanager|google-analytics|mock\.supabase/, (r) => r.abort());
+  await page.goto("http://localhost:4175" + url, { waitUntil: "load" }); await page.waitForTimeout(700);
+  return page;
+}
+let p = await open("/contact", 1280, 900, false);
+const links = await p.$$eval("a[href*='wa.me']", (as) => as.map((a) => decodeURIComponent(a.href)));
+console.log("contact links:", links);
+await p.getByText("Message us on WhatsApp").scrollIntoViewIfNeeded();
+await p.screenshot({ path: SH + "contact.png" });
+p = await open("/exhibitions/kylie-manning-the-mudlarkers-pace-london", 1280, 900, false);
+console.log("exhibition:", await p.$$eval("a[href*='wa.me']", (as) => as.map((a) => decodeURIComponent(a.href))));
+await p.getByText("Ask us on WhatsApp").scrollIntoViewIfNeeded();
+await p.screenshot({ path: SH + "exhibition.png" });
+p = await open("/", 390, 844, true);
+await p.locator("footer").scrollIntoViewIfNeeded();
+const acc = p.locator("footer button", { hasText: "Contact" }).first();
+await acc.click(); await p.waitForTimeout(500);
+console.log("mobile footer wa:", await p.$$eval("footer a[href*='wa.me']", (as) => as.length));
+await p.locator("footer").screenshot({ path: SH + "footer-mobile.png" });
+await browser.close(); server.close();
