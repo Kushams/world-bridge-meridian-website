@@ -157,7 +157,7 @@ Owner asked to change passport copies emailed to the team into a secure link. Fi
 - The pull request for the branch has **not been opened** (GitHub tools were unavailable when this was written) and the repo's `main` does
   not yet contain these files, so `main` and the deployed functions differ until it is merged. 91 tests pass on that branch (86 on `main`).
 
-**7. Client due-diligence reply (documents held back from this public repo).** A prospective Pace creator asked, before uploading her passport or creating an
+**7. Client due-diligence reply (documents are in `docs/handoff-artifacts/diana-verification/`).** A prospective Pace creator asked, before uploading her passport or creating an
 account, for: (1) full registered company name and registration number, (2) registered office address, (3) name of the legal representative, (4) proof of the official
 partnership with Pace Gallery, (5) the name and direct @pacegallery.com email of the Pace employee who authorised WBM's appointment, (6) GDPR data controller details
 and privacy contact, (7) where passport copies are stored and for how long, (8) proof of professional liability insurance. The assistant drafted:
@@ -171,8 +171,10 @@ Owner decisions: the documents must **not name the hosting suppliers**; the host
 address must **not** be added to the website.
 Still blank (highlighted `[brackets]` in the drafts): item 4 attachment (Pace's signed confirmation), item 5 (Pace employee, only with that person's agreement), item 8 (insurance certificate or
 an honest "in progress" wording), and in the statement the period for "other travel details".
-**These drafts are NOT in this repository on purpose.** The repository is public (checked via the GitHub API on 2026-11-08); the drafts name a real person and contain the registration number and
-the address the owner does not want published. See section 9 for how to get them. The statement is rebuilt by a small script that was kept out with them.
+**Where they are:** `docs/handoff-artifacts/diana-verification/` holds `Reply_to_Diana_plain_text.txt` (the version to send), `WBM_Data_Protection_and_Passport_Handling_Statement.pdf`,
+`Pace_Appointment_Confirmation_Letter_TEMPLATE.pdf`, and `build-documents.mjs` (rebuilds both PDFs: `node docs/handoff-artifacts/diana-verification/build-documents.mjs`; needs Playwright and
+the fonts in `public/fonts/pdf`). They contain the creator's first name, the Illinois registration number and the headquarters address. **The owner knowingly approved committing them to this
+repository on 2026-11-08 after being told the repository is public** (checked via the GitHub API). Do not copy those details into other public places (the website, issues, pull requests).
 
 **8. Deleting test accounts and data (NOT done; blocked).** The owner wanted every account that is not staff/admin removed, plus
 one stray contact enquiry and Earl's voice note, because the site is now being used for real. Live data found on 2026-10-15 (read only):
@@ -221,7 +223,7 @@ and told to delete the `.webm` in Storage -> `chat-voice` by hand. **Whether the
 | Travel Authorisation Form (staff send, client fills in and signs) | Merged and live; database set up; **not yet used by a real client** |
 | Footer iPad fix, WhatsApp links, arrange question removed, header fixes (#86 to #90) | Merged and live (verified on the real site after each merge) |
 | Passport/attachment email fix | Functions **deployed live**; repo change on branch `claude/no-passport-in-email` (d4835da), **PR not opened, not merged** |
-| Due-diligence reply + statement + Pace letter template | Drafted; **held back from the public repo** (section 9); not sendable until the blanks in item 7 above are filled |
+| Due-diligence reply + statement + Pace letter template | Drafted and in `docs/handoff-artifacts/diana-verification/`; not sendable until the blanks in item 7 above are filled |
 | Creators' "Plan your trip" email | Finished; archived in `docs/handoff-artifacts/creators-email/` (reconstructed copy) |
 | Test-account and test-data deletion | **Not done** (tool blocked); owner said he would do the account himself |
 | Privacy Policy rewrite | Not started (awaiting owner's yes) |
@@ -263,7 +265,7 @@ Waiting on **someone else**: Pace Gallery (signed confirmation, employee consent
 2. Check the open questions in section 5 with the owner (items 1 to 9). Do not merge anything without the owner saying "merge".
 3. When told to merge the passport-email change: open the PR from `claude/no-passport-in-email`, wait for the CI `verify` check, squash-merge, confirm `main` has the
    files, and re-read the deployed functions (`get_edge_function`) to confirm they still match the repo (they were deployed from these files on 2026-10-15).
-4. Finish the due-diligence reply with the owner's answers (get the held-back drafts from the owner, section 9), rebuild the PDFs, and let the owner send it.
+4. Finish the due-diligence reply with the owner's answers (files in `docs/handoff-artifacts/diana-verification/`), rebuild the PDFs with `build-documents.mjs`, and let the owner send it.
 5. Re-check the test-data deletion state with the read-only queries in item 8.
 6. If the owner agrees, rewrite `src/app/privacy/page.tsx` to match `WBM_Data_Protection_and_Passport_Handling_Statement.pdf` and the real payment methods.
 7. Keep this file current and push at the end of the session (section 0).
@@ -300,21 +302,19 @@ Merged into `main` (PRs #85 to #90): `supabase/travel-auth-requests.sql`; `src/l
 On branch `claude/no-passport-in-email` (not merged): `supabase/functions/notify-client-activity/index.ts`, `supabase/functions/notify-form-submission/index.ts`,
 `supabase/functions/_shared/privacy.ts`, `tests/privacy.test.mjs`.
 
-On branch `claude/handoff` (this commit): `HANDOFF.md`, `docs/handoff-artifacts/` (README, `creators-email/`, `qa-scripts/`).
+On branch `claude/handoff` (this commit): `HANDOFF.md`, `docs/handoff-artifacts/` (README, `diana-verification/`, `creators-email/`, `qa-scripts/`).
 
 Live database/functions changes made outside git (recorded here because they are not visible in the repo): migration `travel_auth_requests` applied; one row in
 `company_signature` (name "Earl Anderson", title "Founder & Chief Executive Officer", signature image); edge functions `notify-client-activity` v11 and `notify-form-submission` v13 deployed.
 
 ---------------------------------------------------------------------------------------------------------------------
 
-## 9. Held back from this public repository (and why)
+## 9. About this repository being public
 
-On 2026-11-08 the GitHub API showed `Kushams/world-bridge-meridian-website` is **public**, and it is also what Cloudflare deploys from. The standing instruction in section 0 says
-everything should be saved to GitHub, so the assistant checked what was in the work before pushing, and did **not** commit:
-- The client due-diligence drafts (plain-text reply, statement PDF, Pace letter template, their builder): they name a real person, and contain the company registration number and the
-  headquarters address, which the owner said must not be published on the site. They were delivered to the owner as files in the chat. A copy was kept on the assistant's machine at
-  `/home/user/held-back-private/due-diligence-drafts/` (outside the repo; this machine's disk may be wiped between sessions).
+On 2026-11-08 the GitHub API showed `Kushams/world-bridge-meridian-website` is **public** (and Cloudflare deploys the live site from it). The owner was told, and chose to commit the due-diligence
+documents anyway. Things that are still deliberately **not** in git, whatever the visibility:
 - The company signature image (it is in the database only).
-- Names and email addresses of third parties (clients/prospects) and the staff members' personal addresses.
-**Decision needed from the owner:** either make the repository private (then the drafts can be committed here), or say explicitly that they may be committed to the public repo, or keep them out
-and send them to the next assistant another way.
+- Any API keys, tokens, passwords or `.env` files (secrets live in Supabase function secrets and the owner's accounts).
+- Staff members' personal email addresses and clients' contact details.
+Consider making the repository private: it would remove the exposure of the due-diligence details above. The live site would need a different way to build (Cloudflare Workers Builds can still connect to
+a private repository, but check the connection first).
