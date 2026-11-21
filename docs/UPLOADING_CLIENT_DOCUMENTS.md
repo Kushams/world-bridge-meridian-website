@@ -47,7 +47,7 @@ Example: `SIGN - Booking terms.pdf` shows as "Booking terms — Needs your signa
 
 ### Where to find what clients send you
 
-You also get an email at `info@worldbridgemeridian.group` for every upload, signature or returned file.
+You also get an email at `travel@worldbridgemeridiangroup.com` for every upload, signature or returned file.
 
 - **Passports, visas and other uploads:** Supabase → Storage → **client-uploads** → the client's email folder →
   `passport`, `visa` or `other`. Click a file to open or download it.

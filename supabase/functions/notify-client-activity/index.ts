@@ -15,8 +15,8 @@ const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const STAFF_URL = "https://worldbridgemeridiangroup.com/staff";
 const MAX_ATTACH = 15 * 1024 * 1024;
-const FROM_EMAIL = "World Bridge Meridian <enquiries@worldbridgemeridian.group>";
-const INTERNAL_EMAIL = "info@worldbridgemeridian.group";
+const FROM_EMAIL = "World Bridge Meridian <travel@worldbridgemeridiangroup.com>";
+const INTERNAL_EMAIL = "travel@worldbridgemeridiangroup.com";
 
 const CORS = {
   "Access-Control-Allow-Origin": "*",

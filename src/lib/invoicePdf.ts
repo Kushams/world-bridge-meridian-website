@@ -68,7 +68,7 @@ const WHITE: RGB = [255, 255, 255];
 const GREEN: RGB = [30, 140, 90];
 
 const SITE = "worldbridgemeridiangroup.com";
-const EMAIL = "info@worldbridgemeridian.group";
+const EMAIL = "travel@worldbridgemeridiangroup.com";
 const PHONE = "+1 (302) 627-3325";
 
 /** A World Bridge Meridian branded invoice as a vector PDF (A4). `emblem` is a PNG data URL; omit to leave the logo out. */

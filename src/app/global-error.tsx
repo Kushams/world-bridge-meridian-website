@@ -26,7 +26,7 @@ export default function GlobalError({ reset }: { error: Error; reset: () => void
             World Bridge Meridian is temporarily unavailable.
           </h1>
           <p style={{ color: "#a6a093", fontFamily: "system-ui, sans-serif" }}>
-            Please try again in a moment, or write to info@worldbridgemeridian.group.
+            Please try again in a moment, or write to travel@worldbridgemeridiangroup.com.
           </p>
           <button
             type="button"

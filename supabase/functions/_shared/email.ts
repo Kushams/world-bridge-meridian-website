@@ -16,12 +16,12 @@ export interface Signature {
 export const TEAM_SIGNATURE: Signature = {
   name: "Client Services",
   title: "World Bridge Meridian",
-  email: "info@worldbridgemeridian.group",
+  email: "travel@worldbridgemeridiangroup.com",
 };
 
 const TITLES: Record<string, string> = {
   "earla668@gmail.com": "Founder & Chief Executive Officer",
-  "info@worldbridgemeridian.group": "Client Services",
+  "travel@worldbridgemeridiangroup.com": "Client Services",
 };
 
 /** Signature for a staff member, from their staff_members row. */

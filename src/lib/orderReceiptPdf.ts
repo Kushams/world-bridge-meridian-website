@@ -142,7 +142,7 @@ export async function buildOrderReceiptPdf(o: OrderReceipt, client: { name: stri
   if (client.name) text(client.email, L, y + 12.5, { color: SOFT });
   text("FROM", 110, y, { size: 7, bold: true, color: GOLD, spacing: 1.4 });
   text("World Bridge Meridian", 110, y + 7, { size: 12, bold: true });
-  text("info@worldbridgemeridian.group", 110, y + 12.5, { color: SOFT });
+  text("travel@worldbridgemeridiangroup.com", 110, y + 12.5, { color: SOFT });
 
   y += 22;
   const rows: [string, string][] = [
@@ -190,7 +190,7 @@ export async function buildOrderReceiptPdf(o: OrderReceipt, client: { name: stri
   fill(GOLD);
   doc.rect(0, H - 14, W, 0.8, "F");
   text("World Bridge Meridian  ·  Bespoke Travel Group", L, H - 6, { size: 7.5, color: CREAM, spacing: 0.3 });
-  text("info@worldbridgemeridian.group   ·   worldbridgemeridiangroup.com", R, H - 6, { size: 7.5, color: GOLD_LIGHT, align: "right" });
+  text("travel@worldbridgemeridiangroup.com   ·   worldbridgemeridiangroup.com", R, H - 6, { size: 7.5, color: GOLD_LIGHT, align: "right" });
   void SAND;
   return doc.output("blob");
 }

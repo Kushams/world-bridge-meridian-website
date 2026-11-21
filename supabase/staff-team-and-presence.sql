@@ -18,10 +18,10 @@ begin
   end if;
   return query
     select s.email, s.role,
-      case when s.email = 'info@worldbridgemeridian.group' then 'World Bridge Meridian' else s.name end,
+      case when s.email = 'travel@worldbridgemeridiangroup.com' then 'World Bridge Meridian' else s.name end,
       s.title
     from public.staff_members s
-    where s.role = 'staff' or s.email = 'info@worldbridgemeridian.group'
+    where s.role = 'staff' or s.email = 'travel@worldbridgemeridiangroup.com'
     order by (s.role = 'staff'), coalesce(s.name, s.email);
 end;
 $$;

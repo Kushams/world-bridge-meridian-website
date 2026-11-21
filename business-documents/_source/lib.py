@@ -6,7 +6,7 @@ OUT = HERE.parent
 CHROME = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome"
 
 COMPANY = "World Bridge Meridian"
-EMAIL = "info@worldbridgemeridian.group"
+EMAIL = "travel@worldbridgemeridiangroup.com"
 PHONE = "+1 (302) 627-3325"
 SITE = "worldbridgemeridiangroup.com"
 PAY_URL = "worldbridgemeridiangroup.com/payments"
@@ -16,7 +16,7 @@ LOGO = "data:image/jpeg;base64," + base64.b64encode((HERE / "logo.jpg").read_byt
 
 CSS = """
 @page { size: Letter; margin: 0.75in 0.8in 0.85in 0.8in;
-  @bottom-left { content: "World Bridge Meridian  |  info@worldbridgemeridian.group  |  +1 (302) 627-3325"; font: 7.5pt 'Liberation Sans', sans-serif; color: #8a7a62; }
+  @bottom-left { content: "World Bridge Meridian  |  travel@worldbridgemeridiangroup.com  |  +1 (302) 627-3325"; font: 7.5pt 'Liberation Sans', sans-serif; color: #8a7a62; }
   @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 7.5pt 'Liberation Sans', sans-serif; color: #8a7a62; } }
 :root { --gold:#a97b3f; --cream:#f1ead8; --ink:#1f1d1a; --muted:#6d6558; --line:#d9ccb2; }
 * { box-sizing: border-box; }

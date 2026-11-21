@@ -12,7 +12,7 @@ export const company = {
   foundedYear: 2012,
   founderName: "Earl Anderson",
   founderTitle: "Founder & CEO",
-  email: "info@worldbridgemeridian.group",
+  email: "travel@worldbridgemeridiangroup.com",
   phone: "+1 (302) 627-3325" as string | null,
   /** The same number is used for WhatsApp. */
   whatsapp: "+1 (302) 627-3325" as string | null,

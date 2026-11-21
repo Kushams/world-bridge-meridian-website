@@ -6,8 +6,8 @@ import { FONT, layout, requestNoun, requestTopic, staffSignature } from "../_sha
 // notify-form-submission: the anon key alone proves nothing.
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const NOTIFY_SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
-const FROM_EMAIL = "World Bridge Meridian <enquiries@worldbridgemeridian.group>";
-const REPLY_TO = "info@worldbridgemeridian.group";
+const FROM_EMAIL = "World Bridge Meridian <travel@worldbridgemeridiangroup.com>";
+const REPLY_TO = "travel@worldbridgemeridiangroup.com";
 const ACCOUNT_URL = "https://worldbridgemeridiangroup.com/my-world-bridge";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;

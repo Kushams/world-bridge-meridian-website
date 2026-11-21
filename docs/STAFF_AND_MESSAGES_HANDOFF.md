@@ -10,7 +10,7 @@ Deployed edge functions: `notify-client`, `notify-client-activity` (from this br
 Staff list (`public.staff_members`):
 | email | role | name | link code |
 |---|---|---|---|
-| info@worldbridgemeridian.group | admin | World Bridge Meridian | — |
+| travel@worldbridgemeridiangroup.com | admin | World Bridge Meridian | — |
 | earla668@gmail.com | admin | Earl (Founder & CEO) | — |
 | youssefamraniwbm@gmail.com | staff | Youssef Amrani | youssef |
 | ravichandranwbm@gmail.com | staff | Ravi Chandran | ravi |

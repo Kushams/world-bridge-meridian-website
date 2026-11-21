@@ -247,7 +247,7 @@ begin
   insert into public.gift_cards (code, amount_cents, balance_cents, kind, redeem_by, promo_valid_days,
                                  purchaser_email, recipient_email, design)
   values (v, round(p_usd * 100), round(p_usd * 100), 'voucher', now() + make_interval(days => p_redeem_within_days),
-          p_valid_days, 'vouchers@worldbridgemeridian.group', 'vouchers@worldbridgemeridian.group', 'classic');
+          p_valid_days, 'travel@worldbridgemeridiangroup.com', 'travel@worldbridgemeridiangroup.com', 'classic');
   return v;
 end;
 $fn$;

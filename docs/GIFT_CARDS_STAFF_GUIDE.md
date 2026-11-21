@@ -3,7 +3,7 @@
 Clients buy at `/gift-cards`, pay in crypto, and your team verifies the payment by hand. Nothing is issued until you say so.
 
 ## 1. A gift card order arrives
-- You get an email titled **Gift card order** at `info@worldbridgemeridian.group`, and a row appears in Supabase →
+- You get an email titled **Gift card order** at `travel@worldbridgemeridiangroup.com`, and a row appears in Supabase →
   Table Editor → **form_submissions** (`form_type` = `gift-card`, status `received`).
 - The row's `payload` shows: amount per card, quantity, total, asset, network, our address, **transaction hash**, the
   buyer, and the recipient and message if it is a gift.

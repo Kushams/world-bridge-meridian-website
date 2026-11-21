@@ -13,8 +13,8 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const NOTIFY_SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-const FROM_EMAIL = "World Bridge Meridian <enquiries@worldbridgemeridian.group>";
-const INTERNAL_EMAIL = "info@worldbridgemeridian.group";
+const FROM_EMAIL = "World Bridge Meridian <travel@worldbridgemeridiangroup.com>";
+const INTERNAL_EMAIL = "travel@worldbridgemeridiangroup.com";
 const STAFF_URL = "https://worldbridgemeridiangroup.com/staff";
 
 type Row = Record<string, unknown>;

@@ -51,7 +51,7 @@ test("the entry-status block (UK ETA) appears for the UK and not for other desti
 
 test("the signer's title follows the same rule as our emails", () => {
   assert.equal(staffTitle({ email: "earla668@gmail.com", role: "admin" }), "Founder & Chief Executive Officer");
-  assert.equal(staffTitle({ email: "info@worldbridgemeridian.group", role: "admin" }), "Client Services");
+  assert.equal(staffTitle({ email: "travel@worldbridgemeridiangroup.com", role: "admin" }), "Client Services");
   assert.equal(staffTitle({ email: "someone@example.com", role: "staff" }), "Travel Coordinating Officer");
 });
 

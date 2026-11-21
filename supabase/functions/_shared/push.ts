@@ -3,7 +3,7 @@ import type { SupabaseClient } from "jsr:@supabase/supabase-js@2";
 
 // Real push notifications to staff phones and computers (Web Push).
 // The VAPID key pair lives in public.push_config (service role only) and is created the first time it is needed.
-const SUBJECT = "mailto:info@worldbridgemeridian.group";
+const SUBJECT = "mailto:travel@worldbridgemeridiangroup.com";
 
 export interface PushPayload {
   title: string;

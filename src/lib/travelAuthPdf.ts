@@ -11,7 +11,7 @@ const CREAM: RGB = [250, 246, 236];
 const LINE: RGB = [200, 188, 160];
 
 const SITE = "worldbridgemeridiangroup.com";
-const EMAIL = "info@worldbridgemeridian.group";
+const EMAIL = "travel@worldbridgemeridiangroup.com";
 
 /** Everything is optional: whatever we know is printed on the form, and the rest is left as a line to write on. */
 export interface TravelAuthData {

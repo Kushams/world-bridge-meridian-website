@@ -13,8 +13,8 @@ const EPV_BASE = Deno.env.get("EPV_BASE_URL") ?? "https://pay.epayvista.com";
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const FROM_EMAIL = "World Bridge Meridian <payments@worldbridgemeridian.group>";
-const INTERNAL_EMAIL = "info@worldbridgemeridian.group";
+const FROM_EMAIL = "World Bridge Meridian <travel@worldbridgemeridiangroup.com>";
+const INTERNAL_EMAIL = "travel@worldbridgemeridiangroup.com";
 
 const reply = (status: number, body: Record<string, unknown>) =>
   new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });

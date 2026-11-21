@@ -6,13 +6,13 @@ import { pushToTeam } from "../_shared/push.ts";
 // Both secrets are set on the function (Edge Functions -> Secrets), never
 // in this file: anyone with repo or dashboard-source access would otherwise
 // be able to send mail as the domain. The Resend key is scoped to
-// "sending_access" on worldbridgemeridian.group.
+// "sending_access" on worldbridgemeridiangroup.com.
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 // Shared with the database trigger, which sends it as x-wbm-notify-secret.
 // The anon key alone proves nothing — it ships in the site's JS bundle.
 const NOTIFY_SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
-const FROM_EMAIL = "World Bridge Meridian <payments@worldbridgemeridian.group>";
-const INTERNAL_EMAIL = "info@worldbridgemeridian.group";
+const FROM_EMAIL = "World Bridge Meridian <travel@worldbridgemeridiangroup.com>";
+const INTERNAL_EMAIL = "travel@worldbridgemeridiangroup.com";
 
 interface CryptoPaymentRecord {
   asset: string;

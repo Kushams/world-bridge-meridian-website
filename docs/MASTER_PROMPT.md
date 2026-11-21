@@ -40,7 +40,7 @@ https://worldbridgemeridiangroup.com
 
 Public contact:
 
-info@worldbridgemeridian.group
+travel@worldbridgemeridiangroup.com
 
 Core positioning:
 
