@@ -56,7 +56,7 @@ export interface TeamMember extends StaffMember {
   clients: number;
 }
 
-export const SITE_URL = "https://worldbridgemeridian.com";
+export const SITE_URL = "https://worldbridgemeridiangroup.com";
 export const personalLink = (code: string) => `${SITE_URL}/?from=${code}`;
 export const staffName = (m: StaffMember) => m.name || m.email;
 

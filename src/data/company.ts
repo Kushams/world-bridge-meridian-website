@@ -4,7 +4,7 @@
  * do not invent a value for it.
  */
 
-export const SITE_URL = "https://worldbridgemeridian.com";
+export const SITE_URL = "https://worldbridgemeridiangroup.com";
 
 export const company = {
   name: "World Bridge Meridian",

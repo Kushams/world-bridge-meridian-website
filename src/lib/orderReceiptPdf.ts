@@ -190,7 +190,7 @@ export async function buildOrderReceiptPdf(o: OrderReceipt, client: { name: stri
   fill(GOLD);
   doc.rect(0, H - 14, W, 0.8, "F");
   text("World Bridge Meridian  ·  Bespoke Travel Group", L, H - 6, { size: 7.5, color: CREAM, spacing: 0.3 });
-  text("info@worldbridgemeridian.group   ·   worldbridgemeridian.com", R, H - 6, { size: 7.5, color: GOLD_LIGHT, align: "right" });
+  text("info@worldbridgemeridian.group   ·   worldbridgemeridiangroup.com", R, H - 6, { size: 7.5, color: GOLD_LIGHT, align: "right" });
   void SAND;
   return doc.output("blob");
 }

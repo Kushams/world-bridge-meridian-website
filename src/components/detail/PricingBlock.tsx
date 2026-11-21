@@ -22,7 +22,7 @@ export function PricingBlock({
       ? `/plan-your-journey?${new URLSearchParams({
           destination: saveItem.title,
           kind: saveItem.type,
-          notes: `I'm interested in "${saveItem.title}" (https://worldbridgemeridian.com${saveItem.href}).`,
+          notes: `I'm interested in "${saveItem.title}" (https://worldbridgemeridiangroup.com${saveItem.href}).`,
         }).toString()}`
       : "/plan-your-journey");
 

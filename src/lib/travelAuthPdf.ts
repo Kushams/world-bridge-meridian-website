@@ -10,7 +10,7 @@ const GOLD_LIGHT: RGB = [217, 171, 99];
 const CREAM: RGB = [250, 246, 236];
 const LINE: RGB = [200, 188, 160];
 
-const SITE = "worldbridgemeridian.com";
+const SITE = "worldbridgemeridiangroup.com";
 const EMAIL = "info@worldbridgemeridian.group";
 
 /** Everything is optional: whatever we know is printed on the form, and the rest is left as a line to write on. */

@@ -67,7 +67,7 @@ const LINE: RGB = [225, 215, 192];
 const WHITE: RGB = [255, 255, 255];
 const GREEN: RGB = [30, 140, 90];
 
-const SITE = "worldbridgemeridian.com";
+const SITE = "worldbridgemeridiangroup.com";
 const EMAIL = "info@worldbridgemeridian.group";
 const PHONE = "+1 (302) 627-3325";
 
