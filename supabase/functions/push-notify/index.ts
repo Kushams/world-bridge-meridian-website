@@ -15,7 +15,7 @@ const NOTIFY_SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const FROM_EMAIL = "World Bridge Meridian <enquiries@worldbridgemeridian.group>";
 const INTERNAL_EMAIL = "info@worldbridgemeridian.group";
-const STAFF_URL = "https://worldbridgemeridian.com/staff";
+const STAFF_URL = "https://worldbridgemeridiangroup.com/staff";
 
 type Row = Record<string, unknown>;
 const text = (v: unknown, max = 160) => String(v ?? "").trim().slice(0, max);

@@ -18,8 +18,8 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const FROM_EMAIL = "World Bridge Meridian <enquiries@worldbridgemeridian.group>";
 const INTERNAL_EMAIL = "info@worldbridgemeridian.group";
-const ACCOUNT_URL = "https://worldbridgemeridian.com/my-world-bridge";
-const STAFF_URL = "https://worldbridgemeridian.com/staff";
+const ACCOUNT_URL = "https://worldbridgemeridiangroup.com/my-world-bridge";
+const STAFF_URL = "https://worldbridgemeridiangroup.com/staff";
 const DAY = 24 * 60 * 60 * 1000;
 const NUDGES = [
   { n: 1, after: 3 * DAY },
@@ -197,7 +197,7 @@ Deno.serve(async (req: Request) => {
     if (!(await claim(key))) continue;
     const first = String((u.user?.user_metadata?.full_name as string | undefined) ?? "").trim().split(/\s+/)[0];
     const coordinatorEmail = handler.get(email);
-    const link = c.kind === "invoice" ? `${ACCOUNT_URL}#invoices` : c.kind === "gift-card" ? "https://worldbridgemeridian.com/gift-cards" : `${ACCOUNT_URL}#wallet`;
+    const link = c.kind === "invoice" ? `${ACCOUNT_URL}#invoices` : c.kind === "gift-card" ? "https://worldbridgemeridiangroup.com/gift-cards" : `${ACCOUNT_URL}#wallet`;
     const ok = await send(
       [email],
       `You haven't finished your payment — ${c.reference}`,

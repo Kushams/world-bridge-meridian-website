@@ -20,7 +20,7 @@ Add a staff member: `insert into public.staff_members (email, role, name, title,
 ## Rules (enforced in the database, not just the UI)
 - Admins see every client; ordinary staff see only clients in `client_assignments` with their email (`staff_can_see`).
 - Clients from the main site start unassigned; an admin assigns them on /staff → client → "Looked after by".
-- Optional personal links `https://worldbridgemeridian.com/?from=<link_code>` auto-assign a new client (never overwrite).
+- Optional personal links `https://worldbridgemeridiangroup.com/?from=<link_code>` auto-assign a new client (never overwrite).
 
 ## Messages (supabase/messages.sql)
 - `client_messages`: one thread per client. Read: the client, their assigned staff, admins. No direct writes.

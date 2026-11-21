@@ -8,7 +8,7 @@ const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const NOTIFY_SHARED_SECRET = Deno.env.get("NOTIFY_SHARED_SECRET");
 const FROM_EMAIL = "World Bridge Meridian <enquiries@worldbridgemeridian.group>";
 const REPLY_TO = "info@worldbridgemeridian.group";
-const ACCOUNT_URL = "https://worldbridgemeridian.com/my-world-bridge";
+const ACCOUNT_URL = "https://worldbridgemeridiangroup.com/my-world-bridge";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 

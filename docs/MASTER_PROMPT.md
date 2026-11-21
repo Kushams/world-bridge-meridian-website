@@ -36,7 +36,7 @@ The resulting database will be used separately by the WBM team for email outreac
 
 Website:
 
-https://worldbridgemeridian.com
+https://worldbridgemeridiangroup.com
 
 Public contact:
 

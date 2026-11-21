@@ -8,9 +8,9 @@ CHROME = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome"
 COMPANY = "World Bridge Meridian"
 EMAIL = "info@worldbridgemeridian.group"
 PHONE = "+1 (302) 627-3325"
-SITE = "worldbridgemeridian.com"
-PAY_URL = "worldbridgemeridian.com/payments"
-JOURNEY_URL = "worldbridgemeridian.com/plan-your-journey"
+SITE = "worldbridgemeridiangroup.com"
+PAY_URL = "worldbridgemeridiangroup.com/payments"
+JOURNEY_URL = "worldbridgemeridiangroup.com/plan-your-journey"
 
 LOGO = "data:image/jpeg;base64," + base64.b64encode((HERE / "logo.jpg").read_bytes()).decode()
 

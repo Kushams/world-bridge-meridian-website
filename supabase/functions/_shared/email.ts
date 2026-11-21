@@ -3,7 +3,7 @@
 // Gmail), and a signature block. Tables + inline styles only, so Gmail,
 // Outlook and Apple Mail all render it the same.
 export const FONT = "Montserrat,'Helvetica Neue',Helvetica,Arial,sans-serif";
-const SITE = "https://worldbridgemeridian.com";
+const SITE = "https://worldbridgemeridiangroup.com";
 const EMBLEM = `${SITE}/images/brand/emblem.png`;
 const GOLD = "#a8813f";
 
@@ -57,7 +57,7 @@ function signatureBlock(s: Signature) {
 <div style="font-size:15px;font-weight:600;line-height:1.4">${escape(s.name)}</div>
 <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:${GOLD};line-height:1.6;margin:2px 0 16px">${escape(s.title)}</div>
 ${lockup(0.7)}
-<div style="font-size:12px;line-height:1.7;color:#55504a;margin-top:14px"><a href="mailto:${escape(s.email)}" style="color:#55504a;text-decoration:none">${escape(s.email)}</a> &nbsp;·&nbsp; <a href="${SITE}" style="color:${GOLD};text-decoration:none">worldbridgemeridian.com</a></div>
+<div style="font-size:12px;line-height:1.7;color:#55504a;margin-top:14px"><a href="mailto:${escape(s.email)}" style="color:#55504a;text-decoration:none">${escape(s.email)}</a> &nbsp;·&nbsp; <a href="${SITE}" style="color:${GOLD};text-decoration:none">worldbridgemeridiangroup.com</a></div>
 </td></tr></table>`;
 }
 

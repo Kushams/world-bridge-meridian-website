@@ -13,8 +13,8 @@ const FROM_EMAIL = "World Bridge Meridian <enquiries@worldbridgemeridian.group>"
 const INTERNAL_EMAIL = "info@worldbridgemeridian.group";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const STAFF_URL = "https://worldbridgemeridian.com/staff";
-const ACCOUNT_URL = "https://worldbridgemeridian.com/my-world-bridge";
+const STAFF_URL = "https://worldbridgemeridiangroup.com/staff";
+const ACCOUNT_URL = "https://worldbridgemeridiangroup.com/my-world-bridge";
 
 type FormType = "contact" | "newsletter" | "journey-request" | "travel-details" | "gift-card" | "travel-credits";
 

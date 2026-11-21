@@ -22,7 +22,7 @@
 
 ## 0. Project facts
 
-- Repo: `Kushams/world-bridge-meridian-website` (default branch `main`). Live site: https://worldbridgemeridian.com
+- Repo: `Kushams/world-bridge-meridian-website` (default branch `main`). Live site: https://worldbridgemeridiangroup.com
 - Stack: Next.js (a newer version than you may know: **read `node_modules/next/dist/docs/` before writing Next code**, see `AGENTS.md`), TypeScript, Tailwind. Built as a static export (`npm run build:cloudflare`, `STATIC_EXPORT=true`) and served from **Cloudflare** (Workers static assets). Netlify and the old GitHub Pages deploy are no longer used. Cloudflare builds from `main`.
 - Backend: **Supabase** project `rkevnmqofvqdmjujlrvd` (eu-west-1), email via **Resend**, bot protection via **Cloudflare Turnstile**.
 - Checks every change must pass: `npm run lint`, `npx tsc --noEmit`, `npm run build`.
@@ -71,7 +71,7 @@
 2. **Deploy edge function `supabase/functions/delete-account`** (`verify_jwt: true`). It deletes the caller's own auth user via the service role; `profiles` and `saved_journeys` cascade. Past `form_submissions` rows are intentionally kept.
 3. **Auth settings** (Supabase dashboard -> Authentication):
    - **"Confirm email" must be ON.** The enquiries policy relies on `email_confirmed_at`; if confirmation is off, anyone could register someone else's email, but `verified_email()` guards it, so also confirm it returns null for unconfirmed users.
-   - Site URL = `https://worldbridgemeridian.com`; Redirect URLs include `https://worldbridgemeridian.com/my-world-bridge` (used by sign-up confirmation, sign-in link and password reset).
+   - Site URL = `https://worldbridgemeridiangroup.com`; Redirect URLs include `https://worldbridgemeridiangroup.com/my-world-bridge` (used by sign-up confirmation, sign-in link and password reset).
    - Check the confirmation / magic-link / recovery email templates read well and come from the right sender.
 4. **Optional, only if the owner asks:** enable the Google provider (needs a Google OAuth client), then set `NEXT_PUBLIC_GOOGLE_SIGNIN=true` in the Cloudflare build environment.
 5. **Verify the form pipeline end to end** (never confirmed with a real submission): submit `/travel-details-form` on the live site with Turnstile -> a `travel-details` row appears in `form_submissions` -> the team email arrives at `info@worldbridgemeridian.group` and the traveler gets the confirmation. Confirm function secrets exist: `RESEND_API_KEY`, `NOTIFY_SHARED_SECRET`, `TURNSTILE_SECRET_KEY`, and the Vault secrets from `supabase/hardening.sql` / `forms.sql`. Check whether `supabase/turnstile.sql` (drops the anon insert policy) has been applied; if not, tell the owner.
@@ -92,7 +92,7 @@ Use `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` from your saved secrets (ne
    readable in Supabase), `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, and `STATIC_EXPORT=true` if the build command needs it.
    Set any that are missing.
 3. After adding or changing any variable, **trigger a redeploy**, because `NEXT_PUBLIC_*` values are baked in at build time.
-4. Turnstile: confirm the widget's allowed hostnames include `worldbridgemeridian.com`.
+4. Turnstile: confirm the widget's allowed hostnames include `worldbridgemeridiangroup.com`.
 5. Only if the owner wants Google sign-in: after you enable the Google provider in Supabase, add
    `NEXT_PUBLIC_GOOGLE_SIGNIN=true` to the build variables and redeploy.
 6. Ask the owner to open the live site on their phone and check: the home hero (no blurred line, no stats row), swipe
