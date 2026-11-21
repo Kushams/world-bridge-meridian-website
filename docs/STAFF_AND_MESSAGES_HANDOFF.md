@@ -28,8 +28,8 @@ Add a staff member: `insert into public.staff_members (email, role, name, title,
 - Activity lines are written automatically: staff sends → `notify-client` logs "We sent you a document: …" etc.;
   client uploads/signs → `notify-client-activity` logs "Uploaded (passport): …"; status changes → trigger `on_status_logged`.
 - Each line carries a link (`#documents`, `#invoices`, `#enquiries`) that opens the existing account section.
-- Emails still go out: staff message → client email "You have a new message" + a copy to every admin (info@, Earl);
-  client message → info@ + assigned staff + every admin. Everything lands at info@ for oversight.
+- Emails still go out: staff message → client email "You have a new message" + a copy to every admin (travel@, Earl);
+  client message → travel@ + assigned staff + every admin. Everything lands at travel@ for oversight.
 - `my_handler()` gives the client their coordinator's name, title, email and profile photo (the staff member's own account photo).
 - UI: client `My World Bridge → Messages` tab (`src/components/account/MessagesPanel.tsx`);
   staff `/staff → client → Messages` block (`src/components/staff/ClientHub.tsx`); shared `src/components/messages/Thread.tsx`.
@@ -46,4 +46,4 @@ Add a staff member: `insert into public.staff_members (email, role, name, title,
 - Tap the mic to record, then tap Send (× discards). Max 5 minutes. UI is in `src/components/messages/Voice.tsx`.
 - Audio is stored in the private bucket `chat-voice` at `<client email>/<ms>.<ext>`. The SQL is in `supabase/voice-notes.sql` (already applied live).
 - The message row has `kind = 'voice'` and `audio_path`, and is written only by the RPC `post_voice(p_client_email, p_path, p_seconds)`.
-- Emails go through the same `notify-client` / `notify-client-activity` message path, so info@ and the admins are copied.
+- Emails go through the same `notify-client` / `notify-client-activity` message path, so travel@ and the admins are copied.

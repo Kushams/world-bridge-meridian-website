@@ -38,7 +38,7 @@ Saved as `form_type = journey-request` ("Journey request — <destination>").
 ## What happens after any of these is sent
 1. The request is saved in `form_submissions` with status **Received**.
 2. The `notify-form-submission` Edge Function emails:
-   - **the team**: info@, every admin (Earl), and the client's assigned staff member if there is one. The email contains every answer plus an **Open this client** button (`/staff?client=<email>#clients`). Replying goes straight to the client.
+   - **the team**: travel@, every admin (Earl), and the client's assigned staff member if there is one. The email contains every answer plus an **Open this client** button (`/staff?client=<email>#clients`). Replying goes straight to the client.
    - **the client**: "We've received your journey request / travel itinerary form / message".
 3. The request appears on the Staff page under **Requests** (assigned staff see only their own clients; admins see all), and in that client's hub.
 4. The client sees it in **My World Bridge → Enquiries** as Received → In review → Proposal sent → Confirmed (or Closed).
@@ -46,7 +46,7 @@ Saved as `form_type = journey-request` ("Journey request — <destination>").
 
 ## After the request: same for every client
 On the Staff page client hub, staff can:
-- chat by text and voice notes (every message is copied to info@ and the admins),
+- chat by text and voice notes (every message is copied to travel@ and the admins),
 - send itineraries and tickets, documents to sign on screen, and forms to download, sign and return,
 - create invoices (card via ePayVista, or crypto) and attach the detailed invoice PDF.
 
@@ -54,13 +54,13 @@ The client gets an email for each of these, and tapping the chat line opens the 
 
 ## Reminder emails (`supabase/reminders.sql` + `send-reminders` Edge Function)
 pg_cron runs `public.run_reminders()` every hour. It calls `send-reminders` using the same Vault key and shared secret as the form trigger.
-- **Client hasn't replied:** if the latest row in a client's thread came from us (a staff message or voice note, a document, a document to sign, a form to return, an invoice, an invoice PDF, or a stage change) and the client hasn't answered for **3 days**, they get "We haven't heard from you" with a **Reply now** button. A second email goes after **7 days**, and that's the limit. No reminder is sent once the latest request is Confirmed or Closed, or if the thread has been quiet for more than 30 days. info@, the admins and the assigned coordinator are BCC'd.
-- **Unassigned client:** at most once a day, info@ and the admins get a list of clients who sent a request more than 24 hours ago and still have no coordinator, each with an "Open this client" link.
+- **Client hasn't replied:** if the latest row in a client's thread came from us (a staff message or voice note, a document, a document to sign, a form to return, an invoice, an invoice PDF, or a stage change) and the client hasn't answered for **3 days**, they get "We haven't heard from you" with a **Reply now** button. A second email goes after **7 days**, and that's the limit. No reminder is sent once the latest request is Confirmed or Closed, or if the thread has been quiet for more than 30 days. travel@, the admins and the assigned coordinator are BCC'd.
+- **Unassigned client:** at most once a day, travel@ and the admins get a list of clients who sent a request more than 24 hours ago and still have no coordinator, each with an "Open this client" link.
 - `public.reminder_log` stores one key per reminder sent (`noreply:<message id>:<1|2>`, `unassigned:<date>`), so nothing is sent twice. To change the timings, edit `NUDGES` / `DAY` in the function.
 
 ## Account controls on a client's page (`supabase/client-controls.sql` + `staff-client-action` Edge Function)
 
-- **Send reminder:** emails the "Checking in" reminder now (calls `send-reminders` with `{email}`); info@, admins and the coordinator are copied.
+- **Send reminder:** emails the "Checking in" reminder now (calls `send-reminders` with `{email}`); travel@, admins and the coordinator are copied.
 - **Stop reminders / Turn reminders back on:** sets `client_flags.reminders_off`; `send-reminders` skips the client.
 - **Block / Unblock account:** bans the auth user (`ban_duration`) so they can't sign in, and sets `client_flags.blocked` (no reminders while blocked).
 - **Delete account (admins only):** removes the client's private files, messages, assignment, flags, requests and invoices, then the auth user.
@@ -71,7 +71,7 @@ pg_cron runs `public.run_reminders()` every hour. It calls `send-reminders` usin
 - Every request stores what the client clicked: exhibition cards (`ArtListingCard`, `EventListingCard`, `CalendarEntryCard`) pass `event` ("Title — Venue, City") into the exhibition form (`payload.exhibition_or_event`); package, cruise, destination and journey-story pages (`PricingBlock`, `kind` param), stays and private journeys pass `kind` + `item` into Design My Journey (`payload.requestType` / `payload.requestedItem`).
 - `requestTopic()` / `requestNoun()` in `supabase/functions/_shared/email.ts` turn that into "exhibition travel request for Mark Rothko — Pace Gallery, New York" or "cruise request for Aegean Isles". The submission emails (team + client), stage-change emails and reminders all use them, so subjects and wording name the exact exhibition, cruise or package.
 - Exhibition emails show the exhibition, travel and itinerary tables and exhibition next steps; cruise and journey emails show the journey answers and their own next steps. The client copy never includes passport or emergency details.
-- Native Reply on client emails (submission, stage change, reminders, staff messages) goes to the assigned coordinator, with info@ also on the reply; with no coordinator it goes to info@. Emails are signed by the coordinator when there is one.
+- Native Reply on client emails (submission, stage change, reminders, staff messages) goes to the assigned coordinator, with travel@ also on the reply; with no coordinator it goes to travel@. Emails are signed by the coordinator when there is one.
 
 ## Open ideas (not built)
 - Price levels: show 2–3 levels per package (e.g. Signature / Luxury / Ultra, each with a "From" price), and pass the chosen one into the wizard's budget step. Exhibitions would stay unpriced and be quoted by invoice.

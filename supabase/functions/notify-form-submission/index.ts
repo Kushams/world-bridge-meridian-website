@@ -232,7 +232,7 @@ function copy(record: FormRecord) {
 
 type StaffRow = { email: string; name: string | null; role: string };
 
-/** info@, every admin, and the staff member looking after this client (if any). */
+/** travel@, every admin, and the staff member looking after this client (if any). */
 async function team(clientEmail: string): Promise<{ to: string[]; coordinator?: StaffRow }> {
   const to = new Set([INTERNAL_EMAIL]);
   const rest = async <T>(path: string): Promise<T[]> => {

@@ -46,7 +46,7 @@ const esc = (v: unknown) =>
 const json = (status: number, body: Record<string, unknown>) =>
   new Response(JSON.stringify(body), { status, headers: { ...CORS, "Content-Type": "application/json" } });
 
-// Every staff reply is copied to the admins (info@ and the founder) for oversight.
+// Every staff reply is copied to the admins (travel@ and the founder) for oversight.
 async function copyToAdmins(caller: ReturnType<typeof createClient>, client: string, clientName: string | null, text: string) {
   const { data: who } = await caller.auth.getUser();
   const sender = who.user?.email?.toLowerCase() ?? "";
