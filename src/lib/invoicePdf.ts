@@ -214,14 +214,8 @@ export async function buildInvoicePdf(inv: PdfInvoice, client: PdfClient, emblem
     fill(GREEN);
     doc.roundedRect(R - chipW - 7, y + (ch - 9) / 2, chipW, 9, 4.5, 4.5, "F");
     text("PAID", R - 7 - chipW / 2, y + (ch - 9) / 2 + 5.9, { size: 7.5, bold: true, color: WHITE, align: "center" });
-  } else {
-    if (inv.dueDate) text(`·  due ${day(inv.dueDate)}`, L + 9 + 40, y + ch * 0.36, { size: 7.5, color: SOFT });
-    const bx = R - 54;
-    const by0 = y + (ch - 12) / 2;
-    fill(FOREST);
-    doc.roundedRect(bx, by0, 47, 12, 6, 6, "F");
-    text("Pay invoice", bx + 23.5, by0 + 7.6, { size: 9, bold: true, color: CREAM, align: "center", spacing: 0.4 });
-    doc.link(bx, by0, 47, 12, { url: `https://${SITE}/my-world-bridge#invoices` });
+  } else if (inv.dueDate) {
+    text(`·  due ${day(inv.dueDate)}`, L + 9 + 40, y + ch * 0.36, { size: 7.5, color: SOFT });
   }
 
   // ---- Line items ------------------------------------------------------------------------------
