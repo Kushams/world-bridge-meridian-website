@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, ReactNode, useState } from "react";
 import { interestTags } from "@/data/interests";
 import { travelStyles } from "@/data/travel-styles";
 import { useAuth, type Profile } from "@/lib/supabase/AuthProvider";
@@ -28,11 +28,32 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
       onClick={onClick}
       aria-pressed={active}
       className={`rounded-full border px-4 py-2 text-xs transition-colors ${
-        active ? "border-gold text-gold" : "border-line text-ivory-dim hover:border-gold"
+        active ? "border-gold bg-gold/10 text-gold" : "border-line text-ivory-dim hover:border-gold"
       }`}
     >
       {children}
     </button>
+  );
+}
+
+/** One tidy card per theme, so the profile reads as grouped sections instead of one long flat form. */
+function SectionCard({
+  title,
+  hint,
+  children,
+}: {
+  title: string;
+  hint?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="rounded-card border hairline bg-charcoal p-6 sm:p-8">
+      <div className="mb-6">
+        <h3 className="font-display text-lg text-ivory leading-snug">{title}</h3>
+        {hint ? <p className="mt-1 text-sm text-stone leading-relaxed">{hint}</p> : null}
+      </div>
+      {children}
+    </section>
   );
 }
 
@@ -102,27 +123,29 @@ function ProfileEditor({ initial }: { initial: Profile }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-        <div>
-          <label htmlFor="pf-name" className={labelClass}>Full name</label>
-          <input id="pf-name" type="text" value={draft.full_name ?? ""} onChange={(e) => set("full_name", e.target.value)} className={inputClass} />
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <SectionCard title="Your details" hint="The basics we use to address you and plan around your home base.">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div>
+            <label htmlFor="pf-name" className={labelClass}>Full name</label>
+            <input id="pf-name" type="text" value={draft.full_name ?? ""} onChange={(e) => set("full_name", e.target.value)} className={inputClass} />
+          </div>
+          <div>
+            <label htmlFor="pf-phone" className={labelClass}>Phone</label>
+            <input id="pf-phone" type="tel" value={draft.phone ?? ""} onChange={(e) => set("phone", e.target.value)} className={inputClass} />
+          </div>
+          <div>
+            <label htmlFor="pf-city" className={labelClass}>Home city / airport</label>
+            <input id="pf-city" type="text" value={draft.home_city ?? ""} onChange={(e) => set("home_city", e.target.value)} placeholder="e.g. New York (JFK)" className={inputClass} />
+          </div>
+          <div>
+            <label htmlFor="pf-nat" className={labelClass}>Nationality</label>
+            <input id="pf-nat" type="text" value={draft.nationality ?? ""} onChange={(e) => set("nationality", e.target.value)} className={inputClass} />
+          </div>
         </div>
-        <div>
-          <label htmlFor="pf-phone" className={labelClass}>Phone</label>
-          <input id="pf-phone" type="tel" value={draft.phone ?? ""} onChange={(e) => set("phone", e.target.value)} className={inputClass} />
-        </div>
-        <div>
-          <label htmlFor="pf-city" className={labelClass}>Home city / airport</label>
-          <input id="pf-city" type="text" value={draft.home_city ?? ""} onChange={(e) => set("home_city", e.target.value)} placeholder="e.g. New York (JFK)" className={inputClass} />
-        </div>
-        <div>
-          <label htmlFor="pf-nat" className={labelClass}>Nationality</label>
-          <input id="pf-nat" type="text" value={draft.nationality ?? ""} onChange={(e) => set("nationality", e.target.value)} className={inputClass} />
-        </div>
-      </div>
+      </SectionCard>
 
-      <div>
+      <SectionCard title="How we reach you" hint="Your consultant will use this first whenever there's news about a journey.">
         <p className={labelClass}>Preferred way to be contacted</p>
         <div className="flex flex-wrap gap-2">
           {contactOptions.map((o) => (
@@ -131,21 +154,34 @@ function ProfileEditor({ initial }: { initial: Profile }) {
             </Chip>
           ))}
         </div>
-      </div>
+      </SectionCard>
 
-      <div>
-        <p className={labelClass}>How you like to travel</p>
-        <div className="flex flex-wrap gap-2">
-          {travelStyles.map((s) => (
-            <Chip key={s.slug} active={draft.travel_styles.includes(s.label)} onClick={() => set("travel_styles", toggle(draft.travel_styles, s.label))}>
-              {s.label}
-            </Chip>
-          ))}
+      <SectionCard title="How you like to travel" hint="The styles you love, and the pace that suits you on the ground.">
+        <div className="space-y-8">
+          <div>
+            <p className={labelClass}>Travel styles</p>
+            <div className="flex flex-wrap gap-2">
+              {travelStyles.map((s) => (
+                <Chip key={s.slug} active={draft.travel_styles.includes(s.label)} onClick={() => set("travel_styles", toggle(draft.travel_styles, s.label))}>
+                  {s.label}
+                </Chip>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className={labelClass}>Travel pace</p>
+            <div className="flex flex-wrap gap-2">
+              {paceOptions.map((o) => (
+                <Chip key={o} active={draft.travel_pace === o} onClick={() => set("travel_pace", draft.travel_pace === o ? null : o)}>
+                  {o}
+                </Chip>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
+      </SectionCard>
 
-      <div>
-        <p className={labelClass}>What draws you</p>
+      <SectionCard title="What draws you" hint="The things we should weave into your journeys whenever we can.">
         <div className="flex flex-wrap gap-2">
           {interestTags.map((t) => (
             <Chip key={t} active={draft.interests.includes(t)} onClick={() => set("interests", toggle(draft.interests, t))}>
@@ -153,41 +189,32 @@ function ProfileEditor({ initial }: { initial: Profile }) {
             </Chip>
           ))}
         </div>
-      </div>
+      </SectionCard>
 
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-        <div>
-          <p className={labelClass}>Travel pace</p>
-          <div className="flex flex-wrap gap-2">
-            {paceOptions.map((o) => (
-              <Chip key={o} active={draft.travel_pace === o} onClick={() => set("travel_pace", draft.travel_pace === o ? null : o)}>
-                {o}
-              </Chip>
-            ))}
+      <SectionCard title="Comfort, food & health" hint="So rooms, meals and arrangements are right from the first night.">
+        <div className="space-y-8">
+          <div>
+            <p className={labelClass}>Bed preference</p>
+            <div className="flex flex-wrap gap-2">
+              {bedOptions.map((o) => (
+                <Chip key={o} active={draft.bed_preference === o} onClick={() => set("bed_preference", draft.bed_preference === o ? null : o)}>
+                  {o}
+                </Chip>
+              ))}
+            </div>
+          </div>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div>
+              <label htmlFor="pf-diet" className={labelClass}>Dietary requirements</label>
+              <input id="pf-diet" type="text" value={draft.dietary_requirements ?? ""} onChange={(e) => set("dietary_requirements", e.target.value)} placeholder="e.g. vegetarian, gluten-free" className={inputClass} />
+            </div>
+            <div>
+              <label htmlFor="pf-allergies" className={labelClass}>Allergies (and how severe)</label>
+              <input id="pf-allergies" type="text" value={draft.allergies ?? ""} onChange={(e) => set("allergies", e.target.value)} className={inputClass} />
+            </div>
           </div>
         </div>
-        <div>
-          <p className={labelClass}>Bed preference</p>
-          <div className="flex flex-wrap gap-2">
-            {bedOptions.map((o) => (
-              <Chip key={o} active={draft.bed_preference === o} onClick={() => set("bed_preference", draft.bed_preference === o ? null : o)}>
-                {o}
-              </Chip>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-        <div>
-          <label htmlFor="pf-diet" className={labelClass}>Dietary requirements</label>
-          <input id="pf-diet" type="text" value={draft.dietary_requirements ?? ""} onChange={(e) => set("dietary_requirements", e.target.value)} placeholder="e.g. vegetarian, gluten-free" className={inputClass} />
-        </div>
-        <div>
-          <label htmlFor="pf-allergies" className={labelClass}>Allergies (and how severe)</label>
-          <input id="pf-allergies" type="text" value={draft.allergies ?? ""} onChange={(e) => set("allergies", e.target.value)} className={inputClass} />
-        </div>
-      </div>
+      </SectionCard>
 
       <p className="text-xs text-stone-dim leading-relaxed">
         We don&apos;t store passport numbers in your profile. You enter those for each trip on the
