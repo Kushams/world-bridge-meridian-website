@@ -1,7 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { layout } from "../_shared/email.ts";
-import { pushToTeam } from "../_shared/push.ts";
+import { clientOwner, pushToTeam, teamEmails } from "../_shared/push.ts";
 
 // Both secrets are set on the function (Edge Functions -> Secrets), never
 // in this file: anyone with repo or dashboard-source access would otherwise
@@ -24,14 +24,14 @@ interface CryptoPaymentRecord {
   submitted_at: string;
 }
 
-async function sendEmail(to: string, subject: string, html: string) {
+async function sendEmail(to: string | string[], subject: string, html: string) {
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${RESEND_API_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject, html: layout(html) }),
+    body: JSON.stringify({ from: FROM_EMAIL, to: Array.isArray(to) ? to : [to], subject, html: layout(html) }),
   });
   if (!res.ok) {
     console.error("Resend send failed", res.status, await res.text());
@@ -59,23 +59,27 @@ Deno.serve(async (req: Request) => {
 
     // Internal notification so a real person actually follows up — this IS
     // the "routed to our team" step, since there is no separate ticketing
-    // system yet.
+    // system yet. Labelled with whose client paid, and copied to every admin.
+    const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
+    const owner = record.payer_email ? await clientOwner(db, record.payer_email) : { staffName: null, tag: "Unassigned" };
+    const teamTo = [...new Set([INTERNAL_EMAIL, ...(await teamEmails(db, record.payer_email ?? null))])];
     await sendEmail(
-      INTERNAL_EMAIL,
-      "New crypto payment reference submitted — needs verification",
+      teamTo,
+      `[${owner.tag}] Crypto payment submitted — needs verification`,
       `
         <h2>New crypto payment submitted</h2>
         ${detailsHtml}
         <p><strong>From:</strong> ${record.payer_name || "(not provided)"} — ${record.payer_email || "(not provided)"}</p>
+        <p><strong>Looked after by:</strong> ${owner.staffName || "Not assigned yet"}</p>
         <p>Verify this transaction on-chain, then update its status in Supabase (Table Editor -> crypto_payment_submissions).</p>
       `,
     );
 
     await pushToTeam(
-      createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } }),
+      db,
       record.payer_email ?? null,
       {
-        title: "Crypto payment submitted: needs verifying",
+        title: `[${owner.tag}] Crypto payment submitted: needs verifying`,
         body: `${record.asset} (${record.network}) from ${record.payer_name || record.payer_email || "a client"}`,
         url: record.payer_email ? `/staff?client=${encodeURIComponent(record.payer_email.toLowerCase())}#clients` : "/staff#today",
         tag: `crypto-${record.transaction_hash}`.slice(0, 60),

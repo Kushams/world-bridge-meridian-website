@@ -71,3 +71,31 @@ export async function teamEmails(db: SupabaseClient, clientEmail?: string | null
 export async function pushToTeam(db: SupabaseClient, clientEmail: string | null, payload: PushPayload) {
   return sendPush(db, await teamEmails(db, clientEmail), payload);
 }
+
+/** Subject tag naming whose client an event belongs to, e.g. "Ravi's client". */
+export function ownerTagFor(staffName: string | null | undefined): string {
+  if (!staffName) return "Unassigned";
+  if (staffName === "World Bridge Meridian") return "Client Services client";
+  const first = staffName.trim().split(/\s+/)[0];
+  return first ? `${first}'s client` : "Unassigned";
+}
+
+export interface ClientOwner {
+  staffEmail: string | null;
+  staffName: string | null;
+  /** Short label for subjects, e.g. "Ravi's client" or "Unassigned". */
+  tag: string;
+}
+
+/** Who looks after a client (client_assignments -> staff_members), for labelling team notifications. */
+export async function clientOwner(db: SupabaseClient, clientEmail: string): Promise<ClientOwner> {
+  const { data: assigned } = await db
+    .from("client_assignments")
+    .select("staff_email")
+    .eq("client_email", clientEmail.toLowerCase())
+    .maybeSingle();
+  if (!assigned?.staff_email) return { staffEmail: null, staffName: null, tag: "Unassigned" };
+  const { data: member } = await db.from("staff_members").select("name").eq("email", assigned.staff_email).maybeSingle();
+  const staffName = member?.name || assigned.staff_email;
+  return { staffEmail: assigned.staff_email, staffName, tag: ownerTagFor(staffName) };
+}

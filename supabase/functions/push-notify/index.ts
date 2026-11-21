@@ -1,7 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { layout } from "../_shared/email.ts";
-import { pushToTeam, teamEmails, type PushPayload } from "../_shared/push.ts";
+import { clientOwner, pushToTeam, teamEmails, type PushPayload } from "../_shared/push.ts";
 
 // Called by database triggers (supabase/push-triggers.sql) when something happens that staff should hear about at once:
 // a client message or upload, a new request, a payment, a crypto payment reference, a new account, a saved journey,
@@ -133,6 +133,9 @@ Deno.serve(async (req: Request) => {
   }
 
   if (!payload) return json(200, { ok: true, skipped: true });
+  // Label every team notification with whose client it belongs to.
+  const owner = who ? await clientOwner(db, who) : null;
+  if (owner) payload = { ...payload, title: `[${owner.tag}] ${payload.title}` };
   const result = await pushToTeam(db, who, payload);
 
   if (emailAlso && RESEND_API_KEY) {
@@ -149,6 +152,7 @@ Deno.serve(async (req: Request) => {
           <h2 style="margin:0 0 12px;font-size:20px;font-weight:600;line-height:1.35">${esc(payload.title)}</h2>
           <p>${esc(payload.body)}</p>
           ${who ? `<p style="color:#55504a">${esc(who)}</p>` : ""}
+          ${owner ? `<p style="color:#55504a">Looked after by: ${esc(owner.staffName || "Not assigned yet")}</p>` : ""}
           <p style="margin:24px 0"><a href="${link}" style="background:#1c1c1c;color:#fff;padding:12px 22px;border-radius:999px;text-decoration:none;font-size:13px;letter-spacing:.05em;text-transform:uppercase">Open this client</a></p>`),
       }),
     });

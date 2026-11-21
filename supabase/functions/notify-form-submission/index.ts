@@ -1,7 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { FONT, layout, requestTopic, type Signature, staffSignature } from "../_shared/email.ts";
-import { pushToTeam } from "../_shared/push.ts";
+import { ownerTagFor, pushToTeam } from "../_shared/push.ts";
 
 // Set as function secrets, never in source. Shared with the database
 // trigger in supabase/forms.sql, which sends the secret as
@@ -296,12 +296,13 @@ Deno.serve(async (req: Request) => {
     const about = topic(record);
     const newsletter = record.form_type === "newsletter";
     const { to, coordinator } = newsletter ? { to: [INTERNAL_EMAIL], coordinator: undefined } : await team(record.email);
+    const tag = ownerTagFor(coordinator?.name || coordinator?.email);
     const button = (href: string, text: string) =>
       `<p style="margin:28px 0"><a href="${href}" style="background:#1c1c1c;color:#fff;padding:12px 22px;border-radius:999px;text-decoration:none;font-family:${FONT};font-size:13px;letter-spacing:.05em;text-transform:uppercase">${esc(text)}</a></p>`;
 
     await sendEmail(
       to,
-      `${label}${about ? `: ${about}` : ""}${record.name ? ` — ${record.name}` : ""}`,
+      `[${tag}] ${label}${about ? `: ${about}` : ""}${record.name ? ` — ${record.name}` : ""}`,
       `
         <p style="margin:0 0 4px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#a8813f">${esc(label)}</p>
         <h2 style="margin:0 0 12px;font-size:20px;font-weight:600;line-height:1.35">${esc(about || record.subject || record.name || record.email)}</h2>
@@ -319,7 +320,7 @@ Deno.serve(async (req: Request) => {
     // Real push notification to the admins and the staff member looking after this client.
     if (!newsletter) {
       await pushToTeam(createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } }), record.email, {
-        title: `New ${label}${record.name ? ` from ${record.name}` : ""}`,
+        title: `[${tag}] New ${label}${record.name ? ` from ${record.name}` : ""}`,
         body: about || record.subject || "Open the staff page to see it",
         url: `/staff?client=${encodeURIComponent(record.email.toLowerCase())}#clients`,
         tag: `request-${record.email.toLowerCase()}`,

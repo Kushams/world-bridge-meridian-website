@@ -1,6 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { FONT, layout, staffSignature } from "../_shared/email.ts";
+import { clientOwner } from "../_shared/push.ts";
 
 // Called by the staff page after staff send a client something. Emails the
 // client a short "something new is in your account" note. Only staff
@@ -46,8 +47,20 @@ const esc = (v: unknown) =>
 const json = (status: number, body: Record<string, unknown>) =>
   new Response(JSON.stringify(body), { status, headers: { ...CORS, "Content-Type": "application/json" } });
 
-// Every staff reply is copied to the admins (travel@ and the founder) for oversight.
-async function copyToAdmins(caller: ReturnType<typeof createClient>, client: string, clientName: string | null, text: string) {
+// Every staff action is copied to the admins (travel@ and the founder) for
+// oversight, labelled with the event and the staff member looking after the
+// client, e.g. "[Ravi's client] Message sent to client — Jane Doe".
+const ADMIN_LABELS: Record<string, string> = {
+  document: "Document sent to client",
+  sign: "Document sent for signature",
+  return: "Form sent to sign and return",
+  invoice: "Invoice sent",
+  invoice_pdf: "Invoice PDF sent",
+  reminder: "Payment reminder sent",
+  message: "Message sent to client",
+};
+
+async function copyToAdmins(caller: ReturnType<typeof createClient>, client: string, clientName: string | null, kind: string, text: string) {
   const { data: who } = await caller.auth.getUser();
   const sender = who.user?.email?.toLowerCase() ?? "";
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
@@ -56,6 +69,8 @@ async function copyToAdmins(caller: ReturnType<typeof createClient>, client: str
   const to = [...new Set([REPLY_TO, ...rows.filter((r) => r.role === "admin").map((r) => r.email)])].filter((e) => e !== sender);
   if (!to.length) return;
   const from = rows.find((r) => r.email === sender)?.name || sender;
+  const owner = await clientOwner(admin, client);
+  const event = ADMIN_LABELS[kind] ?? "Staff update";
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
@@ -63,9 +78,13 @@ async function copyToAdmins(caller: ReturnType<typeof createClient>, client: str
       from: FROM_EMAIL,
       to,
       reply_to: sender || REPLY_TO,
-      subject: `${from} → ${clientName || client}: new message`,
-      html: layout(`<p><b>${esc(from)}</b> sent a message to <b>${esc(clientName || client)}</b> (${esc(client)}):</p>
-        <blockquote style="margin:0;padding:12px 16px;border-left:3px solid #b8964e;background:#f7f4ee;white-space:pre-wrap">${esc(text)}</blockquote>
+      subject: `[${owner.tag}] ${event} — ${clientName || client}`,
+      html: layout(`<p style="margin:0 0 4px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#a8813f">Staff activity</p>
+        <h2 style="margin:0 0 12px;font-size:20px;font-weight:600;line-height:1.35">${esc(event)}</h2>
+        <p><b>Staff member:</b> ${esc(from)}<br>
+        <b>Client:</b> ${esc(clientName || client)} (${esc(client)})<br>
+        <b>Looked after by:</b> ${esc(owner.staffName || "Not assigned yet")}</p>
+        ${text ? `<blockquote style="margin:0;padding:12px 16px;border-left:3px solid #b8964e;background:#f7f4ee;white-space:pre-wrap">${esc(text)}</blockquote>` : ""}
         <p><a href="${STAFF_URL}?client=${encodeURIComponent(client)}#clients">Open this client on the staff page</a></p>`),
     }),
   });
@@ -135,6 +154,6 @@ Deno.serve(async (req: Request) => {
     }),
   });
   if (!res.ok) console.error("Resend send failed", res.status, await res.text());
-  if (kind === "message") await copyToAdmins(supabase, to, client.full_name, title);
+  await copyToAdmins(supabase, to, client.full_name, kind, title);
   return json(200, { ok: res.ok });
 });

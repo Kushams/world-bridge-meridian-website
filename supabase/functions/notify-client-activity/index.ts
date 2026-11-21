@@ -2,7 +2,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { encodeBase64 } from "jsr:@std/encoding@1/base64";
 import { layout } from "../_shared/email.ts";
-import { pushToTeam } from "../_shared/push.ts";
+import { clientOwner, pushToTeam } from "../_shared/push.ts";
 
 // Called by the website after a signed-in client uploads a document, signs one
 // on screen, or returns a signed file. Emails the team, attaching the uploaded
@@ -88,15 +88,20 @@ Deno.serve(async (req: Request) => {
   let attachments: { filename: string; content: string }[] | undefined;
   let fileNote = "";
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
-  // The staff member looking after this client (supabase/staff.sql) gets a copy.
-  const { data: assigned } = await admin.from("client_assignments").select("staff_email").eq("client_email", folder).maybeSingle();
+  // The staff member looking after this client (supabase/staff.sql) gets a copy,
+  // and every admin is copied on everything, so leadership sees all activity.
+  const owner = await clientOwner(admin, folder);
   const recipients = new Set([INTERNAL_EMAIL]);
-  if (assigned?.staff_email) recipients.add(assigned.staff_email);
-  // Chat messages are also copied to every admin, so leadership sees every conversation.
-  if (kind === "message") {
-    const { data: admins } = await admin.from("staff_members").select("email").eq("role", "admin");
-    for (const a of admins ?? []) recipients.add(a.email);
-  }
+  if (owner.staffEmail) recipients.add(owner.staffEmail);
+  const { data: admins } = await admin.from("staff_members").select("email").eq("role", "admin");
+  for (const a of admins ?? []) recipients.add(a.email);
+  const EVENT_LABELS: Record<string, string> = {
+    upload: "Document uploaded",
+    signed: "Document signed on screen",
+    returned: "Signed document returned",
+    message: "New message from client",
+  };
+  const eventLabel = EVENT_LABELS[kind] ?? "Client activity";
   if (path && path.startsWith(`${folder}/`) && !path.includes("..")) {
     const { data: blob } = await admin.storage.from("client-uploads").download(path);
     if (blob && blob.size <= MAX_ATTACH) {
@@ -114,8 +119,12 @@ Deno.serve(async (req: Request) => {
       from: FROM_EMAIL,
       to: [...recipients],
       reply_to: user.email,
-      subject: kind === "message" ? `New message from ${name}` : `Client ${action}: ${String(body.title ?? "").slice(0, 80)} (${name})`,
-      html: layout(`<p><b>${esc(name)}</b> (${esc(user.email)}) ${esc(action)}.</p>
+      subject: `[${owner.tag}] ${eventLabel} — ${name}${kind !== "message" && body.title ? `: ${String(body.title).slice(0, 80)}` : ""}`,
+      html: layout(`<p style="margin:0 0 4px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#a8813f">Client activity</p>
+        <h2 style="margin:0 0 12px;font-size:20px;font-weight:600;line-height:1.35">${esc(eventLabel)}</h2>
+        <p><b>Client:</b> ${esc(name)} (${esc(user.email)})<br>
+        <b>Looked after by:</b> ${esc(owner.staffName || "Not assigned yet")}</p>
+        <p><b>${esc(name)}</b> ${esc(action)}.</p>
         <p>${esc(String(body.title ?? "").slice(0, kind === "message" ? 2000 : 200))}${body.category ? ` &middot; ${esc(String(body.category).slice(0, 40))}` : ""}</p>
         ${fileNote ? `<p>${fileNote}</p>` : ""}
         <p><a href="${STAFF_URL}?client=${encodeURIComponent(folder)}#clients" style="display:inline-block;background:#1c1917;color:#f5f0e6;padding:10px 18px;border-radius:999px;text-decoration:none">${kind === "message" ? "Read and reply" : "Open this client"}</a></p>
@@ -126,7 +135,7 @@ Deno.serve(async (req: Request) => {
   if (!res.ok) console.error("Resend send failed", res.status, await res.text());
   // Real push notification to the admins and the staff member looking after this client's phones.
   await pushToTeam(admin, folder, {
-    title: kind === "message" ? `New message from ${name}` : `${name} ${action}`,
+    title: `[${owner.tag}] ${kind === "message" ? `New message from ${name}` : `${name} ${action}`}`,
     body: String(body.title ?? "").slice(0, 160) || action,
     url: `/staff?client=${encodeURIComponent(folder)}#clients`,
     tag: `client-${folder}`,
