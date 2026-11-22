@@ -12,9 +12,35 @@
 
 const ORIGIN = "https://world-bridge-meridian-website.kushams-og.workers.dev";
 
+// Payment callback for the site's own ePayVista account (merchant 1127,
+// connected 2026-11-22). The old shared account's callbacks used an address
+// on the Supabase host, which ePayVista still has registered to that old
+// account — so the new account takes its callback on the site's own domain
+// instead, a host the old account never used. This route forwards the call
+// untouched (exact body + signature header) to the real receiver.
+const WEBHOOK_TARGET = "https://rkevnmqofvqdmjujlrvd.supabase.co/functions/v1/epv-webhook";
+
 export default {
   async fetch(request) {
     const url = new URL(request.url);
+
+    if (url.pathname === "/epv-webhook") {
+      const headers = new Headers(request.headers);
+      headers.delete("host");
+      const init = { method: request.method, headers, redirect: "manual" };
+      if (request.method !== "GET" && request.method !== "HEAD") {
+        init.body = await request.arrayBuffer();
+      }
+      const resp = await fetch(WEBHOOK_TARGET, init);
+      const out = new Headers(resp.headers);
+      out.set("x-relay", "wbm-v2");
+      return new Response(resp.body, {
+        status: resp.status,
+        statusText: resp.statusText,
+        headers: out,
+      });
+    }
+
     const target = ORIGIN + url.pathname + url.search;
 
     const headers = new Headers(request.headers);
@@ -48,7 +74,7 @@ export default {
         out.append("set-cookie", c.replace(/;\s*domain=[^;]*/gi, ""));
       }
     }
-    out.set("x-relay", "wbm-v1");
+    out.set("x-relay", "wbm-v2");
 
     return new Response(resp.body, {
       status: resp.status,
