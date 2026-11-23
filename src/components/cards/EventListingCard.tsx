@@ -2,6 +2,8 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { formatDate } from "@/components/cards/ArtListingCard";
 import { eventCategoryLabels, type WorldEvent } from "@/data/events";
+import { CardEntrance } from "@/components/motion/CardEntrance";
+import { FolioCardPhoto } from "@/components/motion/FolioCardPhoto";
 
 function daysBetween(a: string, b: string) {
   const msPerDay = 1000 * 60 * 60 * 24;
@@ -35,12 +37,16 @@ export function EventListingCard({ event, today }: { event: WorldEvent; today: s
   const isPast = status.tone === "past";
   const sameDay = event.startDate === event.endDate;
   return (
-    <div
+    <CardEntrance
       className={`flex h-full flex-col overflow-hidden rounded-card border hairline bg-charcoal ${
         isPast ? "opacity-70" : ""
       }`}
     >
-      <div className="relative h-32 w-full shrink-0 md:h-48">
+      <FolioCardPhoto
+        tiltClassName="w-full shrink-0"
+        className="h-32 w-full overflow-hidden md:h-48"
+        maxTilt={0}
+      >
         <Image
           src={event.heroImage}
           alt=""
@@ -50,11 +56,11 @@ export function EventListingCard({ event, today }: { event: WorldEvent; today: s
         />
         <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/10 to-transparent" />
         <span
-          className={`absolute left-4 top-4 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${badgeTone[status.tone]}`}
+          className={`absolute left-4 top-4 z-[6] rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${badgeTone[status.tone]}`}
         >
           {status.label}
         </span>
-      </div>
+      </FolioCardPhoto>
       <div className="flex flex-1 flex-col p-6 md:p-7">
         <p className="eyebrow mb-2">
           {eventCategoryLabels[event.category]} · {event.city}, {event.country}
@@ -93,6 +99,6 @@ export function EventListingCard({ event, today }: { event: WorldEvent; today: s
           ) : null}
         </div>
       </div>
-    </div>
+    </CardEntrance>
   );
 }

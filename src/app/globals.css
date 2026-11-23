@@ -265,6 +265,53 @@ h1.font-display,
   transform: scale(0.96);
 }
 
+/* Card entrances + block-grid photo reveals (motion plan, Pass 2).
+   Clone-safe by design: SwipeRow duplicates card DOM with cloneNode for
+   its endless loop, so no hidden state may live in inline styles or WAAPI
+   fills — a copy must settle correctly on its own. Both effects therefore
+   keep the natural state as the final state and play through stylesheet
+   keyframes: a copy carrying the trigger class simply replays the
+   animation, and a copy without it is already at rest. The motion values
+   are Pass 1's exactly (780ms overshoot entrance; 380ms block flips,
+   staggered diagonally). */
+@keyframes wbm-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(44px) scale(0.965);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.wbm-card-in {
+  animation: wbm-card-in 780ms cubic-bezier(0.34, 1.4, 0.64, 1) both;
+}
+@keyframes wbm-block-out {
+  from {
+    transform: rotateX(0deg);
+    opacity: 1;
+  }
+  to {
+    transform: rotateX(-94deg);
+    opacity: 0;
+  }
+}
+.wbm-blocks > span {
+  opacity: 0;
+}
+.wbm-blocks-in > span {
+  animation: wbm-block-out 380ms cubic-bezier(0.5, 0, 0.9, 0.4) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wbm-card-in {
+    animation: none;
+  }
+  .wbm-blocks-in > span {
+    animation: none;
+  }
+}
+
 /* Slow cinematic zoom-in for hero imagery */
 .hero-zoom {
   animation: hero-zoom 20s ease-out forwards;

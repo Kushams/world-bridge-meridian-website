@@ -2,6 +2,8 @@ import Image from "next/image";
 import { CulturalAccessProgram } from "@/data/culturalAccess";
 import { Button } from "@/components/ui/Button";
 import { venueLine } from "@/lib/place";
+import { CardEntrance } from "@/components/motion/CardEntrance";
+import { FolioCardPhoto } from "@/components/motion/FolioCardPhoto";
 
 const categoryLabel: Record<CulturalAccessProgram["category"], string> = {
   museum: "Museum",
@@ -10,8 +12,12 @@ const categoryLabel: Record<CulturalAccessProgram["category"], string> = {
 
 export function CulturalAccessCard({ program }: { program: CulturalAccessProgram }) {
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-card border hairline bg-charcoal">
-      <div className="relative h-48 w-full shrink-0">
+    <CardEntrance className="flex h-full flex-col overflow-hidden rounded-card border hairline bg-charcoal">
+      <FolioCardPhoto
+        tiltClassName="w-full shrink-0"
+        className="h-48 w-full overflow-hidden"
+        maxTilt={0}
+      >
         <Image
           src={program.heroImage}
           alt="Cultural institution interior"
@@ -20,10 +26,10 @@ export function CulturalAccessCard({ program }: { program: CulturalAccessProgram
           className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/10 to-transparent" />
-        <span className="absolute left-4 top-4 rounded-full bg-ink/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-ivory backdrop-blur">
+        <span className="absolute left-4 top-4 z-[6] rounded-full bg-ink/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-ivory backdrop-blur">
           {categoryLabel[program.category]}
         </span>
-      </div>
+      </FolioCardPhoto>
       <div className="flex flex-1 flex-col p-6 md:p-7">
         <p className="eyebrow mb-2">
           {venueLine(program.institution, program.city, program.country)}
@@ -47,6 +53,6 @@ export function CulturalAccessCard({ program }: { program: CulturalAccessProgram
           </div>
         </div>
       </div>
-    </div>
+    </CardEntrance>
   );
 }

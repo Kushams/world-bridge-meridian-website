@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ArtListing, artListingHref, planTripHref } from "@/data/exhibitions";
 import { Button } from "@/components/ui/Button";
 import { venueLine } from "@/lib/place";
+import { CardEntrance } from "@/components/motion/CardEntrance";
+import { FolioCardPhoto } from "@/components/motion/FolioCardPhoto";
 
 export function formatDate(iso: string) {
   return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-US", {
@@ -46,24 +48,36 @@ export function ArtListingCard({ listing, today }: { listing: ArtListing; today:
   const status = statusFor(listing, today);
   const isPast = status.tone === "past";
   return (
-    <div
+    <CardEntrance
       className={`flex h-full flex-col overflow-hidden rounded-card border hairline bg-charcoal ${
         isPast ? "opacity-70" : ""
       }`}
     >
-      <Link href={artListingHref(listing)} aria-label={`${listing.title}: full details`} className="relative block h-32 w-full shrink-0 md:h-48">
-        <Image
-          src={listing.heroImage}
-          alt="Gallery interior"
-          fill
-          sizes="(min-width: 768px) 400px, 90vw"
-          className={`object-cover ${isPast ? "grayscale" : ""}`}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/10 to-transparent" />
-        <span className={`absolute left-4 top-4 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${badgeTone[status.tone]}`}>
+      <FolioCardPhoto
+        tiltClassName="w-full shrink-0"
+        className="h-32 w-full overflow-hidden md:h-48"
+        maxTilt={0}
+      >
+        <Link
+          href={artListingHref(listing)}
+          aria-label={`${listing.title}: full details`}
+          className="absolute inset-0 block"
+        >
+          <Image
+            src={listing.heroImage}
+            alt="Gallery interior"
+            fill
+            sizes="(min-width: 768px) 400px, 90vw"
+            className={`object-cover ${isPast ? "grayscale" : ""}`}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/10 to-transparent" />
+        </Link>
+        <span
+          className={`pointer-events-none absolute left-4 top-4 z-[6] rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wide ${badgeTone[status.tone]}`}
+        >
           {status.label}
         </span>
-      </Link>
+      </FolioCardPhoto>
       <div className="flex flex-1 flex-col p-6 md:p-7">
         <p className="eyebrow mb-2">
           {venueLine(listing.venue, listing.city, listing.country)}
@@ -94,6 +108,6 @@ export function ArtListingCard({ listing, today }: { listing: ArtListing; today:
           ) : null}
         </div>
       </div>
-    </div>
+    </CardEntrance>
   );
 }
