@@ -1,5 +1,6 @@
 import { Hero } from "@/components/home/Hero";
-import { PlannerBand } from "@/components/home/PlannerBand";
+import { EnquiryBar } from "@/components/home/EnquiryBar";
+import { SignatureStays } from "@/components/home/SignatureStays";
 import { Philosophy } from "@/components/home/Philosophy";
 import { CorePaths } from "@/components/home/CorePaths";
 import { StatsBand } from "@/components/home/StatsBand";
@@ -39,14 +40,15 @@ export default function Home() {
   const featuredJourneyStories = journeyStories;
 
   return (
-    <>
+    <div className="overflow-x-clip">
       <Hero />
-      <PlannerBand />
+      <EnquiryBar />
       <Philosophy />
       <StatsBand />
 
       {/* Journey discovery: how can WBM travel with me */}
       <CorePaths />
+      <SignatureStays />
       <TravelStyles />
 
       <FeatureBanner
@@ -188,6 +190,6 @@ export default function Home() {
       </CardSection>
 
       <FinalCta />
-    </>
+    </div>
   );
 }
