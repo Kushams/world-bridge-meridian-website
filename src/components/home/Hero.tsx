@@ -3,11 +3,13 @@
 import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { destinations } from "@/data/destinations";
+import { localImage } from "@/data/images";
 import { Button } from "@/components/ui/Button";
 import { company } from "@/data/company";
 
 /**
- * Cinematic full-viewport hero: three destination slides cross-wiped by a
+ * Cinematic full-viewport hero: four slides (three destinations, then the
+ * brand photograph) cross-wiped by a
  * soft misty right-to-left mask wipe (no crossfades), a thumbnail rail on
  * concentric rings, drifting mist banks and a slow Ken Burns settle.
  * Motion language adapted from a reference travel landing page, rebuilt in
@@ -30,7 +32,13 @@ const SLIDE_DEFS: { slug: string; kicker: string; railTitle: string }[] = [
   { slug: "santorini", kicker: "Island Escapes", railTitle: "Discover Santorini" },
 ];
 
-const slides: Slide[] = SLIDE_DEFS.map((def) => {
+/** Main slide imagery at presentation resolution; rail thumbs stay light. */
+const hiRes = (url: string) =>
+  url.includes("images.unsplash.com")
+    ? url.replace("w=1600", "w=2560").replace("q=80", "q=90")
+    : url;
+
+const destinationSlides: Slide[] = SLIDE_DEFS.map((def) => {
   const d = destinations.find((x) => x.slug === def.slug) ?? destinations[0];
   return {
     slug: d.slug,
@@ -38,10 +46,23 @@ const slides: Slide[] = SLIDE_DEFS.map((def) => {
     kicker: def.kicker,
     railTitle: def.railTitle,
     caption: d.shortDescription,
-    image: d.heroImage,
+    image: hiRes(d.heroImage),
     thumb: d.heroImage.replace("w=1600", "w=400"),
   };
 });
+
+/** Fourth slide: the previous hero's brand photograph, after the locations. */
+const brandSlide: Slide = {
+  slug: "beyond",
+  title: "BEYOND",
+  kicker: "Bespoke Journeys, Designed Around You",
+  railTitle: "Journeys Beyond the Ordinary",
+  caption: company.tagline,
+  image: localImage("/images/brand/hero-art.jpg"),
+  thumb: localImage("/images/brand/hero-art.jpg"),
+};
+
+const slides: Slide[] = [...destinationSlides, brandSlide];
 
 const WIPE_MS = 1250;
 const ADVANCE_MS = 5500;
