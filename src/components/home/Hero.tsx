@@ -27,15 +27,20 @@ interface Slide {
   imageMobile: string | null;
   /** Overrides the default photo treatment (the brand slide only). */
   imgClassName?: string;
-  /** Backdrop behind the photo (the brand slide's letterbox bands). */
+  /** Backdrop behind the photo (the brand slide paints its slide dark). */
   backdropClassName?: string;
+  /** The brand slide: dark slide, stacked old-hero layout below lg. */
+  brand?: boolean;
   thumb: string;
 }
 
-const SLIDE_DEFS: { slug: string; kicker: string; railTitle: string; imageId: string; mobileCrop: string }[] = [
+const SLIDE_DEFS: { slug: string; kicker: string; railTitle: string; imageId: string; mobileCrop: string; mobileImageId?: string }[] = [
   { slug: "london", kicker: "Exhibitions · Theatre · The Arts", railTitle: "Discover London", imageId: "1513026705753-bc3fffca8bf4", mobileCrop: "crop=entropy" },
   { slug: "paris", kicker: "Arts & Culture Journeys", railTitle: "Discover Paris", imageId: "1502602898657-3e91760cbb34", mobileCrop: "crop=focalpoint&fp-x=0.68" },
-  { slug: "santorini", kicker: "Island Escapes", railTitle: "Discover Santorini", imageId: "1570077188670-e3a8d69ac5ff", mobileCrop: "crop=focalpoint&fp-x=0.40" },
+  // Santorini's phone frame is a different, portrait-native photograph —
+  // the blue domes over the caldera — because a tall slice of the wide
+  // dusk panorama read as over-zoomed. Desktop keeps the panorama.
+  { slug: "santorini", kicker: "Island Escapes", railTitle: "Discover Santorini", imageId: "1570077188670-e3a8d69ac5ff", mobileCrop: "crop=focalpoint&fp-x=0.5&fp-y=0.45", mobileImageId: "1613395877344-13d4a8e0d49e" },
 ];
 
 /** Main slide imagery at presentation resolution; rail thumbs stay light. */
@@ -62,16 +67,18 @@ const destinationSlides: Slide[] = SLIDE_DEFS.map((def) => {
     railTitle: def.railTitle,
     caption: d.shortDescription,
     image: hiRes(base),
-    imageMobile: tallCrop(def.imageId, def.mobileCrop),
+    imageMobile: tallCrop(def.mobileImageId ?? def.imageId, def.mobileCrop),
     thumb: base.replace("w=1600", "w=400"),
   };
 });
 
 /**
  * Fourth slide: the previous hero's brand photograph, after the locations.
- * Its treatment mirrors the pre-rebuild hero: on phones the whole artwork
- * is presented at its natural proportions, centred, its foot fading away;
- * on desktop it fills the frame at the old 62% 50% position, with no fade.
+ * Its treatment mirrors the pre-rebuild hero exactly: the slide is solid
+ * dark at every size; below lg the artwork is a full-width block in its
+ * native aspect at the top (foot fading) with the text stacked on the dark
+ * beneath it — nothing overlaid on the picture; at lg it fills the frame
+ * at the old 62% 50% position, no fade, text over the photo.
  */
 const brandSlide: Slide = {
   slug: "beyond",
@@ -82,8 +89,9 @@ const brandSlide: Slide = {
   image: localImage("/images/brand/hero-art.jpg"),
   imageMobile: null,
   imgClassName:
-    "h-full w-full object-contain object-center [mask-image:linear-gradient(to_bottom,#000_72%,transparent_100%)] lg:object-cover lg:object-[62%_50%] lg:[mask-image:none]",
-  backdropClassName: "bg-ink",
+    "h-full w-full object-cover object-center [mask-image:linear-gradient(to_bottom,#000_72%,transparent_100%)] lg:object-[62%_50%] lg:[mask-image:none]",
+  backdropClassName: "bg-scrim",
+  brand: true,
   thumb: localImage("/images/brand/hero-art.jpg"),
 };
 
@@ -103,10 +111,13 @@ const HERO_CSS = `
 @keyframes wbm-grow-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 @keyframes wbm-grow-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes wbm-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@media (min-width: 1024px) { .wbm-kb-lg { animation: wbm-kb 12s linear forwards; } }
 `;
 
 const TITLE_GRADIENT =
-  "linear-gradient(180deg, rgba(248,244,234,0.97) 0%, rgba(248,244,234,0.88) 36%, rgba(248,244,234,0.18) 100%)";
+  "linear-gradient(180deg, rgba(248,244,234,0.99) 0%, rgba(248,244,234,0.95) 40%, rgba(248,244,234,0.85) 72%, rgba(248,244,234,0.62) 100%)";
+const TITLE_SCRIM =
+  "linear-gradient(100deg, rgba(20,17,12,0.52) 0%, rgba(20,17,12,0.30) 38%, rgba(20,17,12,0) 68%), linear-gradient(180deg, rgba(20,17,12,0.38) 0%, rgba(20,17,12,0) 42%)";
 const TOP_TINT =
   "linear-gradient(180deg, rgba(20,17,12,0.42) 0%, rgba(20,17,12,0.08) 26%, transparent 46%)";
 const MIST_BG =
@@ -235,6 +246,11 @@ export function Hero() {
   const topMistOpacity = Math.min(scrollY / (0.45 * vh), 1) * 0.85;
   const railOpacity = Math.max(1 - scrollY / (0.5 * vh), 0);
   const wipeEdge = wipe ? wipe.p * 135 : 0;
+  // While the brand slide is the one being shown, the section-level cream
+  // fade, the shared tagline block and the rail step aside below lg — the
+  // brand slide carries its own stacked text on solid dark there.
+  const shownIndex = wipe ? wipe.to : active;
+  const brandShown = slides[shownIndex]?.brand === true;
 
   const renderSlide = (slide: Slide, i: number) => {
     const isActive = !wipe && active === i;
@@ -253,7 +269,7 @@ export function Hero() {
     return (
       <div
         key={slide.slug}
-        className="absolute inset-0 overflow-hidden"
+        className={`absolute inset-0 overflow-hidden ${slide.brand ? "bg-scrim" : ""}`}
         style={{
           zIndex: isIncoming ? 3 : isOutgoing ? 2 : 2,
           maskImage: mask,
@@ -261,16 +277,29 @@ export function Hero() {
         }}
         aria-hidden={!isActive && !isIncoming}
       >
-        {/* Photo layer */}
-        <div className="absolute -inset-[3%]" style={{ transform: photoTransform }}>
+        {/* Photo layer. The brand slide's layer is flush below lg so its
+            artwork block is exactly full-width in native aspect; the -3%
+            bleed returns at lg where the photo fills the frame. */}
+        <div
+          className={slide.brand ? "absolute inset-0 lg:-inset-[3%]" : "absolute -inset-[3%]"}
+          style={{ transform: photoTransform }}
+        >
           <div
             key={isActive ? `kb-${cycle}` : undefined}
-            className="absolute inset-0"
-            style={isActive && !reduced ? { animation: "wbm-kb 12s linear forwards" } : undefined}
+            className={`absolute inset-0 ${slide.brand && isActive && !reduced ? "wbm-kb-lg" : ""}`}
+            style={
+              !slide.brand && isActive && !reduced
+                ? { animation: "wbm-kb 12s linear forwards" }
+                : undefined
+            }
           >
             <picture
-              className={`absolute inset-0 block ${slide.backdropClassName ?? ""}`}
-              style={{ transform: isActive ? undefined : "scale(1.04)" }}
+              className={
+                slide.brand
+                  ? `absolute inset-x-0 top-[4.5rem] block aspect-[1254/790] md:top-[5.5rem] lg:inset-0 lg:top-0 lg:aspect-auto ${slide.backdropClassName ?? ""}`
+                  : `absolute inset-0 block ${slide.backdropClassName ?? ""}`
+              }
+              style={{ transform: slide.brand || isActive ? undefined : "scale(1.04)" }}
             >
               {slide.imageMobile && (
                 <>
@@ -287,10 +316,22 @@ export function Hero() {
             </picture>
           </div>
         </div>
-        {/* Top tint behind the header */}
-        <div className="absolute inset-0" style={{ backgroundImage: TOP_TINT }} />
-        {/* Giant gradient title */}
-        <div className="absolute left-6 top-[15%] z-[5] md:left-10 lg:left-[3.2vw] lg:top-[17%]">
+        {/* Top tint behind the header (desktop-only on the brand slide —
+            the old hero left the phone artwork untinted) */}
+        <div
+          className={`absolute inset-0 ${slide.brand ? "hidden lg:block" : ""}`}
+          style={{ backgroundImage: TOP_TINT }}
+        />
+        {/* Legibility scrim concentrated behind the title zone */}
+        <div
+          className={`absolute inset-0 ${slide.brand ? "hidden lg:block" : ""}`}
+          style={{ backgroundImage: TITLE_SCRIM }}
+        />
+        {/* Giant gradient title (desktop-only on the brand slide; below lg
+            it uses the stacked solid-title layout further down) */}
+        <div
+          className={`absolute left-6 top-[15%] z-[5] md:left-10 lg:left-[3.2vw] lg:top-[17%] ${slide.brand ? "hidden lg:block" : ""}`}
+        >
           <p className="eyebrow-on-photo mb-4 hidden text-[0.7rem] font-semibold uppercase tracking-[0.26em] text-gold-bright sm:block">
             {slide.kicker}
           </p>
@@ -301,6 +342,7 @@ export function Hero() {
               WebkitBackgroundClip: "text",
               backgroundClip: "text",
               color: "transparent",
+              filter: "drop-shadow(0 3px 16px rgba(20,17,12,0.45))",
             }}
           >
             {slide.title.split(" ").map((word, wi) => (
@@ -320,6 +362,30 @@ export function Hero() {
             ))}
           </TitleTag>
         </div>
+        {/* Brand slide below lg: the old hero's stacked layout — title,
+            kicker, tagline and CTAs sit on the solid dark slide beneath
+            the artwork block, never overlaid on the picture. */}
+        {slide.brand && (
+          <div className="absolute inset-x-0 top-0 z-[5] px-6 pt-[calc(4.5rem+63vw+1.75rem)] md:px-10 md:pt-[calc(5.5rem+63vw+2rem)] lg:hidden">
+            <p className="eyebrow-on-photo mb-4 text-[0.7rem] font-semibold uppercase tracking-[0.26em] text-gold-bright">
+              {slide.kicker}
+            </p>
+            <TitleTag className="font-display text-[13vw] font-semibold uppercase leading-[0.95] tracking-[-0.01em] text-on-photo sm:text-[11vw]">
+              {slide.title}
+            </TitleTag>
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-on-photo-dim md:text-base">
+              {slide.caption}
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Button href="/plan-your-journey" variant="photo" size="lg">
+                Design Your Journey
+              </Button>
+              <Button href="/explore" variant="photo-outline" size="lg">
+                Explore Journeys
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -399,9 +465,10 @@ export function Hero() {
         />
       )}
 
-      {/* Bottom fade into the page */}
+      {/* Bottom fade into the page (steps aside below lg on the brand
+          slide, whose dark slide runs to the section's foot, as before) */}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[8] h-[46%]"
+        className={`pointer-events-none absolute inset-x-0 bottom-0 z-[8] h-[46%] transition-opacity duration-500 ${brandShown ? "max-lg:opacity-0" : ""}`}
         style={{
           backgroundImage:
             "linear-gradient(to top, #faf6ec 0%, rgba(250,246,236,0.92) 18%, rgba(250,246,236,0.45) 55%, transparent 100%)",
@@ -409,11 +476,16 @@ export function Hero() {
         aria-hidden
       />
 
-      {/* Thumbnail rail */}
+      {/* Thumbnail rail (fades out below lg while the brand slide shows —
+          its full-width artwork block and stacked text leave it no room
+          at sm–lg widths) */}
       <div
-        className="absolute right-[4vw] top-[calc(74px+9%)] z-20 hidden flex-col items-center sm:flex"
-        style={{ transform: `translateY(${scrollY * 0.2}px)`, opacity: railOpacity }}
+        className={`absolute inset-0 z-20 transition-opacity duration-500 ${brandShown ? "max-lg:pointer-events-none max-lg:opacity-0" : ""}`}
       >
+        <div
+          className="absolute right-[4vw] top-[calc(74px+9%)] hidden flex-col items-center sm:flex"
+          style={{ transform: `translateY(${scrollY * 0.2}px)`, opacity: railOpacity }}
+        >
         {slides.map((slide, i) => {
           const isA = (wipe ? wipe.to : active) === i;
           return (
@@ -468,6 +540,7 @@ export function Hero() {
             </button>
           );
         })}
+        </div>
       </div>
 
       {/* Caption + connector, anchored to the active thumbnail */}
@@ -509,8 +582,11 @@ export function Hero() {
         </div>
       )}
 
-      {/* Tagline + CTAs */}
-      <div className="absolute bottom-[16vh] left-6 z-20 md:left-10 lg:bottom-[19vh] lg:left-[3.2vw]">
+      {/* Tagline + CTAs (below lg the brand slide carries its own, so
+          this shared block steps aside while it is shown) */}
+      <div
+        className={`absolute bottom-[16vh] left-6 z-20 transition-opacity duration-500 md:left-10 lg:bottom-[19vh] lg:left-[3.2vw] ${brandShown ? "max-lg:pointer-events-none max-lg:opacity-0" : ""}`}
+      >
         <p className="eyebrow-on-photo mb-3 text-[0.7rem] font-semibold uppercase tracking-[0.26em] text-gold-bright">
           {company.heroEyebrow}
         </p>
