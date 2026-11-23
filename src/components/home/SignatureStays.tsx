@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { notableStays, type NotableStay } from "@/data/topStays";
 import { Container } from "@/components/ui/Container";
+import { FolioTilt } from "@/components/motion/FolioTilt";
 
 /**
  * "Signature Stays & Journeys" — a portrait-card grid of WBM's notable stays
@@ -41,6 +42,9 @@ interface Flight {
   from: DOMRect;
 }
 
+const BLOCK_COLS = 5;
+const BLOCK_ROWS = 4;
+
 function StayCard({
   stay,
   index,
@@ -52,35 +56,138 @@ function StayCard({
   visible: boolean;
   onOpen: (stay: NotableStay, img: HTMLImageElement | null) => void;
 }) {
-  // Entrance stagger uses a transition delay; clear it once the card has
-  // risen so hover feedback stays instant.
-  const [entered, setEntered] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const blocksRef = useRef<HTMLSpanElement>(null);
+  const glintRef = useRef<HTMLSpanElement>(null);
+  const playedRef = useRef(false);
+  const lastGlintRef = useRef(0);
+
+  const runGlint = useCallback(() => {
+    const g = glintRef.current;
+    if (!g) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const now = performance.now();
+    if (now - lastGlintRef.current < 1200) return;
+    lastGlintRef.current = now;
+    g.animate(
+      [
+        { transform: "translateX(-180%) skewX(-18deg)", opacity: 0 },
+        { opacity: 1, offset: 0.16 },
+        { transform: "translateX(280%) skewX(-18deg)", opacity: 0 },
+      ],
+      { duration: 950, easing: "cubic-bezier(0.4, 0, 0.2, 1)" },
+    );
+  }, []);
+
+  // Entrance (spring overshoot), block-grid photo reveal and the entry
+  // glint all fire once, the first time the card becomes visible.
   useEffect(() => {
-    if (!visible) return;
-    const t = window.setTimeout(() => setEntered(true), 750 + (index % 4) * 90);
-    return () => window.clearTimeout(t);
-  }, [visible, index]);
+    if (!visible || playedRef.current) return;
+    playedRef.current = true;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const wrap = wrapRef.current;
+    const grid = blocksRef.current;
+    if (reduced) {
+      if (wrap) wrap.style.opacity = "1";
+      if (grid) grid.style.display = "none";
+      return;
+    }
+    if (wrap) {
+      const anim = wrap.animate(
+        [
+          { opacity: 0, transform: "translateY(44px) scale(0.965)" },
+          { opacity: 1, transform: "translateY(0px) scale(1)" },
+        ],
+        {
+          duration: 780,
+          delay: (index % 4) * 60,
+          easing: "cubic-bezier(0.34, 1.4, 0.64, 1)",
+          fill: "backwards",
+        },
+      );
+      anim.onfinish = () => {
+        try {
+          anim.commitStyles();
+        } catch {
+          /* styles already final */
+        }
+        anim.cancel();
+      };
+    }
+    let hideTimer = 0;
+    let glintTimer = 0;
+    if (grid) {
+      const blocks = Array.from(grid.children) as HTMLElement[];
+      blocks.forEach((b, i) => {
+        const col = i % BLOCK_COLS;
+        const row = Math.floor(i / BLOCK_COLS);
+        b.animate(
+          [
+            { transform: "rotateX(0deg)", opacity: 1 },
+            { transform: "rotateX(-94deg)", opacity: 0 },
+          ],
+          {
+            duration: 380,
+            delay: 120 + (col + row) * 38,
+            easing: "cubic-bezier(0.5, 0, 0.9, 0.4)",
+            fill: "forwards",
+          },
+        );
+      });
+      const total = 120 + (BLOCK_COLS - 1 + BLOCK_ROWS - 1) * 38 + 380;
+      hideTimer = window.setTimeout(() => {
+        grid.style.display = "none";
+      }, total + 60);
+      glintTimer = window.setTimeout(runGlint, Math.max(0, total - 200));
+    }
+    return () => {
+      window.clearTimeout(hideTimer);
+      window.clearTimeout(glintTimer);
+    };
+  }, [visible, index, runGlint]);
+
   return (
-    <button
-      type="button"
-      onClick={(e) => onOpen(stay, e.currentTarget.querySelector("img"))}
-      className="group relative block aspect-[203/268] w-full overflow-hidden rounded-xl text-left shadow-[0_12px_30px_rgba(90,64,30,0.18)] transition-all duration-700 hover:-translate-y-1.5 hover:shadow-[0_22px_44px_rgba(90,64,30,0.28)]"
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? undefined : "translateY(40px)",
-        transitionDelay: entered ? "0ms" : `${(index % 4) * 90}ms`,
-      }}
-      aria-label={`View ${stay.name}`}
-    >
-      <Image
-        src={stay.heroImage}
-        alt={stay.name}
-        fill
-        sizes="(max-width: 640px) 50vw, (max-width: 1000px) 50vw, 25vw"
-        className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.07]"
-      />
-      <span className="scrim-card absolute inset-0" aria-hidden />
-      <span className="absolute inset-x-0 bottom-0 p-4">
+    <div ref={wrapRef} className="w-full" style={{ opacity: 0 }}>
+      <FolioTilt
+        className="w-full"
+        onHoverChange={(hovering) => {
+          if (hovering) runGlint();
+        }}
+      >
+        <button
+          type="button"
+          onClick={(e) => onOpen(stay, e.currentTarget.querySelector("img"))}
+          className="group relative block aspect-[203/268] w-full overflow-hidden rounded-xl text-left"
+          aria-label={`View ${stay.name}`}
+        >
+          <Image
+            src={stay.heroImage}
+            alt={stay.name}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1000px) 50vw, 25vw"
+            className="object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.07]"
+          />
+          <span className="scrim-card absolute inset-0" aria-hidden />
+          {/* Block-grid reveal — solid blocks flip away over the photo */}
+          <span
+            ref={blocksRef}
+            aria-hidden
+            className="absolute inset-0 z-[5] grid"
+            style={{
+              gridTemplateColumns: `repeat(${BLOCK_COLS}, 1fr)`,
+              gridTemplateRows: `repeat(${BLOCK_ROWS}, 1fr)`,
+              perspective: "420px",
+            }}
+          >
+            {Array.from({ length: BLOCK_COLS * BLOCK_ROWS }).map((_, i) => (
+              <span
+                key={i}
+                className="bg-scrim shadow-[inset_0_0_0_1px_rgba(250,246,236,0.06)]"
+                style={{ transformOrigin: "50% 0%", backfaceVisibility: "hidden" }}
+              />
+            ))}
+          </span>
+          <span className="absolute inset-x-0 bottom-0 z-[6] p-4">
         <span className="mb-1 block text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-gold-bright">
           {stay.kind}
         </span>
@@ -94,8 +201,21 @@ function StayCard({
           </svg>
           {stay.place}
         </span>
-      </span>
-    </button>
+          </span>
+          {/* Glint — a diagonal light sweep, fired on entry and on hover */}
+          <span
+            ref={glintRef}
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 left-0 z-[7] w-[45%] opacity-0"
+            style={{
+              background:
+                "linear-gradient(100deg, rgba(255,244,214,0) 0%, rgba(255,244,214,0.38) 50%, rgba(255,244,214,0) 100%)",
+              transform: "translateX(-180%) skewX(-18deg)",
+            }}
+          />
+        </button>
+      </FolioTilt>
+    </div>
   );
 }
 
@@ -109,6 +229,8 @@ export function SignatureStays() {
   const targetRef = useRef<HTMLDivElement>(null);
   const cloneRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const photoInnerRef = useRef<HTMLDivElement>(null);
+  const copyRef = useRef<HTMLDivElement>(null);
 
   // Scroll-into-view staggered rise
   useEffect(() => {
@@ -201,6 +323,38 @@ export function SignatureStays() {
     return () => anim.cancel();
   }, [flight, detail]);
 
+  // HAVEN depth inside the overlay: on scroll the photo drifts a touch
+  // slower than the copy beside it. Transform-only, rAF-throttled, and
+  // the photo inner is pre-scaled so its drift never opens a gap.
+  useEffect(() => {
+    if (!detail) return;
+    const scroller = overlayRef.current;
+    if (!scroller) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    const apply = () => {
+      raf = 0;
+      const y = scroller.scrollTop;
+      const photo = photoInnerRef.current;
+      if (photo) {
+        photo.style.transform = `translateY(${(y * 0.06).toFixed(1)}px) scale(1.16)`;
+      }
+      const copy = copyRef.current;
+      if (copy) {
+        copy.style.transform = `translateY(${(-y * 0.03).toFixed(1)}px)`;
+      }
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    apply();
+    return () => {
+      scroller.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [detail]);
+
   const enquire = (stay: NotableStay) => {
     try {
       sessionStorage.setItem(
@@ -290,14 +444,20 @@ export function SignatureStays() {
                   ref={targetRef}
                   className="relative aspect-[512/445] w-full overflow-hidden rounded-[10px] bg-charcoal-2"
                 >
-                  <Image
-                    src={hiRes(detail.heroImage)}
-                    alt={detail.name}
-                    fill
-                    sizes="(max-width: 1024px) 100vw, 55vw"
-                    className="object-cover"
-                    style={{ opacity: flightDone ? 1 : 0, transition: "opacity 0.25s ease" }}
-                  />
+                  <div
+                    ref={photoInnerRef}
+                    className="absolute inset-0"
+                    style={{ transform: "scale(1.16)" }}
+                  >
+                    <Image
+                      src={hiRes(detail.heroImage)}
+                      alt={detail.name}
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 55vw"
+                      className="object-cover"
+                      style={{ opacity: flightDone ? 1 : 0, transition: "opacity 0.25s ease" }}
+                    />
+                  </div>
                 </div>
                 {detail.credit && (
                   <p className="mt-3 text-[0.7rem] text-stone-dim">
@@ -334,7 +494,7 @@ export function SignatureStays() {
               </div>
 
               {/* Detail column */}
-              <div>
+              <div ref={copyRef}>
                 <p className="eyebrow mb-3">{detail.kind}</p>
                 <h3 className="font-display text-4xl leading-tight text-ivory md:text-[2.6rem]">
                   {detail.name}
@@ -361,7 +521,17 @@ export function SignatureStays() {
                   single invoice is raised.
                 </p>
 
-                <div className="mt-8 rounded-[18px] bg-white p-6 shadow-[0_18px_50px_rgba(90,64,30,0.16)] ring-1 ring-line">
+                {/* HAVEN frosted panel — static once open, so the backdrop
+                    blur is allowed; its entrance is transform + opacity. */}
+                <div
+                  className="mt-8 rounded-[18px] border border-white/60 bg-white/65 p-6 shadow-[0_24px_60px_rgba(60,40,15,0.28)] backdrop-blur-xl"
+                  style={{
+                    opacity: flightDone ? 1 : 0,
+                    transform: flightDone ? "translateY(0px)" : "translateY(14px)",
+                    transition:
+                      "opacity 0.6s ease 0.05s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.05s",
+                  }}
+                >
                   <p className="font-display text-lg text-ivory">Stay at {detail.name}</p>
                   <p className="mt-1.5 text-sm leading-relaxed text-stone">
                     Priced per journey, not per night off a shelf. Tell us your dates and party
