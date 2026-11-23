@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { destinations } from "@/data/destinations";
-import { localImage } from "@/data/images";
+import { localImage, unsplashPhoto } from "@/data/images";
 import { Button } from "@/components/ui/Button";
 import { company } from "@/data/company";
 
@@ -23,13 +23,19 @@ interface Slide {
   railTitle: string;
   caption: string;
   image: string;
+  /** Tall phone crop of the same photo; null when there is only one file. */
+  imageMobile: string | null;
+  /** Overrides the default photo treatment (the brand slide only). */
+  imgClassName?: string;
+  /** Backdrop behind the photo (the brand slide's letterbox bands). */
+  backdropClassName?: string;
   thumb: string;
 }
 
-const SLIDE_DEFS: { slug: string; kicker: string; railTitle: string }[] = [
-  { slug: "london", kicker: "Exhibitions · Theatre · The Arts", railTitle: "Discover London" },
-  { slug: "paris", kicker: "Arts & Culture Journeys", railTitle: "Discover Paris" },
-  { slug: "santorini", kicker: "Island Escapes", railTitle: "Discover Santorini" },
+const SLIDE_DEFS: { slug: string; kicker: string; railTitle: string; imageId: string; mobileCrop: string }[] = [
+  { slug: "london", kicker: "Exhibitions · Theatre · The Arts", railTitle: "Discover London", imageId: "1513026705753-bc3fffca8bf4", mobileCrop: "crop=entropy" },
+  { slug: "paris", kicker: "Arts & Culture Journeys", railTitle: "Discover Paris", imageId: "1502602898657-3e91760cbb34", mobileCrop: "crop=focalpoint&fp-x=0.68" },
+  { slug: "santorini", kicker: "Island Escapes", railTitle: "Discover Santorini", imageId: "1570077188670-e3a8d69ac5ff", mobileCrop: "crop=focalpoint&fp-x=0.40" },
 ];
 
 /** Main slide imagery at presentation resolution; rail thumbs stay light. */
@@ -38,20 +44,35 @@ const hiRes = (url: string) =>
     ? url.replace("w=1600", "w=2560").replace("q=80", "q=90")
     : url;
 
+/**
+ * Tall crop of the same photograph for phones: a frame composed for a tall
+ * screen — focal-aware where the subject sits off-centre — instead of an
+ * over-zoomed slice of the wide desktop frame.
+ */
+const tallCrop = (id: string, crop: string) =>
+  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&${crop}&w=1200&h=1500&q=85`;
+
 const destinationSlides: Slide[] = SLIDE_DEFS.map((def) => {
   const d = destinations.find((x) => x.slug === def.slug) ?? destinations[0];
+  const base = unsplashPhoto(def.imageId);
   return {
     slug: d.slug,
     title: d.name.toUpperCase(),
     kicker: def.kicker,
     railTitle: def.railTitle,
     caption: d.shortDescription,
-    image: hiRes(d.heroImage),
-    thumb: d.heroImage.replace("w=1600", "w=400"),
+    image: hiRes(base),
+    imageMobile: tallCrop(def.imageId, def.mobileCrop),
+    thumb: base.replace("w=1600", "w=400"),
   };
 });
 
-/** Fourth slide: the previous hero's brand photograph, after the locations. */
+/**
+ * Fourth slide: the previous hero's brand photograph, after the locations.
+ * Its treatment mirrors the pre-rebuild hero: on phones the whole artwork
+ * is presented at its natural proportions, centred, its foot fading away;
+ * on desktop it fills the frame at the old 62% 50% position, with no fade.
+ */
 const brandSlide: Slide = {
   slug: "beyond",
   title: "BEYOND",
@@ -59,6 +80,10 @@ const brandSlide: Slide = {
   railTitle: "Journeys Beyond the Ordinary",
   caption: company.tagline,
   image: localImage("/images/brand/hero-art.jpg"),
+  imageMobile: null,
+  imgClassName:
+    "h-full w-full object-contain object-center [mask-image:linear-gradient(to_bottom,#000_72%,transparent_100%)] lg:object-cover lg:object-[62%_50%] lg:[mask-image:none]",
+  backdropClassName: "bg-ink",
   thumb: localImage("/images/brand/hero-art.jpg"),
 };
 
@@ -243,15 +268,23 @@ export function Hero() {
             className="absolute inset-0"
             style={isActive && !reduced ? { animation: "wbm-kb 12s linear forwards" } : undefined}
           >
-            <Image
-              src={slide.image}
-              alt={`${slide.title} — ${slide.caption}`}
-              fill
-              priority={i === 0}
-              sizes="100vw"
-              className="object-cover"
+            <picture
+              className={`absolute inset-0 block ${slide.backdropClassName ?? ""}`}
               style={{ transform: isActive ? undefined : "scale(1.04)" }}
-            />
+            >
+              {slide.imageMobile && (
+                <>
+                  <source media="(min-width: 1024px)" srcSet={slide.image} />
+                  <source media="(max-width: 1023.98px)" srcSet={slide.imageMobile} />
+                </>
+              )}
+              <img
+                src={slide.image}
+                alt={`${slide.title} — ${slide.caption}`}
+                className={slide.imgClassName ?? "h-full w-full object-cover"}
+                draggable={false}
+              />
+            </picture>
           </div>
         </div>
         {/* Top tint behind the header */}
